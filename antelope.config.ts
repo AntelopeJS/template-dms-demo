@@ -63,7 +63,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "0.0.3",
+        version: "0.0.4",
       },
     },
     "cms-saas": {
@@ -92,7 +92,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "0.0.3",
+        version: "0.0.4",
       },
     },
     "cms-lang": {
@@ -100,6 +100,9 @@ export default defineConfig({
         type: "package",
         package: "@antelopejs-private/cms-lang",
         version: "0.0.4",
+      },
+      config: {
+        editable: true,
       },
     },
     "cms-cicd": {
