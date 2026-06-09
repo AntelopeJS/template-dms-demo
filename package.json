@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@antelopejs-private/cms": "^0.0.13",
+    "@antelopejs-private/cms": "^0.0.15",
     "@antelopejs/interface-api": "^0.0.3",
     "@antelopejs/interface-core": "^0.0.4",
     "@antelopejs/interface-data-api": "^0.1.1",
