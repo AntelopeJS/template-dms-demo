@@ -36,16 +36,6 @@ export default defineConfig({
         version: "0.0.12",
       },
       config: {
-        localModules: [
-          "@antelopejs-private/cms-nuxt-layer",
-          "@antelopejs-private/cms-api",
-          "@antelopejs/cms-database-nuxt-layer",
-          "@antelopejs-private/cms-automation",
-          "@antelopejs/cms-saas-nuxt-layer",
-          "@antelopejs-private/cms-ai-nuxt-layer",
-          "@antelopejs/cms-lang-nuxt-layer",
-          "@antelopejs/cms-cicd-nuxt-layer",
-        ],
         homepage: "/home",
         meta: {
           title: "Template CMS Demo",
@@ -59,28 +49,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "0.0.3",
+        version: "0.0.4",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.3",
+        version: "0.0.4",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "0.0.2",
+        version: "0.0.3",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.0.3",
+        version: "0.0.4",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -102,21 +92,21 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "0.0.2",
+        version: "0.0.3",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "0.0.3",
+        version: "0.0.4",
       },
     },
     "cms-cicd": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "0.0.2",
+        version: "0.0.3",
       },
     },
 
