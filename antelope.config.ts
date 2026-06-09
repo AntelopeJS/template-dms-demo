@@ -56,7 +56,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.5",
+        version: "0.0.6",
       },
     },
     "cms-automation": {
@@ -70,7 +70,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.0.4",
+        version: "0.0.5",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -106,7 +106,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "0.0.3",
+        version: "0.0.4",
       },
     },
 
