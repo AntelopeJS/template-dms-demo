@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.antelope/cache/
+.antelope/file-storage/
+*.log
