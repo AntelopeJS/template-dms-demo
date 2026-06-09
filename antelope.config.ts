@@ -49,7 +49,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "0.0.6",
+        version: "0.0.8",
       },
     },
     "cms-database": {
