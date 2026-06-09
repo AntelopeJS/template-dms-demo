@@ -39,6 +39,7 @@ The local module lives in [`src/`](./src):
 
 ```bash
 npm install
+cp .env.example .env   # then fill in your Stripe keys
 npm run dev
 ```
 
@@ -49,9 +50,11 @@ is served as the configured `homepage` (`/home`).
 ## Configuration notes
 
 - **MongoDB**: adjust `mongodb.config.url` / `database` in `antelope.config.ts`.
-- **SaaS / Stripe**: the `cms-saas` module ships with placeholder Stripe keys.
-  Replace `sk_test_replace_me` / `pk_test_replace_me` / `whsec_replace_me` with
-  your own credentials (or remove the module) before using it.
+- **SaaS / Stripe**: Stripe credentials are read from `.env` (loaded via
+  `dotenv` and mapped through `envOverrides` in `antelope.config.ts`). Copy
+  `.env.example` to `.env` and set `STRIPE_SECRET_KEY`,
+  `STRIPE_PUBLISHABLE_KEY` and `STRIPE_WEBHOOK_SECRET`. The `.env` file is
+  git-ignored; the placeholder values in the config act as fallbacks.
 - **Modules frontend**: every CMS feature layer is enabled through
   `cms.config.localModules`. Remove an entry there (and its module block) to drop
   a feature.

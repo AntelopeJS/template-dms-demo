@@ -5,12 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "dev": "ajs project run -w"
+    "dev": "ajs project run -w",
+    "frontend:dev": "acms dev -b http://localhost:5010"
   },
   "antelopeJs": {
     "baseUrl": "dist",
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "*"
+      ]
     }
   },
   "dependencies": {
@@ -23,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "dotenv": "^17.4.2",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"
   }

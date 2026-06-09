@@ -1,4 +1,8 @@
+import { resolve } from "node:path";
 import { defineConfig } from "@antelopejs/interface-core/config";
+import { config as loadDotenv } from "dotenv";
+
+loadDotenv({ path: resolve(__dirname, ".env") });
 
 export default defineConfig({
   name: "template-cms-demo",
@@ -6,6 +10,12 @@ export default defineConfig({
     channelFilter: {
       "*": "trace",
     },
+  },
+  // Map environment variables (loaded from .env) onto module config paths.
+  envOverrides: {
+    STRIPE_SECRET_KEY: "modules.cms-saas.config.stripe.secretKey",
+    STRIPE_PUBLISHABLE_KEY: "modules.cms-saas.config.stripe.publishableKey",
+    STRIPE_WEBHOOK_SECRET: "modules.cms-saas.config.stripe.webhookSecret",
   },
   modules: {
     // Local module of this template: registers the single "home" page (see src/).
@@ -73,12 +83,19 @@ export default defineConfig({
         version: "0.0.3",
       },
       config: {
-        // Replace with your own Stripe credentials to enable the SaaS module.
+        // Fallback values; overridden by the STRIPE_* variables from .env
+        // (see envOverrides above). Copy .env.example to .env to set real keys.
         stripe: {
           secretKey: "sk_test_replace_me",
           publishableKey: "pk_test_replace_me",
           webhookSecret: "whsec_replace_me",
         },
+        allowedRedirectHosts: [
+          "localhost:3000",
+          "localhost:3001",
+          "127.0.0.1:3000",
+          "127.0.0.1:3001",
+        ],
       },
     },
     "cms-ai": {
