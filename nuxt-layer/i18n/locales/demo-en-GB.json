@@ -1,0 +1,227 @@
+{
+  "demo": {
+    "nav": {
+      "home": "Home",
+      "components": "Components",
+      "demoApp": "Demo app",
+      "form": "Form",
+      "chart": "Chart",
+      "dashboard": "Dashboard",
+      "tableView": "TableView",
+      "tree": "Tree",
+      "tab": "Tab",
+      "grid": "Grid",
+      "stack": "Stack",
+      "placeholder": "Placeholder",
+      "custom": "CustomComponent",
+      "users": "Users",
+      "projects": "Projects",
+      "tasks": "Tasks"
+    },
+    "pages": {
+      "home": { "description": "What this template is and what you will find inside" },
+      "form": { "description": "Form with grouped fields, required validation and the main data types" },
+      "chart": { "description": "ChartLine with two static series, dashed comparison, bounded axis and full styling. Other variants: ChartArea, ChartBar, ChartColumn, ChartScatter, ChartDonut, ChartPie, ChartMixed, ChartRadar, ChartRadialBar, ChartHeatmap, ChartCandlestick" },
+      "dashboard": { "description": "PeriodSelector, KpiCard, ChartCard and TopListCard wired to the same period scope: change the period and every card refetches" },
+      "tableView": { "description": "TableView backed by a demo Mongo collection: filter tabs, searchable, filterable and sortable columns, CRUD row actions, archive mode and export" },
+      "tree": { "description": "Tree with static nodes, multi-selection propagation, default expansion and custom icons" },
+      "tab": { "description": "Tab with icons, badges, keyboard shortcuts, a disabled item and persisted active tab" },
+      "grid": { "description": "Grid with rows, colSpan and a nested Grid — the building blocks of dashboard layouts" },
+      "stack": { "description": "HStack, VStack and Spacer combined into an app shell: header, sidebar and content" },
+      "placeholder": { "description": "Placeholder with label and fixed dimensions — used to sketch layouts before real content" },
+      "custom": { "description": "A project-defined Vue component registered through a local nuxt-layer and rendered with CustomComponent" },
+      "users": { "description": "The people of the demo app, used as relation target by the tasks" },
+      "projects": { "description": "The projects of the demo app, used as relation target by the tasks" },
+      "tasks": { "description": "Tasks linked to a project and an assignee through relation columns" }
+    },
+    "form": {
+      "title": "Event registration",
+      "description": "A single form exercising field groups, validation and most data types",
+      "success": "Registration saved!",
+      "identity": { "label": "Identity", "description": "Who is registering" },
+      "ticket": {
+        "label": "Ticket",
+        "description": "Pick a ticket and options",
+        "types": { "standard": "Standard", "vip": "VIP", "student": "Student" },
+        "addons": { "workshop": "Workshop access", "lunch": "Lunch included", "goodies": "Goodie bag" }
+      },
+      "attendees": { "label": "Number of attendees", "description": "How many people are coming" },
+      "arrival": { "label": "Arrival date", "description": "When you plan to arrive" },
+      "website": { "label": "Website", "description": "Company or personal website" },
+      "notes": { "label": "Notes", "description": "Anything we should know" },
+      "newsletter": { "label": "Subscribe to the newsletter", "description": "Receive updates about the next events" }
+    },
+    "chart": {
+      "revenue": {
+        "title": "Monthly revenue",
+        "description": "Current year vs previous year, from a static dataset"
+      }
+    },
+    "dashboard": {
+      "compareLabel": "vs comparison period",
+      "revenue": { "title": "Revenue", "description": "All channels combined" },
+      "orders": { "title": "Orders" },
+      "refunds": { "title": "Refunds (invert)", "description": "Lower is better — invert flips the delta colors" },
+      "sales": {
+        "title": "Sales",
+        "description": "Daily sales for the selected period",
+        "primaryLabel": "Selected period",
+        "comparisonLabel": "Comparison period"
+      },
+      "topProducts": {
+        "title": "Top products",
+        "description": "Best sellers for the selected period",
+        "empty": "No sales yet"
+      }
+    },
+    "tableView": {
+      "caption": "Demo tasks",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "status": "Status",
+        "priority": "Priority",
+        "dueDate": "Due date",
+        "progress": "Progress",
+        "done": "Done",
+        "description": "Description"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "priorities": { "low": "Low", "medium": "Medium", "high": "High" }
+    },
+    "tree": {
+      "title": "Project explorer",
+      "description": "Static nodes with icons, multiple selection and propagation"
+    },
+    "tab": {
+      "items": {
+        "overview": "Overview",
+        "activity": "Activity",
+        "settings": "Settings",
+        "billing": "Billing (soon)"
+      }
+    },
+    "custom": {
+      "callout": {
+        "title": "This block is rendered by your own Vue component",
+        "message": "It lives in nuxt-layer/app/components/Callout.vue, is shipped by AddNuxtLayer and referenced by name with CustomComponent(\"demo-callout\")."
+      }
+    },
+    "readme": {
+      "hero": {
+        "title": "AntelopeJS CMS demo template",
+        "subtitle": "A ready-to-explore CMS wiring every feature module, a component catalog and a small demo application — all driven by a tiny TypeScript module."
+      },
+      "stack": {
+        "antelope": "AntelopeJS",
+        "nuxt": "Nuxt frontend",
+        "mongodb": "MongoDB",
+        "typescript": "TypeScript"
+      },
+      "sections": {
+        "components": {
+          "title": "Components catalog",
+          "description": "One page per built-in CMS component, each showing its most complete example.",
+          "items": {
+            "form": "Forms with groups and validation",
+            "chart": "Charts with static datasets",
+            "dashboard": "A period-aware dashboard",
+            "tableview": "A full CRUD TableView",
+            "layout": "Grid, Stack, Tab, Tree layouts",
+            "custom": "Your own Vue components"
+          }
+        },
+        "demoApp": {
+          "title": "Demo app",
+          "description": "A small project-management app backed by real Mongo collections.",
+          "items": {
+            "users": "Users with roles and avatars",
+            "projects": "Projects with status and budget",
+            "tasks": "Tasks linked to both by relations"
+          }
+        },
+        "modules": {
+          "title": "CMS modules",
+          "description": "Every feature module is installed and enabled in this template.",
+          "items": {
+            "api": "API — REST endpoints",
+            "database": "Database — Mongo browser",
+            "automation": "Automation — workflows",
+            "saas": "SaaS — Stripe billing",
+            "ai": "AI — assistants",
+            "lang": "Lang — translations",
+            "cicd": "CI/CD — git operations"
+          }
+        }
+      },
+      "how": {
+        "title": "How it works",
+        "description": "Everything you see is declared by the local module in src/ — pages are TypeScript classes, data lives in MongoDB, and custom widgets ship through a local Nuxt layer.",
+        "steps": {
+          "pages": {
+            "title": "1. Declare pages",
+            "description": "PageController classes in src/ register pages, categories and components."
+          },
+          "data": {
+            "title": "2. Plug data",
+            "description": "Static datasets, demo API endpoints or Mongo tables with fixtures."
+          },
+          "frontend": {
+            "title": "3. Extend the frontend",
+            "description": "Ship Vue components and translations through the local nuxt-layer."
+          }
+        }
+      }
+    },
+    "app": {
+      "users": {
+        "caption": "Users",
+        "roles": { "admin": "Admin", "manager": "Manager", "member": "Member" },
+        "columns": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "role": "Role",
+          "avatar": "Avatar",
+          "active": "Active",
+          "hiredAt": "Hired on"
+        }
+      },
+      "projects": {
+        "caption": "Projects",
+        "statuses": { "planned": "Planned", "active": "Active", "onHold": "On hold", "completed": "Completed" },
+        "columns": {
+          "name": "Name",
+          "description": "Description",
+          "status": "Status",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "budget": "Budget",
+          "progress": "Progress"
+        }
+      },
+      "tasks": {
+        "caption": "Tasks",
+        "statuses": { "pending": "Pending", "inProgress": "In progress", "completed": "Completed", "cancelled": "Cancelled" },
+        "priorities": { "low": "Low", "medium": "Medium", "high": "High" },
+        "columns": {
+          "name": "Name",
+          "description": "Description",
+          "status": "Status",
+          "priority": "Priority",
+          "project": "Project",
+          "assignee": "Assignee",
+          "dueDate": "Due date",
+          "estimate": "Estimate (h)",
+          "progress": "Progress",
+          "done": "Done"
+        }
+      }
+    }
+  }
+}
