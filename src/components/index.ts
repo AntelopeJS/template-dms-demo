@@ -1,5 +1,4 @@
 import "./form";
-import "./chart";
 import "./dashboard";
 import "./table-view";
 import "./tree";

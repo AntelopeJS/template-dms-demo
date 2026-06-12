@@ -7,7 +7,7 @@ const sections = [
     iconBg: "bg-primary/10",
     iconText: "text-primary",
     key: "components",
-    items: ["form", "chart", "dashboard", "tableview", "layout", "custom"],
+    items: ["form", "dashboard", "tableview", "layout", "custom"],
   },
   {
     icon: "i-ph-app-window",
