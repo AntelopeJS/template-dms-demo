@@ -9,7 +9,7 @@ export default defineNuxtConfig({
         path: resolve(layerDir, "app/components"),
         prefix: "Demo",
         pathPrefix: false,
-        global: false,
+        global: true,
       },
     ],
   },
