@@ -17,12 +17,12 @@
     }
   },
   "dependencies": {
-    "@antelopejs-private/cms": "^0.0.15",
+    "@antelopejs-private/cms": "^0.0.16",
     "@antelopejs/interface-api": "^0.0.3",
     "@antelopejs/interface-core": "^0.0.4",
-    "@antelopejs/interface-data-api": "^0.1.1",
+    "@antelopejs/interface-data-api": "^0.1.2",
     "@antelopejs/interface-database": "^0.1.1",
-    "@antelopejs/interface-database-decorators": "^0.1.1"
+    "@antelopejs/interface-database-decorators": "^0.1.2"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
