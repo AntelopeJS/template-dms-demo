@@ -36,13 +36,14 @@ The local module lives in [`src/`](./src):
   TableViews backed by Mongo collections seeded through fixtures:
   **Users** (roles, avatars), **Projects** (status, budget, progress) and
   **Tasks** (status, priority, relations to a project and an assignee).
+  Tasks open as a **kanban board** grouped by status (drag cards between
+  columns; the toolbar switches back to the table).
 - `src/components/` — a **Components** sidebar category with one page per
   built-in CMS component, each showing its most complete example:
 
   | Page           | Component(s)                                          |
   | -------------- | ----------------------------------------------------- |
-  | Form           | `Form` with field groups and most `DefaultDataTypes`  |
-  | Chart          | `ChartLine` (static dataset, comparison series)       |
+  | Form           | `Form` with field groups and every `DefaultDataTypes` input (string/textarea, email, phone, password, url, color, number, price, percentage, date/date-range, time, boolean, select, tree, relation, cascader relation, address, permissions, rich text, file, image single/multiple) |
   | Dashboard      | `PeriodSelector` + `KpiCard` ×3 + `ChartCard` + `TopListCard`, all sharing one period scope |
   | TableView      | `TableView` over a demo Mongo collection: filter tabs, CRUD, archive, export |
   | Tree           | `Tree` (static nodes, multi-select, propagation)      |
@@ -56,7 +57,9 @@ The local module lives in [`src/`](./src):
   `src/components/demo-api.ts` (`/api/components-demo/sales`, `kpi/:metric`,
   `top-products`), so changing the period or comparison refetches every card;
   the TableView page seeds a `components_demo_tasks` collection through a
-  `@Fixture`.
+  `@Fixture`, and the Form page seeds a self-referencing
+  `components_demo_topics` collection backing its cascader and relation
+  inputs.
 - `nuxt-layer/` — a local Nuxt layer shipping the `DemoReadme` and
   `DemoCallout` Vue components plus the English/French translations
   (`i18n/locales/demo-*.json`). Registered in `src/index.ts` and marked local

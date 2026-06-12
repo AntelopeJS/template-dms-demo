@@ -5,7 +5,6 @@
       "components": "Components",
       "demoApp": "Demo app",
       "form": "Form",
-      "chart": "Chart",
       "dashboard": "Dashboard",
       "tableView": "TableView",
       "tree": "Tree",
@@ -20,8 +19,7 @@
     },
     "pages": {
       "home": { "description": "What this template is and what you will find inside" },
-      "form": { "description": "Form with grouped fields, required validation and the main data types" },
-      "chart": { "description": "ChartLine with two static series, dashed comparison, bounded axis and full styling. Other variants: ChartArea, ChartBar, ChartColumn, ChartScatter, ChartDonut, ChartPie, ChartMixed, ChartRadar, ChartRadialBar, ChartHeatmap, ChartCandlestick" },
+      "form": { "description": "Form with grouped fields, required validation and every data type: text, password, color, address, tree, cascader, relation, permissions, file…" },
       "dashboard": { "description": "PeriodSelector, KpiCard, ChartCard and TopListCard wired to the same period scope: change the period and every card refetches" },
       "tableView": { "description": "TableView backed by a demo Mongo collection: filter tabs, searchable, filterable and sortable columns, CRUD row actions, archive mode and export" },
       "tree": { "description": "Tree with static nodes, multi-selection propagation, default expansion and custom icons" },
@@ -32,30 +30,45 @@
       "custom": { "description": "A project-defined Vue component registered through a local nuxt-layer and rendered with CustomComponent" },
       "users": { "description": "The people of the demo app, used as relation target by the tasks" },
       "projects": { "description": "The projects of the demo app, used as relation target by the tasks" },
-      "tasks": { "description": "Tasks linked to a project and an assignee through relation columns" }
+      "tasks": { "description": "Tasks linked to a project and an assignee, displayed as a kanban board grouped by status (switchable back to the table)" }
     },
     "form": {
       "title": "Event registration",
-      "description": "A single form exercising field groups, validation and most data types",
+      "description": "A single form exercising field groups, validation and every data type the CMS ships",
       "success": "Registration saved!",
       "identity": { "label": "Identity", "description": "Who is registering" },
+      "fullName": { "label": "Full name" },
+      "email": { "label": "Email" },
+      "phone": { "label": "Phone" },
+      "password": { "label": "Password", "description": "At least 8 characters, with confirmation" },
+      "website": { "label": "Website", "description": "Company or personal website" },
+      "badgeColor": { "label": "Badge color", "description": "Accent color printed on your badge" },
       "ticket": {
         "label": "Ticket",
         "description": "Pick a ticket and options",
         "types": { "standard": "Standard", "vip": "VIP", "student": "Student" },
         "addons": { "workshop": "Workshop access", "lunch": "Lunch included", "goodies": "Goodie bag" }
       },
+      "ticketType": { "label": "Ticket type" },
+      "addons": { "label": "Add-ons" },
+      "price": { "label": "Price" },
+      "discount": { "label": "Discount" },
       "attendees": { "label": "Number of attendees", "description": "How many people are coming" },
       "arrival": { "label": "Arrival date", "description": "When you plan to arrive" },
-      "website": { "label": "Website", "description": "Company or personal website" },
+      "stay": { "label": "Stay", "description": "First and last day of your stay" },
+      "checkinTime": { "label": "Check-in time", "description": "Time you expect to check in" },
+      "address": { "label": "Billing address", "description": "Structured address with autocomplete suggestions" },
+      "interests": { "label": "Interests", "description": "Multi-selection in a static tree" },
+      "track": { "label": "Favourite track", "description": "Hierarchical topics from a self-referencing collection (cascader)" },
+      "relatedTask": { "label": "Related task", "description": "Relation to the TableView demo collection" },
+      "permissions": { "label": "Granted permissions", "description": "The CMS permissions tree, reused as a form input" },
+      "bio": { "label": "Short bio", "description": "Plain text, textarea variant" },
       "notes": { "label": "Notes", "description": "Anything we should know" },
-      "newsletter": { "label": "Subscribe to the newsletter", "description": "Receive updates about the next events" }
-    },
-    "chart": {
-      "revenue": {
-        "title": "Monthly revenue",
-        "description": "Current year vs previous year, from a static dataset"
-      }
+      "attachment": { "label": "Attachment", "description": "Image or PDF, 5 MB max" },
+      "badgePhoto": { "label": "Badge photo", "description": "Single image with alt text, 5 MB max" },
+      "gallery": { "label": "Event gallery", "description": "Up to 8 images with a principal one" },
+      "newsletter": { "label": "Subscribe to the newsletter", "description": "Receive updates about the next events" },
+      "topics": { "columns": { "name": "Name", "parent": "Parent topic" } }
     },
     "dashboard": {
       "compareLabel": "vs comparison period",
@@ -129,8 +142,7 @@
           "description": "One page per built-in CMS component, each showing its most complete example.",
           "items": {
             "form": "Forms with groups and validation",
-            "chart": "Charts with static datasets",
-            "dashboard": "A period-aware dashboard",
+            "dashboard": "A period-aware dashboard with charts",
             "tableview": "A full CRUD TableView",
             "layout": "Grid, Stack, Tab, Tree layouts",
             "custom": "Your own Vue components"

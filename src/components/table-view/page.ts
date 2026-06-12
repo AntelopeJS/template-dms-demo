@@ -1,4 +1,4 @@
-import { Controller } from "@antelopejs/interface-api";
+import { Controller, ControllerClass } from "@antelopejs/interface-api";
 import {
   DataController,
   RegisterDataController,
@@ -197,6 +197,11 @@ class demoTaskDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare isArchived: boolean;
 }
+
+// ControllerClass-typed alias so other pages (the Form demo's RelationType)
+// can reference this controller without exporting the class itself, which
+// would hit TS2742 when emitting its .d.ts.
+export const demoTaskController: ControllerClass = demoTaskDataAPI;
 
 @RegisterPage()
 export class PageComponentTableView extends PageController(

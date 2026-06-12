@@ -5,7 +5,6 @@
       "components": "Composants",
       "demoApp": "App démo",
       "form": "Form",
-      "chart": "Chart",
       "dashboard": "Dashboard",
       "tableView": "TableView",
       "tree": "Tree",
@@ -20,8 +19,7 @@
     },
     "pages": {
       "home": { "description": "Ce qu'est ce template et ce que vous y trouverez" },
-      "form": { "description": "Formulaire avec groupes de champs, validation obligatoire et les principaux types de données" },
-      "chart": { "description": "ChartLine avec deux séries statiques, comparaison en pointillés, axe borné et style complet. Autres variantes : ChartArea, ChartBar, ChartColumn, ChartScatter, ChartDonut, ChartPie, ChartMixed, ChartRadar, ChartRadialBar, ChartHeatmap, ChartCandlestick" },
+      "form": { "description": "Formulaire avec groupes de champs, validation obligatoire et tous les types de données : texte, mot de passe, couleur, adresse, arbre, cascader, relation, permissions, fichier…" },
       "dashboard": { "description": "PeriodSelector, KpiCard, ChartCard et TopListCard branchés sur le même scope de période : changez la période et chaque carte se recharge" },
       "tableView": { "description": "TableView adossé à une collection Mongo de démo : onglets de filtrage, colonnes recherchables, filtrables et triables, actions CRUD, mode archive et export" },
       "tree": { "description": "Tree avec nœuds statiques, propagation de la multi-sélection, expansion par défaut et icônes personnalisées" },
@@ -32,30 +30,45 @@
       "custom": { "description": "Un composant Vue défini par le projet, enregistré via un nuxt-layer local et rendu avec CustomComponent" },
       "users": { "description": "Les personnes de l'app démo, utilisées comme cible de relation par les tâches" },
       "projects": { "description": "Les projets de l'app démo, utilisés comme cible de relation par les tâches" },
-      "tasks": { "description": "Tâches liées à un projet et à un responsable via des colonnes de relation" }
+      "tasks": { "description": "Tâches liées à un projet et à un responsable, affichées en tableau kanban groupé par statut (retour au tableau possible)" }
     },
     "form": {
       "title": "Inscription à l'événement",
-      "description": "Un formulaire unique exerçant les groupes de champs, la validation et la plupart des types de données",
+      "description": "Un formulaire unique exerçant les groupes de champs, la validation et tous les types de données du CMS",
       "success": "Inscription enregistrée !",
       "identity": { "label": "Identité", "description": "Qui s'inscrit" },
+      "fullName": { "label": "Nom complet" },
+      "email": { "label": "Email" },
+      "phone": { "label": "Téléphone" },
+      "password": { "label": "Mot de passe", "description": "Au moins 8 caractères, avec confirmation" },
+      "website": { "label": "Site web", "description": "Site web personnel ou de l'entreprise" },
+      "badgeColor": { "label": "Couleur du badge", "description": "Couleur d'accent imprimée sur votre badge" },
       "ticket": {
         "label": "Billet",
         "description": "Choisissez un billet et des options",
         "types": { "standard": "Standard", "vip": "VIP", "student": "Étudiant" },
         "addons": { "workshop": "Accès aux ateliers", "lunch": "Déjeuner inclus", "goodies": "Sac cadeau" }
       },
+      "ticketType": { "label": "Type de billet" },
+      "addons": { "label": "Options" },
+      "price": { "label": "Prix" },
+      "discount": { "label": "Remise" },
       "attendees": { "label": "Nombre de participants", "description": "Combien de personnes viennent" },
       "arrival": { "label": "Date d'arrivée", "description": "Quand vous prévoyez d'arriver" },
-      "website": { "label": "Site web", "description": "Site web personnel ou de l'entreprise" },
+      "stay": { "label": "Séjour", "description": "Premier et dernier jour de votre séjour" },
+      "checkinTime": { "label": "Heure d'arrivée", "description": "Heure à laquelle vous pensez arriver" },
+      "address": { "label": "Adresse de facturation", "description": "Adresse structurée avec suggestions d'autocomplétion" },
+      "interests": { "label": "Centres d'intérêt", "description": "Multi-sélection dans un arbre statique" },
+      "track": { "label": "Track préférée", "description": "Sujets hiérarchiques depuis une collection auto-référencée (cascader)" },
+      "relatedTask": { "label": "Tâche liée", "description": "Relation vers la collection de démo du TableView" },
+      "permissions": { "label": "Permissions accordées", "description": "L'arbre des permissions du CMS, réutilisé comme input de formulaire" },
+      "bio": { "label": "Courte bio", "description": "Texte brut, variante textarea" },
       "notes": { "label": "Notes", "description": "Tout ce que nous devrions savoir" },
-      "newsletter": { "label": "S'abonner à la newsletter", "description": "Recevez des nouvelles des prochains événements" }
-    },
-    "chart": {
-      "revenue": {
-        "title": "Revenu mensuel",
-        "description": "Année en cours vs année précédente, depuis un jeu de données statique"
-      }
+      "attachment": { "label": "Pièce jointe", "description": "Image ou PDF, 5 Mo max" },
+      "badgePhoto": { "label": "Photo du badge", "description": "Image unique avec texte alternatif, 5 Mo max" },
+      "gallery": { "label": "Galerie de l'événement", "description": "Jusqu'à 8 images dont une principale" },
+      "newsletter": { "label": "S'abonner à la newsletter", "description": "Recevez des nouvelles des prochains événements" },
+      "topics": { "columns": { "name": "Nom", "parent": "Sujet parent" } }
     },
     "dashboard": {
       "compareLabel": "vs période de comparaison",
@@ -129,8 +142,7 @@
           "description": "Une page par composant intégré du CMS, chacune montrant son exemple le plus complet.",
           "items": {
             "form": "Formulaires avec groupes et validation",
-            "chart": "Graphiques avec données statiques",
-            "dashboard": "Un dashboard sensible à la période",
+            "dashboard": "Un dashboard sensible à la période avec graphiques",
             "tableview": "Un TableView CRUD complet",
             "layout": "Mises en page Grid, Stack, Tab, Tree",
             "custom": "Vos propres composants Vue"
