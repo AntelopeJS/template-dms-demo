@@ -1,0 +1,10 @@
+{
+  "environments": [
+    {
+      "id": "production",
+      "name": "Production",
+      "branch": "main",
+      "url": ""
+    }
+  ]
+}
