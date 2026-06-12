@@ -11,6 +11,12 @@
       "name": "staging",
       "branch": "staging",
       "url": ""
+    },
+    {
+      "id": "develop",
+      "name": "develop",
+      "branch": "dev",
+      "url": ""
     }
   ]
 }
