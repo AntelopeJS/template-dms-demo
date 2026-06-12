@@ -5,6 +5,12 @@
       "name": "Production",
       "branch": "main",
       "url": ""
+    },
+    {
+      "id": "staging",
+      "name": "staging",
+      "branch": "staging",
+      "url": ""
     }
   ]
 }
