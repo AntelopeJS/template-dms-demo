@@ -558,6 +558,13 @@ export class PageDemoAppTasks extends PageController(
       hasSelection: true,
     },
     defaultSort: { field: "dueDate" },
+    // New in cms 0.0.16: kanban display mode. Cards are grouped by the
+    // status SelectType column and can be dragged between columns.
+    kanban: {
+      groupByField: "status",
+      cardFields: ["priority", "assignee", "dueDate", "progress"],
+    },
+    defaultViewMode: "kanban",
     tabs: [
       ...TASK_STATUSES.map((status) => ({
         id: status.value,
