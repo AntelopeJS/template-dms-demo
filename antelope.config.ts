@@ -33,7 +33,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.0.15",
+        version: "0.0.16",
       },
       config: {
         homepage: "/home",
@@ -52,28 +52,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "0.0.8",
+        version: "0.0.9",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.6",
+        version: "0.0.7",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "0.0.4",
+        version: "0.0.5",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.0.6",
+        version: "0.0.7",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -95,14 +95,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "0.0.4",
+        version: "0.0.5",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "0.0.6",
+        version: "0.0.7",
       },
       config: {
         editable: true,
@@ -112,7 +112,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "0.0.5",
+        version: "0.0.6",
       },
       config: {
         // Allow write git operations (commit, tag, branch, push) in the demo.
@@ -135,13 +135,6 @@ export default defineConfig({
       importOverrides: [],
       disabledExports: [],
     },
-    "database-decorators": {
-      source: {
-        type: "package",
-        package: "@antelopejs/database-decorators",
-        version: "1.1.1",
-      },
-    },
     "auth-jwt": {
       source: {
         type: "package",
@@ -150,13 +143,6 @@ export default defineConfig({
       },
       config: {
         secret: "dev",
-      },
-    },
-    "data-api": {
-      source: {
-        type: "package",
-        package: "@antelopejs/data-api",
-        version: "1.1.1",
       },
     },
     api: {
