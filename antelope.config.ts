@@ -33,7 +33,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.0.16",
+        version: "0.0.18",
       },
       config: {
         homepage: "/home",
