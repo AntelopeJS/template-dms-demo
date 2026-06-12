@@ -1,4 +1,4 @@
-# template-cms-demo
+# template-cms-demo test
 
 A minimal [AntelopeJS](https://antelopejs.com) CMS template wiring together every
 CMS feature module, plus a tiny local module that exposes a single **Home** page
