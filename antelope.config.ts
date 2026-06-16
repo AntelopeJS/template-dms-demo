@@ -66,7 +66,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "0.0.7",
+        version: "0.0.8",
       },
     },
     "cms-saas": {
