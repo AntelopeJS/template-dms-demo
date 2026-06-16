@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "dev": "ajs project run -w",
-    "frontend:dev": "acms dev -b http://localhost:5010"
+    "frontend:dev": "acms dev"
   },
   "antelopeJs": {
     "baseUrl": "dist",
@@ -17,12 +17,12 @@
     }
   },
   "dependencies": {
-    "@antelopejs-private/cms": "^0.0.18",
-    "@antelopejs/interface-api": "^0.0.3",
-    "@antelopejs/interface-core": "^0.0.4",
-    "@antelopejs/interface-data-api": "^0.1.2",
-    "@antelopejs/interface-database": "^0.1.1",
-    "@antelopejs/interface-database-decorators": "^0.1.2"
+    "@antelopejs-private/cms": "^0.0.20",
+    "@antelopejs/interface-api": "^0.0.5",
+    "@antelopejs/interface-core": "^0.0.6",
+    "@antelopejs/interface-data-api": "^0.1.4",
+    "@antelopejs/interface-database": "^0.1.3",
+    "@antelopejs/interface-database-decorators": "^0.1.3"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
