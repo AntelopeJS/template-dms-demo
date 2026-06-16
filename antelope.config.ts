@@ -33,7 +33,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.0.18",
+        version: "0.0.20",
       },
       config: {
         homepage: "/home",
@@ -52,28 +52,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "0.0.9",
+        version: "0.0.11",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.7",
+        version: "0.0.8",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "0.0.5",
+        version: "0.0.7",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.0.7",
+        version: "0.0.9",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -95,14 +95,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "0.0.5",
+        version: "0.0.7",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "0.0.7",
+        version: "0.0.8",
       },
       config: {
         editable: true,
@@ -112,7 +112,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "0.0.6",
+        version: "0.0.7",
       },
       config: {
         // Allow write git operations (commit, tag, branch, push) in the demo.
@@ -149,7 +149,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        version: "1.0.0",
+        version: "1.1.1",
       },
       config: {
         servers: [
@@ -172,7 +172,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "0.0.2",
+        version: "0.1.0",
       },
       config: {
         storagePath: ".antelope/file-storage",
