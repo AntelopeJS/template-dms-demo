@@ -506,6 +506,18 @@ export class PageDemoAppUsers extends PageController(
       hasSelection: true,
     },
     defaultSort: { field: "name" },
+    tabs: [
+      ...USER_ROLES.map((role) => ({
+        id: role.value,
+        label: role.label,
+        icon: role.icon,
+        iconColor: role.iconColor,
+        textColor: role.textColor,
+        filters: [
+          { accessorKey: "role", value: role.value, mode: "is" as const },
+        ],
+      })),
+    ],
   });
 }
 
@@ -568,7 +580,7 @@ export class PageDemoAppTasks extends PageController(
     tabs: [
       ...TASK_STATUSES.map((status) => ({
         id: status.value,
-        label: status.value === "in_progress" ? "In progress" : status.value.charAt(0).toUpperCase() + status.value.slice(1),
+        label: status.label,
         icon: status.icon,
         iconColor: status.iconColor,
         textColor: status.textColor,
@@ -578,7 +590,7 @@ export class PageDemoAppTasks extends PageController(
       })),
       {
         id: "high_priority",
-        label: "High priority",
+        label: "$demo.app.tasks.tabs.highPriority",
         icon: "i-ph-fire",
         iconColor: "error",
         textColor: "error",

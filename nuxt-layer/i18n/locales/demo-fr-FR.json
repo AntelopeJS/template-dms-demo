@@ -221,6 +221,7 @@
         "caption": "Tâches",
         "statuses": { "pending": "En attente", "inProgress": "En cours", "completed": "Terminée", "cancelled": "Annulée" },
         "priorities": { "low": "Basse", "medium": "Moyenne", "high": "Haute" },
+        "tabs": { "highPriority": "Priorité haute" },
         "columns": {
           "name": "Nom",
           "description": "Description",

@@ -1,0 +1,15 @@
+{
+  "pid": 11160,
+  "startedAt": "2026-06-30T15:59:39.535Z",
+  "servers": {
+    "api": {
+      "endpoints": [
+        {
+          "protocol": "http",
+          "host": "localhost",
+          "port": 5010
+        }
+      ]
+    }
+  }
+}

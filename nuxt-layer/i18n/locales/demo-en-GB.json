@@ -221,6 +221,7 @@
         "caption": "Tasks",
         "statuses": { "pending": "Pending", "inProgress": "In progress", "completed": "Completed", "cancelled": "Cancelled" },
         "priorities": { "low": "Low", "medium": "Medium", "high": "High" },
+        "tabs": { "highPriority": "High priority" },
         "columns": {
           "name": "Name",
           "description": "Description",
