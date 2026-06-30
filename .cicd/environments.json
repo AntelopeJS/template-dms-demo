@@ -1,0 +1,10 @@
+{
+  "environments": [
+    {
+      "id": "hello",
+      "name": "Hello",
+      "branch": "main",
+      "url": "sqd"
+    }
+  ]
+}
