@@ -34,7 +34,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.0.30",
+        version: "0.1.1",
       },
       config: {
         homepage: "/home",
@@ -53,14 +53,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "0.0.12",
+        version: "0.1.0",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.9",
+        version: "0.0.10",
       },
     },
     "cms-automation": {
@@ -74,7 +74,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.0.10",
+        version: "0.1.0",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -103,7 +103,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "0.0.10",
+        version: "0.1.0",
       },
       config: {
         editable: true,
