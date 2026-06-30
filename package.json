@@ -24,6 +24,9 @@
     "@antelopejs/interface-database": "^0.1.3",
     "@antelopejs/interface-database-decorators": "^0.1.3"
   },
+  "optionalDependencies": {
+    "@antelopejs-private/cms-database": "^0.0.9"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "dotenv": "^17.4.2",

@@ -1,11 +1,13 @@
 import {
   BasicDataModel,
+  Field,
   Fixture,
   Index,
   RegisterTable,
   Table,
 } from "@antelopejs/interface-database-decorators";
 import { CORE_SCHEMA_NAME } from "@antelopejs-private/cms/interfaces/cms/constants";
+import { Relation } from "@antelopejs-private/cms-database/interfaces/cms-database";
 
 const USERS_TABLE = "demo_app_users";
 const PROJECTS_TABLE = "demo_app_projects";
@@ -429,15 +431,15 @@ const DEFAULT_TASKS: Array<Partial<AppTask>> = [
 @RegisterTable(USERS_TABLE, CORE_SCHEMA_NAME)
 @Fixture(() => DEFAULT_USERS)
 export class AppUser extends Table {
-  declare _id: string;
+  @Field("string") declare _id: string;
 
-  @Index() declare name: string;
-  declare email: string;
-  declare phone?: string;
-  @Index() declare role: "admin" | "manager" | "member";
-  declare avatar?: string;
-  @Index() declare isActive: boolean;
-  @Index() declare hiredAt: Date;
+  @Index() @Field("string") declare name: string;
+  @Field("string") declare email: string;
+  @Field("string") declare phone?: string;
+  @Index() @Field("string") declare role: "admin" | "manager" | "member";
+  @Field("string") declare avatar?: string;
+  @Index() @Field("boolean") declare isActive: boolean;
+  @Index() @Field("date") declare hiredAt: Date;
 }
 
 export class AppUserModel extends BasicDataModel(AppUser, USERS_TABLE) {}
@@ -445,16 +447,20 @@ export class AppUserModel extends BasicDataModel(AppUser, USERS_TABLE) {}
 @RegisterTable(PROJECTS_TABLE, CORE_SCHEMA_NAME)
 @Fixture(() => DEFAULT_PROJECTS)
 export class AppProject extends Table {
-  declare _id: string;
+  @Field("string") declare _id: string;
 
-  @Index() declare name: string;
-  declare description?: string;
-  @Index() declare status: "planned" | "active" | "on_hold" | "completed";
-  @Index() declare startDate: Date;
-  declare endDate: Date;
-  declare budget: number;
-  declare progress: number;
-  @Index() declare isArchived?: boolean;
+  @Index() @Field("string") declare name: string;
+  @Field("string") declare description?: string;
+  @Index() @Field("string") declare status:
+    | "planned"
+    | "active"
+    | "on_hold"
+    | "completed";
+  @Index() @Field("date") declare startDate: Date;
+  @Field("date") declare endDate: Date;
+  @Field("number") declare budget: number;
+  @Field("number") declare progress: number;
+  @Index() @Field("boolean") declare isArchived?: boolean;
 }
 
 export class AppProjectModel extends BasicDataModel(
@@ -465,23 +471,25 @@ export class AppProjectModel extends BasicDataModel(
 @RegisterTable(TASKS_TABLE, CORE_SCHEMA_NAME)
 @Fixture(() => DEFAULT_TASKS)
 export class AppTask extends Table {
-  declare _id: string;
+  @Field("string") declare _id: string;
 
-  @Index() declare name: string;
-  declare description?: string;
-  @Index() declare status:
+  @Index() @Field("string") declare name: string;
+  @Field("string") declare description?: string;
+  @Index() @Field("string") declare status:
     | "pending"
     | "in_progress"
     | "completed"
     | "cancelled";
-  declare priority: "low" | "medium" | "high";
-  @Index() declare project: string;
-  @Index() declare assignee: string;
-  @Index() declare dueDate: Date;
-  declare estimateHours: number;
-  declare progress: number;
-  declare done: boolean;
-  @Index() declare isArchived?: boolean;
+  @Field("string") declare priority: "low" | "medium" | "high";
+  @Index() @Field("string") @Relation({ to: () => AppProject })
+  declare project: string;
+  @Index() @Field("string") @Relation({ to: () => AppUser })
+  declare assignee: string;
+  @Index() @Field("date") declare dueDate: Date;
+  @Field("number") declare estimateHours: number;
+  @Field("number") declare progress: number;
+  @Field("boolean") declare done: boolean;
+  @Index() @Field("boolean") declare isArchived?: boolean;
 }
 
 export class AppTaskModel extends BasicDataModel(AppTask, TASKS_TABLE) {}

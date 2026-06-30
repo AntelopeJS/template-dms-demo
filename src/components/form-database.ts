@@ -13,12 +13,14 @@ import {
 } from "@antelopejs/interface-data-api/metadata";
 import {
   BasicDataModel,
+  Field,
   Fixture,
   Model,
   RegisterTable,
   Table,
 } from "@antelopejs/interface-database-decorators";
 import { CORE_SCHEMA_NAME } from "@antelopejs-private/cms/interfaces/cms/constants";
+import { Relation } from "@antelopejs-private/cms-database/interfaces/cms-database";
 import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
 import { Searchable } from "@antelopejs-private/cms/interfaces/cms-base/searchable";
 import {
@@ -57,10 +59,10 @@ const DEFAULT_TOPICS: TopicSeed[] = [
 @RegisterTable(TABLE_NAME, CORE_SCHEMA_NAME)
 @Fixture(() => DEFAULT_TOPICS)
 export class DemoTopic extends Table {
-  declare _id: string;
+  @Field("string") declare _id: string;
 
-  declare name: string;
-  declare parent?: string;
+  @Field("string") declare name: string;
+  @Field("string") @Relation({ to: () => DemoTopic }) declare parent?: string;
 }
 
 export class DemoTopicModel extends BasicDataModel(DemoTopic, TABLE_NAME) {}
