@@ -1,5 +1,6 @@
 import {
   BasicDataModel,
+  Field,
   Fixture,
   Index,
   RegisterTable,
@@ -76,21 +77,21 @@ const DEFAULT_TASKS: Array<Partial<DemoTask>> = [
 @RegisterTable(TABLE_NAME, CORE_SCHEMA_NAME)
 @Fixture(() => DEFAULT_TASKS)
 export class DemoTask extends Table {
-  declare _id: string;
+  @Field("string") declare _id: string;
 
-  declare name: string;
-  declare email: string;
-  @Index() declare status:
+  @Field("string") declare name: string;
+  @Field("string") declare email: string;
+  @Index() @Field("string") declare status:
     | "pending"
     | "in_progress"
     | "completed"
     | "cancelled";
-  declare priority: "low" | "medium" | "high";
-  @Index() declare due_date: Date;
-  declare progress: number;
-  declare done: boolean;
-  declare description?: string;
-  @Index() declare isArchived?: boolean;
+  @Field("string") declare priority: "low" | "medium" | "high";
+  @Index() @Field("date") declare due_date: Date;
+  @Field("number") declare progress: number;
+  @Field("boolean") declare done: boolean;
+  @Field("string") declare description?: string;
+  @Index() @Field("boolean") declare isArchived?: boolean;
 }
 
 export class DemoTaskModel extends BasicDataModel(DemoTask, TABLE_NAME) {}
