@@ -3,6 +3,8 @@ import { resolve } from "pathe";
 const layerDir = import.meta.dirname!;
 
 export default defineNuxtConfig({
+  cmsI18nAppLayer: true,
+
   components: {
     dirs: [
       {
