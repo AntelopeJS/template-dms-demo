@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antelopejs-private/cms':
-        specifier: ^0.1.1
-        version: 0.1.1(@types/node@22.19.20)
+        specifier: ^0.1.4
+        version: 0.1.4(@types/node@22.19.20)
       '@antelopejs/interface-api':
         specifier: ^0.0.5
         version: 0.0.5(@antelopejs/interface-core@0.0.6)
@@ -41,22 +41,25 @@ importers:
         version: 5.9.3
     optionalDependencies:
       '@antelopejs-private/cms-database':
-        specifier: ^0.0.10
-        version: 0.0.10(@types/node@22.19.20)
+        specifier: ^0.0.11
+        version: 0.0.11(@types/node@22.19.20)
 
 packages:
 
   2fa@0.1.2:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
-  '@antelopejs-private/cms-database@0.0.10':
-    resolution: {integrity: sha512-GpkdIXGtmp13/4O2p5uaw+FXyZOiR8eOcLEzKxJ1AmRQmBp04JG83zMTQa9uI+HgdOWObNQeZ10oyz9P4bgdcg==}
+  '@antelopejs-private/cms-database@0.0.11':
+    resolution: {integrity: sha512-Hawfx4IxS1u0rlV5u4NNnGKKCADPuc6BmxBAWXWfYOyGKkuRj4F0jixuY4kiTwPV803Wxp/YqOnjpPb+Vg1Nfw==}
+
+  '@antelopejs-private/cms-database@0.0.9':
+    resolution: {integrity: sha512-UVWiepyyzB0HrVE/oTtB5UfaJLyiTfoAAnRGA6vpTpE3HIiT62cBb5ZUGXewWHVQG4wal/Lpws+1YWKF3ken0A==}
 
   '@antelopejs-private/cms@0.0.30':
     resolution: {integrity: sha512-btqj9rHTwm4tk2LaJVbKU2zFDqcGLOXLDmWwp3NlbCec/Bco0bSONt8gYqZi7zf2oIpugOYvyN6dq/iw3INV3A==}
 
-  '@antelopejs-private/cms@0.1.1':
-    resolution: {integrity: sha512-7ZXrOCLHF2kg0X3Dhp+fXsmUFMELgYsuRIlz08amxh6snduahQRzxwQWGSi5Kvt8MQkEafekaSJLigaYjvK4xw==}
+  '@antelopejs-private/cms@0.1.4':
+    resolution: {integrity: sha512-5JVwWxhyADWHbheKewNhBeL5gVJISWZrY4nuTLwJ/vMQN3lFpC9IKmJNNhHBkGQkcqUDh/wmm6vw6oxNap1Xiw==}
 
   '@antelopejs/core@1.4.3':
     resolution: {integrity: sha512-GJ59CXR3rYlxmplR138UL2G/MrCqNsT5WHuQ040dMGZ9f569PUzzY92q01oXEPCViiH+ISFhslmmaokTe+0qVQ==}
@@ -1194,7 +1197,23 @@ snapshots:
       qr-image: 3.2.0
       thirty-two: 0.0.2
 
-  '@antelopejs-private/cms-database@0.0.10(@types/node@22.19.20)':
+  '@antelopejs-private/cms-database@0.0.11(@types/node@22.19.20)':
+    dependencies:
+      '@antelopejs-private/cms': 0.1.4(@types/node@22.19.20)
+      '@antelopejs/interface-api': 0.0.5(@antelopejs/interface-core@0.0.6)
+      '@antelopejs/interface-api-util': 0.1.1(@antelopejs/interface-api@0.0.5(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
+      '@antelopejs/interface-core': 0.0.6
+      '@antelopejs/interface-database': 0.1.3(@antelopejs/interface-core@0.0.6)
+      '@antelopejs/interface-database-decorators': 0.1.3(@antelopejs/interface-api@0.0.5(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
+    transitivePeerDependencies:
+      - '@types/node'
+      - bare-abort-controller
+      - bare-buffer
+      - react-native-b4a
+      - supports-color
+    optional: true
+
+  '@antelopejs-private/cms-database@0.0.9(@types/node@22.19.20)':
     dependencies:
       '@antelopejs-private/cms': 0.0.30(@types/node@22.19.20)
       '@antelopejs/interface-api': 0.0.5(@antelopejs/interface-core@0.0.6)
@@ -1245,7 +1264,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@antelopejs-private/cms@0.1.1(@types/node@22.19.20)':
+  '@antelopejs-private/cms@0.1.4(@types/node@22.19.20)':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/core': 1.4.3(@types/node@22.19.20)
@@ -1271,6 +1290,7 @@ snapshots:
       zod: 3.24.4
       zod-to-json-schema: 3.24.6(zod@3.24.4)
     optionalDependencies:
+      '@antelopejs-private/cms-database': 0.0.9(@types/node@22.19.20)
       '@antelopejs/interface-redis': 0.0.6(@antelopejs/interface-core@0.0.6)
     transitivePeerDependencies:
       - '@types/node'

@@ -34,7 +34,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.1.1",
+        version: "0.1.4",
       },
       config: {
         homepage: "/home",
@@ -60,7 +60,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.10",
+        version: "0.0.11",
       },
     },
     "cms-automation": {
@@ -96,14 +96,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "0.0.8",
+        version: "0.0.9",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "0.1.0",
+        version: "0.1.1",
       },
       config: {
         editable: true,
@@ -113,7 +113,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "0.0.8",
+        version: "0.0.9",
       },
       config: {
         // Allow write git operations (commit, tag, branch, push) in the demo.
