@@ -6,7 +6,7 @@ import {
   RegisterTable,
   Table,
 } from "@antelopejs/interface-database-decorators";
-import { CORE_SCHEMA_NAME } from "@antelopejs-private/cms/interfaces/cms/constants";
+import { DEMO_SCHEMA_NAME } from "../../schema";
 
 const TABLE_NAME = "components_demo_tasks";
 
@@ -74,7 +74,7 @@ const DEFAULT_TASKS: Array<Partial<DemoTask>> = [
   },
 ];
 
-@RegisterTable(TABLE_NAME, CORE_SCHEMA_NAME)
+@RegisterTable(TABLE_NAME, DEMO_SCHEMA_NAME)
 @Fixture(() => DEFAULT_TASKS)
 export class DemoTask extends Table {
   @Field("string") declare _id: string;

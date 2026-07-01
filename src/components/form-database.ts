@@ -19,8 +19,8 @@ import {
   RegisterTable,
   Table,
 } from "@antelopejs/interface-database-decorators";
-import { CORE_SCHEMA_NAME } from "@antelopejs-private/cms/interfaces/cms/constants";
 import { Relation } from "@antelopejs-private/cms-database/interfaces/cms-database";
+import { DEMO_SCHEMA_NAME } from "../schema";
 import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
 import { Searchable } from "@antelopejs-private/cms/interfaces/cms-base/searchable";
 import {
@@ -56,7 +56,7 @@ const DEFAULT_TOPICS: TopicSeed[] = [
   { _id: "ui", name: "UI craft", parent: "design" },
 ];
 
-@RegisterTable(TABLE_NAME, CORE_SCHEMA_NAME)
+@RegisterTable(TABLE_NAME, DEMO_SCHEMA_NAME)
 @Fixture(() => DEFAULT_TOPICS)
 export class DemoTopic extends Table {
   @Field("string") declare _id: string;

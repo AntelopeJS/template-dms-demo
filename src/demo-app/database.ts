@@ -6,8 +6,8 @@ import {
   RegisterTable,
   Table,
 } from "@antelopejs/interface-database-decorators";
-import { CORE_SCHEMA_NAME } from "@antelopejs-private/cms/interfaces/cms/constants";
 import { Relation } from "@antelopejs-private/cms-database/interfaces/cms-database";
+import { DEMO_SCHEMA_NAME } from "../schema";
 
 const USERS_TABLE = "demo_app_users";
 const PROJECTS_TABLE = "demo_app_projects";
@@ -19,9 +19,9 @@ function daysFromNow(days: number): Date {
   return new Date(Date.now() + days * DAY);
 }
 
-// Fixtures are inserted by RegisterSchema(CORE_SCHEMA_NAME) during the cms
-// module start(), only when the collection is still empty. Drop the
-// demo_app_* collections (or the whole database) to re-seed.
+// Fixtures are inserted by RegisterSchema(DEMO_SCHEMA_NAME) during this
+// template's start() (see src/index.ts), only when the collection is still
+// empty. Drop the demo_app_* collections (or the whole database) to re-seed.
 
 const DEFAULT_USERS: Array<Partial<AppUser>> = [
   {
@@ -428,7 +428,7 @@ const DEFAULT_TASKS: Array<Partial<AppTask>> = [
   },
 ];
 
-@RegisterTable(USERS_TABLE, CORE_SCHEMA_NAME)
+@RegisterTable(USERS_TABLE, DEMO_SCHEMA_NAME)
 @Fixture(() => DEFAULT_USERS)
 export class AppUser extends Table {
   @Field("string") declare _id: string;
@@ -444,7 +444,7 @@ export class AppUser extends Table {
 
 export class AppUserModel extends BasicDataModel(AppUser, USERS_TABLE) {}
 
-@RegisterTable(PROJECTS_TABLE, CORE_SCHEMA_NAME)
+@RegisterTable(PROJECTS_TABLE, DEMO_SCHEMA_NAME)
 @Fixture(() => DEFAULT_PROJECTS)
 export class AppProject extends Table {
   @Field("string") declare _id: string;
@@ -468,7 +468,7 @@ export class AppProjectModel extends BasicDataModel(
   PROJECTS_TABLE,
 ) {}
 
-@RegisterTable(TASKS_TABLE, CORE_SCHEMA_NAME)
+@RegisterTable(TASKS_TABLE, DEMO_SCHEMA_NAME)
 @Fixture(() => DEFAULT_TASKS)
 export class AppTask extends Table {
   @Field("string") declare _id: string;
