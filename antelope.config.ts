@@ -103,7 +103,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "0.1.1",
+        version: "0.1.2",
       },
       config: {
         editable: true,
