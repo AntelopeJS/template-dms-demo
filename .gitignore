@@ -1,7 +1,5 @@
 node_modules/
 dist/
-.antelope/cache/
-.antelope/file-storage/
-.antelope/dev.json
+.antelope
 .env
 *.log
