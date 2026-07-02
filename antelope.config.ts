@@ -74,7 +74,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.1.0",
+        version: "0.1.1",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -96,7 +96,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "0.0.9",
+        version: "0.0.10",
       },
     },
     "cms-lang": {
