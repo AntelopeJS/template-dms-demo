@@ -53,7 +53,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "0.1.2",
+        version: "0.1.3",
       },
     },
     "cms-database": {
@@ -67,7 +67,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "0.1.1",
+        version: "0.1.2",
       },
     },
     "cms-saas": {
