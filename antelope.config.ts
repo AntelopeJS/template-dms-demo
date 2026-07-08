@@ -34,7 +34,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.1.6",
+        version: "0.1.7",
       },
       config: {
         homepage: "/home",
@@ -60,7 +60,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "0.0.11",
+        version: "0.0.12",
       },
     },
     "cms-automation": {
