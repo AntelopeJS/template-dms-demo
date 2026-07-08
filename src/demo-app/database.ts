@@ -4,9 +4,9 @@ import {
   Fixture,
   Index,
   RegisterTable,
+  Relation,
   Table,
 } from "@antelopejs/interface-database-decorators";
-import { Relation } from "@antelopejs-private/cms-database/interfaces/cms-database";
 import { DEMO_SCHEMA_NAME } from "../schema";
 
 const USERS_TABLE = "demo_app_users";

@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@antelopejs-private/cms':
-        specifier: ^0.1.6
-        version: 0.1.6(@types/node@22.19.20)
+        specifier: ^0.1.7
+        version: 0.1.7(@types/node@22.19.20)
       '@antelopejs-private/cms-nuxt':
         specifier: ^0.0.18
         version: 0.0.18
@@ -28,17 +28,13 @@ importers:
         version: 0.0.6
       '@antelopejs/interface-data-api':
         specifier: ^0.1.5
-        version: 0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
+        version: 0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
       '@antelopejs/interface-database':
         specifier: ^0.1.3
         version: 0.1.3(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-database-decorators':
-        specifier: ^0.1.3
-        version: 0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
-    optionalDependencies:
-      '@antelopejs-private/cms-database':
-        specifier: ^0.0.11
-        version: 0.0.11(@types/node@22.19.20)
+        specifier: ^0.1.4
+        version: 0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -58,21 +54,12 @@ packages:
   2fa@0.1.2:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
-  '@antelopejs-private/cms-database@0.0.11':
-    resolution: {integrity: sha512-Hawfx4IxS1u0rlV5u4NNnGKKCADPuc6BmxBAWXWfYOyGKkuRj4F0jixuY4kiTwPV803Wxp/YqOnjpPb+Vg1Nfw==}
-
-  '@antelopejs-private/cms-database@0.0.9':
-    resolution: {integrity: sha512-UVWiepyyzB0HrVE/oTtB5UfaJLyiTfoAAnRGA6vpTpE3HIiT62cBb5ZUGXewWHVQG4wal/Lpws+1YWKF3ken0A==}
-
   '@antelopejs-private/cms-nuxt@0.0.18':
     resolution: {integrity: sha512-M9HD29Kqry6lxlqyVKVRt/8bYT3UA+2yGnNwuQMjij7jeHBG/WzOOzCeOLOOl+cCwQ3OmrP6ZeFmbwSHAmtcZw==}
     hasBin: true
 
-  '@antelopejs-private/cms@0.0.30':
-    resolution: {integrity: sha512-btqj9rHTwm4tk2LaJVbKU2zFDqcGLOXLDmWwp3NlbCec/Bco0bSONt8gYqZi7zf2oIpugOYvyN6dq/iw3INV3A==}
-
-  '@antelopejs-private/cms@0.1.6':
-    resolution: {integrity: sha512-R9z6oXvYQyr4HlSY8U0I6ipBg4XbxYGAh3awbYoXvtY14vOtqEZDEZcn0iXshjJEnL3Ft2eBIS592dBaxJpLGQ==}
+  '@antelopejs-private/cms@0.1.7':
+    resolution: {integrity: sha512-FNzvBE9vFyRuG5Thfonv0W7zieaspYkOwSxHEp34exwHujGJt+JFIcF5NQjhq9B0WV3x/FjM4jy54k2QUYEnVA==}
 
   '@antelopejs/core@1.4.3':
     resolution: {integrity: sha512-GJ59CXR3rYlxmplR138UL2G/MrCqNsT5WHuQ040dMGZ9f569PUzzY92q01oXEPCViiH+ISFhslmmaokTe+0qVQ==}
@@ -107,8 +94,8 @@ packages:
       '@antelopejs/interface-database': '>=0.1.2 <1.0.0'
       '@antelopejs/interface-database-decorators': '>=0.1.1 <1.0.0'
 
-  '@antelopejs/interface-database-decorators@0.1.3':
-    resolution: {integrity: sha512-yPSP7cYh/7nhj1y2bOWvJ1idErWqI4EsYppVg3XOy7KEaZ+RvKodwFYDle0dqsFp9UNtR8p3m0bg0YasZrAayA==}
+  '@antelopejs/interface-database-decorators@0.1.4':
+    resolution: {integrity: sha512-jjy0ZGH7sBcuPQpsa6jdsYCzg1WzmrA/QS0nqSdrBWsHVOBVEVXgFG1LJLduEgb8WcJrN75rVZUiYebgT6cSag==}
     peerDependencies:
       '@antelopejs/interface-api': ^0.0.7
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
@@ -1273,38 +1260,6 @@ snapshots:
       qr-image: 3.2.0
       thirty-two: 0.0.2
 
-  '@antelopejs-private/cms-database@0.0.11(@types/node@22.19.20)':
-    dependencies:
-      '@antelopejs-private/cms': 0.1.6(@types/node@22.19.20)
-      '@antelopejs/interface-api': 0.0.7(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-api-util': 0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-core': 0.0.6
-      '@antelopejs/interface-database': 0.1.3(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-database-decorators': 0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
-    transitivePeerDependencies:
-      - '@types/node'
-      - bare-abort-controller
-      - bare-buffer
-      - react-native-b4a
-      - supports-color
-    optional: true
-
-  '@antelopejs-private/cms-database@0.0.9(@types/node@22.19.20)':
-    dependencies:
-      '@antelopejs-private/cms': 0.0.30(@types/node@22.19.20)
-      '@antelopejs/interface-api': 0.0.7(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-api-util': 0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-core': 0.0.6
-      '@antelopejs/interface-database': 0.1.3(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-database-decorators': 0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
-    transitivePeerDependencies:
-      - '@types/node'
-      - bare-abort-controller
-      - bare-buffer
-      - react-native-b4a
-      - supports-color
-    optional: true
-
   '@antelopejs-private/cms-nuxt@0.0.18':
     dependencies:
       boxen: 5.1.2
@@ -1320,7 +1275,7 @@ snapshots:
       '@oxc-parser/binding-linux-arm64-gnu': 0.95.0
       '@oxc-parser/binding-linux-x64-gnu': 0.95.0
 
-  '@antelopejs-private/cms@0.0.30(@types/node@22.19.20)':
+  '@antelopejs-private/cms@0.1.7(@types/node@22.19.20)':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/core': 1.4.3(@types/node@22.19.20)
@@ -1328,9 +1283,9 @@ snapshots:
       '@antelopejs/interface-api-util': 0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-auth': 0.0.5(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-core': 0.0.6
-      '@antelopejs/interface-data-api': 0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
+      '@antelopejs/interface-data-api': 0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
       '@antelopejs/interface-database': 0.1.3(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-database-decorators': 0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
+      '@antelopejs/interface-database-decorators': 0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
       '@antelopejs/interface-email': 0.0.4(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-file-storage': 0.1.1(@antelopejs/interface-core@0.0.6)
       archiver: 7.0.1
@@ -1346,42 +1301,6 @@ snapshots:
       zod: 3.24.4
       zod-to-json-schema: 3.24.6(zod@3.24.4)
     optionalDependencies:
-      '@antelopejs/interface-redis': 0.0.6(@antelopejs/interface-core@0.0.6)
-    transitivePeerDependencies:
-      - '@types/node'
-      - bare-abort-controller
-      - bare-buffer
-      - react-native-b4a
-      - supports-color
-    optional: true
-
-  '@antelopejs-private/cms@0.1.6(@types/node@22.19.20)':
-    dependencies:
-      2fa: 0.1.2
-      '@antelopejs/core': 1.4.3(@types/node@22.19.20)
-      '@antelopejs/interface-api': 0.0.7(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-api-util': 0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-auth': 0.0.5(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-core': 0.0.6
-      '@antelopejs/interface-data-api': 0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
-      '@antelopejs/interface-database': 0.1.3(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-database-decorators': 0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
-      '@antelopejs/interface-email': 0.0.4(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-file-storage': 0.1.1(@antelopejs/interface-core@0.0.6)
-      archiver: 7.0.1
-      csv-stringify: 6.7.0
-      defu: 6.1.7
-      ignore: 7.0.5
-      jiti: 2.7.0
-      jsonwebtoken: 9.0.3
-      node-cron: 4.2.1
-      randomstring: 1.3.1
-      striptags: 3.2.0
-      ua-parser-js: 2.0.10
-      zod: 3.24.4
-      zod-to-json-schema: 3.24.6(zod@3.24.4)
-    optionalDependencies:
-      '@antelopejs-private/cms-database': 0.0.9(@types/node@22.19.20)
       '@antelopejs/interface-redis': 0.0.6(@antelopejs/interface-core@0.0.6)
     transitivePeerDependencies:
       - '@types/node'
@@ -1428,15 +1347,15 @@ snapshots:
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@antelopejs/interface-data-api@0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))':
+  '@antelopejs/interface-data-api@0.1.5(@antelopejs/interface-api-util@0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database-decorators@0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6)))(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))':
     dependencies:
       '@antelopejs/interface-api': 0.0.7(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-api-util': 0.1.1(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-core': 0.0.6
       '@antelopejs/interface-database': 0.1.3(@antelopejs/interface-core@0.0.6)
-      '@antelopejs/interface-database-decorators': 0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
+      '@antelopejs/interface-database-decorators': 0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))
 
-  '@antelopejs/interface-database-decorators@0.1.3(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))':
+  '@antelopejs/interface-database-decorators@0.1.4(@antelopejs/interface-api@0.0.7(@antelopejs/interface-core@0.0.6))(@antelopejs/interface-core@0.0.6)(@antelopejs/interface-database@0.1.3(@antelopejs/interface-core@0.0.6))':
     dependencies:
       '@antelopejs/interface-api': 0.0.7(@antelopejs/interface-core@0.0.6)
       '@antelopejs/interface-core': 0.0.6

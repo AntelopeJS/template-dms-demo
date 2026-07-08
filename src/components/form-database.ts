@@ -17,9 +17,9 @@ import {
   Fixture,
   Model,
   RegisterTable,
+  Relation,
   Table,
 } from "@antelopejs/interface-database-decorators";
-import { Relation } from "@antelopejs-private/cms-database/interfaces/cms-database";
 import { DEMO_SCHEMA_NAME } from "../schema";
 import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
 import { Searchable } from "@antelopejs-private/cms/interfaces/cms-base/searchable";
