@@ -34,7 +34,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "0.1.7",
+        version: "0.1.9",
       },
       config: {
         homepage: "/home",
@@ -74,7 +74,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "0.1.3",
+        version: "0.1.4",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env

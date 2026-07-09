@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@antelopejs-private/cms':
-        specifier: ^0.1.7
-        version: 0.1.7(@types/node@22.19.20)
+        specifier: ^0.1.9
+        version: 0.1.9(@types/node@22.19.20)
       '@antelopejs-private/cms-nuxt':
         specifier: ^0.0.18
         version: 0.0.18
@@ -58,8 +58,8 @@ packages:
     resolution: {integrity: sha512-M9HD29Kqry6lxlqyVKVRt/8bYT3UA+2yGnNwuQMjij7jeHBG/WzOOzCeOLOOl+cCwQ3OmrP6ZeFmbwSHAmtcZw==}
     hasBin: true
 
-  '@antelopejs-private/cms@0.1.7':
-    resolution: {integrity: sha512-FNzvBE9vFyRuG5Thfonv0W7zieaspYkOwSxHEp34exwHujGJt+JFIcF5NQjhq9B0WV3x/FjM4jy54k2QUYEnVA==}
+  '@antelopejs-private/cms@0.1.9':
+    resolution: {integrity: sha512-vXt5mdHWOTvZ9Ujqfou7ZaNVPeRa+/2JbpvzDFCXabZ4VuGY5SdZb2NAXZspxl4wAuFjyrCOGjx2sY+H6lqI4A==}
 
   '@antelopejs/core@1.4.3':
     resolution: {integrity: sha512-GJ59CXR3rYlxmplR138UL2G/MrCqNsT5WHuQ040dMGZ9f569PUzzY92q01oXEPCViiH+ISFhslmmaokTe+0qVQ==}
@@ -1275,7 +1275,7 @@ snapshots:
       '@oxc-parser/binding-linux-arm64-gnu': 0.95.0
       '@oxc-parser/binding-linux-x64-gnu': 0.95.0
 
-  '@antelopejs-private/cms@0.1.7(@types/node@22.19.20)':
+  '@antelopejs-private/cms@0.1.9(@types/node@22.19.20)':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/core': 1.4.3(@types/node@22.19.20)
