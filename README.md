@@ -62,8 +62,8 @@ The local module lives in [`src/`](./src):
   inputs.
 - `nuxt-layer/` — a local Nuxt layer shipping the `DemoReadme` and
   `DemoCallout` Vue components plus the English/French translations
-  (`i18n/locales/demo-*.json`). Registered in `src/index.ts` and marked local
-  through `cms.config.localModules`.
+  (`i18n/locales/demo-*.json`). Registered in `src/index.ts` via
+  `AddNuxtLayer`.
 
 ## Translations
 
@@ -100,6 +100,6 @@ is served as the configured `homepage` (`/home`).
   `.env.example` to `.env` and set `STRIPE_SECRET_KEY`,
   `STRIPE_PUBLISHABLE_KEY` and `STRIPE_WEBHOOK_SECRET`. The `.env` file is
   git-ignored; the placeholder values in the config act as fallbacks.
-- **Modules frontend**: every CMS feature layer is enabled through
-  `cms.config.localModules`. Remove an entry there (and its module block) to drop
+- **Modules frontend**: every CMS feature layer is registered by its module's
+  `AddNuxtLayer` call. Remove the module block in `antelope.config.ts` to drop
   a feature.

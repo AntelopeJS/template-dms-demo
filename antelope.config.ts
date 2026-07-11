@@ -38,9 +38,6 @@ export default defineConfig({
       },
       config: {
         homepage: "/home",
-        // Mark the template's nuxt-layer (registered via AddNuxtLayer in
-        // src/index.ts) as a local module for frontend dev reload.
-        localModules: ["template-cms-demo-nuxt-layer"],
         meta: {
           title: "Template CMS Demo",
           description: "AntelopeJS CMS demo template",
