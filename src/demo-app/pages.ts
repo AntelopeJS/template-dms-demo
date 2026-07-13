@@ -576,7 +576,7 @@ export class PageDemoAppTasks extends PageController(
       groupByField: "status",
       cardFields: ["priority", "assignee", "dueDate", "progress"],
     },
-    defaultViewMode: "kanban",
+    defaultDisplay: "kanban",
     tabs: [
       ...TASK_STATUSES.map((status) => ({
         id: status.value,
