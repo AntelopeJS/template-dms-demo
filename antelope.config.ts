@@ -29,11 +29,6 @@ export default defineConfig({
       },
     },
 
-    // Package-type modules use caret ranges so they float to the latest
-    // compatible release. Note: under semver, ^0.0.x resolves to that exact
-    // patch, so the pre-0.1 packages (cms-database, cms-ai, cms-cicd,
-    // nodemailer) stay effectively pinned until they reach >=0.1.0 — this is
-    // intentional, since 0.0.x releases may be breaking.
     // CMS core: hosts the Nuxt frontend and enables every CMS feature layer.
     cms: {
       source: {
