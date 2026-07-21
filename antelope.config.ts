@@ -42,6 +42,9 @@ export default defineConfig({
           title: "Template CMS Demo",
           description: "AntelopeJS CMS demo template",
         },
+        auth: {
+          jwtSecret: "dev",
+        },
       },
     },
 
