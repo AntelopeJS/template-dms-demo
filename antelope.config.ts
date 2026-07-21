@@ -96,7 +96,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "^0.0.14",
+        version: "^0.0.15",
       },
     },
     "cms-lang": {
