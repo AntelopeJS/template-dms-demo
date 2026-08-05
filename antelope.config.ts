@@ -34,7 +34,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "^0.2.4",
+        version: "^0.3.0",
       },
       config: {
         homepage: "/home",
@@ -53,28 +53,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "^0.1.8",
+        version: "^0.1.9",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "^0.0.16",
+        version: "^0.0.17",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "^0.2.2",
+        version: "^0.2.3",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "^0.1.11",
+        version: "^0.1.12",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -96,14 +96,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "^0.0.15",
+        version: "^0.0.16",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "^0.1.5",
+        version: "^0.1.6",
       },
       config: {
         editable: true,
@@ -113,7 +113,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "^0.0.10",
+        version: "^0.0.11",
       },
       config: {
         // Allow write git operations (commit, tag, branch, push) in the demo.
