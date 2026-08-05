@@ -121,6 +121,13 @@ export default defineConfig({
         allowGitOperations: true,
       },
     },
+    "cms-builder": {
+      source: {
+        type: "package",
+        package: "@antelopejs-private/cms-builder",
+        version: "^0.0.2",
+      },
+    },
 
     // ---- Infrastructure modules required by the CMS ----
     mongodb: {
