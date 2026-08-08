@@ -157,7 +157,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        version: "^1.1.3",
+        version: "^1.2.0",
       },
       config: {
         servers: [
@@ -166,14 +166,6 @@ export default defineConfig({
             port: "5010",
           },
         ],
-        cors: {
-          allowedOrigins: [
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "http://127.0.0.1:3000",
-            "http://127.0.0.1:3001",
-          ],
-        },
       },
     },
     "file-storage-local": {
