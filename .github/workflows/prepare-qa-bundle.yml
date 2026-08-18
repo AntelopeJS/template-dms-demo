@@ -2,6 +2,9 @@ name: Prepare QA bundle
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - chore/update-cms-and-add-media
 
 permissions:
   contents: read
