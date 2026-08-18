@@ -34,7 +34,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "^0.3.0",
+        version: "^0.5.0",
       },
       config: {
         homepage: "/home",
@@ -53,28 +53,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "^0.1.9",
+        version: "^0.1.10",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "^0.0.17",
+        version: "^0.0.18",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "^0.2.3",
+        version: "^0.2.4",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "^0.1.12",
+        version: "^0.1.14",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -103,7 +103,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "^0.1.6",
+        version: "^0.1.7",
       },
       config: {
         editable: true,
@@ -127,6 +127,14 @@ export default defineConfig({
         package: "@antelopejs-private/cms-builder",
         version: "^0.0.2",
       },
+    },
+    "cms-media": {
+      source: {
+        type: "package",
+        package: "@antelopejs-private/cms-media",
+        version: "^0.0.2",
+      },
+      config: {},
     },
 
     // ---- Infrastructure modules required by the CMS ----
@@ -157,7 +165,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        version: "^1.2.0",
+        version: "^1.2.1",
       },
       config: {
         servers: [
@@ -178,6 +186,7 @@ export default defineConfig({
         storagePath: ".antelope/file-storage",
         baseUrl: "http://127.0.0.1:5010",
         defaultVisibility: "private",
+        stagingExpiration: 24 * 60 * 60,
       },
     },
     nodemailer: {

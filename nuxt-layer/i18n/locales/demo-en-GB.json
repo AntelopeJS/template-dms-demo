@@ -169,6 +169,10 @@
 				"label": "Event gallery",
 				"description": "Up to 8 images with a principal one"
 			},
+			"mediaGallery": {
+				"label": "Media library gallery",
+				"description": "Up to 4 images selected from the shared media library"
+			},
 			"newsletter": {
 				"label": "Subscribe to the newsletter",
 				"description": "Receive updates about the next events"
@@ -289,7 +293,9 @@
 						"saas": "SaaS — Stripe billing",
 						"ai": "AI — assistants",
 						"lang": "Lang — translations",
-						"cicd": "CI/CD — git operations"
+						"cicd": "CI/CD — git operations",
+						"builder": "Builder — visual resources",
+						"media": "Media — shared asset library"
 					}
 				}
 			},

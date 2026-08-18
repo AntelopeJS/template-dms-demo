@@ -67,6 +67,7 @@
       "attachment": { "label": "Pièce jointe", "description": "Image ou PDF, 5 Mo max" },
       "badgePhoto": { "label": "Photo du badge", "description": "Image unique avec texte alternatif, 5 Mo max" },
       "gallery": { "label": "Galerie de l'événement", "description": "Jusqu'à 8 images dont une principale" },
+      "mediaGallery": { "label": "Galerie de la médiathèque", "description": "Jusqu'à 4 images sélectionnées dans la médiathèque partagée" },
       "newsletter": { "label": "S'abonner à la newsletter", "description": "Recevez des nouvelles des prochains événements" },
       "topics": { "columns": { "name": "Nom", "parent": "Sujet parent" } }
     },
@@ -167,7 +168,9 @@
             "saas": "SaaS — facturation Stripe",
             "ai": "AI — assistants",
             "lang": "Lang — traductions",
-            "cicd": "CI/CD — opérations git"
+            "cicd": "CI/CD — opérations git",
+            "builder": "Builder — ressources visuelles",
+            "media": "Médias — médiathèque partagée"
           }
         }
       },

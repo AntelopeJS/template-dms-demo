@@ -4,6 +4,7 @@ import {
 } from "@antelopejs-private/cms/interfaces/cms/page";
 import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
 import { Form } from "@antelopejs-private/cms/interfaces/cms-base/form";
+import { AssetType } from "@antelopejs-private/cms-media";
 import { componentsCategory } from "./category";
 import { demoTopicController } from "./form-database";
 import { demoTaskController } from "./table-view/page";
@@ -294,6 +295,21 @@ export class PageComponentForm extends PageController("form", {
           constraints: {
             maxSize: 5 * 1024 * 1024,
             allowedMimetypes: ["image/png", "image/jpeg", "image/webp"],
+          },
+        }),
+      },
+      {
+        id: "mediaGallery",
+        label: "$demo.form.mediaGallery.label",
+        description: "$demo.form.mediaGallery.description",
+        type: new AssetType({
+          multiple: true,
+          max: 4,
+          mimetypes: ["image/*"],
+          binding: {
+            id: "template-cms-demo.form.media-gallery",
+            folderName: "Event media",
+            permissionsFromPage: PageComponentForm,
           },
         }),
       },
