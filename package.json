@@ -39,8 +39,7 @@
       "sharp"
     ],
     "overrides": {
-      "@antelopejs-private/cms": "^0.5.0",
-      "@antelopejs/interface-api": "^0.0.10"
+      "@antelopejs-private/cms": "^0.5.0"
     }
   }
 }

@@ -6,7 +6,6 @@ settings:
 
 overrides:
   '@antelopejs-private/cms': ^0.5.0
-  '@antelopejs/interface-api': ^0.0.10
 
 importers:
 
@@ -80,7 +79,7 @@ packages:
   '@antelopejs/interface-api-util@0.1.1':
     resolution: {integrity: sha512-8q1diSFuq5CULr9T/Dzo3DAOKmoN3zu84w3PgV2aGRPT3nMujcOxHyR+DEv9iA1ZxirUx5oskBmWVCaXtHNLVQ==}
     peerDependencies:
-      '@antelopejs/interface-api': ^0.0.10
+      '@antelopejs/interface-api': '>=0.0.3 <1.0.0'
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
 
   '@antelopejs/interface-api@0.0.10':
@@ -91,7 +90,7 @@ packages:
   '@antelopejs/interface-auth@0.0.5':
     resolution: {integrity: sha512-/WGlwVcERMRuZApv23VQO0158VXAzsxfPA6ZWSJEJnWHwAkjfw+6UkkDGC46ylIl0/He0OjBnzuSehf1ONVHnw==}
     peerDependencies:
-      '@antelopejs/interface-api': ^0.0.10
+      '@antelopejs/interface-api': '>=0.0.3 <1.0.0'
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
 
   '@antelopejs/interface-core@0.0.8':
@@ -100,7 +99,7 @@ packages:
   '@antelopejs/interface-data-api@0.1.8':
     resolution: {integrity: sha512-Q2OxQmDfQjaSor7J7bqlFndgjPKt77nbt/n6DglrTU64npdFMEJ7jlTTM8r6iebNt/Ytz6mKqvDvpMUOkMuc9w==}
     peerDependencies:
-      '@antelopejs/interface-api': ^0.0.10
+      '@antelopejs/interface-api': '>=0.0.3 <1.0.0'
       '@antelopejs/interface-api-util': '>=0.0.4 <1.0.0'
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
       '@antelopejs/interface-database': '>=0.1.2 <1.0.0'
@@ -109,7 +108,7 @@ packages:
   '@antelopejs/interface-database-decorators@0.1.6':
     resolution: {integrity: sha512-1c36qxtLOn84CNqlnOgDWNdukt7WL9/oagdVYSqoKxWaNLoMpg2Btt1bwqWaMqZXk1+tABaD/XUh2iNklivdwA==}
     peerDependencies:
-      '@antelopejs/interface-api': ^0.0.10
+      '@antelopejs/interface-api': '>=0.0.3 <1.0.0'
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
       '@antelopejs/interface-database': '>=0.1.1 <1.0.0'
 
