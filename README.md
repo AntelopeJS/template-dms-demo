@@ -9,8 +9,8 @@ nuxt-layer's i18n files.
 
 ## What's inside
 
-The CMS feature modules are all installed from npm at their latest published
-versions (see [`antelope.config.ts`](./antelope.config.ts)):
+The CMS feature modules are all installed from npm at their latest compatible
+published versions (see [`antelope.config.ts`](./antelope.config.ts)):
 
 | Module            | Package                              |
 | ----------------- | ------------------------------------ |
@@ -22,9 +22,16 @@ versions (see [`antelope.config.ts`](./antelope.config.ts)):
 | AI                | `@antelopejs-private/cms-ai`         |
 | Lang / i18n       | `@antelopejs-private/cms-lang`       |
 | CI/CD             | `@antelopejs-private/cms-cicd`       |
+| Builder           | `@antelopejs-private/cms-builder`    |
+| Media library     | `@antelopejs-private/cms-media`      |
 
 Supporting infrastructure modules (MongoDB, API server, auth, file storage,
 mailer, …) are configured in the same file.
+
+The Media module adds a Finder-style asset library with folders, ACLs, direct
+uploads and image derivatives. The Form demo includes an `AssetType` gallery
+bound to an automatically provisioned **Event media** folder; its permissions
+are derived from the Form page.
 
 The local module lives in [`src/`](./src):
 
@@ -43,7 +50,7 @@ The local module lives in [`src/`](./src):
 
   | Page           | Component(s)                                          |
   | -------------- | ----------------------------------------------------- |
-  | Form           | `Form` with field groups and every `DefaultDataTypes` input (string/textarea, email, phone, password, url, color, number, price, percentage, date/date-range, time, boolean, select, tree, relation, cascader relation, address, permissions, rich text, file, image single/multiple) |
+  | Form           | `Form` with field groups, every `DefaultDataTypes` input and a media-library `AssetType` gallery |
   | Dashboard      | `PeriodSelector` + `KpiCard` ×3 + `ChartCard` + `TopListCard`, all sharing one period scope |
   | TableView      | `TableView` over a demo Mongo collection: filter tabs, CRUD, archive, export |
   | Tree           | `Tree` (static nodes, multi-select, propagation)      |
@@ -78,23 +85,29 @@ translated by the frontend, so they stay in plain English.
 
 - Node.js 20+
 - A running MongoDB instance (`mongodb://localhost:27017` by default)
-- The AntelopeJS CLI: `npm i -g @antelopejs/core` (provides the `ajs` command)
+- Access to the private AntelopeJS npm registry, with a valid token configured
+  in your user-level `~/.npmrc`
 
 ## Getting started
 
 ```bash
-npm install
+pnpm install
+pnpm exec ajs project modules install
 cp .env.example .env   # then fill in your Stripe keys
-npm run dev
+pnpm dev
 ```
 
-`npm run dev` runs `ajs project run -w`, which installs every module declared in
+`pnpm dev` runs `ajs project run -w`, which installs every module declared in
 `antelope.config.ts`, builds the local module, and starts the CMS. The Home page
 is served as the configured `homepage` (`/home`).
 
 ## Configuration notes
 
 - **MongoDB**: adjust `mongodb.config.url` / `database` in `antelope.config.ts`.
+- **Media storage**: `file-storage-local` stores development assets under
+  `.antelope/file-storage` and removes abandoned staged uploads after 24 hours.
+  It is not suitable for a clustered production deployment; use
+  `@antelopejs/file-storage-s3` with S3 or R2 there.
 - **SaaS / Stripe**: Stripe credentials are read from `.env` (loaded via
   `dotenv` and mapped through `envOverrides` in `antelope.config.ts`). Copy
   `.env.example` to `.env` and set `STRIPE_SECRET_KEY`,

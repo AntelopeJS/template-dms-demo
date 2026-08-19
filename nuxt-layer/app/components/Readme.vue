@@ -21,7 +21,17 @@ const sections = [
     iconBg: "bg-info/10",
     iconText: "text-info",
     key: "modules",
-    items: ["api", "database", "automation", "saas", "ai", "lang", "cicd"],
+    items: [
+      "api",
+      "database",
+      "automation",
+      "saas",
+      "ai",
+      "lang",
+      "cicd",
+      "builder",
+      "media",
+    ],
   },
 ] as const;
 
