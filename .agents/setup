@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly NODE_VERSION="22.23.2"
+readonly NODE_ARCHIVE_SHA256="d60acfe00a2932254bb0ad20e01b0d74397a0875595de719654b214f4b03f307"
+readonly NODE_MAJOR="22"
+readonly PNPM_VERSION="10.2.0"
+readonly ANTELOPE_VERSION="1.4.7"
+readonly MONGODB_MAJOR="8.0"
+
+repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+setup_started_at=$SECONDS
+
+run_step() {
+  local label="$1"
+  shift
+  local started_at=$SECONDS
+
+  printf '\n==> %s\n' "$label"
+  "$@"
+  printf '<== %s (%ss)\n' "$label" "$((SECONDS - started_at))"
+}
+
+configure_private_registry() {
+  local user_npmrc="$HOME/.npmrc"
+
+  touch "$user_npmrc"
+  if ! grep -Eq '^@antelopejs-private:registry=' "$user_npmrc"; then
+    printf '%s\n' '@antelopejs-private:registry=https://npm.antelopejs.cloud/' >> "$user_npmrc"
+  fi
+  if ! grep -Eq '^//npm\.antelopejs\.cloud/:_authToken=' "$user_npmrc"; then
+    printf '%s\n' '//npm.antelopejs.cloud/:_authToken=${NPM_ANTELOPE_TOKEN}' >> "$user_npmrc"
+  fi
+}
+
+node_is_compatible() {
+  local current_major
+
+  command -v node >/dev/null || return 1
+  current_major="$(node -p 'process.versions.node.split(".")[0]')"
+  [[ "$current_major" == "$NODE_MAJOR" ]]
+}
+
+install_node() {
+  local archive_name="node-v${NODE_VERSION}-linux-x64.tar.xz"
+  local archive_path="$tmp_dir/$archive_name"
+  local node_directory="$HOME/.local/share/node-v${NODE_VERSION}-linux-x64"
+
+  if [[ ! -x "$node_directory/bin/node" ]]; then
+    printf 'Installing Node.js %s\n' "$NODE_VERSION"
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/${archive_name}" -o "$archive_path"
+    printf '%s  %s\n' "$NODE_ARCHIVE_SHA256" "$archive_path" | sha256sum --check --status
+    mkdir -p "$HOME/.local/share"
+    tar -xJf "$archive_path" -C "$HOME/.local/share"
+  fi
+
+  for executable in node npm npx corepack; do
+    ln -sfn "$node_directory/bin/$executable" "$HOME/.local/bin/$executable"
+  done
+  hash -r
+}
+
+configure_pnpm() {
+  corepack enable --install-directory "$HOME/.local/bin" pnpm
+  hash -r
+
+  local current_version
+  current_version="$(pnpm --version)"
+  if [[ "$current_version" != "$PNPM_VERSION" ]]; then
+    printf 'Expected pnpm %s but found %s\n' "$PNPM_VERSION" "$current_version" >&2
+    return 1
+  fi
+}
+
+install_antelope_cli() {
+  local current_version=""
+
+  if command -v ajs >/dev/null 2>&1; then
+    current_version="$(ajs --version 2>/dev/null || true)"
+  fi
+  if [[ "$current_version" != "$ANTELOPE_VERSION" ]]; then
+    pnpm config set global-bin-dir "$HOME/.local/bin" --global
+    pnpm add --global "@antelopejs/core@$ANTELOPE_VERSION"
+  fi
+
+  ajs --version
+}
+
+install_mongodb() {
+  if command -v mongod >/dev/null 2>&1; then
+    mongod --version | sed -n '1p'
+    return
+  fi
+
+  local prerequisites_missing=false
+  local package
+  for package in ca-certificates curl gnupg; do
+    if ! dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -Fq "install ok installed"; then
+      prerequisites_missing=true
+      break
+    fi
+  done
+  if [[ "$prerequisites_missing" == true ]]; then
+    sudo apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl gnupg
+  fi
+
+  local keyring="/usr/share/keyrings/mongodb-server-$MONGODB_MAJOR.gpg"
+  if [[ ! -f "$keyring" ]]; then
+    curl -fsSL "https://www.mongodb.org/static/pgp/server-$MONGODB_MAJOR.asc" \
+      | gpg --batch --dearmor --output "$tmp_dir/mongodb.gpg"
+    sudo install -m 0644 "$tmp_dir/mongodb.gpg" "$keyring"
+  fi
+
+  local repo_file="/etc/apt/sources.list.d/mongodb-org-$MONGODB_MAJOR.list"
+  local repo_line="deb [ arch=amd64,arm64 signed-by=$keyring ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/$MONGODB_MAJOR main"
+  if [[ ! -f "$repo_file" ]] || ! grep -Fqx "$repo_line" "$repo_file"; then
+    printf '%s\n' "$repo_line" | sudo tee "$repo_file" >/dev/null
+  fi
+
+  sudo apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org
+}
+
+start_mongodb() {
+  sudo systemctl enable --now mongod >/dev/null
+
+  local attempt
+  for attempt in {1..10}; do
+    if mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' 2>/dev/null | grep -Fxq "1"; then
+      echo "MongoDB is ready"
+      return
+    fi
+    sleep 0.5
+  done
+
+  echo "MongoDB did not become ready" >&2
+  return 1
+}
+
+install_dependencies() (
+  cd "$repo_root"
+  NPM_CONFIG_USERCONFIG="$repo_root/.npmrc" pnpm install --frozen-lockfile
+)
+
+build_project() (
+  cd "$repo_root"
+  pnpm run build
+)
+
+install_project_modules() (
+  cd "$repo_root"
+  pnpm exec ajs project modules install
+)
+
+mkdir -p "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+configure_private_registry
+
+if ! node_is_compatible; then
+  run_step "Install Node.js $NODE_MAJOR" install_node
+fi
+
+run_step "Configure pnpm $PNPM_VERSION" configure_pnpm
+run_step "Install AntelopeJS CLI $ANTELOPE_VERSION" install_antelope_cli
+run_step "Install MongoDB $MONGODB_MAJOR" install_mongodb
+run_step "Start MongoDB" start_mongodb
+run_step "Install dependencies" install_dependencies
+run_step "Build project" build_project
+run_step "Install AntelopeJS modules" install_project_modules
+
+printf 'Orb setup completed in %ss\n' "$((SECONDS - setup_started_at))"

@@ -5,6 +5,12 @@ const layerDir = import.meta.dirname!;
 export default defineNuxtConfig({
   cmsI18nAppLayer: true,
 
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
+
   components: {
     dirs: [
       {
