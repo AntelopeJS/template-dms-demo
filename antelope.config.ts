@@ -13,6 +13,9 @@ export default defineConfig({
   },
   // Map environment variables (loaded from .env) onto module config paths.
   envOverrides: {
+    CMS_API_BASE_URL: "modules.cms.config.apiBaseUrl",
+    CMS_BOOTSTRAP_SECRET: "modules.cms.config.nuxt.bootstrapSecret",
+    CMS_CLIENT_BASE_URL: "modules.cms.config.clientBaseUrl",
     STRIPE_SECRET_KEY: "modules.cms-saas.config.stripe.secretKey",
     STRIPE_PUBLISHABLE_KEY: "modules.cms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.cms-saas.config.stripe.webhookSecret",
@@ -34,9 +37,11 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "^0.5.0",
+        version: "^0.6.3",
       },
       config: {
+        apiBaseUrl: "http://localhost:5010",
+        clientBaseUrl: "http://localhost:3000",
         homepage: "/home",
         meta: {
           title: "Template CMS Demo",
@@ -74,7 +79,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "^0.1.14",
+        version: "^0.2.0",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -125,7 +130,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-builder",
-        version: "^0.0.2",
+        version: "^0.0.3",
       },
     },
     "cms-media": {
@@ -142,7 +147,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "^1.2.4",
+        version: "^1.2.5",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -155,7 +160,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "^1.0.1",
+        version: "^1.0.2",
       },
       config: {
         secret: "dev",
@@ -165,7 +170,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        version: "^1.2.1",
+        version: "^1.2.4",
       },
       config: {
         servers: [
@@ -174,13 +179,16 @@ export default defineConfig({
             port: "5010",
           },
         ],
+        cors: {
+          allowedOrigins: [/^https:\/\/[a-z0-9-]+\.onamp\.dev$/],
+        },
       },
     },
     "file-storage-local": {
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.1.2",
+        version: "^0.1.3",
       },
       config: {
         storagePath: ".antelope/file-storage",
@@ -193,7 +201,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.3",
+        version: "^0.0.4",
       },
       config: {
         ethereal: true,
