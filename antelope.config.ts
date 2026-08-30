@@ -37,7 +37,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "^0.6.3",
+        version: "^0.6.5",
       },
       config: {
         apiBaseUrl: "http://localhost:5010",
@@ -58,28 +58,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "^0.1.10",
+        version: "^0.1.12",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "^0.0.18",
+        version: "^0.0.20",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "^0.2.4",
+        version: "^0.2.5",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "^0.2.0",
+        version: "^0.2.4",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -101,14 +101,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "^0.0.16",
+        version: "^0.0.17",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "^0.1.7",
+        version: "^0.1.8",
       },
       config: {
         editable: true,
@@ -118,7 +118,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "^0.0.11",
+        version: "^0.0.12",
       },
       config: {
         // Allow write git operations (commit, tag, branch, push) in the demo.
@@ -130,14 +130,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-builder",
-        version: "^0.0.3",
+        version: "^0.0.4",
       },
     },
     "cms-media": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-media",
-        version: "^0.0.2",
+        version: "^0.0.4",
       },
       config: {},
     },
@@ -147,7 +147,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "^1.2.5",
+        version: "^1.2.7",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -160,7 +160,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "^1.0.2",
+        version: "^1.0.3",
       },
       config: {
         secret: "dev",
