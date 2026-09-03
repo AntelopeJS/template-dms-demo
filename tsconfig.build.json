@@ -3,6 +3,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmit": false
+    "noEmit": false,
+    "tsBuildInfoFile": "dist/.tsbuildinfo.build"
   }
 }

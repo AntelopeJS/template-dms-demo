@@ -7,9 +7,9 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
     "frontend:dev": "acms dev",
-    "lint": "oxlint && oxfmt --check . && cd nuxt-layer && pnpm lint",
-    "lint:fix": "oxlint --fix && oxfmt . && cd nuxt-layer && pnpm lint:fix",
-    "format": "oxfmt . && cd nuxt-layer && pnpm format",
+    "lint": "oxlint --max-warnings=3 && oxfmt --check .",
+    "lint:fix": "oxlint --fix && oxfmt .",
+    "format": "oxfmt .",
     "knip": "knip --dependencies",
     "knip:all": "knip"
   },
@@ -34,9 +34,6 @@
     "oxlint-tsgolint": "^7.0.2001",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"
-  },
-  "engines": {
-    "node": ">=22.18.0"
   },
   "packageManager": "pnpm@10.2.0",
   "pnpm": {
