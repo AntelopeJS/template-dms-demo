@@ -39,8 +39,16 @@ export class PageComponentTree extends PageController("tree", {
             value: "src/components",
             icon: "i-ph-folder",
             children: [
-              { label: "Button.vue", value: "src/components/button", icon: "i-ph-file-vue" },
-              { label: "Card.vue", value: "src/components/card", icon: "i-ph-file-vue" },
+              {
+                label: "Button.vue",
+                value: "src/components/button",
+                icon: "i-ph-file-vue",
+              },
+              {
+                label: "Card.vue",
+                value: "src/components/card",
+                icon: "i-ph-file-vue",
+              },
             ],
           },
           { label: "index.ts", value: "src/index", icon: "i-ph-file-ts" },

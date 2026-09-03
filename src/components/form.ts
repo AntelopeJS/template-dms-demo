@@ -114,7 +114,10 @@ export class PageComponentForm extends PageController("form", {
             label: "$demo.form.ticketType.label",
             type: new DefaultDataTypes.SelectType({
               items: [
-                { label: "$demo.form.ticket.types.standard", value: "standard" },
+                {
+                  label: "$demo.form.ticket.types.standard",
+                  value: "standard",
+                },
                 { label: "$demo.form.ticket.types.vip", value: "vip" },
                 { label: "$demo.form.ticket.types.student", value: "student" },
               ],
@@ -127,7 +130,10 @@ export class PageComponentForm extends PageController("form", {
             label: "$demo.form.addons.label",
             type: new DefaultDataTypes.SelectType({
               items: [
-                { label: "$demo.form.ticket.addons.workshop", value: "workshop" },
+                {
+                  label: "$demo.form.ticket.addons.workshop",
+                  value: "workshop",
+                },
                 { label: "$demo.form.ticket.addons.lunch", value: "lunch" },
                 { label: "$demo.form.ticket.addons.goodies", value: "goodies" },
               ],

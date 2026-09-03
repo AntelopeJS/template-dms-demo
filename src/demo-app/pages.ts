@@ -506,18 +506,16 @@ export class PageDemoAppUsers extends PageController(
       hasSelection: true,
     },
     defaultSort: { field: "name" },
-    tabs: [
-      ...USER_ROLES.map((role) => ({
-        id: role.value,
-        label: role.label,
-        icon: role.icon,
-        iconColor: role.iconColor,
-        textColor: role.textColor,
-        filters: [
-          { accessorKey: "role", value: role.value, mode: "is" as const },
-        ],
-      })),
-    ],
+    tabs: USER_ROLES.map((role) => ({
+      id: role.value,
+      label: role.label,
+      icon: role.icon,
+      iconColor: role.iconColor,
+      textColor: role.textColor,
+      filters: [
+        { accessorKey: "role", value: role.value, mode: "is" as const },
+      ],
+    })),
   });
 }
 

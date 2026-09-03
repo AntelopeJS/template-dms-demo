@@ -2,20 +2,16 @@
   "name": "template-cms-demo",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.2.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
-    "frontend:dev": "acms dev"
-  },
-  "antelopeJs": {
-    "baseUrl": "dist",
-    "paths": {
-      "@/*": [
-        "*"
-      ]
-    }
+    "frontend:dev": "acms dev",
+    "lint": "oxlint && oxfmt --check . && cd nuxt-layer && pnpm lint",
+    "lint:fix": "oxlint --fix && oxfmt . && cd nuxt-layer && pnpm lint:fix",
+    "format": "oxfmt . && cd nuxt-layer && pnpm format",
+    "knip": "knip --dependencies",
+    "knip:all": "knip"
   },
   "dependencies": {
     "@antelopejs-private/cms": "^0.6.5",
@@ -29,11 +25,20 @@
     "@antelopejs/interface-database-decorators": "^0.1.6"
   },
   "devDependencies": {
+    "@antelopejs/tooling-configs": "^0.0.2",
     "@types/node": "^22.0.0",
     "dotenv": "^17.4.2",
+    "knip": "^6.34.0",
+    "oxfmt": "^0.66.0",
+    "oxlint": "1.81.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"
   },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@10.2.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp"
@@ -41,6 +46,14 @@
     "overrides": {
       "@antelopejs-private/cms": "^0.6.5",
       "@antelopejs/interface-api": "^0.0.13"
+    }
+  },
+  "antelopeJs": {
+    "baseUrl": "dist",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
     }
   }
 }

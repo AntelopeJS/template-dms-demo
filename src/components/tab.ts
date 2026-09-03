@@ -2,7 +2,10 @@ import {
   PageController,
   RegisterPage,
 } from "@antelopejs-private/cms/interfaces/cms/page";
-import { Tab, TabVariant } from "@antelopejs-private/cms/interfaces/cms-base/tab";
+import {
+  Tab,
+  TabVariant,
+} from "@antelopejs-private/cms/interfaces/cms-base/tab";
 import { Placeholder } from "@antelopejs-private/cms/interfaces/cms-base/placeholder";
 import { Color, Size } from "@antelopejs-private/cms/interfaces/cms-base/types";
 import { componentsCategory } from "./category";

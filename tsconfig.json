@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "esnext",
-    "module": "commonjs",
+    "module": "preserve",
     "lib": ["ES2020"],
     "allowJs": true,
     "outDir": "dist",

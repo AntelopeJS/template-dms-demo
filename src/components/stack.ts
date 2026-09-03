@@ -22,10 +22,19 @@ export class PageComponentStack extends PageController("stack", {
     .child(
       "header",
       HStack({ spacing: "12px", alignment: "center" })
-        .child("logo", Placeholder({ label: "Logo", height: "56px", width: "56px" }))
-        .child("title", Placeholder({ label: "App title", height: "56px", width: "220px" }))
+        .child(
+          "logo",
+          Placeholder({ label: "Logo", height: "56px", width: "56px" }),
+        )
+        .child(
+          "title",
+          Placeholder({ label: "App title", height: "56px", width: "220px" }),
+        )
         .child("push", Spacer())
-        .child("profile", Placeholder({ label: "Profile", height: "56px", width: "56px" })),
+        .child(
+          "profile",
+          Placeholder({ label: "Profile", height: "56px", width: "56px" }),
+        ),
     )
     .child(
       "body",
@@ -33,10 +42,27 @@ export class PageComponentStack extends PageController("stack", {
         .child(
           "sidebar",
           VStack({ spacing: "8px", alignment: "stretch" })
-            .child("nav1", Placeholder({ label: "Nav item", height: "44px", width: "180px" }))
-            .child("nav2", Placeholder({ label: "Nav item", height: "44px", width: "180px" }))
+            .child(
+              "nav1",
+              Placeholder({
+                label: "Nav item",
+                height: "44px",
+                width: "180px",
+              }),
+            )
+            .child(
+              "nav2",
+              Placeholder({
+                label: "Nav item",
+                height: "44px",
+                width: "180px",
+              }),
+            )
             .child("grow", Spacer({ minSize: "24px", grow: 1 }))
-            .child("help", Placeholder({ label: "Help", height: "44px", width: "180px" })),
+            .child(
+              "help",
+              Placeholder({ label: "Help", height: "44px", width: "180px" }),
+            ),
         )
         .child(
           "main",
@@ -49,11 +75,35 @@ export class PageComponentStack extends PageController("stack", {
                 distribution: "space-between",
                 wrap: true,
               })
-                .child("c1", Placeholder({ label: "Card", height: "110px", width: "200px" }))
-                .child("c2", Placeholder({ label: "Card", height: "110px", width: "200px" }))
-                .child("c3", Placeholder({ label: "Card", height: "110px", width: "200px" })),
+                .child(
+                  "c1",
+                  Placeholder({
+                    label: "Card",
+                    height: "110px",
+                    width: "200px",
+                  }),
+                )
+                .child(
+                  "c2",
+                  Placeholder({
+                    label: "Card",
+                    height: "110px",
+                    width: "200px",
+                  }),
+                )
+                .child(
+                  "c3",
+                  Placeholder({
+                    label: "Card",
+                    height: "110px",
+                    width: "200px",
+                  }),
+                ),
             )
-            .child("chart", Placeholder({ label: "Main panel", height: "240px" })),
+            .child(
+              "chart",
+              Placeholder({ label: "Main panel", height: "240px" }),
+            ),
         ),
     );
 }
