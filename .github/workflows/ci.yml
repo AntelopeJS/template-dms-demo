@@ -26,7 +26,6 @@ jobs:
           # oxlint reads a TypeScript config, which needs type stripping.
           node-version: "24"
       - run: npm i -g --force corepack && corepack enable
-      - run: npm i -g @antelopejs/core
       - run: pnpm install && cd nuxt-layer && pnpm install
       - run: pnpm lint
       # Unused dependencies only. `pnpm knip:all` also reports dead files and
