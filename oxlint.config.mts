@@ -15,5 +15,12 @@ export default defineConfig({
   // Front-end sources, which oxlint cannot lint yet: they move with the
   // front-end migration.
   ignorePatterns: [...ANTELOPE_IGNORE_PATTERNS, "nuxt-layer/**"],
-  options: { typeAware: true },
+  options: {
+    typeAware: true,
+    // Ceiling on the warning debt this repository starts with, so CI
+    // catches the new ones. It comes down as they get fixed; it never
+    // goes up. Here rather than in the lint script so `lint:fix` and
+    // any direct oxlint run share the same budget.
+    maxWarnings: 3,
+  },
 });

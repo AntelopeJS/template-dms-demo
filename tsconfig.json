@@ -20,7 +20,7 @@
     "useDefineForClassFields": true,
     "rootDir": "src",
     "incremental": true,
-    "tsBuildInfoFile": "dist/.tsbuildinfo"
+    "tsBuildInfoFile": "node_modules/.cache/tsc/lint.tsbuildinfo"
   },
   "include": ["src/**/*.ts"]
 }

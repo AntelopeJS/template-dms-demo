@@ -7,7 +7,7 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
     "frontend:dev": "acms dev",
-    "lint": "oxlint --max-warnings=3 && oxfmt --check .",
+    "lint": "oxlint && oxfmt --check .",
     "lint:fix": "oxlint --fix && oxfmt .",
     "format": "oxfmt .",
     "knip": "knip --dependencies",
