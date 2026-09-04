@@ -28,7 +28,9 @@ export default defineConfig({
         path: ".",
         watchDir: ["src"],
         installCommand: ["pnpm install", "pnpm run build"],
-        reloadCommand: ["pnpm build"],
+        // Not `pnpm build`: that starts with `rimraf dist`, and the running
+        // module is loaded from dist. Watch reloads compile in place.
+        reloadCommand: ["pnpm exec tsc -p tsconfig.build.json"],
       },
     },
 

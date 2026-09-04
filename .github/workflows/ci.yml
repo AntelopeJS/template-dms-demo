@@ -4,16 +4,18 @@ on:
   push:
     branches:
       - main
+      - stage
   pull_request:
     branches:
       - main
+      - stage
 
 permissions:
   contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ubuntu:
@@ -25,17 +27,26 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Configure the AntelopeJS private npm registry
+        env:
+          NPM_ANTELOPE_TOKEN: ${{ secrets.NPM_ANTELOPE_TOKEN }}
         run: |
+          if [ -z "$NPM_ANTELOPE_TOKEN" ]; then
+            echo "NPM_ANTELOPE_TOKEN is not set: the private @antelopejs-private packages cannot be installed." >&2
+            exit 1
+          fi
           echo '@antelopejs-private:registry=https://npm.antelopejs.cloud/' >> ~/.npmrc
-          echo '//npm.antelopejs.cloud/:_authToken=${{ secrets.NPM_ANTELOPE_TOKEN }}' >> ~/.npmrc
+          echo "//npm.antelopejs.cloud/:_authToken=$NPM_ANTELOPE_TOKEN" >> ~/.npmrc
 
       - uses: actions/setup-node@v4
         with:
-          # Node 22.18+ is what oxlint needs to read a TypeScript config; the
-          # version itself lives in .nvmrc so there is one source of truth.
+          # .nvmrc is the version of record. oxlint needs at least 22.18 to
+          # read a TypeScript config, which every value there clears.
           node-version-file: .nvmrc
-      - run: npm i -g --force corepack && corepack enable
-      - run: pnpm install --frozen-lockfile && cd nuxt-layer && pnpm install --frozen-lockfile
+      # Node's bundled corepack predates the pnpm version pinned in
+      # packageManager. Pinned so a corepack release cannot break every
+      # build at once.
+      - run: npm i -g --force corepack@0.34.0 && corepack enable
+      - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       # Unused dependencies only. `pnpm knip:all` also reports dead files and
       # exports, which need a human to confirm, so they stay out of the gate.
