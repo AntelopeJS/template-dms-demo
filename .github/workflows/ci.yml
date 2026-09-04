@@ -23,8 +23,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # oxlint reads a TypeScript config, which needs type stripping.
-          node-version: "24"
+          # Node 22.18+ is what oxlint needs to read a TypeScript config; the
+          # version itself lives in .nvmrc so there is one source of truth.
+          node-version-file: .nvmrc
       - run: npm i -g --force corepack && corepack enable
       - run: pnpm install && cd nuxt-layer && pnpm install
       - run: pnpm lint
