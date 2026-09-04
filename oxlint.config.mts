@@ -21,6 +21,6 @@ export default defineConfig({
     // catches the new ones. It comes down as they get fixed; it never
     // goes up. Here rather than in the lint script so `lint:fix` and
     // any direct oxlint run share the same budget.
-    maxWarnings: 3,
+    maxWarnings: 1,
   },
 });

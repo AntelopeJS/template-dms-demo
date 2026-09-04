@@ -41,8 +41,8 @@ importers:
         version: 0.1.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12)(@antelopejs/interface-database@0.1.4(@antelopejs/interface-core@0.0.12))
     devDependencies:
       '@antelopejs/tooling-configs':
-        specifier: ^0.0.3
-        version: 0.0.3(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
+        specifier: ^0.0.4
+        version: 0.0.4(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
@@ -148,8 +148,8 @@ packages:
     peerDependencies:
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
 
-  '@antelopejs/tooling-configs@0.0.3':
-    resolution: {integrity: sha512-x1fBRY2YX8litjYXxikbCdQUtLFVtrBn2ZgjMxL7T/NXgQ2/dq7Grj+uKXy35sNbPG0m3DwoEeEhHPw/4+6cvw==}
+  '@antelopejs/tooling-configs@0.0.4':
+    resolution: {integrity: sha512-Nfv71Z9DF78mFu817SwTZnzfF/oWhjXWhAY/zhBV9ArevV3ZwJ/JhZD+3QiLf9fXIS2pXCrmCCYGclpc598psA==}
     engines: {node: '>=22.18.0'}
     peerDependencies:
       '@nuxt/eslint-config': '>=1.2.0'
@@ -2200,7 +2200,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@antelopejs/tooling-configs@0.0.3(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))':
+  '@antelopejs/tooling-configs@0.0.4(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))':
     dependencies:
       '@oxlint/plugins': 1.81.0
     optionalDependencies:
