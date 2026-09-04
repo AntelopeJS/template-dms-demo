@@ -8,9 +8,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ubuntu:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       COREPACK_DEFAULT_TO_LATEST: 0
     steps:
@@ -27,7 +35,7 @@ jobs:
           # version itself lives in .nvmrc so there is one source of truth.
           node-version-file: .nvmrc
       - run: npm i -g --force corepack && corepack enable
-      - run: pnpm install && cd nuxt-layer && pnpm install
+      - run: pnpm install --frozen-lockfile && cd nuxt-layer && pnpm install --frozen-lockfile
       - run: pnpm lint
       # Unused dependencies only. `pnpm knip:all` also reports dead files and
       # exports, which need a human to confirm, so they stay out of the gate.
