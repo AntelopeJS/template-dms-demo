@@ -8,6 +8,7 @@
     "dev": "ajs project run -w",
     "frontend:dev": "acms dev",
     "lint": "oxlint && oxfmt --check .",
+    "typecheck": "tsc -p tsconfig.json",
     "lint:fix": "oxlint --fix && oxfmt .",
     "format": "oxfmt .",
     "knip": "knip --dependencies",
