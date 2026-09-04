@@ -25,7 +25,7 @@
     "@antelopejs/interface-database-decorators": "^0.1.6"
   },
   "devDependencies": {
-    "@antelopejs/tooling-configs": "^0.0.2",
+    "@antelopejs/tooling-configs": "^0.0.3",
     "@types/node": "^22.0.0",
     "dotenv": "^17.4.2",
     "knip": "^6.34.0",

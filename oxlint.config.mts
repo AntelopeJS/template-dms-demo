@@ -16,15 +16,4 @@ export default defineConfig({
   // front-end migration.
   ignorePatterns: [...ANTELOPE_IGNORE_PATTERNS, "nuxt-layer/**"],
   options: { typeAware: true },
-  rules: {
-    // Biome's recommended set blocked these and oxlint's correctness category
-    // does not. `== null` stays allowed, as it was there. Moves into the preset
-    // with its next release.
-    "eslint/eqeqeq": ["error", "always", { null: "ignore" }],
-    "eslint/radix": "error",
-    "eslint/prefer-regex-literals": "error",
-    // Staged like the rest of the type-aware family; moves into the preset
-    // with its next release.
-    "typescript/no-base-to-string": "warn",
-  },
 });
