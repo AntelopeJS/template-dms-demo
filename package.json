@@ -9,7 +9,7 @@
     "frontend:dev": "acms dev",
     "lint": "oxlint && oxfmt --check .",
     "typecheck": "tsc -p tsconfig.json",
-    "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt .",
+    "lint:fix": "oxlint --fix --max-warnings=1000000 ; oxfmt .",
     "format": "oxfmt .",
     "knip": "knip --dependencies",
     "knip:all": "knip"
