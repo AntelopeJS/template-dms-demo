@@ -5,10 +5,10 @@ on:
     branches:
       - main
       - stage
+  # Sans filtre de branche : la vague de lint empile les PR les unes sur les
+  # autres, et un filtre sur `main` laissait chaque étage intermédiaire sans
+  # aucune porte -- seul le scanner de secrets tournait.
   pull_request:
-    branches:
-      - main
-      - stage
 
 permissions:
   contents: read
