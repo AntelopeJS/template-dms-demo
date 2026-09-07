@@ -24,6 +24,6 @@ export default defineConfig({
     // CI. Here rather than in the lint script so any direct oxlint run is
     // held to it too; `lint:fix` opts out with its own `--max-warnings`,
     // since a fix pass is not a gate.
-    maxWarnings: 1,
+    maxWarnings: 0,
   },
 });
