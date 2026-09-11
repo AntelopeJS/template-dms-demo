@@ -121,7 +121,7 @@ class demoTaskDataAPI extends DataController(
   @Column({
     name: "$demo.tableView.columns.status",
     type: new DefaultDataTypes.SelectType({
-      items: TASK_STATUSES.map(({ tabLabel, ...item }) => item),
+      items: TASK_STATUSES.map(({ tabLabel: _tabLabel, ...item }) => item),
     }),
     filterable: true,
     defaultValue: "pending",

@@ -41,12 +41,24 @@ interface TopListItemPayload {
 }
 
 const TOP_PRODUCTS = [
-  { name: "Wireless headset Helix", category: "Audio", icon: "i-ph-headphones" },
-  { name: "Mechanical keyboard Quartz", category: "Peripherals", icon: "i-ph-keyboard" },
+  {
+    name: "Wireless headset Helix",
+    category: "Audio",
+    icon: "i-ph-headphones",
+  },
+  {
+    name: "Mechanical keyboard Quartz",
+    category: "Peripherals",
+    icon: "i-ph-keyboard",
+  },
   { name: "Smartwatch Orion", category: "Wearables", icon: "i-ph-watch" },
   { name: "USB-C hub Meteor", category: "Accessories", icon: "i-ph-usb" },
   { name: "4K webcam Lyra", category: "Peripherals", icon: "i-ph-webcam" },
-  { name: "Bluetooth speaker Cosmos", category: "Audio", icon: "i-ph-speaker-high" },
+  {
+    name: "Bluetooth speaker Cosmos",
+    category: "Audio",
+    icon: "i-ph-speaker-high",
+  },
   { name: "Gaming mouse Vega", category: "Peripherals", icon: "i-ph-mouse" },
 ];
 

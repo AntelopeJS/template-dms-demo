@@ -22,17 +22,17 @@ export class PageComponentGrid extends PageController("grid", {
       "header",
       GridRow().child(
         "hero",
-        Placeholder({ label: "Full-width header (colSpan 2)", height: "120px" }),
+        Placeholder({
+          label: "Full-width header (colSpan 2)",
+          height: "120px",
+        }),
         { colSpan: 2 },
       ),
     )
     .child(
       "content",
       GridRow()
-        .child(
-          "main",
-          Placeholder({ label: "Main content", height: "260px" }),
-        )
+        .child("main", Placeholder({ label: "Main content", height: "260px" }))
         .child(
           "side",
           Grid({ gap: "0.5rem" })

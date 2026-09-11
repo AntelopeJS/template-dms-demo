@@ -481,9 +481,13 @@ export class AppTask extends Table {
     | "completed"
     | "cancelled";
   @Field("string") declare priority: "low" | "medium" | "high";
-  @Index() @Field("string") @Relation({ to: () => AppProject })
+  @Index()
+  @Field("string")
+  @Relation({ to: () => AppProject })
   declare project: string;
-  @Index() @Field("string") @Relation({ to: () => AppUser })
+  @Index()
+  @Field("string")
+  @Relation({ to: () => AppUser })
   declare assignee: string;
   @Index() @Field("date") declare dueDate: Date;
   @Field("number") declare estimateHours: number;

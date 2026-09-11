@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - stage
+  # Sans filtre de branche : la vague de lint empile les PR les unes sur les
+  # autres, et un filtre sur `main` laissait chaque étage intermédiaire sans
+  # aucune porte -- seul le scanner de secrets tournait.
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COREPACK_DEFAULT_TO_LATEST: 0
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure the AntelopeJS private npm registry
+        env:
+          NPM_ANTELOPE_TOKEN: ${{ secrets.NPM_ANTELOPE_TOKEN }}
+        run: |
+          if [ -z "$NPM_ANTELOPE_TOKEN" ]; then
+            echo "NPM_ANTELOPE_TOKEN is not set: the private @antelopejs-private packages cannot be installed." >&2
+            exit 1
+          fi
+          echo '@antelopejs-private:registry=https://npm.antelopejs.cloud/' >> ~/.npmrc
+          echo "//npm.antelopejs.cloud/:_authToken=$NPM_ANTELOPE_TOKEN" >> ~/.npmrc
+
+      - uses: actions/setup-node@v4
+        with:
+          # .nvmrc is the version of record. oxlint needs at least 22.18 to
+          # read a TypeScript config, which every value there clears.
+          node-version-file: .nvmrc
+      # Node's bundled corepack predates the pnpm version pinned in
+      # packageManager. Pinned so a corepack release cannot break every
+      # build at once.
+      - run: npm i -g --force corepack@0.34.0 && corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      # tsconfig.json is the config the editors and oxlint's type-aware pass
+      # read; tsconfig.build.json is the one the build uses. Without this the
+      # first is never exercised, and a resolution failure there degrades every
+      # type-aware rule to `any` without failing anything.
+      - run: pnpm typecheck
+      # Unused dependencies only. `pnpm knip:all` also reports dead files and
+      # exports, which need a human to confirm, so they stay out of the gate.
+      - run: pnpm knip
+      - run: pnpm build
