@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
-    "frontend:dev": "acms dev",
+    "frontend:dev": "node --env-file=.env node_modules/@antelopejs-private/cms-nuxt/dist/index.js dev",
     "lint": "oxlint && oxfmt --check .",
     "typecheck": "tsc -p tsconfig.json",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt .",

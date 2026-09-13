@@ -1,11 +1,13 @@
 # template-cms-demo
 
-A minimal [AntelopeJS](https://antelopejs.com) CMS template wiring together every
-CMS feature module, plus a tiny local module that exposes a **Home** page (a
+A runnable [AntelopeJS](https://antelopejs.com) CMS demo wiring together the
+feature modules listed below, plus a local module that exposes a **Home** page (a
 pretty in-CMS readme), a **Components** catalog showcasing every built-in CMS
 component and a small **Demo app** (users / projects / tasks with relations).
 All page texts are translated in English and French through the local
 nuxt-layer's i18n files.
+
+![Components dashboard with period controls, KPI cards, a sales chart, and sample products](docs/screenshots/dashboard.png)
 
 ## What's inside
 
@@ -83,23 +85,57 @@ translated by the frontend, so they stay in plain English.
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22 and pnpm 10.2.0 (the version in `packageManager`)
 - A running MongoDB instance (`mongodb://localhost:27017` by default)
 - Access to the private AntelopeJS npm registry, with a valid token configured
   in your user-level `~/.npmrc`
 
 ## Getting started
 
+Clone this template into a new application directory. The current packages use
+the private registry; keep their published `@antelopejs-private/*` names.
+Configure your user-level `~/.npmrc` without committing a token:
+
+```ini
+@antelopejs-private:registry=https://npm.antelopejs.cloud/
+//npm.antelopejs.cloud/:_authToken=${NPM_ANTELOPE_TOKEN}
+```
+
+Set `NPM_ANTELOPE_TOKEN` in your shell or secret manager. A `401` during install
+means the registry credential is missing or invalid.
+
 ```bash
-pnpm install
+git clone https://github.com/AntelopeJS/template-cms-demo.git my-app
+cd my-app
+cp .env.example .env
+pnpm install --frozen-lockfile
+pnpm build
 pnpm exec ajs project modules install
-cp .env.example .env   # then fill in your Stripe keys
 pnpm dev
 ```
 
-`pnpm dev` runs `ajs project run -w`, which installs every module declared in
-`antelope.config.ts`, builds the local module, and starts the CMS. The Home page
-is served as the configured `homepage` (`/home`).
+Wait for the backend, then open another terminal in the same directory:
+
+```bash
+curl --fail http://localhost:5010/api/onboarding/informations
+pnpm frontend:dev
+```
+
+Open `http://localhost:3001` and complete first-run setup to create your
+administrator account. There is no preconfigured demo login. After setup,
+the configured homepage is `/home`; explore **Components** and **Demo app**
+in the sidebar. Fixtures populate a disposable `template_cms_demo` database.
+
+`pnpm dev` runs the local AntelopeJS CLI with backend watching. The frontend
+is a separate process, and its first start installs the shared Nuxt workspace.
+The `frontend:dev` script loads `.env` before launching the loader, including
+the server-only session password. If backend discovery fails, use
+`pnpm frontend:dev -b http://localhost:5010`.
+
+You do not need working Stripe or AI credentials to explore the component
+catalog. Payment and provider-backed actions require real test credentials;
+the placeholders are not functional integrations. Treat the example JWT and
+session secrets as local-only and replace them before a shared deployment.
 
 ## Configuration notes
 
@@ -116,3 +152,8 @@ is served as the configured `homepage` (`/home`).
 - **Modules frontend**: every CMS feature layer is registered by its module's
   `AddNuxtLayer` call. Remove the module block in `antelope.config.ts` to drop
   a feature.
+- **CI/CD**: Git write operations are disabled by default. Enable
+  `allowGitOperations` only when you intentionally want the dashboard to
+  perform Git operations against your repository.
+- **Frontend origin**: the default is `http://localhost:3001`. If you change
+  the loader port with `PORT`, update `CMS_CLIENT_BASE_URL` in `.env` to match.

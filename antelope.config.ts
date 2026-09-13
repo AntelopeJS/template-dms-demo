@@ -43,7 +43,7 @@ export default defineConfig({
       },
       config: {
         apiBaseUrl: "http://localhost:5010",
-        clientBaseUrl: "http://localhost:3000",
+        clientBaseUrl: "http://localhost:3001",
         homepage: "/home",
         meta: {
           title: "Template CMS Demo",
@@ -123,9 +123,7 @@ export default defineConfig({
         version: "^0.0.12",
       },
       config: {
-        // Allow write git operations (commit, tag, branch, push) in the demo.
-        // Defaults to false (read-only, visualization only).
-        allowGitOperations: true,
+        allowGitOperations: false,
       },
     },
     "cms-builder": {
