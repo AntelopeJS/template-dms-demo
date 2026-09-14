@@ -87,22 +87,10 @@ translated by the frontend, so they stay in plain English.
 
 - Node.js 22 and pnpm 10.2.0 (the version in `packageManager`)
 - A running MongoDB instance (`mongodb://localhost:27017` by default)
-- Access to the private AntelopeJS npm registry, with a valid token configured
-  in your user-level `~/.npmrc`
 
 ## Getting started
 
-Clone this template into a new application directory. The current packages use
-the private registry; keep their published `@antelopejs-private/*` names.
-Configure your user-level `~/.npmrc` without committing a token:
-
-```ini
-@antelopejs-private:registry=https://npm.antelopejs.cloud/
-//npm.antelopejs.cloud/:_authToken=${NPM_ANTELOPE_TOKEN}
-```
-
-Set `NPM_ANTELOPE_TOKEN` in your shell or secret manager. A `401` during install
-means the registry credential is missing or invalid.
+Clone this template into a new application directory:
 
 ```bash
 git clone https://github.com/AntelopeJS/template-cms-demo.git my-app
