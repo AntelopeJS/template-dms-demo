@@ -39,7 +39,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "^0.6.5",
+        version: "^0.6.6",
       },
       config: {
         apiBaseUrl: "http://localhost:5010",
@@ -81,7 +81,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "^0.2.4",
+        version: "0.2.8",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -139,7 +139,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-media",
-        version: "^0.0.4",
+        version: "0.0.5",
       },
       config: {},
     },
@@ -149,7 +149,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "^1.2.7",
+        version: "^1.3.0",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -190,7 +190,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.1.3",
+        version: "^0.1.4",
       },
       config: {
         storagePath: ".antelope/file-storage",
