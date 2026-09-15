@@ -3,7 +3,7 @@ import {
   RegisterPage,
 } from "@antelopejs-private/cms/interfaces/cms/page";
 import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
-import { Form } from "@antelopejs-private/cms/interfaces/cms-base/form";
+import { Form } from "@antelopejs-private/cms/interfaces/cms-base/form-schema";
 import { AssetType } from "@antelopejs-private/cms-media";
 import { componentsCategory } from "./category";
 import { demoTopicController } from "./form-database";
