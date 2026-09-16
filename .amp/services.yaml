@@ -8,8 +8,8 @@ services:
     command: >-
       until curl -fsS http://127.0.0.1:5010/dms/sitelayout >/dev/null; do sleep 0.5; done;
       PORT=3001
-      DMS_BACKEND_URL=http://127.0.0.1:5010
-      DMS_CLIENT_URL="$DMS_GATEWAY_URL"
+      DMS_API_BASE_URL=http://127.0.0.1:5010
+      DMS_CLIENT_BASE_URL="$DMS_GATEWAY_URL"
       DMS_COOKIE_SECURE=false
       pnpm frontend:dev
     port: 3001
