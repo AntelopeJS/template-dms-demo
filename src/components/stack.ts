@@ -1,13 +1,10 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/dms/interfaces/dms/page";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import {
   HStack,
   Placeholder,
   Spacer,
   VStack,
-} from "@antelopejs-private/dms/interfaces/dms-base";
+} from "@antelopejs/interface-dms/base";
 import { componentsCategory } from "./category";
 
 @RegisterPage()

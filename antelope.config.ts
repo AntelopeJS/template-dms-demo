@@ -4,6 +4,10 @@ import { config as loadDotenv } from "dotenv";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
 
+// Every DMS package is published at 0.0.x; `>=0.0.1 <1.0.0` keeps the whole
+// module set on one resolution, which the core requires for interfaces.
+const DMS_VERSION = ">=0.0.1 <1.0.0";
+
 export default defineConfig({
   name: "template-dms-demo",
   logging: {
@@ -14,14 +18,15 @@ export default defineConfig({
   // Map environment variables (loaded from .env) onto module config paths.
   envOverrides: {
     DMS_API_BASE_URL: "modules.dms.config.apiBaseUrl",
-    DMS_BOOTSTRAP_SECRET: "modules.dms.config.nuxt.bootstrapSecret",
     DMS_CLIENT_BASE_URL: "modules.dms.config.clientBaseUrl",
+    DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
     STRIPE_SECRET_KEY: "modules.dms-saas.config.stripe.secretKey",
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
   },
   modules: {
-    // Local module of this template: registers the single "home" page (see src/).
+    // Local module of this template: registers the demo pages (see src/) and
+    // ships the frontend-vue module that carries their Vue components.
     "template-dms-demo": {
       source: {
         type: "local",
@@ -34,16 +39,17 @@ export default defineConfig({
       },
     },
 
-    // DMS core: hosts the Nuxt frontend and enables every DMS feature layer.
+    // DMS core: serves the frontend manifest consumed by `ajs-dms` and enables
+    // every DMS feature layer.
     dms: {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms",
-        version: "^0.8.3",
+        package: "@antelopejs/dms",
+        version: DMS_VERSION,
       },
       config: {
         apiBaseUrl: "http://localhost:5010",
-        clientBaseUrl: "http://localhost:3000",
+        clientBaseUrl: "http://localhost:3001",
         homepage: "/home",
         meta: {
           title: "Template DMS Demo",
@@ -52,36 +58,43 @@ export default defineConfig({
         auth: {
           jwtSecret: "dev",
         },
+        frontend: {
+          // Credential `ajs-dms build` presents to fetch the frontend manifest
+          // and module sources. In development the instance generates an
+          // ephemeral one in .antelope/dms-dev.json, so `pnpm frontend:dev`
+          // needs nothing here; set DMS_BOOTSTRAP_SECRET in .env for builds.
+          bootstrapSecret: "",
+        },
       },
     },
 
-    // ---- DMS feature modules (caret ranges on latest published versions) ----
+    // ---- DMS feature modules ----
     "dms-api": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-api",
-        version: "^0.1.14",
+        package: "@antelopejs/dms-api",
+        version: DMS_VERSION,
       },
     },
     "dms-database": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-database",
-        version: "^0.0.22",
+        package: "@antelopejs/dms-database",
+        version: DMS_VERSION,
       },
     },
     "dms-automation": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-automation",
-        version: "^0.2.6",
+        package: "@antelopejs/dms-automation",
+        version: DMS_VERSION,
       },
     },
     "dms-saas": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-saas",
-        version: "^0.2.11",
+        package: "@antelopejs/dms-saas",
+        version: DMS_VERSION,
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -102,44 +115,32 @@ export default defineConfig({
     "dms-ai": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-ai",
-        version: "^0.0.18",
+        package: "@antelopejs/dms-ai",
+        version: DMS_VERSION,
       },
     },
     "dms-lang": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-lang",
-        version: "^0.1.9",
+        package: "@antelopejs/dms-lang",
+        version: DMS_VERSION,
       },
       config: {
         editable: true,
       },
     },
-    "dms-cicd": {
-      source: {
-        type: "package",
-        package: "@antelopejs-private/dms-cicd",
-        version: "^0.0.13",
-      },
-      config: {
-        // Allow write git operations (commit, tag, branch, push) in the demo.
-        // Defaults to false (read-only, visualization only).
-        allowGitOperations: true,
-      },
-    },
     "dms-builder": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-builder",
-        version: "^0.0.5",
+        package: "@antelopejs/dms-builder",
+        version: DMS_VERSION,
       },
     },
     "dms-media": {
       source: {
         type: "package",
-        package: "@antelopejs-private/dms-media",
-        version: "^0.0.7",
+        package: "@antelopejs/dms-media",
+        version: DMS_VERSION,
       },
       config: {},
     },
@@ -182,7 +183,7 @@ export default defineConfig({
           },
         ],
         cors: {
-          allowedOrigins: [/^https:\/\/[a-z0-9-]+\.onamp\.dev$/],
+          allowedOrigins: ["http://localhost:3001", "http://127.0.0.1:3001"],
         },
       },
     },

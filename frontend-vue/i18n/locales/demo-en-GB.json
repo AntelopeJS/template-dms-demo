@@ -46,7 +46,7 @@
 				"description": "Placeholder with label and fixed dimensions — used to sketch layouts before real content"
 			},
 			"custom": {
-				"description": "A project-defined Vue component registered through a local nuxt-layer and rendered with CustomComponent"
+				"description": "A project-defined Vue component shipped by a local frontend module and rendered with CustomComponent"
 			},
 			"users": {
 				"description": "The people of the demo app, used as relation target by the tasks"
@@ -248,7 +248,7 @@
 		"custom": {
 			"callout": {
 				"title": "This block is rendered by your own Vue component",
-				"message": "It lives in nuxt-layer/app/components/Callout.vue, is shipped by AddNuxtLayer and referenced by name with CustomComponent(\"demo-callout\")."
+				"message": "It lives in frontend-vue/app/components/Callout.vue, is shipped by AddFrontendModule and referenced by name with CustomComponent(\"demo-callout\")."
 			}
 		},
 		"readme": {
@@ -258,7 +258,7 @@
 			},
 			"stack": {
 				"antelope": "AntelopeJS",
-				"nuxt": "Nuxt frontend",
+				"vue": "Vue frontend",
 				"mongodb": "MongoDB",
 				"typescript": "TypeScript"
 			},
@@ -293,7 +293,6 @@
 						"saas": "SaaS — Stripe billing",
 						"ai": "AI — assistants",
 						"lang": "Lang — translations",
-						"cicd": "CI/CD — git operations",
 						"builder": "Builder — visual resources",
 						"media": "Media — shared asset library"
 					}
@@ -301,7 +300,7 @@
 			},
 			"how": {
 				"title": "How it works",
-				"description": "Everything you see is declared by the local module in src/ — pages are TypeScript classes, data lives in MongoDB, and custom widgets ship through a local Nuxt layer.",
+				"description": "Everything you see is declared by the local module in src/ — pages are TypeScript classes, data lives in MongoDB, and custom widgets ship through a local Vue frontend module.",
 				"steps": {
 					"pages": {
 						"title": "1. Declare pages",
@@ -313,7 +312,7 @@
 					},
 					"frontend": {
 						"title": "3. Extend the frontend",
-						"description": "Ship Vue components and translations through the local nuxt-layer."
+						"description": "Ship Vue components and translations through the local frontend-vue module."
 					}
 				}
 			}

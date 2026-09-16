@@ -1,13 +1,10 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/dms/interfaces/dms/page";
-import { CustomComponent } from "@antelopejs-private/dms/interfaces/dms-base/custom";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { CustomComponent } from "@antelopejs/interface-dms/base/custom";
 import { componentsCategory } from "./category";
 
 // "demo-callout" resolves to the DemoCallout component shipped by the local
-// nuxt-layer (see nuxt-layer/app/components/Callout.vue and AddNuxtLayer in
-// src/index.ts).
+// frontend module (see frontend-vue/app/components/Callout.vue and
+// AddFrontendModule in src/index.ts).
 @RegisterPage()
 export class PageComponentCustom extends PageController("custom", {
   displayName: "$demo.nav.custom",

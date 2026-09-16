@@ -20,15 +20,15 @@ import {
   Sortable,
 } from "@antelopejs/interface-data-api/metadata";
 import { Model } from "@antelopejs/interface-database-decorators";
-import { DefaultDataTypes } from "@antelopejs-private/dms/interfaces/dms-base/data-types/default-types";
-import { Searchable } from "@antelopejs-private/dms/interfaces/dms-base/searchable";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   ArchiveField,
   Column,
   Exported,
   Select,
   TableViewRoutes,
-} from "@antelopejs-private/dms/interfaces/dms-base/table-view";
+} from "@antelopejs/interface-dms/base/table-view";
 import {
   AppProject,
   AppProjectModel,

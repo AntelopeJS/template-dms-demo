@@ -1,13 +1,7 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/dms/interfaces/dms/page";
-import {
-  Tab,
-  TabVariant,
-} from "@antelopejs-private/dms/interfaces/dms-base/tab";
-import { Placeholder } from "@antelopejs-private/dms/interfaces/dms-base/placeholder";
-import { Color, Size } from "@antelopejs-private/dms/interfaces/dms-base/types";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { Tab, TabVariant } from "@antelopejs/interface-dms/base/tab";
+import { Placeholder } from "@antelopejs/interface-dms/base/placeholder";
+import { Color, Size } from "@antelopejs/interface-dms/base/types";
 import { componentsCategory } from "./category";
 
 @RegisterPage()

@@ -1,6 +1,6 @@
 import path from "node:path";
 import { RegisterSchema } from "@antelopejs/interface-database-decorators";
-import { AddFrontendModule } from "@antelopejs-private/dms/interfaces/dms/page";
+import { AddFrontendModule } from "@antelopejs/interface-dms/page";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./components";
@@ -15,11 +15,10 @@ export async function start(): Promise<void> {
   await RegisterSchema(DEMO_SCHEMA_NAME);
 
   void AddFrontendModule({
-    name: "template-dms-demo-nuxt-layer",
-    sourcePath: path.join(__dirname, "../nuxt-layer"),
+    name: "template-dms-demo-frontend-vue",
+    sourcePath: path.join(__dirname, "../frontend-vue"),
     renderer: { name: "vue", version: "3" },
     priority: 100,
-    options: { dmsI18nAppLayer: true },
   });
 }
 

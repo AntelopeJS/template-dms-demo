@@ -1,9 +1,6 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/dms/interfaces/dms/page";
-import { DefaultLayout } from "@antelopejs-private/dms/interfaces/dms-base/layouts";
-import { TableView } from "@antelopejs-private/dms/interfaces/dms-base/table-view";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
+import { TableView } from "@antelopejs/interface-dms/base/table-view";
 import { demoAppCategory } from "./category";
 // Value import, not a type-only one: evaluating this module is what registers
 // the data controllers the TableViews below reference.

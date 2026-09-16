@@ -1,10 +1,7 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/dms/interfaces/dms/page";
-import { DefaultDataTypes } from "@antelopejs-private/dms/interfaces/dms-base/data-types/default-types";
-import { Form } from "@antelopejs-private/dms/interfaces/dms-base/form-schema";
-import { AssetType } from "@antelopejs-private/dms-media";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { Form } from "@antelopejs/interface-dms/base/form-schema";
+import { AssetType } from "@antelopejs/dms-media";
 import { componentsCategory } from "./category";
 import { demoTopicController } from "./form-database";
 import { demoTaskController } from "./table-view/page";
