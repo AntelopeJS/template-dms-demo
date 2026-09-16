@@ -8,8 +8,9 @@ services:
     command: >-
       until curl -fsS http://127.0.0.1:5010/dms/sitelayout >/dev/null; do sleep 0.5; done;
       PORT=3001
-      NUXT_PUBLIC_DMS_BASE_URL="$DMS_GATEWAY_URL"__dms_api
-      NUXT_PUBLIC_DMS_CLIENT_BASE_URL="$DMS_GATEWAY_URL"
+      DMS_BACKEND_URL=http://127.0.0.1:5010
+      DMS_CLIENT_URL="$DMS_GATEWAY_URL"
+      DMS_COOKIE_SECURE=false
       pnpm frontend:dev
     port: 3001
     env:
