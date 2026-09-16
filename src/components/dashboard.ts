@@ -1,18 +1,12 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import {
   ChartArea,
   ChartCard,
   KpiCard,
   PeriodSelector,
   TopListCard,
-} from "@antelopejs-private/cms/interfaces/cms-base";
-import {
-  Grid,
-  GridRow,
-} from "@antelopejs-private/cms/interfaces/cms-base/grid";
+} from "@antelopejs/interface-dms/base";
+import { Grid, GridRow } from "@antelopejs/interface-dms/base/grid";
 import { componentsCategory } from "./category";
 
 const SCOPE_ID = "components-dashboard";

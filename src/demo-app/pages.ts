@@ -1,9 +1,6 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { DefaultLayout } from "@antelopejs-private/cms/interfaces/cms-base/layouts";
-import { TableView } from "@antelopejs-private/cms/interfaces/cms-base/table-view";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
+import { TableView } from "@antelopejs/interface-dms/base/table-view";
 import { demoAppCategory } from "./category";
 // Value import, not a type-only one: evaluating this module is what registers
 // the data controllers the TableViews below reference.
@@ -100,7 +97,7 @@ export class PageDemoAppTasks extends PageController(
       hasSelection: true,
     },
     defaultSort: { field: "dueDate" },
-    // New in cms 0.0.16: kanban display mode. Cards are grouped by the
+    // New in dms 0.0.16: kanban display mode. Cards are grouped by the
     // status SelectType column and can be dragged between columns.
     kanban: {
       groupByField: "status",

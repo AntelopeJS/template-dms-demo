@@ -13,13 +13,10 @@ import {
   Sortable,
 } from "@antelopejs/interface-data-api/metadata";
 import { Model } from "@antelopejs/interface-database-decorators";
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
-import { DefaultLayout } from "@antelopejs-private/cms/interfaces/cms-base/layouts";
-import { Searchable } from "@antelopejs-private/cms/interfaces/cms-base/searchable";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
+import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   ArchiveField,
   Column,
@@ -27,7 +24,7 @@ import {
   Select,
   TableView,
   TableViewRoutes,
-} from "@antelopejs-private/cms/interfaces/cms-base/table-view";
+} from "@antelopejs/interface-dms/base/table-view";
 import { componentsCategory } from "../category";
 import { DemoTask, DemoTaskModel } from "./database";
 

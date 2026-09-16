@@ -5,9 +5,9 @@ on:
     branches:
       - main
       - stage
-  # Sans filtre de branche : la vague de lint empile les PR les unes sur les
-  # autres, et un filtre sur `main` laissait chaque étage intermédiaire sans
-  # aucune porte -- seul le scanner de secrets tournait.
+  # No branch filter: the lint wave stacks the PRs on top of each other, and a
+  # filter on `main` left every intermediate step without a gate -- only the
+  # secret scanner ran.
   pull_request:
 
 permissions:
@@ -26,17 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure the AntelopeJS private npm registry
-        env:
-          NPM_ANTELOPE_TOKEN: ${{ secrets.NPM_ANTELOPE_TOKEN }}
-        run: |
-          if [ -z "$NPM_ANTELOPE_TOKEN" ]; then
-            echo "NPM_ANTELOPE_TOKEN is not set: the private @antelopejs-private packages cannot be installed." >&2
-            exit 1
-          fi
-          echo '@antelopejs-private:registry=https://npm.antelopejs.cloud/' >> ~/.npmrc
-          echo "//npm.antelopejs.cloud/:_authToken=$NPM_ANTELOPE_TOKEN" >> ~/.npmrc
-
       - uses: actions/setup-node@v4
         with:
           # .nvmrc is the version of record. oxlint needs at least 22.18 to
@@ -47,6 +36,7 @@ jobs:
       # build at once.
       - run: npm i -g --force corepack@0.34.0 && corepack enable
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir frontend-vue install --frozen-lockfile
       - run: pnpm lint
       # tsconfig.json is the config the editors and oxlint's type-aware pass
       # read; tsconfig.build.json is the one the build uses. Without this the
@@ -57,3 +47,8 @@ jobs:
       # exports, which need a human to confirm, so they stay out of the gate.
       - run: pnpm knip
       - run: pnpm build
+      - run: pnpm test
+      # Builds the template's frontend module against the DMS core one through
+      # the real Vue/Inertia loader: client, SSR and email bundles, plus
+      # vue-tsc. No backend needed.
+      - run: pnpm test:frontend

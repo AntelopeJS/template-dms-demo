@@ -1,24 +1,25 @@
 services:
-  template-cms-demo-backend:
+  template-dms-demo-backend:
     command: pnpm dev
     port: 5010
-    health: /cms/sitelayout
+    health: /dms/sitelayout
 
-  template-cms-demo-frontend:
+  template-dms-demo-frontend:
     command: >-
-      until curl -fsS http://127.0.0.1:5010/cms/sitelayout >/dev/null; do sleep 0.5; done;
+      until curl -fsS http://127.0.0.1:5010/dms/sitelayout >/dev/null; do sleep 0.5; done;
       PORT=3001
-      NUXT_PUBLIC_CMS_BASE_URL="$CMS_GATEWAY_URL"__cms_api
-      NUXT_PUBLIC_CMS_CLIENT_BASE_URL="$CMS_GATEWAY_URL"
+      DMS_API_BASE_URL=http://127.0.0.1:5010
+      DMS_CLIENT_BASE_URL="$DMS_GATEWAY_URL"
+      DMS_COOKIE_SECURE=false
       pnpm frontend:dev
     port: 3001
     env:
-      CMS_GATEWAY_URL: ${services.template-cms-demo-gateway.publicURL}
+      DMS_GATEWAY_URL: ${services.template-dms-demo-gateway.publicURL}
 
-  template-cms-demo-gateway:
+  template-dms-demo-gateway:
     command: node .amp/gateway.mjs
     port: 3002
     health: /__gateway_health
     portal:
-      title: Template CMS Demo
-      description: CMS frontend
+      title: Template DMS Demo
+      description: DMS frontend

@@ -1,12 +1,6 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import {
-  Grid,
-  GridRow,
-} from "@antelopejs-private/cms/interfaces/cms-base/grid";
-import { Placeholder } from "@antelopejs-private/cms/interfaces/cms-base/placeholder";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { Grid, GridRow } from "@antelopejs/interface-dms/base/grid";
+import { Placeholder } from "@antelopejs/interface-dms/base/placeholder";
 import { componentsCategory } from "./category";
 
 @RegisterPage()

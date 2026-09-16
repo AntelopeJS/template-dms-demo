@@ -1,31 +1,35 @@
 {
-  "name": "template-cms-demo",
+  "name": "template-dms-demo",
   "version": "0.0.1",
   "private": true,
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
-    "frontend:dev": "acms dev",
-    "lint": "oxlint && oxfmt --check .",
+    "frontend:dev": "ajs-dms dev",
+    "frontend:build": "ajs-dms build",
+    "lint": "oxlint && oxfmt --check . && pnpm --dir frontend-vue lint",
+    "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
+    "format": "oxfmt . && pnpm --dir frontend-vue format",
     "typecheck": "tsc -p tsconfig.json",
-    "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt .",
-    "format": "oxfmt .",
+    "test": "pnpm --dir frontend-vue test",
+    "test:frontend": "node scripts/check-frontend.mjs",
     "knip": "knip --dependencies",
     "knip:all": "knip"
   },
   "dependencies": {
-    "@antelopejs-private/cms": "^0.8.1",
-    "@antelopejs-private/cms-media": "^0.0.6",
-    "@antelopejs-private/cms-nuxt": "^0.0.20",
     "@antelopejs/core": "^1.5.1",
-    "@antelopejs/interface-api": "^0.0.13",
+    "@antelopejs/dms": ">=0.0.1 <1.0.0",
+    "@antelopejs/dms-media": ">=0.0.1 <1.0.0",
+    "@antelopejs/interface-api": ">=0.0.13 <1.0.0",
     "@antelopejs/interface-core": "^0.0.12",
-    "@antelopejs/interface-data-api": "^0.1.9",
-    "@antelopejs/interface-database": "^0.1.6",
-    "@antelopejs/interface-database-decorators": "^0.1.6"
+    "@antelopejs/interface-data-api": ">=0.1.9 <1.0.0",
+    "@antelopejs/interface-database": ">=0.1.7 <1.0.0",
+    "@antelopejs/interface-database-decorators": ">=0.1.6 <1.0.0",
+    "@antelopejs/interface-dms": ">=0.0.1 <1.0.0"
   },
   "devDependencies": {
+    "@antelopejs/dms-frontend": ">=0.0.1 <1.0.0",
     "@antelopejs/tooling-configs": "^0.0.4",
     "@types/node": "^24.0.0",
     "dotenv": "^17.4.2",
@@ -40,11 +44,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp"
-    ],
-    "overrides": {
-      "@antelopejs-private/cms": "^0.8.1",
-      "@antelopejs/interface-api": "^0.0.13"
-    }
+    ]
   },
   "antelopeJs": {
     "baseUrl": "dist",

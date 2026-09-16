@@ -192,7 +192,7 @@ const DEFAULT_TASKS: Array<Partial<AppTask>> = [
   },
   {
     name: "Write the content migration script",
-    description: "Map the old CMS entries to the new content model.",
+    description: "Map the old DMS entries to the new content model.",
     status: "pending",
     priority: "medium",
     project: "project-website",

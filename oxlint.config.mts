@@ -12,9 +12,9 @@ export default defineConfig({
       importSorting: false,
     }),
   ],
-  // Front-end sources, which oxlint cannot lint yet: they move with the
-  // front-end migration.
-  ignorePatterns: [...ANTELOPE_IGNORE_PATTERNS, "nuxt-layer/**"],
+  // Front-end sources, which oxlint cannot lint yet: `pnpm --dir frontend-vue
+  // lint` runs ESLint with the Vue plugin over them instead.
+  ignorePatterns: [...ANTELOPE_IGNORE_PATTERNS, "frontend-vue/**"],
   options: {
     typeAware: true,
     // What is left is one `max-lines` warning on src/demo-app/pages.ts, a

@@ -4,7 +4,7 @@ const listenPort = Number(process.env.PORT);
 const publicUrl = new URL(process.env.PUBLIC_URL);
 const frontendUrl = new URL("http://[::1]:3001");
 const backendUrl = new URL("http://127.0.0.1:5010");
-const backendPrefix = "/__cms_api";
+const backendPrefix = "/__dms_api";
 
 if (!Number.isInteger(listenPort)) {
   throw new Error("PORT must be an integer");

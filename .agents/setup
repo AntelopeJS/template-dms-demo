@@ -23,18 +23,6 @@ run_step() {
   printf '<== %s (%ss)\n' "$label" "$((SECONDS - started_at))"
 }
 
-configure_private_registry() {
-  local user_npmrc="$HOME/.npmrc"
-
-  touch "$user_npmrc"
-  if ! grep -Eq '^@antelopejs-private:registry=' "$user_npmrc"; then
-    printf '%s\n' '@antelopejs-private:registry=https://npm.antelopejs.cloud/' >> "$user_npmrc"
-  fi
-  if ! grep -Eq '^//npm\.antelopejs\.cloud/:_authToken=' "$user_npmrc"; then
-    printf '%s\n' '//npm.antelopejs.cloud/:_authToken=${NPM_ANTELOPE_TOKEN}' >> "$user_npmrc"
-  fi
-}
-
 node_is_compatible() {
   local current_major
 
@@ -142,7 +130,8 @@ start_mongodb() {
 
 install_dependencies() (
   cd "$repo_root"
-  NPM_CONFIG_USERCONFIG="$repo_root/.npmrc" pnpm install --frozen-lockfile
+  pnpm install --frozen-lockfile
+  pnpm --dir frontend-vue install --frozen-lockfile
 )
 
 build_project() (
@@ -157,7 +146,6 @@ install_project_modules() (
 
 mkdir -p "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
-configure_private_registry
 
 if ! node_is_compatible; then
   run_step "Install Node.js $NODE_MAJOR" install_node

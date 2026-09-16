@@ -21,14 +21,14 @@ import {
   Table,
 } from "@antelopejs/interface-database-decorators";
 import { DEMO_SCHEMA_NAME } from "../schema";
-import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
-import { Searchable } from "@antelopejs-private/cms/interfaces/cms-base/searchable";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   Column,
   Exported,
   Select,
   TableViewRoutes,
-} from "@antelopejs-private/cms/interfaces/cms-base/table-view";
+} from "@antelopejs/interface-dms/base/table-view";
 
 const TABLE_NAME = "components_demo_topics";
 

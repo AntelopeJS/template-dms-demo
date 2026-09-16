@@ -1,10 +1,7 @@
-import {
-  PageController,
-  RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
-import { Form } from "@antelopejs-private/cms/interfaces/cms-base/form-schema";
-import { AssetType } from "@antelopejs-private/cms-media";
+import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { Form } from "@antelopejs/interface-dms/base/form-schema";
+import { AssetType } from "@antelopejs/dms-media";
 import { componentsCategory } from "./category";
 import { demoTopicController } from "./form-database";
 import { demoTaskController } from "./table-view/page";
@@ -34,7 +31,7 @@ const INTEREST_NODES = [
 ];
 
 // One field per DefaultDataTypes input (plus the textarea/range/multiple
-// variants) so the page demonstrates every form input the CMS ships.
+// variants) so the page demonstrates every form input the DMS ships.
 @RegisterPage()
 export class PageComponentForm extends PageController("form", {
   displayName: "$demo.nav.form",
@@ -313,7 +310,7 @@ export class PageComponentForm extends PageController("form", {
           max: 4,
           mimetypes: ["image/*"],
           binding: {
-            id: "template-cms-demo.form.media-gallery",
+            id: "template-dms-demo.form.media-gallery",
             folderName: "Event media",
             permissionsFromPage: PageComponentForm,
           },
