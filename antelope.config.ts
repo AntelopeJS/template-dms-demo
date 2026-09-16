@@ -39,7 +39,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms",
-        version: "^0.8.1",
+        version: "^0.8.3",
       },
       config: {
         apiBaseUrl: "http://localhost:5010",
@@ -60,28 +60,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-api",
-        version: "^0.1.13",
+        version: "^0.1.14",
       },
     },
     "cms-database": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-database",
-        version: "^0.0.21",
+        version: "^0.0.22",
       },
     },
     "cms-automation": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-automation",
-        version: "^0.2.5",
+        version: "^0.2.6",
       },
     },
     "cms-saas": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-saas",
-        version: "^0.2.10",
+        version: "^0.2.11",
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -103,14 +103,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-ai",
-        version: "^0.0.17",
+        version: "^0.0.18",
       },
     },
     "cms-lang": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-lang",
-        version: "^0.1.8",
+        version: "^0.1.9",
       },
       config: {
         editable: true,
@@ -120,7 +120,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-cicd",
-        version: "^0.0.12",
+        version: "^0.0.13",
       },
       config: {
         // Allow write git operations (commit, tag, branch, push) in the demo.
@@ -132,14 +132,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs-private/cms-builder",
-        version: "^0.0.4",
+        version: "^0.0.5",
       },
     },
     "cms-media": {
       source: {
         type: "package",
         package: "@antelopejs-private/cms-media",
-        version: "^0.0.6",
+        version: "^0.0.7",
       },
       config: {},
     },

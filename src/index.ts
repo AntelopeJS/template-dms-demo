@@ -1,6 +1,6 @@
 import path from "node:path";
 import { RegisterSchema } from "@antelopejs/interface-database-decorators";
-import { AddNuxtLayer } from "@antelopejs-private/cms/interfaces/cms/page";
+import { AddFrontendModule } from "@antelopejs-private/cms/interfaces/cms/page";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./components";
@@ -14,11 +14,12 @@ export async function start(): Promise<void> {
   // adapter is already available.
   await RegisterSchema(DEMO_SCHEMA_NAME);
 
-  // Ship the local nuxt-layer (custom Vue components) to the CMS frontend.
-  void AddNuxtLayer({
+  void AddFrontendModule({
     name: "template-cms-demo-nuxt-layer",
-    path: path.join(__dirname, "../nuxt-layer"),
+    sourcePath: path.join(__dirname, "../nuxt-layer"),
+    renderer: { name: "vue", version: "3" },
     priority: 100,
+    options: { cmsI18nAppLayer: true },
   });
 }
 
