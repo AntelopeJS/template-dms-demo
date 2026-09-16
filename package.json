@@ -1,12 +1,12 @@
 {
-  "name": "template-cms-demo",
+  "name": "template-dms-demo",
   "version": "0.0.1",
   "private": true,
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
-    "frontend:dev": "acms dev",
+    "frontend:dev": "adms dev",
     "lint": "oxlint && oxfmt --check .",
     "typecheck": "tsc -p tsconfig.json",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt .",
@@ -15,9 +15,9 @@
     "knip:all": "knip"
   },
   "dependencies": {
-    "@antelopejs-private/cms": "^0.8.3",
-    "@antelopejs-private/cms-media": "^0.0.7",
-    "@antelopejs-private/cms-nuxt": "^0.0.20",
+    "@antelopejs-private/dms": "^0.8.3",
+    "@antelopejs-private/dms-media": "^0.0.7",
+    "@antelopejs-private/dms-nuxt": "^0.0.20",
     "@antelopejs/core": "^1.5.1",
     "@antelopejs/interface-api": "^0.0.13",
     "@antelopejs/interface-core": "^0.0.12",
@@ -42,7 +42,7 @@
       "sharp"
     ],
     "overrides": {
-      "@antelopejs-private/cms": "^0.8.3",
+      "@antelopejs-private/dms": "^0.8.3",
       "@antelopejs/interface-api": "^0.0.13"
     }
   },

@@ -5,20 +5,20 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@antelopejs-private/cms': ^0.8.3
+  '@antelopejs-private/dms': ^0.8.3
   '@antelopejs/interface-api': ^0.0.13
 
 importers:
 
   .:
     dependencies:
-      '@antelopejs-private/cms':
+      '@antelopejs-private/dms':
         specifier: ^0.8.3
         version: 0.8.3(@types/node@24.13.3)
-      '@antelopejs-private/cms-media':
+      '@antelopejs-private/dms-media':
         specifier: ^0.0.7
         version: 0.0.7(@types/node@24.13.3)
-      '@antelopejs-private/cms-nuxt':
+      '@antelopejs-private/dms-nuxt':
         specifier: ^0.0.20
         version: 0.0.20
       '@antelopejs/core':
@@ -73,17 +73,17 @@ packages:
   2fa@0.1.2:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
-  '@antelopejs-private/cms-media@0.0.7':
+  '@antelopejs-private/dms-media@0.0.7':
     resolution: {integrity: sha512-suJqgNf3+D/uFBAzIL93g9jjSKdH5gMPo/8eRoR+ho3Pahq1/UnXBixpjyqB2b66QBZGqmeoYwW8F1IgkirtSA==}
 
-  '@antelopejs-private/cms-nuxt@0.0.20':
+  '@antelopejs-private/dms-nuxt@0.0.20':
     resolution: {integrity: sha512-Jit1W1gof7A/n4C0WNnGxKCdNTOIbtcg9LGZzpGxkfMHhnL92AhbHYJ+jkOIsaLX5TKL5vcpb2vtEW3mPqmWzw==}
     hasBin: true
 
-  '@antelopejs-private/cms@0.8.3':
+  '@antelopejs-private/dms@0.8.3':
     resolution: {integrity: sha512-9Em+n5pMWvzKaL863uvHyi9URiK3VMOI437zZ6lyQltPyixb6Neyah5s7/3HCqk2SNAqPpzDWnTf/lAxq8fvjQ==}
 
-  '@antelopejs-private/interface-cms-automation@0.0.3':
+  '@antelopejs-private/interface-dms-automation@0.0.3':
     resolution: {integrity: sha512-KulNvPAjN+3YuSucpFv7tjwX4jaQ0VHDKgaZtGiXLeDa8z/rmWR/Sn90RtNENDu5eSUpKb9FJ7nOvinb+aL0rQ==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.0.6 <1.0.0'
@@ -2049,9 +2049,9 @@ snapshots:
       qr-image: 3.2.0
       thirty-two: 0.0.2
 
-  '@antelopejs-private/cms-media@0.0.7(@types/node@24.13.3)':
+  '@antelopejs-private/dms-media@0.0.7(@types/node@24.13.3)':
     dependencies:
-      '@antelopejs-private/cms': 0.8.3(@types/node@24.13.3)
+      '@antelopejs-private/dms': 0.8.3(@types/node@24.13.3)
       '@antelopejs/interface-api': 0.0.13(@antelopejs/interface-core@0.0.12)
       '@antelopejs/interface-api-util': 0.1.2(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12)
       '@antelopejs/interface-core': 0.0.12
@@ -2068,7 +2068,7 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@antelopejs-private/cms-nuxt@0.0.20':
+  '@antelopejs-private/dms-nuxt@0.0.20':
     dependencies:
       boxen: 5.1.2
       chalk: 4.1.2
@@ -2083,7 +2083,7 @@ snapshots:
       '@oxc-parser/binding-linux-arm64-gnu': 0.95.0
       '@oxc-parser/binding-linux-x64-gnu': 0.95.0
 
-  '@antelopejs-private/cms@0.8.3(@types/node@24.13.3)':
+  '@antelopejs-private/dms@0.8.3(@types/node@24.13.3)':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/core': 1.5.1(@types/node@24.13.3)
@@ -2109,7 +2109,7 @@ snapshots:
       zod: 3.24.4
       zod-to-json-schema: 3.24.6(zod@3.24.4)
     optionalDependencies:
-      '@antelopejs-private/interface-cms-automation': 0.0.3(@antelopejs/interface-core@0.0.12)
+      '@antelopejs-private/interface-dms-automation': 0.0.3(@antelopejs/interface-core@0.0.12)
       '@antelopejs/interface-redis': 0.0.8(@antelopejs/interface-core@0.0.12)
     transitivePeerDependencies:
       - '@types/node'
@@ -2118,7 +2118,7 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@antelopejs-private/interface-cms-automation@0.0.3(@antelopejs/interface-core@0.0.12)':
+  '@antelopejs-private/interface-dms-automation@0.0.3(@antelopejs/interface-core@0.0.12)':
     dependencies:
       '@antelopejs/interface-core': 0.0.12
     optional: true

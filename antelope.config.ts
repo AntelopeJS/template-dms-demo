@@ -5,7 +5,7 @@ import { config as loadDotenv } from "dotenv";
 loadDotenv({ path: resolve(__dirname, ".env") });
 
 export default defineConfig({
-  name: "template-cms-demo",
+  name: "template-dms-demo",
   logging: {
     channelFilter: {
       "*": "trace",
@@ -13,16 +13,16 @@ export default defineConfig({
   },
   // Map environment variables (loaded from .env) onto module config paths.
   envOverrides: {
-    CMS_API_BASE_URL: "modules.cms.config.apiBaseUrl",
-    CMS_BOOTSTRAP_SECRET: "modules.cms.config.nuxt.bootstrapSecret",
-    CMS_CLIENT_BASE_URL: "modules.cms.config.clientBaseUrl",
-    STRIPE_SECRET_KEY: "modules.cms-saas.config.stripe.secretKey",
-    STRIPE_PUBLISHABLE_KEY: "modules.cms-saas.config.stripe.publishableKey",
-    STRIPE_WEBHOOK_SECRET: "modules.cms-saas.config.stripe.webhookSecret",
+    DMS_API_BASE_URL: "modules.dms.config.apiBaseUrl",
+    DMS_BOOTSTRAP_SECRET: "modules.dms.config.nuxt.bootstrapSecret",
+    DMS_CLIENT_BASE_URL: "modules.dms.config.clientBaseUrl",
+    STRIPE_SECRET_KEY: "modules.dms-saas.config.stripe.secretKey",
+    STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
+    STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
   },
   modules: {
     // Local module of this template: registers the single "home" page (see src/).
-    "template-cms-demo": {
+    "template-dms-demo": {
       source: {
         type: "local",
         path: ".",
@@ -34,11 +34,11 @@ export default defineConfig({
       },
     },
 
-    // CMS core: hosts the Nuxt frontend and enables every CMS feature layer.
-    cms: {
+    // DMS core: hosts the Nuxt frontend and enables every DMS feature layer.
+    dms: {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms",
+        package: "@antelopejs-private/dms",
         version: "^0.8.3",
       },
       config: {
@@ -46,8 +46,8 @@ export default defineConfig({
         clientBaseUrl: "http://localhost:3000",
         homepage: "/home",
         meta: {
-          title: "Template CMS Demo",
-          description: "AntelopeJS CMS demo template",
+          title: "Template DMS Demo",
+          description: "AntelopeJS DMS demo template",
         },
         auth: {
           jwtSecret: "dev",
@@ -55,32 +55,32 @@ export default defineConfig({
       },
     },
 
-    // ---- CMS feature modules (caret ranges on latest published versions) ----
-    "cms-api": {
+    // ---- DMS feature modules (caret ranges on latest published versions) ----
+    "dms-api": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-api",
+        package: "@antelopejs-private/dms-api",
         version: "^0.1.14",
       },
     },
-    "cms-database": {
+    "dms-database": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-database",
+        package: "@antelopejs-private/dms-database",
         version: "^0.0.22",
       },
     },
-    "cms-automation": {
+    "dms-automation": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-automation",
+        package: "@antelopejs-private/dms-automation",
         version: "^0.2.6",
       },
     },
-    "cms-saas": {
+    "dms-saas": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-saas",
+        package: "@antelopejs-private/dms-saas",
         version: "^0.2.11",
       },
       config: {
@@ -99,27 +99,27 @@ export default defineConfig({
         ],
       },
     },
-    "cms-ai": {
+    "dms-ai": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-ai",
+        package: "@antelopejs-private/dms-ai",
         version: "^0.0.18",
       },
     },
-    "cms-lang": {
+    "dms-lang": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-lang",
+        package: "@antelopejs-private/dms-lang",
         version: "^0.1.9",
       },
       config: {
         editable: true,
       },
     },
-    "cms-cicd": {
+    "dms-cicd": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-cicd",
+        package: "@antelopejs-private/dms-cicd",
         version: "^0.0.13",
       },
       config: {
@@ -128,23 +128,23 @@ export default defineConfig({
         allowGitOperations: true,
       },
     },
-    "cms-builder": {
+    "dms-builder": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-builder",
+        package: "@antelopejs-private/dms-builder",
         version: "^0.0.5",
       },
     },
-    "cms-media": {
+    "dms-media": {
       source: {
         type: "package",
-        package: "@antelopejs-private/cms-media",
+        package: "@antelopejs-private/dms-media",
         version: "^0.0.7",
       },
       config: {},
     },
 
-    // ---- Infrastructure modules required by the CMS ----
+    // ---- Infrastructure modules required by the DMS ----
     mongodb: {
       source: {
         type: "package",
@@ -153,7 +153,7 @@ export default defineConfig({
       },
       config: {
         url: "mongodb://localhost:27017",
-        database: "template_cms_demo",
+        database: "template_dms_demo",
       },
       importOverrides: [],
       disabledExports: [],

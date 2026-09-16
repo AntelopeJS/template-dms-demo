@@ -2,9 +2,9 @@ import {
   PageController,
   pagesCategory,
   RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { CustomComponent } from "@antelopejs-private/cms/interfaces/cms-base/custom";
-import { DefaultLayout } from "@antelopejs-private/cms/interfaces/cms-base/layouts";
+} from "@antelopejs-private/dms/interfaces/dms/page";
+import { CustomComponent } from "@antelopejs-private/dms/interfaces/dms-base/custom";
+import { DefaultLayout } from "@antelopejs-private/dms/interfaces/dms-base/layouts";
 
 // The home page renders the DemoReadme component shipped by the local
 // nuxt-layer (nuxt-layer/app/components/Readme.vue): a pretty, translated

@@ -34,7 +34,7 @@
     },
     "form": {
       "title": "Inscription à l'événement",
-      "description": "Un formulaire unique exerçant les groupes de champs, la validation et tous les types de données du CMS",
+      "description": "Un formulaire unique exerçant les groupes de champs, la validation et tous les types de données du DMS",
       "success": "Inscription enregistrée !",
       "identity": { "label": "Identité", "description": "Qui s'inscrit" },
       "fullName": { "label": "Nom complet" },
@@ -61,7 +61,7 @@
       "interests": { "label": "Centres d'intérêt", "description": "Multi-sélection dans un arbre statique" },
       "track": { "label": "Track préférée", "description": "Sujets hiérarchiques depuis une collection auto-référencée (cascader)" },
       "relatedTask": { "label": "Tâche liée", "description": "Relation vers la collection de démo du TableView" },
-      "permissions": { "label": "Permissions accordées", "description": "L'arbre des permissions du CMS, réutilisé comme input de formulaire" },
+      "permissions": { "label": "Permissions accordées", "description": "L'arbre des permissions du DMS, réutilisé comme input de formulaire" },
       "bio": { "label": "Courte bio", "description": "Texte brut, variante textarea" },
       "notes": { "label": "Notes", "description": "Tout ce que nous devrions savoir" },
       "attachment": { "label": "Pièce jointe", "description": "Image ou PDF, 5 Mo max" },
@@ -128,8 +128,8 @@
     },
     "readme": {
       "hero": {
-        "title": "Template de démo AntelopeJS CMS",
-        "subtitle": "Un CMS prêt à explorer qui câble tous les modules, un catalogue de composants et une petite application de démo — le tout piloté par un minuscule module TypeScript."
+        "title": "Template de démo AntelopeJS DMS",
+        "subtitle": "Un DMS prêt à explorer qui câble tous les modules, un catalogue de composants et une petite application de démo — le tout piloté par un minuscule module TypeScript."
       },
       "stack": {
         "antelope": "AntelopeJS",
@@ -140,7 +140,7 @@
       "sections": {
         "components": {
           "title": "Catalogue de composants",
-          "description": "Une page par composant intégré du CMS, chacune montrant son exemple le plus complet.",
+          "description": "Une page par composant intégré du DMS, chacune montrant son exemple le plus complet.",
           "items": {
             "form": "Formulaires avec groupes et validation",
             "dashboard": "Un dashboard sensible à la période avec graphiques",
@@ -159,7 +159,7 @@
           }
         },
         "modules": {
-          "title": "Modules CMS",
+          "title": "Modules DMS",
           "description": "Chaque module fonctionnel est installé et activé dans ce template.",
           "items": {
             "api": "API — endpoints REST",

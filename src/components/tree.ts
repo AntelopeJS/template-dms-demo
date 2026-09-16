@@ -1,12 +1,12 @@
 import {
   PageController,
   RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
+} from "@antelopejs-private/dms/interfaces/dms/page";
 import {
   Tree,
   TreeSelectionBehavior,
-} from "@antelopejs-private/cms/interfaces/cms-base/tree";
-import { Color, Size } from "@antelopejs-private/cms/interfaces/cms-base/types";
+} from "@antelopejs-private/dms/interfaces/dms-base/tree";
+import { Color, Size } from "@antelopejs-private/dms/interfaces/dms-base/types";
 import { componentsCategory } from "./category";
 
 @RegisterPage()

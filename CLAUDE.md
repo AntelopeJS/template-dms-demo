@@ -10,5 +10,5 @@ permissions, module authoring, dev servers, …) are synced automatically into
 `.claude/skills/` by the antelopejs plugin — on session start and after
 installs. If they seem missing, run `/antelopejs:sync-skills`.
 
-Start with the synced `cms--antelopejs-cms` skill for the mental model, and
-`cms--cms-dev` to run the dev servers.
+Start with the synced `dms--antelopejs-dms` skill for the mental model, and
+`dms--dms-dev` to run the dev servers.

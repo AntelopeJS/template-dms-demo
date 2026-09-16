@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
   color: "primary",
 });
 
-// Auto-imported from the cms-core layer; resolves "$key" values to i18n.
+// Auto-imported from the dms-core layer; resolves "$key" values to i18n.
 const { processI18n } = useTranslation();
 
 const colorClasses: Record<NonNullable<Props["color"]>, string> = {

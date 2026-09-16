@@ -1,8 +1,8 @@
 import {
   PageController,
   RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { Placeholder } from "@antelopejs-private/cms/interfaces/cms-base/placeholder";
+} from "@antelopejs-private/dms/interfaces/dms/page";
+import { Placeholder } from "@antelopejs-private/dms/interfaces/dms-base/placeholder";
 import { componentsCategory } from "./category";
 
 @RegisterPage()

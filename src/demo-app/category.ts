@@ -1,7 +1,7 @@
 import {
   Category,
   pagesCategory,
-} from "@antelopejs-private/cms/interfaces/cms/page";
+} from "@antelopejs-private/dms/interfaces/dms/page";
 
 // Sidebar group with a small project-management demo app: users, projects
 // and tasks backed by real Mongo collections with relations between them.

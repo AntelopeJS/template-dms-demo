@@ -16,10 +16,10 @@ import { Model } from "@antelopejs/interface-database-decorators";
 import {
   PageController,
   RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { DefaultDataTypes } from "@antelopejs-private/cms/interfaces/cms-base/data-types/default-types";
-import { DefaultLayout } from "@antelopejs-private/cms/interfaces/cms-base/layouts";
-import { Searchable } from "@antelopejs-private/cms/interfaces/cms-base/searchable";
+} from "@antelopejs-private/dms/interfaces/dms/page";
+import { DefaultDataTypes } from "@antelopejs-private/dms/interfaces/dms-base/data-types/default-types";
+import { DefaultLayout } from "@antelopejs-private/dms/interfaces/dms-base/layouts";
+import { Searchable } from "@antelopejs-private/dms/interfaces/dms-base/searchable";
 import {
   ArchiveField,
   Column,
@@ -27,7 +27,7 @@ import {
   Select,
   TableView,
   TableViewRoutes,
-} from "@antelopejs-private/cms/interfaces/cms-base/table-view";
+} from "@antelopejs-private/dms/interfaces/dms-base/table-view";
 import { componentsCategory } from "../category";
 import { DemoTask, DemoTaskModel } from "./database";
 

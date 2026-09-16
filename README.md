@@ -1,29 +1,29 @@
-# template-cms-demo
+# template-dms-demo
 
-A minimal [AntelopeJS](https://antelopejs.com) CMS template wiring together every
-CMS feature module, plus a tiny local module that exposes a **Home** page (a
-pretty in-CMS readme), a **Components** catalog showcasing every built-in CMS
+A minimal [AntelopeJS](https://antelopejs.com) DMS template wiring together every
+DMS feature module, plus a tiny local module that exposes a **Home** page (a
+pretty in-DMS readme), a **Components** catalog showcasing every built-in DMS
 component and a small **Demo app** (users / projects / tasks with relations).
 All page texts are translated in English and French through the local
 nuxt-layer's i18n files.
 
 ## What's inside
 
-The CMS feature modules are all installed from npm at their latest compatible
+The DMS feature modules are all installed from npm at their latest compatible
 published versions (see [`antelope.config.ts`](./antelope.config.ts)):
 
 | Module            | Package                              |
 | ----------------- | ------------------------------------ |
-| CMS core          | `@antelopejs-private/cms`            |
-| API               | `@antelopejs-private/cms-api`        |
-| Database          | `@antelopejs-private/cms-database`   |
-| Automation        | `@antelopejs-private/cms-automation` |
-| SaaS              | `@antelopejs-private/cms-saas`       |
-| AI                | `@antelopejs-private/cms-ai`         |
-| Lang / i18n       | `@antelopejs-private/cms-lang`       |
-| CI/CD             | `@antelopejs-private/cms-cicd`       |
-| Builder           | `@antelopejs-private/cms-builder`    |
-| Media library     | `@antelopejs-private/cms-media`      |
+| DMS core          | `@antelopejs-private/dms`            |
+| API               | `@antelopejs-private/dms-api`        |
+| Database          | `@antelopejs-private/dms-database`   |
+| Automation        | `@antelopejs-private/dms-automation` |
+| SaaS              | `@antelopejs-private/dms-saas`       |
+| AI                | `@antelopejs-private/dms-ai`         |
+| Lang / i18n       | `@antelopejs-private/dms-lang`       |
+| CI/CD             | `@antelopejs-private/dms-cicd`       |
+| Builder           | `@antelopejs-private/dms-builder`    |
+| Media library     | `@antelopejs-private/dms-media`      |
 
 Supporting infrastructure modules (MongoDB, API server, auth, file storage,
 mailer, …) are configured in the same file.
@@ -46,7 +46,7 @@ The local module lives in [`src/`](./src):
   Tasks open as a **kanban board** grouped by status (drag cards between
   columns; the toolbar switches back to the table).
 - `src/components/` — a **Components** sidebar category with one page per
-  built-in CMS component, each showing its most complete example:
+  built-in DMS component, each showing its most complete example:
 
   | Page           | Component(s)                                          |
   | -------------- | ----------------------------------------------------- |
@@ -98,7 +98,7 @@ pnpm dev
 ```
 
 `pnpm dev` runs `ajs project run -w`, which installs every module declared in
-`antelope.config.ts`, builds the local module, and starts the CMS. The Home page
+`antelope.config.ts`, builds the local module, and starts the DMS. The Home page
 is served as the configured `homepage` (`/home`).
 
 ## Configuration notes
@@ -113,6 +113,6 @@ is served as the configured `homepage` (`/home`).
   `.env.example` to `.env` and set `STRIPE_SECRET_KEY`,
   `STRIPE_PUBLISHABLE_KEY` and `STRIPE_WEBHOOK_SECRET`. The `.env` file is
   git-ignored; the placeholder values in the config act as fallbacks.
-- **Modules frontend**: every CMS feature layer is registered by its module's
-  `AddNuxtLayer` call. Remove the module block in `antelope.config.ts` to drop
+- **Modules frontend**: every DMS feature layer is registered by its module's
+  `AddFrontendModule` call. Remove the module block in `antelope.config.ts` to drop
   a feature.

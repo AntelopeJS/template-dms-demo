@@ -60,7 +60,7 @@
 		},
 		"form": {
 			"title": "Event registration",
-			"description": "A single form exercising field groups, validation and every data type the CMS ships",
+			"description": "A single form exercising field groups, validation and every data type the DMS ships",
 			"success": "Registration saved!",
 			"identity": {
 				"label": "Identity",
@@ -147,7 +147,7 @@
 			},
 			"permissions": {
 				"label": "Granted permissions",
-				"description": "The CMS permissions tree, reused as a form input"
+				"description": "The DMS permissions tree, reused as a form input"
 			},
 			"bio": {
 				"label": "Short bio",
@@ -253,8 +253,8 @@
 		},
 		"readme": {
 			"hero": {
-				"title": "AntelopeJS CMS demo template",
-				"subtitle": "A ready-to-explore CMS wiring every feature module, a component catalog and a small demo application — all driven by a tiny TypeScript module."
+				"title": "AntelopeJS DMS demo template",
+				"subtitle": "A ready-to-explore DMS wiring every feature module, a component catalog and a small demo application — all driven by a tiny TypeScript module."
 			},
 			"stack": {
 				"antelope": "AntelopeJS",
@@ -265,7 +265,7 @@
 			"sections": {
 				"components": {
 					"title": "Components catalog",
-					"description": "One page per built-in CMS component, each showing its most complete example.",
+					"description": "One page per built-in DMS component, each showing its most complete example.",
 					"items": {
 						"form": "Forms with groups and validation",
 						"dashboard": "A period-aware dashboard with charts",
@@ -284,7 +284,7 @@
 					}
 				},
 				"modules": {
-					"title": "CMS modules",
+					"title": "DMS modules",
 					"description": "Every feature module is installed and enabled in this template.",
 					"items": {
 						"api": "API — REST endpoints",

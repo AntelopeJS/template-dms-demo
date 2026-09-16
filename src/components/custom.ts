@@ -1,8 +1,8 @@
 import {
   PageController,
   RegisterPage,
-} from "@antelopejs-private/cms/interfaces/cms/page";
-import { CustomComponent } from "@antelopejs-private/cms/interfaces/cms-base/custom";
+} from "@antelopejs-private/dms/interfaces/dms/page";
+import { CustomComponent } from "@antelopejs-private/dms/interfaces/dms-base/custom";
 import { componentsCategory } from "./category";
 
 // "demo-callout" resolves to the DemoCallout component shipped by the local

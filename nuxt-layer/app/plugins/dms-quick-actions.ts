@@ -4,8 +4,8 @@ interface QuickActionGlobals {
   QUICK_ACTION_COMPONENT_KEY?: string;
 }
 
-// CMS 0.5's TableView references these auto-imports without emitting their
-// runtime imports. Expose them until CMS ships the imports explicitly.
+// DMS 0.5's TableView references these auto-imports without emitting their
+// runtime imports. Expose them until DMS ships the imports explicitly.
 const quickActionGlobals = globalThis as typeof globalThis & QuickActionGlobals;
 
 quickActionGlobals.QUICK_ACTION_QUERY_KEY ??= "quickAction";
