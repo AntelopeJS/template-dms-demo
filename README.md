@@ -134,6 +134,8 @@ read that file**, and they do not read the same variables:
 | `DMS_HTML_RENDER_SECRET` | loader | Secret validating the `x-dms-service-token` the backend presents when it asks the frontend to render HTML or an email. Must equal the backend's `dms.config.htmlRender.serviceSecret` (default `dev`). | no |
 | `DMS_OAUTH_RELAY_SECRET` | loader | Secret sent as `x-dms-oauth-relay` on the backend's OAuth endpoints. The backend derives it from `auth.jwtSecret` and ships it to the loader in the frontend manifest, so it is an override, not a setting you normally choose. | no |
 | `DMS_TRUSTED_PROXY_HOPS` | loader | Number of trusted, rightmost reverse-proxy hops used to read `x-forwarded-*` (client IP, scheme, host). `0` ignores those headers. | no |
+| `MONGODB_URL` | backend (`modules.mongodb.config.url`) | MongoDB connection string. | no (defaults to `mongodb://localhost:27017`) |
+| `MONGODB_DATABASE` | backend (`modules.mongodb.config.database`) | MongoDB database name. | no (defaults to `template_dms_demo`) |
 | `STRIPE_SECRET_KEY` | backend (`modules.dms-saas.config.stripe.secretKey`) | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend (`modules.dms-saas.config.stripe.publishableKey`) | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend (`modules.dms-saas.config.stripe.webhookSecret`) | Stripe webhook signing secret. | no |

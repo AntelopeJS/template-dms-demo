@@ -20,6 +20,8 @@ export default defineConfig({
     DMS_API_BASE_URL: "modules.dms.config.apiBaseUrl",
     DMS_CLIENT_BASE_URL: "modules.dms.config.clientBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
+    MONGODB_URL: "modules.mongodb.config.url",
+    MONGODB_DATABASE: "modules.mongodb.config.database",
     STRIPE_SECRET_KEY: "modules.dms-saas.config.stripe.secretKey",
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
@@ -153,6 +155,8 @@ export default defineConfig({
         version: "^1.3.0",
       },
       config: {
+        // Fallback values; overridden by MONGODB_URL / MONGODB_DATABASE from
+        // .env (see envOverrides above).
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
       },
