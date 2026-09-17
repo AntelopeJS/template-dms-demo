@@ -108,6 +108,43 @@ suite checks that both catalogs cover every key the backend emits. Known
 limitation: TableView **tab labels** are not translated by the frontend, so
 they stay in plain English.
 
+## Environment
+
+Copy `.env.example` to `.env` before the first run. **Two different processes
+read that file**, and they do not read the same variables:
+
+- the **backend** (`pnpm dev`) — `antelope.config.ts` loads `.env` with `dotenv`
+  and maps a fixed list of variables onto module config paths through its
+  `envOverrides` block. A variable that is not in `envOverrides` has no effect
+  on the backend;
+- the **frontend loader** (`pnpm frontend:dev`, `pnpm frontend:build`) — the
+  `ajs-dms` binary of [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend)
+  reads the `.env` of the directory it runs in, which is this one, and passes
+  the variables to the generated Node server.
+
+<!-- env-table:start -->
+
+| Variable | Read by | Purpose | Needed locally |
+| --- | --- | --- | --- |
+| `DMS_API_BASE_URL` | backend (`modules.dms.config.apiBaseUrl`) + loader | Backend URL, as the dashboard and the links in generated emails must reach it. | yes |
+| `DMS_CLIENT_BASE_URL` | backend (`modules.dms.config.clientBaseUrl`) + loader | Dashboard URL; also the base of the links rendered into emails. | yes |
+| `DMS_SESSION_SECRET` | loader | Key encrypting the `dms_session` cookie. **At least 32 characters**, or every login throws `DMS_SESSION_SECRET must contain at least 32 characters`. Generate one with `openssl rand -hex 32`. | yes |
+| `DMS_BOOTSTRAP_SECRET` | backend (`modules.dms.config.frontend.bootstrapSecret`) + loader | Server-to-server credential gating the frontend manifest and the module archives. `ajs-dms dev` picks up the ephemeral one the backend writes to `.antelope/dms-dev.json`; `ajs-dms build` needs this variable. | no |
+| `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. `ajs-dms dev` defaults to `false`, `ajs-dms start` to `true`. | no |
+| `DMS_HTML_RENDER_SECRET` | loader | Secret validating the `x-dms-service-token` the backend presents when it asks the frontend to render HTML or an email. Must equal the backend's `dms.config.htmlRender.serviceSecret` (default `dev`). | no |
+| `DMS_OAUTH_RELAY_SECRET` | loader | Secret sent as `x-dms-oauth-relay` on the backend's OAuth endpoints. The backend derives it from `auth.jwtSecret` and ships it to the loader in the frontend manifest, so it is an override, not a setting you normally choose. | no |
+| `DMS_TRUSTED_PROXY_HOPS` | loader | Number of trusted, rightmost reverse-proxy hops used to read `x-forwarded-*` (client IP, scheme, host). `0` ignores those headers. | no |
+| `STRIPE_SECRET_KEY` | backend (`modules.dms-saas.config.stripe.secretKey`) | Stripe secret key. | no |
+| `STRIPE_PUBLISHABLE_KEY` | backend (`modules.dms-saas.config.stripe.publishableKey`) | Stripe publishable key. | no |
+| `STRIPE_WEBHOOK_SECRET` | backend (`modules.dms-saas.config.stripe.webhookSecret`) | Stripe webhook signing secret. | no |
+
+<!-- env-table:end -->
+
+Only `DMS_API_BASE_URL`, `DMS_CLIENT_BASE_URL` and `DMS_SESSION_SECRET` matter
+for a local run; the rest have working defaults. If your `ajs-dms` predates
+`.env` loading, export the variables in the frontend terminal instead — for
+instance `set -a; . ./.env; set +a` before `pnpm frontend:dev`.
+
 ## Prerequisites
 
 - Node.js 20+
