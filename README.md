@@ -85,10 +85,10 @@ module ships:
 - `app/components/Callout.vue` → `DemoCallout`, the CustomComponent demo.
 - `i18n/locales/demo-*.json`, merged into the dashboard's catalogs.
 
-It is a standalone package with its own ESLint, Prettier and Vitest setup:
+It is a standalone package with its own ESLint, Prettier and Vitest setup. Its
+dependencies are installed separately, in [Getting started](#getting-started):
 
 ```bash
-pnpm --dir frontend-vue install
 pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
@@ -149,15 +149,24 @@ instance `set -a; . ./.env; set +a` before `pnpm frontend:dev`.
 
 ## Prerequisites
 
-- Node.js 20+
-- A running MongoDB instance (`mongodb://localhost:27017` by default)
+- **Node.js 24**, the version pinned in [`.nvmrc`](./.nvmrc).
+- **corepack**, or pnpm 10.2.0 on your `PATH`. This repository pins
+  `"packageManager": "pnpm@10.2.0"`, and the AntelopeJS CLI shells out to a
+  bare `pnpm` when it installs and builds modules — so run `corepack enable`
+  once (corepack ships with Node) or install pnpm 10.2.0 globally. A different
+  major of pnpm on the `PATH` is what usually breaks `pnpm exec ajs project
+  modules install`.
+- A running MongoDB instance (`mongodb://localhost:27017` by default, see
+  `MONGODB_URL` in [Environment](#environment)).
 
 ## Getting started
 
 ```bash
 pnpm install
+pnpm --dir frontend-vue install
+cp .env.example .env
+# then set DMS_SESSION_SECRET in .env: openssl rand -hex 32
 pnpm exec ajs project modules install
-cp .env.example .env   # then fill in your Stripe keys
 pnpm dev
 ```
 
@@ -171,23 +180,50 @@ In a second terminal, start the dashboard frontend:
 pnpm frontend:dev
 ```
 
-`ajs-dms dev` discovers the running backend through `.antelope/dev.json`, picks
-up its per-boot bootstrap credential, and serves the dashboard on
-`http://localhost:3001`. The Home page is served as the configured `homepage`
-(`/home`).
+`ajs-dms dev` discovers the running backend through `.antelope/dev.json` (which
+holds only the backend's pid, start time and listening endpoints), reads its
+per-boot bootstrap credential from `.antelope/dms-dev.json`, and serves the
+dashboard on `http://localhost:3001`. Both files are rewritten on every boot.
+
+### First run: create the administrator
+
+Open `http://localhost:3001`. **There are no default credentials.** A fresh
+instance has no account at all, so a global frontend middleware sends every
+route — including `/` and the configured `homepage` (`/home`) — to
+`/onboarding`, the first-run wizard that creates the first administrator.
+
+The password you choose there, like every password in the DMS, must be at least
+8 characters long and match this policy (`packages/dms/src/validation/password.ts`
+in [`@antelopejs/dms`](https://github.com/AntelopeJS/dms)):
+
+```
+/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
+```
+
+That is: at least one uppercase letter, one digit and one special character,
+and **only** `@$!%*?&` count as special characters — a password containing, say,
+`#` or `-` is rejected. See
+[Authentication](https://antelopejs.com/docs/auth-and-tenancy/authentication)
+for the rest of the auth system.
+
+Once the wizard has run, the instance stops redirecting to `/onboarding` and
+later sign-ins go through **`/auth`**, the login screen (there is no `/login`
+route). `/auth/forgot`, `/auth/recover`, `/auth/2fa` and the other auth screens
+live under the same prefix.
 
 ## Configuration notes
 
-- **MongoDB**: adjust `mongodb.config.url` / `database` in `antelope.config.ts`.
+- **MongoDB**: set `MONGODB_URL` / `MONGODB_DATABASE` in `.env`, or adjust the
+  fallbacks in `mongodb.config` in `antelope.config.ts`.
 - **Media storage**: `file-storage-local` stores development assets under
   `.antelope/file-storage` and removes abandoned staged uploads after 24 hours.
   It is not suitable for a clustered production deployment; use
   `@antelopejs/file-storage-s3` with S3 or R2 there.
-- **SaaS / Stripe**: Stripe credentials are read from `.env` (loaded via
-  `dotenv` and mapped through `envOverrides` in `antelope.config.ts`). Copy
-  `.env.example` to `.env` and set `STRIPE_SECRET_KEY`,
-  `STRIPE_PUBLISHABLE_KEY` and `STRIPE_WEBHOOK_SECRET`. The `.env` file is
-  git-ignored; the placeholder values in the config act as fallbacks.
+- **SaaS / Stripe**: the placeholder `STRIPE_*` values shipped in
+  `.env.example` boot the template fine and let you browse every page; real
+  keys are only needed to exercise the billing flows of the `dms-saas` module.
+  They are read from `.env` and mapped through `envOverrides`; `.env` is
+  git-ignored.
 - **Frontend builds**: `ajs-dms build` needs the backend's
   `dms.config.frontend.bootstrapSecret`, passed as `DMS_BOOTSTRAP_SECRET`. In
   development the backend generates an ephemeral one, so `pnpm frontend:dev`
