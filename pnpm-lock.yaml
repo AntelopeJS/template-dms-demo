@@ -12,7 +12,7 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@24.13.3)
       '@antelopejs/dms-media':
-        specifier: ^0.0.2
+        specifier: '>=0.0.2 <1.0.0'
         version: 0.0.2(@antelopejs/interface-auth@0.0.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-data-api@0.1.9(@antelopejs/interface-api-util@0.1.2(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12)(@antelopejs/interface-database-decorators@0.1.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12)(@antelopejs/interface-database@0.1.7(@antelopejs/interface-core@0.0.12)))(@antelopejs/interface-database@0.1.7(@antelopejs/interface-core@0.0.12)))
       '@antelopejs/interface-api':
         specifier: '>=0.0.13 <1.0.0'
@@ -30,11 +30,11 @@ importers:
         specifier: '>=0.1.6 <1.0.0'
         version: 0.1.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.12))(@antelopejs/interface-core@0.0.12)(@antelopejs/interface-database@0.1.7(@antelopejs/interface-core@0.0.12))
       '@antelopejs/interface-dms':
-        specifier: ^0.0.2
+        specifier: '>=0.0.2 <1.0.0'
         version: 0.0.2(d86b7f7b6cd32377604a6881e8132abb)
     devDependencies:
       '@antelopejs/dms-frontend':
-        specifier: ^0.1.2
+        specifier: '>=0.1.2 <1.0.0'
         version: 0.1.2(@antelopejs/core@1.6.0(@types/node@24.13.3))
       '@antelopejs/tooling-configs':
         specifier: ^0.0.4
