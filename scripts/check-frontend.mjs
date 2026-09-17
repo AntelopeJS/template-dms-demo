@@ -2,9 +2,11 @@
 // the real Vue/Inertia adapter, the same way `ajs-dms build` would, without
 // needing a running backend.
 //
-// By default it uses the installed @antelopejs/dms and @antelopejs/dms-frontend
-// packages. Point DMS_SOURCE and DMS_ADAPTER_SOURCE at local checkouts to check
-// against unpublished versions.
+// The DMS core module is not an npm dependency of this template — nothing in
+// src/ imports it — so it is taken from the module cache `ajs project modules
+// install` fills, falling back to node_modules when something else hoisted it.
+// Point DMS_SOURCE and DMS_ADAPTER_SOURCE at local checkouts to check against
+// unpublished versions.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -25,15 +27,31 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const require = createRequire(import.meta.url);
 
 function packageRoot(name) {
-  return dirname(require.resolve(`${name}/package.json`));
+  try {
+    return dirname(require.resolve(`${name}/package.json`));
+  } catch {
+    return undefined;
+  }
 }
 
-const dmsRoot = resolve(
-  process.env.DMS_SOURCE ?? packageRoot("@antelopejs/dms"),
+function dmsModuleRoot() {
+  const cached = join(root, ".antelope/cache/@antelopejs/dms");
+  if (existsSync(join(cached, "package.json"))) return cached;
+  const installed = packageRoot("@antelopejs/dms");
+  assert.ok(
+    installed,
+    "Could not locate @antelopejs/dms. Run `pnpm exec ajs project modules install` first, or set DMS_SOURCE to a checkout of the package.",
+  );
+  return installed;
+}
+
+const dmsRoot = resolve(process.env.DMS_SOURCE ?? dmsModuleRoot());
+const adapterInstalled = packageRoot("@antelopejs/dms-frontend");
+assert.ok(
+  process.env.DMS_ADAPTER_SOURCE || adapterInstalled,
+  "Could not locate @antelopejs/dms-frontend. Run `pnpm install` first, or set DMS_ADAPTER_SOURCE.",
 );
-const adapterRoot = resolve(
-  process.env.DMS_ADAPTER_SOURCE ?? packageRoot("@antelopejs/dms-frontend"),
-);
+const adapterRoot = resolve(process.env.DMS_ADAPTER_SOURCE ?? adapterInstalled);
 const adapterEntry = join(adapterRoot, "dist/common.js");
 assert.ok(
   existsSync(adapterEntry),

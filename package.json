@@ -8,7 +8,7 @@
     "dev": "ajs project run -w",
     "frontend:dev": "ajs-dms dev",
     "frontend:build": "ajs-dms build",
-    "lint": "oxlint && oxfmt --check . && pnpm --dir frontend-vue lint",
+    "lint": "oxlint && oxfmt --check . && node scripts/check-env-example.mjs && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
     "format": "oxfmt . && pnpm --dir frontend-vue format",
     "typecheck": "tsc -p tsconfig.json",
@@ -18,18 +18,18 @@
     "knip:all": "knip"
   },
   "dependencies": {
-    "@antelopejs/core": "^1.5.1",
-    "@antelopejs/dms": ">=0.0.1 <1.0.0",
-    "@antelopejs/dms-media": ">=0.0.1 <1.0.0",
+    "@antelopejs/core": "^1.6.0",
+    "@antelopejs/dms-media": ">=0.0.2 <1.0.0",
     "@antelopejs/interface-api": ">=0.0.13 <1.0.0",
     "@antelopejs/interface-core": "^0.0.12",
     "@antelopejs/interface-data-api": ">=0.1.9 <1.0.0",
     "@antelopejs/interface-database": ">=0.1.7 <1.0.0",
     "@antelopejs/interface-database-decorators": ">=0.1.6 <1.0.0",
-    "@antelopejs/interface-dms": ">=0.0.1 <1.0.0"
+    "@antelopejs/interface-dms": ">=0.0.2 <1.0.0"
   },
   "devDependencies": {
-    "@antelopejs/dms-frontend": ">=0.0.1 <1.0.0",
+    "@antelopejs/dms": ">=0.1.0 <1.0.0",
+    "@antelopejs/dms-frontend": ">=0.1.2 <1.0.0",
     "@antelopejs/tooling-configs": "^0.0.4",
     "@types/node": "^24.0.0",
     "dotenv": "^17.4.2",
