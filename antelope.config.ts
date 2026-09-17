@@ -8,6 +8,14 @@ loadDotenv({ path: resolve(__dirname, ".env") });
 // module set on one resolution, which the core requires for interfaces.
 const DMS_VERSION = ">=0.0.1 <1.0.0";
 
+// Port the API server listens on. `DMS_API_PORT` (optional, see `.env.example`)
+// moves the whole backend surface at once: the api module's listener, the
+// default `dms.config.apiBaseUrl` and the base URL `file-storage-local` builds
+// asset links with. It cannot go through `envOverrides` below because the api
+// port lives inside the `servers` array and the core's override writer only
+// walks plain objects.
+const API_PORT = process.env.DMS_API_PORT ?? "5010";
+
 export default defineConfig({
   name: "template-dms-demo",
   logging: {
@@ -50,7 +58,7 @@ export default defineConfig({
         version: DMS_VERSION,
       },
       config: {
-        apiBaseUrl: "http://localhost:5010",
+        apiBaseUrl: `http://localhost:${API_PORT}`,
         clientBaseUrl: "http://localhost:3001",
         homepage: "/home",
         meta: {
@@ -183,7 +191,7 @@ export default defineConfig({
         servers: [
           {
             protocol: "http",
-            port: "5010",
+            port: API_PORT,
           },
         ],
         cors: {
@@ -199,7 +207,7 @@ export default defineConfig({
       },
       config: {
         storagePath: ".antelope/file-storage",
-        baseUrl: "http://127.0.0.1:5010",
+        baseUrl: `http://127.0.0.1:${API_PORT}`,
         defaultVisibility: "private",
         stagingExpiration: 24 * 60 * 60,
       },
