@@ -174,6 +174,17 @@ pnpm exec ajs project modules install
 pnpm dev
 ```
 
+If `pnpm exec ajs project modules install` stops with `npm error Cannot read
+properties of null (reading 'edgesOut')`, npm's dependency resolver crashed on
+the peer graph of `dms-saas`
+([AntelopeJS/antelopejs#131](https://github.com/AntelopeJS/antelopejs/issues/131)).
+Until the CLI ships the fix, run the command with the legacy peer resolver (the
+same variable also covers `pnpm dev`, which installs missing modules itself):
+
+```bash
+NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm exec ajs project modules install
+```
+
 `pnpm dev` runs `ajs project run -w`, which installs every module declared in
 `antelope.config.ts`, builds the local module, and starts the DMS backend on
 `http://localhost:5010`.
