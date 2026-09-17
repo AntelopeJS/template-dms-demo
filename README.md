@@ -126,6 +126,7 @@ read that file**, and they do not read the same variables:
 
 | Variable | Read by | Purpose | Needed locally |
 | --- | --- | --- | --- |
+| `DMS_API_PORT` | backend (`antelope.config.ts`) | Port the API server listens on. The default `DMS_API_BASE_URL` fallback and the `file-storage-local` base URL are derived from it, so one variable moves the whole backend. | no (defaults to `5010`) |
 | `DMS_API_BASE_URL` | backend (`modules.dms.config.apiBaseUrl`) + loader | Backend URL, as the dashboard and the links in generated emails must reach it. | yes |
 | `DMS_CLIENT_BASE_URL` | backend (`modules.dms.config.clientBaseUrl`) + loader | Dashboard URL; also the base of the links rendered into emails. | yes |
 | `DMS_SESSION_SECRET` | loader | Key encrypting the `dms_session` cookie. **At least 32 characters**, or every login throws `DMS_SESSION_SECRET must contain at least 32 characters`. Generate one with `openssl rand -hex 32`. | yes |
@@ -187,7 +188,8 @@ NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm exec ajs project modules install
 
 `pnpm dev` runs `ajs project run -w`, which installs every module declared in
 `antelope.config.ts`, builds the local module, and starts the DMS backend on
-`http://localhost:5010`.
+`http://localhost:5010`. Set `DMS_API_PORT` in `.env` to listen elsewhere; the
+default `apiBaseUrl` and the `file-storage-local` base URL follow it.
 
 In a second terminal, start the dashboard frontend:
 
@@ -199,6 +201,12 @@ pnpm frontend:dev
 holds only the backend's pid, start time and listening endpoints), reads its
 per-boot bootstrap credential from `.antelope/dms-dev.json`, and serves the
 dashboard on `http://localhost:3001`. Both files are rewritten on every boot.
+
+`ajs-dms start` — the production server, as opposed to `ajs-dms dev` — defaults
+`DMS_COOKIE_SECURE` to `true`, so the browser drops the session cookie and every
+login silently fails when you test a production build over plain `http://`. Set
+`DMS_COOKIE_SECURE=false` in `.env` for such a run, and leave it unset (or
+`true`) behind real TLS.
 
 ### First run: create the administrator
 
