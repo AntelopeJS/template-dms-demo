@@ -142,6 +142,10 @@ read that file**, and they do not read the same variables:
 
 <!-- env-table:end -->
 
+`pnpm lint` runs `scripts/check-env-example.mjs`, which fails when the table
+above, `.env.example` and the `envOverrides` block of `antelope.config.ts` drift
+apart.
+
 Only `DMS_API_BASE_URL`, `DMS_CLIENT_BASE_URL` and `DMS_SESSION_SECRET` matter
 for a local run; the rest have working defaults. If your `ajs-dms` predates
 `.env` loading, export the variables in the frontend terminal instead — for
