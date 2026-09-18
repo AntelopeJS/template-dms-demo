@@ -4,9 +4,20 @@ import { config as loadDotenv } from "dotenv";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
 
-// Every DMS package is published at 0.0.x; `>=0.0.1 <1.0.0` keeps the whole
-// module set on one resolution, which the core requires for interfaces.
-const DMS_VERSION = ">=0.0.1 <1.0.0";
+// Floors of the DMS module set this template was verified with. Every range
+// stays below 1.0.0 so the whole set resolves on one interface-dms copy, which
+// the core requires.
+const DMS_VERSIONS = {
+  "@antelopejs/dms": ">=0.3.5 <1.0.0",
+  "@antelopejs/dms-api": ">=0.1.2 <1.0.0",
+  "@antelopejs/dms-database": ">=0.0.5 <1.0.0",
+  "@antelopejs/dms-automation": ">=0.1.2 <1.0.0",
+  "@antelopejs/dms-saas": ">=0.1.6 <1.0.0",
+  "@antelopejs/dms-ai": ">=0.0.5 <1.0.0",
+  "@antelopejs/dms-lang": ">=0.0.4 <1.0.0",
+  "@antelopejs/dms-builder": ">=0.1.2 <1.0.0",
+  "@antelopejs/dms-media": ">=0.0.4 <1.0.0",
+};
 
 // Port the API server listens on. `DMS_API_PORT` (optional, see `.env.example`)
 // moves the whole backend surface at once: the api module's listener, the
@@ -55,7 +66,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms"],
       },
       config: {
         apiBaseUrl: `http://localhost:${API_PORT}`,
@@ -83,28 +94,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-api"],
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-database"],
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-automation"],
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-saas"],
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
@@ -126,14 +137,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-ai"],
       },
     },
     "dms-lang": {
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-lang"],
       },
       config: {
         editable: true,
@@ -143,14 +154,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-builder"],
       },
     },
     "dms-media": {
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: DMS_VERSION,
+        version: DMS_VERSIONS["@antelopejs/dms-media"],
       },
       config: {},
     },
@@ -185,7 +196,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        version: "^1.2.4",
+        version: "^1.2.5",
       },
       config: {
         servers: [
@@ -216,7 +227,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.4",
+        version: "^0.0.5",
       },
       config: {
         ethereal: true,
