@@ -1,5 +1,5 @@
 // Builds this template's frontend module against the real DMS core module and
-// the real Vue/Inertia adapter, the same way `ajs-dms build` would, without
+// the real Vue/Inertia adapter, the same way `ajs dms build` would, without
 // needing a running backend.
 //
 // The DMS core module is not an npm dependency of this template — nothing in

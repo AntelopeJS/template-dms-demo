@@ -6,8 +6,8 @@
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "ajs project run -w",
-    "frontend:dev": "ajs-dms dev",
-    "frontend:build": "ajs-dms build",
+    "frontend:dev": "ajs dms dev",
+    "frontend:build": "ajs dms build",
     "lint": "oxlint && oxfmt --check . && node scripts/check-env-example.mjs && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
     "format": "oxfmt . && pnpm --dir frontend-vue format",
@@ -18,7 +18,7 @@
     "knip:all": "knip"
   },
   "dependencies": {
-    "@antelopejs/core": "^1.7.1",
+    "@antelopejs/core": "^1.8.0",
     "@antelopejs/dms-media": ">=0.0.3 <1.0.0",
     "@antelopejs/interface-api": ">=0.0.13 <1.0.0",
     "@antelopejs/interface-core": ">=0.0.13 <1.0.0",
