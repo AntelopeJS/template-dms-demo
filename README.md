@@ -119,10 +119,11 @@ read that file**, and they do not read the same variables:
   `envOverrides` block. A variable that is not in `envOverrides` has no effect
   on the backend;
 - the **frontend loader** (`pnpm frontend:dev`, `pnpm frontend:build`) — `ajs
-  dms`, the AntelopeJS CLI delegating to the `ajs-dms` binary of
+  dms`, the AntelopeJS CLI provided by
   [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend),
   reads the `.env` of the directory it runs in, which is this one, and passes
-  the variables to the generated Node server.
+  the variables to the generated Node server. Use the supported `ajs dms ...`
+  commands rather than invoking an internal loader binary directly.
 
 <!-- env-table:start -->
 
