@@ -49,7 +49,7 @@ export default defineConfig({
       },
     },
 
-    // DMS core: serves the frontend manifest consumed by `ajs-dms` and enables
+    // DMS core: serves the frontend manifest consumed by `ajs dms` and enables
     // every DMS feature layer.
     dms: {
       source: {
@@ -69,7 +69,7 @@ export default defineConfig({
           jwtSecret: "dev",
         },
         frontend: {
-          // Credential `ajs-dms build` presents to fetch the frontend manifest
+          // Credential `ajs dms build` presents to fetch the frontend manifest
           // and module sources. In development the instance generates an
           // ephemeral one in .antelope/dms-dev.json, so `pnpm frontend:dev`
           // needs nothing here; set DMS_BOOTSTRAP_SECRET in .env for builds.
