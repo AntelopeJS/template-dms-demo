@@ -9,14 +9,14 @@ loadDotenv({ path: resolve(__dirname, ".env") });
 // the core requires.
 const DMS_VERSIONS = {
   "@antelopejs/dms": ">=0.3.5 <1.0.0",
-  "@antelopejs/dms-api": ">=0.1.2 <1.0.0",
-  "@antelopejs/dms-database": ">=0.0.5 <1.0.0",
-  "@antelopejs/dms-automation": ">=0.1.2 <1.0.0",
+  "@antelopejs/dms-api": ">=0.1.3 <1.0.0",
+  "@antelopejs/dms-database": ">=0.0.6 <1.0.0",
+  "@antelopejs/dms-automation": ">=0.1.3 <1.0.0",
   "@antelopejs/dms-saas": ">=0.1.6 <1.0.0",
   "@antelopejs/dms-ai": ">=0.0.5 <1.0.0",
   "@antelopejs/dms-lang": ">=0.0.4 <1.0.0",
   "@antelopejs/dms-builder": ">=0.1.2 <1.0.0",
-  "@antelopejs/dms-media": ">=0.0.4 <1.0.0",
+  "@antelopejs/dms-media": ">=0.0.5 <1.0.0",
 };
 
 // Port the API server listens on. `DMS_API_PORT` (optional, see `.env.example`)
