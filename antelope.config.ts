@@ -21,10 +21,10 @@ const DMS_VERSIONS = {
   "@antelopejs/dms-mailing": ">=0.2.3 <1.0.0",
 };
 
-// Port the API server listens on. `DMS_API_PORT` (optional, see `.env.example`)
-// moves the whole backend surface at once: the api module's listener, the
-// default `dms.config.apiBaseUrl` and the base URL `file-storage-local` builds
-// asset links with. It cannot go through `envOverrides` below because the api
+// Port the API server listens on. `DMS_API_PORT` is optional and documented in
+// the README environment table; it moves the whole backend surface at once: the
+// api module's listener, the default `dms.config.apiBaseUrl` and the base URL
+// `file-storage-local` builds asset links with. It cannot go through `envOverrides` below because the api
 // port lives inside the `servers` array and the core's override writer only
 // walks plain objects.
 const API_PORT = process.env.DMS_API_PORT ?? "5010";
@@ -121,7 +121,7 @@ export default defineConfig({
       },
       config: {
         // Fallback values; overridden by the STRIPE_* variables from .env
-        // (see envOverrides above). Copy .env.example to .env to set real keys.
+        // (see envOverrides above). Set real keys in .env to exercise billing.
         stripe: {
           secretKey: "sk_test_replace_me",
           publishableKey: "pk_test_replace_me",

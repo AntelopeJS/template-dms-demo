@@ -113,8 +113,9 @@ they stay in plain English.
 
 ## Environment
 
-Copy `.env.example` to `.env` before the first run. **Two different processes
-read that file**, and they do not read the same variables:
+Create a `.env` file at the repository root before the first run (it is
+git-ignored). **Two different processes read that file**, and they do not read
+the same variables:
 
 - the **backend** (`pnpm dev`) — `antelope.config.ts` loads `.env` with `dotenv`
   and maps a fixed list of variables onto module config paths through its
@@ -126,8 +127,6 @@ read that file**, and they do not read the same variables:
   reads the `.env` of the directory it runs in, which is this one, and passes
   the variables to the generated Node server. Use the supported `ajs dms ...`
   commands rather than invoking an internal loader binary directly.
-
-<!-- env-table:start -->
 
 | Variable | Read by | Purpose | Needed locally |
 | --- | --- | --- | --- |
@@ -146,11 +145,8 @@ read that file**, and they do not read the same variables:
 | `STRIPE_PUBLISHABLE_KEY` | backend (`modules.dms-saas.config.stripe.publishableKey`) | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend (`modules.dms-saas.config.stripe.webhookSecret`) | Stripe webhook signing secret. | no |
 
-<!-- env-table:end -->
-
-`pnpm lint` runs `scripts/check-env-example.mjs`, which fails when the table
-above, `.env.example` and the `envOverrides` block of `antelope.config.ts` drift
-apart.
+The table above and the `envOverrides` block of `antelope.config.ts` are
+maintained by hand: update both together when you add or rename a variable.
 
 Only `DMS_API_BASE_URL`, `DMS_CLIENT_BASE_URL` and `DMS_SESSION_SECRET` matter
 for a local run; the rest have working defaults. If your `@antelopejs/dms-frontend` predates
@@ -174,8 +170,11 @@ instance `set -a; . ./.env; set +a` before `pnpm frontend:dev`.
 ```bash
 pnpm install
 pnpm --dir frontend-vue install
-cp .env.example .env
-# then set DMS_SESSION_SECRET in .env: openssl rand -hex 32
+cat > .env <<EOF
+DMS_API_BASE_URL=http://localhost:5010
+DMS_CLIENT_BASE_URL=http://localhost:3001
+DMS_SESSION_SECRET=$(openssl rand -hex 32)
+EOF
 pnpm exec ajs project modules install
 pnpm dev
 ```
@@ -236,9 +235,10 @@ live under the same prefix.
   `.antelope/file-storage` and removes abandoned staged uploads after 24 hours.
   It is not suitable for a clustered production deployment; use
   `@antelopejs/file-storage-s3` with S3 or R2 there.
-- **SaaS / Stripe**: the placeholder `STRIPE_*` values shipped in
-  `.env.example` boot the template fine and let you browse every page; real
-  keys are only needed to exercise the billing flows of the `dms-saas` module.
+- **SaaS / Stripe**: the placeholder `STRIPE_*` fallbacks in
+  `antelope.config.ts` boot the template fine and let you browse every page;
+  real keys are only needed to exercise the billing flows of the `dms-saas`
+  module.
   They are read from `.env` and mapped through `envOverrides`; `.env` is
   git-ignored.
 - **Frontend builds**: `ajs dms build` needs the backend's
