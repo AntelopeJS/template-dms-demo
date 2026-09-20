@@ -8,14 +8,14 @@ loadDotenv({ path: resolve(__dirname, ".env") });
 // stays below 1.0.0 so the whole set resolves on one interface-dms copy, which
 // the core requires.
 const DMS_VERSIONS = {
-  "@antelopejs/dms": ">=0.3.5 <1.0.0",
+  "@antelopejs/dms": ">=0.3.6 <1.0.0",
   "@antelopejs/dms-api": ">=0.1.3 <1.0.0",
   "@antelopejs/dms-database": ">=0.0.6 <1.0.0",
-  "@antelopejs/dms-automation": ">=0.1.3 <1.0.0",
-  "@antelopejs/dms-saas": ">=0.1.6 <1.0.0",
+  "@antelopejs/dms-automation": ">=0.1.4 <1.0.0",
+  "@antelopejs/dms-saas": ">=0.1.7 <1.0.0",
   "@antelopejs/dms-ai": ">=0.0.5 <1.0.0",
   "@antelopejs/dms-lang": ">=0.0.4 <1.0.0",
-  "@antelopejs/dms-builder": ">=0.1.2 <1.0.0",
+  "@antelopejs/dms-builder": ">=0.1.3 <1.0.0",
   "@antelopejs/dms-media": ">=0.0.5 <1.0.0",
 };
 
