@@ -206,7 +206,14 @@ export default defineConfig({
           },
         ],
         cors: {
-          allowedOrigins: ["http://localhost:3001", "http://127.0.0.1:3001"],
+          allowedOrigins: [
+            "http://localhost:3001",
+            "http://127.0.0.1:3001",
+            /^https:\/\/[^/]+\.onamp\.dev$/,
+            ...(process.env.DMS_CLIENT_BASE_URL
+              ? [process.env.DMS_CLIENT_BASE_URL]
+              : []),
+          ],
         },
       },
     },
