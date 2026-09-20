@@ -37,8 +37,8 @@ importers:
         specifier: '>=0.3.6 <1.0.0'
         version: 0.3.6(@antelopejs/core@1.8.0(@types/node@24.13.3))(@antelopejs/interface-auth@0.0.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.0.13))(@antelopejs/interface-core@0.0.13))
       '@antelopejs/dms-frontend':
-        specifier: 0.2.1
-        version: 0.2.1(@antelopejs/core@1.8.0(@types/node@24.13.3))
+        specifier: 0.2.2
+        version: 0.2.2(@antelopejs/core@1.8.0(@types/node@24.13.3))
       '@antelopejs/tooling-configs':
         specifier: '>=0.0.6 <1.0.0'
         version: 0.0.6(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
@@ -76,8 +76,8 @@ packages:
     resolution: {integrity: sha512-aH0t8YsPT76Fvgt+p83mFsfIFqNp5QMON4ZhNnK3ov7/2SepRFimakcrT2llrz8GArLHmrGwbvO/3kTh+I+ZjA==}
     hasBin: true
 
-  '@antelopejs/dms-frontend@0.2.1':
-    resolution: {integrity: sha512-hTujfIA6OJ1lTsi02f0EFDsFW46VI1pyJFRWj4KPPhB8WHXQQX+Rq0bYBOf/wuxNPoO5uM47SrTiMU5OBnxnBg==}
+  '@antelopejs/dms-frontend@0.2.2':
+    resolution: {integrity: sha512-+aCSxpKiLYWIJjYAk4uSMd2qx+RJeygbtxM2y+6ZmyYZNUK6BQ419f93H8yAJMwBj+lRmiAsmNUiu9nYxKCiLQ==}
     engines: {node: '>=20.12.0'}
     hasBin: true
     peerDependencies:
@@ -2089,7 +2089,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@antelopejs/dms-frontend@0.2.1(@antelopejs/core@1.8.0(@types/node@24.13.3))':
+  '@antelopejs/dms-frontend@0.2.2(@antelopejs/core@1.8.0(@types/node@24.13.3))':
     dependencies:
       boxen: 5.1.2
       chalk: 4.1.2
