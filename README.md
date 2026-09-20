@@ -23,6 +23,8 @@ The DMS feature modules are all installed from npm (see
 | Lang / i18n   | `@antelopejs/dms-lang`     |
 | Builder       | `@antelopejs/dms-builder`  |
 | Media library | `@antelopejs/dms-media`    |
+| Marketing     | `@antelopejs/dms-marketing` |
+| Mailing       | `@antelopejs/dms-mailing`  |
 
 Supporting infrastructure modules (MongoDB, API server, auth, file storage,
 mailer, …) are configured in the same file.

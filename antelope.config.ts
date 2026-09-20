@@ -12,11 +12,13 @@ const DMS_VERSIONS = {
   "@antelopejs/dms-api": ">=0.1.3 <1.0.0",
   "@antelopejs/dms-database": ">=0.0.6 <1.0.0",
   "@antelopejs/dms-automation": ">=0.1.4 <1.0.0",
-  "@antelopejs/dms-saas": ">=0.1.7 <1.0.0",
+  "@antelopejs/dms-saas": ">=0.1.8 <1.0.0",
   "@antelopejs/dms-ai": ">=0.0.5 <1.0.0",
   "@antelopejs/dms-lang": ">=0.0.4 <1.0.0",
   "@antelopejs/dms-builder": ">=0.1.3 <1.0.0",
   "@antelopejs/dms-media": ">=0.0.5 <1.0.0",
+  "@antelopejs/dms-marketing": ">=0.2.4 <1.0.0",
+  "@antelopejs/dms-mailing": ">=0.2.3 <1.0.0",
 };
 
 // Port the API server listens on. `DMS_API_PORT` (optional, see `.env.example`)
@@ -162,6 +164,28 @@ export default defineConfig({
         type: "package",
         package: "@antelopejs/dms-media",
         version: DMS_VERSIONS["@antelopejs/dms-media"],
+      },
+      config: {},
+    },
+
+    // Traffic analytics, conversion funnels and click heatmaps. Every setting
+    // is optional and also editable from the module's own settings page.
+    "dms-marketing": {
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-marketing",
+        version: DMS_VERSIONS["@antelopejs/dms-marketing"],
+      },
+      config: {},
+    },
+
+    // Template library, e-mail editor and send log. Sends through the
+    // `nodemailer` module configured below.
+    "dms-mailing": {
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-mailing",
+        version: DMS_VERSIONS["@antelopejs/dms-mailing"],
       },
       config: {},
     },
