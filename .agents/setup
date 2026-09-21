@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-readonly NODE_VERSION="22.23.2"
-readonly NODE_ARCHIVE_SHA256="d60acfe00a2932254bb0ad20e01b0d74397a0875595de719654b214f4b03f307"
-readonly NODE_MAJOR="22"
+readonly NODE_VERSION="24.21.0"
+readonly NODE_ARCHIVE_SHA256="fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6"
+readonly NODE_MAJOR="24"
 readonly PNPM_VERSION="10.2.0"
 readonly ANTELOPE_VERSION="1.8.0"
 readonly MONGODB_MAJOR="8.0"
