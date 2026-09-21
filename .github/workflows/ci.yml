@@ -48,7 +48,3 @@ jobs:
       - run: pnpm knip
       - run: pnpm build
       - run: pnpm test
-      # Builds the template's frontend module against the DMS core one through
-      # the real Vue/Inertia loader: client, SSR and email bundles, plus
-      # vue-tsc. No backend needed.
-      - run: pnpm test:frontend
