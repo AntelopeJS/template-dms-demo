@@ -13,7 +13,6 @@
     "format": "oxfmt . && pnpm --dir frontend-vue format",
     "typecheck": "tsc -p tsconfig.json",
     "test": "pnpm --dir frontend-vue test",
-    "test:frontend": "node scripts/check-frontend.mjs",
     "knip": "knip --dependencies",
     "knip:all": "knip"
   },
@@ -28,7 +27,6 @@
     "@antelopejs/interface-dms": ">=0.1.0 <1.0.0"
   },
   "devDependencies": {
-    "@antelopejs/dms": ">=0.3.7 <1.0.0",
     "@antelopejs/dms-frontend": "0.2.3",
     "@antelopejs/tooling-configs": ">=0.0.6 <1.0.0",
     "@types/node": "^24.0.0",

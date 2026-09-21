@@ -96,10 +96,6 @@ pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
 
-`pnpm test:frontend` goes further: it builds the template's frontend module
-together with the DMS core one through the real loader (client, SSR and email
-bundles plus `vue-tsc`), without a running backend.
-
 ## Translations
 
 Every backend-declared text (page names, descriptions, form labels, card
