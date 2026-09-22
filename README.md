@@ -161,8 +161,8 @@ stable versions ship:**
 
 | Package | Pinned to | Where |
 | --- | --- | --- |
-| `@antelopejs/core` | `1.9.0-next.2` | `package.json` (JSON allows no comment, hence this note) |
-| `@antelopejs/api` | `1.3.0-next.1` | `antelope.config.ts`, `modules.api.source.version` |
+| `@antelopejs/core` | `1.9.0-next.4` | `package.json` (JSON allows no comment, hence this note) |
+| `@antelopejs/api` | `1.3.0-next.2` | `antelope.config.ts`, `modules.api.source.version` |
 | `@antelopejs/dms-ai` | `0.1.1-next.0` | `antelope.config.ts`, `DMS_VERSIONS` |
 
 These are exact pins rather than ranges on purpose: a `>=x <1.0.0` range never

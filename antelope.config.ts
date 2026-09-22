@@ -264,7 +264,7 @@ export default defineConfig({
         // TEMPORARY: first release publishing the API_PORT /
         // API_LOCAL_BASE_URL / API_PUBLIC_BASE_URL config variables. Move back
         // to a caret range once 1.3.0 ships as stable.
-        version: "1.3.0-next.1",
+        version: "1.3.0-next.2",
       },
       config: {
         servers: [
