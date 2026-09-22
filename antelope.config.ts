@@ -264,7 +264,7 @@ export default defineConfig({
         // TEMPORARY: first release publishing the API_PORT /
         // API_LOCAL_BASE_URL / API_PUBLIC_BASE_URL config variables. Move back
         // to a caret range once 1.3.0 ships as stable.
-        version: "1.3.0-next.0",
+        version: "1.3.0-next.1",
       },
       config: {
         servers: [
@@ -279,7 +279,15 @@ export default defineConfig({
           // the dashboard is served from, so they derive from the client
           // constants above, not from the api variables: a module cannot
           // reference its own published values, that is a resolution cycle.
-          // `DMS_GATEWAY_URL` is the single-origin dev gateway (see .amp).
+          //
+          // `DMS_GATEWAY_URL` is the exact public origin of the Amp gateway,
+          // resolved by Amp and injected in .amp/services.yaml. It replaces a
+          // former `/^https:\/\/[^/]+\.onamp\.dev$/` wildcard, and it stays
+          // exact on purpose: this API answers with credentials, and the
+          // wildcard admitted every orb portal on that domain, including other
+          // tenants'. There is nothing to guess here -- Amp knows the origin
+          // and hands it over -- so the pattern buys no flexibility and costs
+          // cross-tenant exposure.
           allowedOrigins: [
             ...CLIENT_ORIGIN_SET,
             ...(process.env.DMS_GATEWAY_URL

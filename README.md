@@ -152,6 +152,22 @@ local run; the rest have working defaults. If your `@antelopejs/dms-frontend` pr
 `.env` loading, export the variables in the frontend terminal instead — for
 instance `set -a; . ./.env; set +a` before `pnpm frontend:dev`.
 
+### Temporary prerelease pins
+
+This template is currently pinned to the prerelease set that introduced
+module-provided config variables, so the whole flow can be exercised before the
+stable releases. **All three pins are temporary and must be reverted once the
+stable versions ship:**
+
+| Package | Pinned to | Where |
+| --- | --- | --- |
+| `@antelopejs/core` | `1.9.0-next.2` | `package.json` (JSON allows no comment, hence this note) |
+| `@antelopejs/api` | `1.3.0-next.1` | `antelope.config.ts`, `modules.api.source.version` |
+| `@antelopejs/dms-ai` | `0.1.1-next.0` | `antelope.config.ts`, `DMS_VERSIONS` |
+
+These are exact pins rather than ranges on purpose: a `>=x <1.0.0` range never
+matches a prerelease such as `0.1.1-next.0`.
+
 ## Prerequisites
 
 - **Node.js 24**, the version pinned in [`.nvmrc`](./.nvmrc).
