@@ -1,9 +1,22 @@
 import http from "node:http";
 
+function requireEnv(name) {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(`${name} must be set`);
+  }
+
+  return value;
+}
+
+// Every address this gateway needs comes from the environment Amp builds from
+// .amp/services.yaml: `PORT` and `PUBLIC_URL` are Amp's own, the two upstreams
+// are declared once there. No port is spelled out in this file.
 const listenPort = Number(process.env.PORT);
 const publicUrl = new URL(process.env.PUBLIC_URL);
-const frontendUrl = new URL("http://[::1]:3001");
-const backendUrl = new URL("http://127.0.0.1:5010");
+const frontendUrl = new URL(requireEnv("DMS_FRONTEND_URL"));
+const backendUrl = new URL(requireEnv("DMS_BACKEND_URL"));
 const backendPrefix = "/__dms_api";
 
 if (!Number.isInteger(listenPort)) {

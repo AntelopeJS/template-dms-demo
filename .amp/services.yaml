@@ -1,19 +1,34 @@
 services:
   template-dms-demo-backend:
     command: pnpm dev
+    # Amp needs a declared, stable port to expose and health-check a service,
+    # and it injects that number as `PORT`. `antelope.config.ts` reads `PORT`
+    # as the api module's preferred port and sets `strictPort`, so the api
+    # reserves exactly this port or fails loudly -- it can never silently land
+    # somewhere the gateway below cannot follow. Every URL the backend hands
+    # out is then derived from what the api module publishes.
     port: 5010
     health: /dms/sitelayout
+    env:
+      # Browser origin of the dashboard behind the gateway. The api module's
+      # CORS list allows it (see `allowedOrigins` in antelope.config.ts).
+      DMS_GATEWAY_URL: ${services.template-dms-demo-gateway.publicURL}
 
   template-dms-demo-frontend:
+    # Amp injects `PORT` from the declared port below, and `ajs dms dev`
+    # listens on it, so the frontend port is never spelled out twice.
     command: >-
-      until curl -fsS http://127.0.0.1:5010/dms/sitelayout >/dev/null; do sleep 0.5; done;
-      PORT=3001
-      DMS_API_BASE_URL=http://127.0.0.1:5010
+      until curl -fsS "$DMS_BACKEND_URL/dms/sitelayout" >/dev/null; do sleep 0.5; done;
+      DMS_API_BASE_URL="$DMS_BACKEND_URL"
       DMS_CLIENT_BASE_URL="$DMS_GATEWAY_URL"
       DMS_COOKIE_SECURE=false
       pnpm frontend:dev
     port: 3001
     env:
+      # Same-host origin of the backend: the loader fetches the manifest from
+      # this process, it never leaves the machine. Anchored here because the
+      # gateway proxies to the very same upstream.
+      DMS_BACKEND_URL: &backend_url http://127.0.0.1:5010
       DMS_GATEWAY_URL: ${services.template-dms-demo-gateway.publicURL}
       DMS_TRUSTED_PROXY_HOPS: "1"
 
@@ -21,6 +36,10 @@ services:
     command: node .amp/gateway.mjs
     port: 3002
     health: /__gateway_health
+    env:
+      # Gateway upstreams: both are same-host processes, hence LOCAL origins.
+      DMS_BACKEND_URL: *backend_url
+      DMS_FRONTEND_URL: http://[::1]:3001
     portal:
       title: Template DMS Demo
       description: DMS frontend
