@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antelopejs/core':
-        specifier: 1.9.0-next.4
-        version: 1.9.0-next.4(@types/node@24.13.3)
+        specifier: 1.9.0
+        version: 1.9.0(@types/node@24.13.3)
       '@antelopejs/dms-media':
         specifier: '>=0.0.5 <1.0.0'
         version: 0.0.5(@antelopejs/interface-auth@0.0.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.1.0))(@antelopejs/interface-core@0.1.0))(@antelopejs/interface-data-api@0.1.9(@antelopejs/interface-api-util@0.1.2(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.1.0))(@antelopejs/interface-core@0.1.0))(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.1.0))(@antelopejs/interface-core@0.1.0)(@antelopejs/interface-database-decorators@0.1.6(@antelopejs/interface-api@0.0.13(@antelopejs/interface-core@0.1.0))(@antelopejs/interface-core@0.1.0)(@antelopejs/interface-database@0.1.7(@antelopejs/interface-core@0.1.0)))(@antelopejs/interface-database@0.1.7(@antelopejs/interface-core@0.1.0)))
@@ -35,7 +35,7 @@ importers:
     devDependencies:
       '@antelopejs/dms-frontend':
         specifier: 0.2.3
-        version: 0.2.3(@antelopejs/core@1.9.0-next.4(@types/node@24.13.3))
+        version: 0.2.3(@antelopejs/core@1.9.0(@types/node@24.13.3))
       '@antelopejs/tooling-configs':
         specifier: '>=0.0.6 <1.0.0'
         version: 0.0.6(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
@@ -66,8 +66,8 @@ importers:
 
 packages:
 
-  '@antelopejs/core@1.9.0-next.4':
-    resolution: {integrity: sha512-JR+5mFGRqMemCqfB4bqeimg3V8cnUQR8+e/Z9CXoyzisffVIx14mnBlHmU4Txd5+XzHhLJheJ51jQkVLEHP2sA==}
+  '@antelopejs/core@1.9.0':
+    resolution: {integrity: sha512-M34InFniN5PXuhjVipsZCFGx3AvqNXBPqzhcdwf0GG0+LhdKt8s7Svz2kcRyS4UzaCKTaKK820II/HmEuQkvkg==}
     hasBin: true
 
   '@antelopejs/dms-frontend@0.2.3':
@@ -1845,7 +1845,7 @@ packages:
 
 snapshots:
 
-  '@antelopejs/core@1.9.0-next.4(@types/node@24.13.3)':
+  '@antelopejs/core@1.9.0(@types/node@24.13.3)':
     dependencies:
       '@antelopejs/interface-core': 0.1.0
       '@types/proper-lockfile': 4.1.4
@@ -1864,7 +1864,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@antelopejs/dms-frontend@0.2.3(@antelopejs/core@1.9.0-next.4(@types/node@24.13.3))':
+  '@antelopejs/dms-frontend@0.2.3(@antelopejs/core@1.9.0(@types/node@24.13.3))':
     dependencies:
       boxen: 5.1.2
       chalk: 4.1.2
@@ -1875,7 +1875,7 @@ snapshots:
       semver: 7.8.5
       unzipper: 0.12.5
     optionalDependencies:
-      '@antelopejs/core': 1.9.0-next.4(@types/node@24.13.3)
+      '@antelopejs/core': 1.9.0(@types/node@24.13.3)
       '@oxc-parser/binding-darwin-arm64': 0.95.0
       '@oxc-parser/binding-darwin-x64': 0.95.0
       '@oxc-parser/binding-linux-arm64-gnu': 0.95.0

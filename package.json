@@ -17,7 +17,7 @@
     "knip:all": "knip"
   },
   "dependencies": {
-    "@antelopejs/core": "1.9.0-next.4",
+    "@antelopejs/core": "1.9.0",
     "@antelopejs/dms-media": ">=0.0.5 <1.0.0",
     "@antelopejs/interface-api": ">=0.0.13 <1.0.0",
     "@antelopejs/interface-core": ">=0.1.0 <1.0.0",

@@ -13,10 +13,7 @@ const DMS_VERSIONS = {
   "@antelopejs/dms-database": ">=0.0.6 <1.0.0",
   "@antelopejs/dms-automation": ">=0.1.5 <1.0.0",
   "@antelopejs/dms-saas": ">=0.1.8 <1.0.0",
-  // TEMPORARY: exact prerelease pin, not a range -- a `>=x <1.0.0` range never
-  // matches a prerelease. This release consumes the api config variables and
-  // forwards them to its sidecar. Restore a range once 0.1.1 ships as stable.
-  "@antelopejs/dms-ai": "0.1.1-next.0",
+  "@antelopejs/dms-ai": ">=0.1.1 <1.0.0",
   "@antelopejs/dms-lang": ">=0.0.4 <1.0.0",
   "@antelopejs/dms-builder": ">=0.1.3 <1.0.0",
   "@antelopejs/dms-media": ">=0.0.5 <1.0.0",
@@ -261,10 +258,9 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        // TEMPORARY: first release publishing the API_PORT /
-        // API_LOCAL_BASE_URL / API_PUBLIC_BASE_URL config variables. Move back
-        // to a caret range once 1.3.0 ships as stable.
-        version: "1.3.0-next.2",
+        // 1.3.0 is the floor: it publishes API_PORT / API_LOCAL_BASE_URL /
+        // API_PUBLIC_BASE_URL, which the modules above reference.
+        version: "^1.3.0",
       },
       config: {
         servers: [
