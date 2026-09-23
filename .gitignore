@@ -1,6 +1,5 @@
 node_modules/
 dist/
 .antelope
-.amp/portals/
 .env
 *.log

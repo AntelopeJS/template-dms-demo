@@ -4,54 +4,9 @@ import { config as loadDotenv } from "dotenv";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
 
-// Floors of the DMS module set this template was verified with. Every range
-// stays below 1.0.0 so the whole set resolves on one interface-dms copy, which
-// the core requires.
-const DMS_VERSIONS = {
-  "@antelopejs/dms": ">=0.3.7 <1.0.0",
-  "@antelopejs/dms-api": ">=0.1.3 <1.0.0",
-  "@antelopejs/dms-database": ">=0.0.6 <1.0.0",
-  "@antelopejs/dms-automation": ">=0.1.5 <1.0.0",
-  "@antelopejs/dms-saas": ">=0.1.8 <1.0.0",
-  "@antelopejs/dms-ai": ">=0.1.1 <1.0.0",
-  "@antelopejs/dms-lang": ">=0.0.4 <1.0.0",
-  "@antelopejs/dms-builder": ">=0.1.3 <1.0.0",
-  "@antelopejs/dms-media": ">=0.0.5 <1.0.0",
-  "@antelopejs/dms-marketing": ">=0.2.5 <1.0.0",
-  "@antelopejs/dms-mailing": ">=0.2.3 <1.0.0",
-};
-
-// Port the API server prefers. This is the only port literal in this file: the
-// api module publishes the port it actually reserved as `API_PORT`, and the
-// origins built from it as `API_LOCAL_BASE_URL` / `API_PUBLIC_BASE_URL`. Every
-// other module below references those published values instead of rebuilding a
-// URL of its own, so the reserved port and the minted URLs can never drift.
-// `DMS_API_PORT` is optional and documented in the README environment table.
-// Neither goes through `envOverrides` below: the port lives inside the
-// `servers` array and the core's override writer only walks plain objects.
-//
-// `PORT` comes from Amp, which declares the port in .amp/services.yaml and
-// exposes and health-checks exactly that number. The api must not drift off
-// it, so a declared port also turns on `strictPort`: a busy port then fails
-// the boot loudly instead of silently landing on a port the gateway could
-// never follow. Without a declared port the development fallback stays on and
-// two checkouts can run side by side.
-const DECLARED_API_PORT = process.env.PORT;
-const PREFERRED_API_PORT = Number(
-  DECLARED_API_PORT ?? process.env.DMS_API_PORT ?? 5010,
-);
-
-// Origin of the dashboard frontend. `ajs dms dev` is a separate process, not an
-// Antelope module, so nothing can publish it as a config variable: it stays an
-// explicit constant and the CORS list and the redirect allowlist derive from
-// it. `localhost` and `127.0.0.1` are distinct browser origins, so both forms
-// are allowed.
-const CLIENT_PORT = Number(process.env.DMS_CLIENT_PORT ?? 3001);
-const CLIENT_ORIGINS = ["localhost", "127.0.0.1"].map(
-  (host) => `http://${host}:${CLIENT_PORT}`,
-);
-const CLIENT_BASE_URL = process.env.DMS_CLIENT_BASE_URL ?? CLIENT_ORIGINS[0];
-const CLIENT_ORIGIN_SET = [...new Set([...CLIENT_ORIGINS, CLIENT_BASE_URL])];
+// `localhost` and `127.0.0.1` are distinct browser origins.
+const CLIENT_ORIGINS = ["http://localhost:3001", "http://127.0.0.1:3001"];
+const CLIENT_BASE_URL = CLIENT_ORIGINS[0];
 
 export default defineConfig({
   name: "template-dms-demo",
@@ -60,11 +15,7 @@ export default defineConfig({
       "*": "trace",
     },
   },
-  // Map environment variables (loaded from .env) onto module config paths.
   envOverrides: {
-    // The public origin browsers must use to reach the API. Optional in
-    // development, where the api module falls back to its local origin;
-    // required anywhere else, or the boot fails with an explicit message.
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
     MONGODB_URL: "modules.mongodb.config.url",
@@ -74,32 +25,25 @@ export default defineConfig({
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
   },
   modules: {
-    // Local module of this template: registers the demo pages (see src/) and
-    // ships the frontend-vue module that carries their Vue components.
     "template-dms-demo": {
       source: {
         type: "local",
         path: ".",
         watchDir: ["src"],
         installCommand: ["pnpm install", "pnpm run build"],
-        // Not `pnpm build`: that starts with `rimraf dist`, and the running
-        // module is loaded from dist. Watch reloads compile in place.
-        reloadCommand: ["pnpm exec tsc -p tsconfig.build.json"],
+        // Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist.
+        reloadCommand: ["pnpm exec tsc"],
       },
     },
 
-    // DMS core: serves the frontend manifest consumed by `ajs dms` and enables
-    // every DMS feature layer.
+    // DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy.
     dms: {
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: DMS_VERSIONS["@antelopejs/dms"],
+        version: ">=0.3.7 <1.0.0",
       },
       config: {
-        // Published by the api module from the port it actually reserved.
-        // PUBLIC, not LOCAL: the dashboard runs in a browser and the same URL
-        // ends up in generated e-mails.
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
         clientBaseUrl: CLIENT_BASE_URL,
         homepage: "/home",
@@ -111,56 +55,45 @@ export default defineConfig({
           jwtSecret: "dev",
         },
         frontend: {
-          // Credential `ajs dms build` presents to fetch the frontend manifest
-          // and module sources. In development the instance generates an
-          // ephemeral one in .antelope/dms-dev.json, so `pnpm frontend:dev`
-          // needs nothing here; set DMS_BOOTSTRAP_SECRET in .env for builds.
+          // Generated in .antelope/dms-dev.json in development; set DMS_BOOTSTRAP_SECRET for builds.
           bootstrapSecret: "",
         },
       },
     },
-
-    // ---- DMS feature modules ----
     "dms-api": {
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: DMS_VERSIONS["@antelopejs/dms-api"],
+        version: ">=0.1.3 <1.0.0",
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: DMS_VERSIONS["@antelopejs/dms-database"],
+        version: ">=0.0.6 <1.0.0",
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: DMS_VERSIONS["@antelopejs/dms-automation"],
+        version: ">=0.1.5 <1.0.0",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: DMS_VERSIONS["@antelopejs/dms-saas"],
+        version: ">=0.1.8 <1.0.0",
       },
       config: {
-        // Fallback values; overridden by the STRIPE_* variables from .env
-        // (see envOverrides above). Set real keys in .env to exercise billing.
         stripe: {
           secretKey: "sk_test_replace_me",
           publishableKey: "pk_test_replace_me",
           webhookSecret: "whsec_replace_me",
         },
-        // Stripe return URLs point back at the dashboard, never at the API,
-        // so this list derives from the client origins. The module matches on
-        // `host:port` without a scheme, which is why it cannot consume the
-        // origin-shaped `API_PUBLIC_BASE_URL` directly.
-        allowedRedirectHosts: CLIENT_ORIGIN_SET.map(
+        allowedRedirectHosts: CLIENT_ORIGINS.map(
           (origin) => new URL(origin).host,
         ),
       },
@@ -169,14 +102,11 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: DMS_VERSIONS["@antelopejs/dms-ai"],
+        version: ">=0.1.1 <1.0.0",
       },
       config: {
-        // LOCAL: the sidecar is a child process on this host, so it must talk
-        // to the API over loopback rather than through a public origin.
+        // The sidecar runs on this host, so it reaches the API over loopback.
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
-        // The dashboard origin the sidecar renders against. Not an Antelope
-        // module, so it stays the explicit client constant (see above).
         hostOrigin: CLIENT_BASE_URL,
       },
     },
@@ -184,7 +114,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: DMS_VERSIONS["@antelopejs/dms-lang"],
+        version: ">=0.0.4 <1.0.0",
       },
       config: {
         editable: true,
@@ -194,41 +124,31 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: DMS_VERSIONS["@antelopejs/dms-builder"],
+        version: ">=0.1.3 <1.0.0",
       },
     },
     "dms-media": {
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: DMS_VERSIONS["@antelopejs/dms-media"],
+        version: ">=0.0.5 <1.0.0",
       },
-      config: {},
     },
-
-    // Traffic analytics, conversion funnels and click heatmaps. Every setting
-    // is optional and also editable from the module's own settings page.
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: DMS_VERSIONS["@antelopejs/dms-marketing"],
+        version: ">=0.2.5 <1.0.0",
       },
-      config: {},
     },
-
-    // Template library, e-mail editor and send log. Sends through the
-    // `nodemailer` module configured below.
     "dms-mailing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: DMS_VERSIONS["@antelopejs/dms-mailing"],
+        version: ">=0.2.3 <1.0.0",
       },
-      config: {},
     },
 
-    // ---- Infrastructure modules required by the DMS ----
     mongodb: {
       source: {
         type: "package",
@@ -236,13 +156,9 @@ export default defineConfig({
         version: "^1.3.0",
       },
       config: {
-        // Fallback values; overridden by MONGODB_URL / MONGODB_DATABASE from
-        // .env (see envOverrides above).
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
       },
-      importOverrides: [],
-      disabledExports: [],
     },
     "auth-jwt": {
       source: {
@@ -258,38 +174,18 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        // 1.3.0 is the floor: it publishes API_PORT / API_LOCAL_BASE_URL /
-        // API_PUBLIC_BASE_URL, which the modules above reference.
+        // 1.3.0 publishes the API_* variables referenced above.
         version: "^1.3.0",
       },
       config: {
         servers: [
           {
             protocol: "http",
-            port: PREFERRED_API_PORT,
+            port: 5010,
           },
         ],
-        strictPort: DECLARED_API_PORT !== undefined,
         cors: {
-          // Browser origins allowed to call this API. These are the origins
-          // the dashboard is served from, so they derive from the client
-          // constants above, not from the api variables: a module cannot
-          // reference its own published values, that is a resolution cycle.
-          //
-          // `DMS_GATEWAY_URL` is the exact public origin of the Amp gateway,
-          // resolved by Amp and injected in .amp/services.yaml. It replaces a
-          // former `/^https:\/\/[^/]+\.onamp\.dev$/` wildcard, and it stays
-          // exact on purpose: this API answers with credentials, and the
-          // wildcard admitted every orb portal on that domain, including other
-          // tenants'. There is nothing to guess here -- Amp knows the origin
-          // and hands it over -- so the pattern buys no flexibility and costs
-          // cross-tenant exposure.
-          allowedOrigins: [
-            ...CLIENT_ORIGIN_SET,
-            ...(process.env.DMS_GATEWAY_URL
-              ? [process.env.DMS_GATEWAY_URL]
-              : []),
-          ],
+          allowedOrigins: CLIENT_ORIGINS,
         },
       },
     },
@@ -301,8 +197,6 @@ export default defineConfig({
       },
       config: {
         storagePath: ".antelope/file-storage",
-        // PUBLIC: this is the base of every asset and presigned URL handed to
-        // a browser, so it must be the origin external clients can reach.
         baseUrl: "${@api.API_PUBLIC_BASE_URL}",
         defaultVisibility: "private",
         stagingExpiration: 24 * 60 * 60,

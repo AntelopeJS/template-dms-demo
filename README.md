@@ -109,48 +109,32 @@ they stay in plain English.
 
 ## Environment
 
-Create a `.env` file at the repository root before the first run (it is
-git-ignored). **Two different processes read that file**, and they do not read
-the same variables:
+Create a git-ignored `.env` at the repository root. Two processes read it:
 
-- the **backend** (`pnpm dev`) — `antelope.config.ts` loads `.env` with `dotenv`
-  and maps a fixed list of variables onto module config paths through its
-  `envOverrides` block. A variable that is not in `envOverrides` has no effect
-  on the backend;
-- the **frontend loader** (`pnpm frontend:dev`, `pnpm frontend:build`) — `ajs
-  dms`, the AntelopeJS CLI provided by
-  [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend),
-  reads the `.env` of the directory it runs in, which is this one, and passes
-  the variables to the generated Node server. Use the supported `ajs dms ...`
-  commands rather than invoking an internal loader binary directly.
+- the **backend** (`pnpm dev`) only reads the variables mapped in the
+  `envOverrides` block of `antelope.config.ts`;
+- the **frontend loader** (`ajs dms`, from
+  [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend))
+  reads the `DMS_*` loader variables below.
 
 | Variable | Read by | Purpose | Needed locally |
 | --- | --- | --- | --- |
-| `DMS_API_PORT` | backend (`antelope.config.ts`) | Port the API server *prefers*. It is the only port written anywhere in the backend config: the api module reserves it (or, in development, the next free one) and publishes what it reserved, and every other module's URL derives from that. One variable moves the whole backend surface. | no (defaults to `5010`) |
-| `PORT` | backend (`antelope.config.ts`) | Injected by Amp from the port declared in `.amp/services.yaml`. When set it wins over `DMS_API_PORT` and also turns on the api module's `strictPort`, so the reserved port can never drift away from the port Amp exposes. Leave it unset outside Amp. | no |
-| `DMS_API_PUBLIC_BASE_URL` | backend (`modules.api.config.publicBaseUrl`) | The origin browsers must use to reach the API. Published by the api module as `API_PUBLIC_BASE_URL` and consumed by `dms.apiBaseUrl` and `file-storage-local.baseUrl`, so it is the base of every asset link, presigned URL and e-mail link. Optional in development, where it defaults to the local origin; **required** for a production run (`ajs project start`), which fails at boot without it. | no in dev, yes otherwise |
-| `DMS_API_BASE_URL` | loader | Backend URL the frontend loader fetches the manifest from. The backend no longer reads it: `dms.config.apiBaseUrl` now derives from the api module. | yes |
-| `DMS_CLIENT_BASE_URL` | backend (`antelope.config.ts`) + loader | Dashboard URL; also the base of the links rendered into emails. The backend reads it directly to build `dms.config.clientBaseUrl`, the CORS allow-list and the Stripe redirect allow-list at once. | no (defaults to `http://localhost:3001`) |
-| `DMS_CLIENT_PORT` | backend (`antelope.config.ts`) | Port of the dashboard frontend, used to build the `localhost` / `127.0.0.1` browser origins the API accepts. | no (defaults to `3001`) |
-| `DMS_SESSION_SECRET` | loader | Key encrypting the `dms_session` cookie. **At least 32 characters**, or every login throws `DMS_SESSION_SECRET must contain at least 32 characters`. Generate one with `openssl rand -hex 32`. | yes |
-| `DMS_BOOTSTRAP_SECRET` | backend (`modules.dms.config.frontend.bootstrapSecret`) + loader | Server-to-server credential gating the frontend manifest and the module archives. `ajs dms dev` picks up the ephemeral one the backend writes to `.antelope/dms-dev.json`; `ajs dms build` needs this variable. | no |
-| `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. `ajs dms dev` defaults to `false`, `ajs dms start` to `true`. | no |
-| `DMS_HTML_RENDER_SECRET` | loader | Secret validating the `x-dms-service-token` the backend presents when it asks the frontend to render HTML or an email. Must equal the backend's `dms.config.htmlRender.serviceSecret` (default `dev`). | no |
-| `DMS_OAUTH_RELAY_SECRET` | loader | Secret sent as `x-dms-oauth-relay` on the backend's OAuth endpoints. The backend derives it from `auth.jwtSecret` and ships it to the loader in the frontend manifest, so it is an override, not a setting you normally choose. | no |
-| `DMS_TRUSTED_PROXY_HOPS` | loader | Number of trusted, rightmost reverse-proxy hops used to read `x-forwarded-*` (client IP, scheme, host). `0` ignores those headers. | no |
-| `MONGODB_URL` | backend (`modules.mongodb.config.url`) | MongoDB connection string. | no (defaults to `mongodb://localhost:27017`) |
-| `MONGODB_DATABASE` | backend (`modules.mongodb.config.database`) | MongoDB database name. | no (defaults to `template_dms_demo`) |
-| `STRIPE_SECRET_KEY` | backend (`modules.dms-saas.config.stripe.secretKey`) | Stripe secret key. | no |
-| `STRIPE_PUBLISHABLE_KEY` | backend (`modules.dms-saas.config.stripe.publishableKey`) | Stripe publishable key. | no |
-| `STRIPE_WEBHOOK_SECRET` | backend (`modules.dms-saas.config.stripe.webhookSecret`) | Stripe webhook signing secret. | no |
+| `DMS_API_BASE_URL` | loader | Backend URL the loader fetches the manifest from. | yes |
+| `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). | yes |
+| `DMS_CLIENT_BASE_URL` | loader | Dashboard URL. | no |
+| `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
+| `DMS_HTML_RENDER_SECRET` | loader | Must equal the backend's `dms.config.htmlRender.serviceSecret` (default `dev`). | no |
+| `DMS_OAUTH_RELAY_SECRET` | loader | Override for the OAuth relay secret the backend ships in the manifest. | no |
+| `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`. | no |
+| `DMS_API_PUBLIC_BASE_URL` | backend | Public origin of the API, base of asset and e-mail links. **Required** for `ajs project start`. | no |
+| `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest. Generated automatically in development; required by `ajs dms build`. | no |
+| `MONGODB_URL` | backend | MongoDB connection string. | no (`mongodb://localhost:27017`) |
+| `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
+| `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
+| `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
+| `STRIPE_WEBHOOK_SECRET` | backend | Stripe webhook signing secret. | no |
 
-The table above and the `envOverrides` block of `antelope.config.ts` are
-maintained by hand: update both together when you add or rename a variable.
-
-Only `DMS_API_BASE_URL` (loader side) and `DMS_SESSION_SECRET` matter for a
-local run; the rest have working defaults. If your `@antelopejs/dms-frontend` predates
-`.env` loading, export the variables in the frontend terminal instead — for
-instance `set -a; . ./.env; set +a` before `pnpm frontend:dev`.
+Keep this table and `envOverrides` in sync.
 
 ## Prerequisites
 
@@ -171,7 +155,6 @@ pnpm install
 pnpm --dir frontend-vue install
 cat > .env <<EOF
 DMS_API_BASE_URL=http://localhost:5010
-DMS_CLIENT_BASE_URL=http://localhost:3001
 DMS_SESSION_SECRET=$(openssl rand -hex 32)
 EOF
 pnpm exec ajs project modules install
@@ -180,32 +163,9 @@ pnpm dev
 
 `pnpm dev` runs `ajs project run -w`, which installs every module declared in
 `antelope.config.ts`, builds the local module, and starts the DMS backend on
-`http://localhost:5010`. Set `DMS_API_PORT` in `.env` to listen elsewhere:
-`dms.apiBaseUrl`, the `file-storage-local` base URL and the `dms-ai` sidecar
-backend URL all follow, because they reference the api module's published
-config variables rather than repeating a port.
-
-In development the api module takes the next free port when the preferred one
-is already bound, so a second checkout can run in parallel; the URLs it
-publishes carry the port it actually reserved, not the preferred one. Look at
-`.antelope/dev.json` to see which port a running instance took.
-
-### Where the backend URLs come from
-
-`@antelopejs/api` publishes three config variables, and the other modules
-reference them with `${@api.<NAME>}` instead of rebuilding a URL:
-
-| Variable | Meaning | Consumed by |
-| --- | --- | --- |
-| `API_PORT` | The port actually reserved at construct time. | — |
-| `API_LOCAL_BASE_URL` | Same-host origin (loopback). | `dms-ai.backendUrl` (the sidecar is a child process on this host) |
-| `API_PUBLIC_BASE_URL` | Origin external clients must use, from `api.config.publicBaseUrl`. | `dms.apiBaseUrl`, `file-storage-local.baseUrl` |
-
-The dashboard origin is deliberately **not** part of this mechanism:
-`ajs dms dev` is a separate process, not an Antelope module, so
-`dms.clientBaseUrl`, the CORS allow-list and the Stripe redirect allow-list all
-derive from the `DMS_CLIENT_BASE_URL` / `DMS_CLIENT_PORT` constants at the top
-of `antelope.config.ts`.
+`http://localhost:5010` (or the next free port, see `.antelope/dev.json`).
+Modules reference the API origin through the variables `@antelopejs/api`
+publishes (`${@api.API_LOCAL_BASE_URL}`, `${@api.API_PUBLIC_BASE_URL}`).
 
 In a second terminal, start the dashboard frontend:
 

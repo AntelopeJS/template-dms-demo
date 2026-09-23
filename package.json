@@ -4,14 +4,14 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build": "rimraf dist && tsc",
     "dev": "ajs project run -w",
     "frontend:dev": "ajs dms dev",
     "frontend:build": "ajs dms build",
     "lint": "oxlint && oxfmt --check . && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
     "format": "oxfmt . && pnpm --dir frontend-vue format",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
     "test": "pnpm --dir frontend-vue test",
     "knip": "knip --dependencies",
     "knip:all": "knip"

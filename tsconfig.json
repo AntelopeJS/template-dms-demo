@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "noEmit": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "nodenext",
     "target": "esnext",
-    "module": "preserve",
+    "module": "nodenext",
     "lib": ["ES2020"],
     "allowJs": true,
     "outDir": "dist",
@@ -20,7 +19,7 @@
     "useDefineForClassFields": true,
     "rootDir": "src",
     "incremental": true,
-    "tsBuildInfoFile": "node_modules/.cache/tsc/lint.tsbuildinfo"
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
   "include": ["src/**/*.ts"]
 }
