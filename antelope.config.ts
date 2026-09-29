@@ -41,7 +41,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.4.2 <1.0.0",
+        version: ">=0.4.8 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -64,28 +64,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: ">=0.1.4 <1.0.0",
+        version: ">=0.1.5 <1.0.0",
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: ">=0.0.7 <1.0.0",
+        version: ">=0.0.10 <1.0.0",
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: ">=0.2.0 <1.0.0",
+        version: ">=0.2.2 <1.0.0",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.2.0 <1.0.0",
+        version: ">=0.3.3 <1.0.0",
       },
       config: {
         stripe: {
@@ -124,28 +124,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: ">=0.2.1 <1.0.0",
+        version: ">=0.2.4 <1.0.0",
       },
     },
     "dms-media": {
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: ">=0.1.0 <1.0.0",
+        version: ">=0.1.2 <1.0.0",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.3.0 <1.0.0",
+        version: ">=0.3.1 <1.0.0",
       },
     },
     "dms-mailing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.3.0 <1.0.0",
+        version: ">=0.3.2 <1.0.0",
       },
     },
 
@@ -153,7 +153,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "^1.3.1",
+        version: "^1.4.0",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -175,7 +175,7 @@ export default defineConfig({
         type: "package",
         package: "@antelopejs/api",
         // 1.3.0 publishes the API_* variables referenced above.
-        version: "^1.3.0",
+        version: "^1.3.1",
       },
       config: {
         servers: [
