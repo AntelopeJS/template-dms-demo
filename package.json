@@ -27,7 +27,7 @@
     "@antelopejs/interface-dms": ">=0.2.7 <1.0.0"
   },
   "devDependencies": {
-    "@antelopejs/dms-frontend": "0.3.2",
+    "@antelopejs/dms-frontend": "0.3.3",
     "@antelopejs/tooling-configs": ">=0.0.6 <1.0.0",
     "@types/node": "^24.0.0",
     "dotenv": "^17.4.2",
