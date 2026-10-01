@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antelopejs/core':
-        specifier: 1.10.1
-        version: 1.10.1(@types/node@24.13.3)
+        specifier: 1.10.2
+        version: 1.10.2(@types/node@24.13.3)
       '@antelopejs/interface-api':
         specifier: '>=0.0.14 <1.0.0'
         version: 0.0.14(@antelopejs/interface-core@0.1.1)
@@ -27,18 +27,18 @@ importers:
         specifier: '>=0.1.7 <1.0.0'
         version: 0.1.7(@antelopejs/interface-api@0.0.14(@antelopejs/interface-core@0.1.1))(@antelopejs/interface-core@0.1.1)(@antelopejs/interface-database@0.1.8(@antelopejs/interface-core@0.1.1))
       '@antelopejs/interface-dms':
-        specifier: ^0.3.3
-        version: 0.3.3(24313c9e8f3d861cb693023a278c7c87)
+        specifier: ^0.3.4
+        version: 0.3.4(24313c9e8f3d861cb693023a278c7c87)
       '@antelopejs/interface-dms-media':
         specifier: '>=0.1.0 <1.0.0'
-        version: 0.1.0(@antelopejs/interface-api@0.0.14(@antelopejs/interface-core@0.1.1))(@antelopejs/interface-core@0.1.1)(@antelopejs/interface-dms@0.3.3(24313c9e8f3d861cb693023a278c7c87))
+        version: 0.1.0(@antelopejs/interface-api@0.0.14(@antelopejs/interface-core@0.1.1))(@antelopejs/interface-core@0.1.1)(@antelopejs/interface-dms@0.3.4(24313c9e8f3d861cb693023a278c7c87))
     devDependencies:
       '@antelopejs/dms-frontend':
-        specifier: 0.3.3
-        version: 0.3.3(@antelopejs/core@1.10.1(@types/node@24.13.3))
+        specifier: 0.3.6
+        version: 0.3.6(@antelopejs/core@1.10.2(@types/node@24.13.3))
       '@antelopejs/tooling-configs':
-        specifier: '>=0.0.6 <1.0.0'
-        version: 0.0.6(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
+        specifier: '>=0.0.7 <1.0.0'
+        version: 0.0.7(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
@@ -66,12 +66,12 @@ importers:
 
 packages:
 
-  '@antelopejs/core@1.10.1':
-    resolution: {integrity: sha512-NcC6N8Aq14Ph7GRto0lpdRdgUKZAu3ZHDlAF5hXGFZPKKoNm8Da9i4nyB/NI4Sgx3rbE0/KoqCcHpTtQJgrAYg==}
+  '@antelopejs/core@1.10.2':
+    resolution: {integrity: sha512-u1SsTVvRwjRXLDgze3ZcDzTmJfC/Dm16uMlnrCq3N/LAGHmP44QBTxNedCnDvpa2PGUuhP+vynCZFNoaODWjeg==}
     hasBin: true
 
-  '@antelopejs/dms-frontend@0.3.3':
-    resolution: {integrity: sha512-pK7YtnC8HPckRzCluWJADAs4GGHWBIaKjRaklUP8znH2hpHaNH6dMvy8AIz8g9xvT/TprHwHymbY4z94YzmU5w==}
+  '@antelopejs/dms-frontend@0.3.6':
+    resolution: {integrity: sha512-/w5up37Y8MRw3oy2pni/vMgr8p35G49HR9mFMf0W0lCrWcZqEh/1gMrE3wrJvIN866ISr5bZpvWZmOYo68bEaw==}
     engines: {node: '>=20.12.0'}
     hasBin: true
     peerDependencies:
@@ -128,8 +128,8 @@ packages:
       '@antelopejs/interface-core': '>=0.1.1 <1.0.0'
       '@antelopejs/interface-dms': '>=0.2.8 <1.0.0'
 
-  '@antelopejs/interface-dms@0.3.3':
-    resolution: {integrity: sha512-EvKOHD4y3vbMM/dZVElBXkStRgQBnXzyP14HMwf5g5byZBVUvZs9lAYASjWk+HKqHKCJ/uH5M7xy5EADewjMbg==}
+  '@antelopejs/interface-dms@0.3.4':
+    resolution: {integrity: sha512-oEotS81UllW2GV4PCas+ldQVpBn18j5hk4uERI4ilfg6lbhop7+cXWdDkQX2LjY0kzAkxquPDNURWvuLeaCKKw==}
     peerDependencies:
       '@antelopejs/interface-api': '>=0.0.13 <1.0.0'
       '@antelopejs/interface-api-util': '>=0.1.2 <1.0.0'
@@ -145,9 +145,10 @@ packages:
     peerDependencies:
       '@antelopejs/interface-core': '>=0.0.3 <1.0.0'
 
-  '@antelopejs/tooling-configs@0.0.6':
-    resolution: {integrity: sha512-K8ysTXwxfGRQpM1JxJMehbwmQZqkE+7hCJiGoL2G0n9ut5MyszCsychUhfG5e+N+/EOwZ4QPN1XwNw8qNnQT3w==}
+  '@antelopejs/tooling-configs@0.0.7':
+    resolution: {integrity: sha512-AMGItAsD++kaoMfo+AwUeju+fFoHUSmXjzmKqwi2pQOdQD0kv2OuovGTZy80Eu6LKKyeaW7Ua/aBcdkhODhoFA==}
     engines: {node: '>=22.18.0'}
+    hasBin: true
     peerDependencies:
       '@nuxt/eslint-config': '>=1.2.0'
       eslint-plugin-perfectionist: '>=5.0.0'
@@ -1705,7 +1706,7 @@ packages:
 
 snapshots:
 
-  '@antelopejs/core@1.10.1(@types/node@24.13.3)':
+  '@antelopejs/core@1.10.2(@types/node@24.13.3)':
     dependencies:
       '@antelopejs/interface-core': 0.1.1
       '@types/proper-lockfile': 4.1.4
@@ -1724,7 +1725,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@antelopejs/dms-frontend@0.3.3(@antelopejs/core@1.10.1(@types/node@24.13.3))':
+  '@antelopejs/dms-frontend@0.3.6(@antelopejs/core@1.10.2(@types/node@24.13.3))':
     dependencies:
       boxen: 5.1.2
       chalk: 4.1.2
@@ -1735,7 +1736,7 @@ snapshots:
       semver: 7.8.5
       unzipper: 0.12.5
     optionalDependencies:
-      '@antelopejs/core': 1.10.1(@types/node@24.13.3)
+      '@antelopejs/core': 1.10.2(@types/node@24.13.3)
       '@oxc-parser/binding-darwin-arm64': 0.95.0
       '@oxc-parser/binding-darwin-x64': 0.95.0
       '@oxc-parser/binding-linux-arm64-gnu': 0.95.0
@@ -1780,14 +1781,14 @@ snapshots:
     dependencies:
       '@antelopejs/interface-core': 0.1.1
 
-  '@antelopejs/interface-dms-media@0.1.0(@antelopejs/interface-api@0.0.14(@antelopejs/interface-core@0.1.1))(@antelopejs/interface-core@0.1.1)(@antelopejs/interface-dms@0.3.3(24313c9e8f3d861cb693023a278c7c87))':
+  '@antelopejs/interface-dms-media@0.1.0(@antelopejs/interface-api@0.0.14(@antelopejs/interface-core@0.1.1))(@antelopejs/interface-core@0.1.1)(@antelopejs/interface-dms@0.3.4(24313c9e8f3d861cb693023a278c7c87))':
     dependencies:
       '@antelopejs/interface-api': 0.0.14(@antelopejs/interface-core@0.1.1)
       '@antelopejs/interface-core': 0.1.1
-      '@antelopejs/interface-dms': 0.3.3(24313c9e8f3d861cb693023a278c7c87)
+      '@antelopejs/interface-dms': 0.3.4(24313c9e8f3d861cb693023a278c7c87)
       zod: 3.24.4
 
-  '@antelopejs/interface-dms@0.3.3(24313c9e8f3d861cb693023a278c7c87)':
+  '@antelopejs/interface-dms@0.3.4(24313c9e8f3d861cb693023a278c7c87)':
     dependencies:
       '@antelopejs/interface-api': 0.0.14(@antelopejs/interface-core@0.1.1)
       '@antelopejs/interface-api-util': 0.1.2(@antelopejs/interface-api@0.0.14(@antelopejs/interface-core@0.1.1))(@antelopejs/interface-core@0.1.1)
@@ -1806,7 +1807,7 @@ snapshots:
     dependencies:
       '@antelopejs/interface-core': 0.1.1
 
-  '@antelopejs/tooling-configs@0.0.6(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))':
+  '@antelopejs/tooling-configs@0.0.7(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))':
     dependencies:
       '@oxlint/plugins': 1.81.0
     optionalDependencies:
