@@ -41,7 +41,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.4.8 <1.0.0",
+        version: ">=0.5.3 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -64,28 +64,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: ">=0.1.5 <1.0.0",
+        version: ">=0.1.7 <1.0.0",
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: ">=0.0.10 <1.0.0",
+        version: ">=0.0.14 <1.0.0",
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: ">=0.2.2 <1.0.0",
+        version: ">=0.2.6 <1.0.0",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.3.3 <1.0.0",
+        version: ">=0.3.12 <1.0.0",
       },
       config: {
         stripe: {
@@ -102,19 +102,18 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: ">=0.1.2 <1.0.0",
+        version: ">=0.1.5 <1.0.0",
       },
       config: {
         // The sidecar runs on this host, so it reaches the API over loopback.
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
-        hostOrigin: CLIENT_BASE_URL,
       },
     },
     "dms-lang": {
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: ">=0.0.5 <1.0.0",
+        version: ">=0.0.7 <1.0.0",
       },
       config: {
         editable: true,
@@ -124,7 +123,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: ">=0.2.4 <1.0.0",
+        version: ">=0.2.6 <1.0.0",
       },
     },
     "dms-media": {
@@ -138,14 +137,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.3.1 <1.0.0",
+        version: ">=0.3.3 <1.0.0",
       },
     },
     "dms-mailing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.3.2 <1.0.0",
+        version: ">=0.3.4 <1.0.0",
       },
     },
 
@@ -193,7 +192,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.1.5",
+        version: "^0.1.6",
       },
       config: {
         storagePath: ".antelope/file-storage",
