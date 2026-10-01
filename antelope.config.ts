@@ -107,7 +107,6 @@ export default defineConfig({
       config: {
         // The sidecar runs on this host, so it reaches the API over loopback.
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
-        hostOrigin: CLIENT_BASE_URL,
       },
     },
     "dms-lang": {
