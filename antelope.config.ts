@@ -131,7 +131,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: ">=0.1.2 <1.0.0",
+        version: ">=0.2.0 <1.0.0",
       },
     },
     "dms-marketing": {
