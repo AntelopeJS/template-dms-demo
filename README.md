@@ -96,6 +96,27 @@ pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
 
+### Verifying the frontend source
+
+`pnpm frontend:verify` builds and type-checks `frontend-vue` against the
+installed `@antelopejs/dms-frontend` release, without starting a backend:
+
+```bash
+pnpm exec ajs project modules install
+pnpm frontend:verify
+```
+
+It runs `ajs dms verify-source` with the DMS frontend layer of the installed
+`@antelopejs/dms` module (`.antelope/cache/@antelopejs/dms/frontend-vue`, which
+`ajs project modules install` creates) as `--layer`, and this repository's
+`frontend-vue` as `--module`. The verifier checks the DMS layer's bundle
+(ApexCharts, Tiptap, the login page…), so passing `frontend-vue` alone as
+`--layer` fails with `No client chunk bundles ApexCharts`: this module does not
+ship those libraries, the DMS layer does.
+
+`frontend-vue/package.json` declares the `@antelopejs/dms-frontend` releases it
+supports under `engines`; the loader refuses a release outside that range.
+
 ## Translations
 
 Every backend-declared text (page names, descriptions, form labels, card
