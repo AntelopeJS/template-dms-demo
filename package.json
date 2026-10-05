@@ -8,7 +8,7 @@
     "dev": "ajs project run -w",
     "frontend:dev": "ajs dms dev",
     "frontend:build": "ajs dms build",
-    "frontend:verify": "ajs dms verify-source --layer .antelope/cache/@antelopejs/dms/frontend-vue --module frontend-vue",
+    "frontend:verify": "ajs dms verify-source",
     "lint": "oxlint && oxfmt --check . && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
     "format": "oxfmt . && pnpm --dir frontend-vue format",
@@ -18,7 +18,7 @@
     "knip:all": "knip"
   },
   "dependencies": {
-    "@antelopejs/core": "1.13.2",
+    "@antelopejs/core": "1.13.3",
     "@antelopejs/interface-api": ">=0.0.14 <1.0.0",
     "@antelopejs/interface-core": ">=0.1.1 <1.0.0",
     "@antelopejs/interface-data-api": ">=0.1.9 <1.0.0",
@@ -28,7 +28,8 @@
     "@antelopejs/interface-dms-media": ">=0.1.0 <1.0.0"
   },
   "devDependencies": {
-    "@antelopejs/dms-frontend": "0.3.11",
+    "@antelopejs/dms": ">=0.5.6 <1.0.0",
+    "@antelopejs/dms-frontend": "0.3.12",
     "@antelopejs/tooling-configs": ">=0.0.7 <1.0.0",
     "@types/node": "^24.0.0",
     "dotenv": "^17.4.2",
