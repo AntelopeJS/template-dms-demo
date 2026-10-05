@@ -5,6 +5,9 @@
 	"type": "module",
 	"main": "./dms.frontend.ts",
 	"packageManager": "pnpm@10.2.0",
+	"engines": {
+		"@antelopejs/dms-frontend": ">=0.3.11 <0.4.0"
+	},
 	"scripts": {
 		"dev": "pnpm --dir .. frontend:dev",
 		"build": "pnpm --dir .. exec ajs dms build",

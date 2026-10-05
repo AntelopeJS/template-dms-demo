@@ -41,7 +41,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.5.3 <1.0.0",
+        version: ">=0.5.6 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -85,7 +85,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.3.12 <1.0.0",
+        version: ">=0.3.14 <1.0.0",
       },
       config: {
         stripe: {
@@ -102,7 +102,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: ">=0.1.5 <1.0.0",
+        version: ">=0.1.6 <1.0.0",
       },
       config: {
         // The sidecar runs on this host, so it reaches the API over loopback.
@@ -173,8 +173,9 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        // 1.3.0 publishes the API_* variables referenced above.
-        version: "^1.3.1",
+        // 1.3.0 publishes the API_* variables referenced above; 1.3.3 ends open
+        // connections on stop, so Ctrl+C does not wait for a dashboard tab.
+        version: "^1.3.3",
       },
       config: {
         servers: [

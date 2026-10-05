@@ -96,6 +96,24 @@ pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
 
+### Verifying the frontend source
+
+`pnpm frontend:verify` builds and type-checks `frontend-vue` against the
+installed `@antelopejs/dms-frontend` release, without starting a backend:
+
+```bash
+pnpm frontend:verify
+```
+
+It runs `ajs dms verify-source`, which verifies `./frontend-vue` on top of the
+DMS core layer, the `frontend-vue` directory of the `@antelopejs/dms` package
+installed in `node_modules`. That is why `@antelopejs/dms` is a development
+dependency here, in the same range as the backend module in
+`antelope.config.ts`: keep the two in step.
+
+`frontend-vue/package.json` declares the `@antelopejs/dms-frontend` releases it
+supports under `engines`; the loader refuses a release outside that range.
+
 ## Translations
 
 Every backend-declared text (page names, descriptions, form labels, card
