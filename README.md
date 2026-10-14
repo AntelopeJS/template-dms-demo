@@ -235,6 +235,25 @@ later sign-ins go through **`/auth`**, the login screen (there is no `/login`
 route). `/auth/forgot`, `/auth/recover`, `/auth/2fa` and the other auth screens
 live under the same prefix.
 
+## Claude Code
+
+The DMS and its modules ship their own Claude Code skills (pages and blocks,
+auth and permissions, module authoring, dev servers, best practices). The
+[antelopejs plugin](https://github.com/AntelopeJS/claude-antelopejs) syncs them
+into `.claude/skills/`, and this repository's `.claude/settings.json` registers
+it: open the project in Claude Code, accept the folder trust dialog, and the
+plugin is enabled. To install it by hand instead:
+
+```bash
+claude plugin marketplace add AntelopeJS/claude-antelopejs
+claude plugin install antelopejs@antelopejs
+```
+
+The plugin repository is internal to the AntelopeJS organization for now: your
+git credentials need read access to it. The skills appear after `pnpm install`
+(the `@antelopejs/dms` skills) and the first `pnpm dev` (one skill per `dms-*`
+module); `/antelopejs:skills` lists them. Start with the `dms` skill.
+
 ## Configuration notes
 
 - **MongoDB**: set `MONGODB_URL` / `MONGODB_DATABASE` in `.env`, or adjust the
