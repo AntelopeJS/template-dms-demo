@@ -7,7 +7,6 @@
 			"form": "Form",
 			"dashboard": "Dashboard",
 			"tableView": "TableView",
-			"tree": "Tree",
 			"tab": "Tab",
 			"grid": "Grid",
 			"stack": "Stack",
@@ -22,16 +21,13 @@
 				"description": "What this template is and what you will find inside"
 			},
 			"form": {
-				"description": "Form with grouped fields, required validation and every data type: text, password, color, address, tree, cascader, relation, permissions, file…"
+				"description": "Form with grouped fields, required validation and every data type: text, password, color, address, cascader, relation, file…"
 			},
 			"dashboard": {
 				"description": "PeriodSelector, KpiCard, ChartCard and TopListCard wired to the same period scope: change the period and every card refetches"
 			},
 			"tableView": {
 				"description": "TableView backed by a demo Mongo collection: filter tabs, searchable, filterable and sortable columns, CRUD row actions, archive mode and export"
-			},
-			"tree": {
-				"description": "Tree with static nodes, multi-selection propagation, default expansion and custom icons"
 			},
 			"tab": {
 				"description": "Tab with icons, badges, keyboard shortcuts, a disabled item and persisted active tab"
@@ -133,10 +129,6 @@
 				"label": "Billing address",
 				"description": "Structured address with autocomplete suggestions"
 			},
-			"interests": {
-				"label": "Interests",
-				"description": "Multi-selection in a static tree"
-			},
 			"track": {
 				"label": "Favourite track",
 				"description": "Hierarchical topics from a self-referencing collection (cascader)"
@@ -144,10 +136,6 @@
 			"relatedTask": {
 				"label": "Related task",
 				"description": "Relation to the TableView demo collection"
-			},
-			"permissions": {
-				"label": "Granted permissions",
-				"description": "The DMS permissions tree, reused as a form input"
 			},
 			"bio": {
 				"label": "Short bio",
@@ -233,10 +221,6 @@
 				"high": "High"
 			}
 		},
-		"tree": {
-			"title": "Project explorer",
-			"description": "Static nodes with icons, multiple selection and propagation"
-		},
 		"tab": {
 			"items": {
 				"overview": "Overview",
@@ -270,7 +254,7 @@
 						"form": "Forms with groups and validation",
 						"dashboard": "A period-aware dashboard with charts",
 						"tableview": "A full CRUD TableView",
-						"layout": "Grid, Stack, Tab, Tree layouts",
+						"layout": "Grid, Stack, Tab layouts",
 						"custom": "Your own Vue components"
 					}
 				},

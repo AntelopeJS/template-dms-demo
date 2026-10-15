@@ -6,30 +6,6 @@ import { componentsCategory } from "./category";
 import { demoTopicController } from "./form-database";
 import { demoTaskController } from "./table-view/page";
 
-// Tree node labels are plain text: TreeType items are not run through the
-// frontend i18n resolution (unlike field labels and select item labels).
-const INTEREST_NODES = [
-  {
-    label: "Talks",
-    value: "talks",
-    icon: "i-ph-microphone",
-    children: [
-      { label: "Keynotes", value: "talks/keynotes" },
-      { label: "Lightning talks", value: "talks/lightning" },
-    ],
-  },
-  {
-    label: "Workshops",
-    value: "workshops",
-    icon: "i-ph-wrench",
-    children: [
-      { label: "Hands-on labs", value: "workshops/labs" },
-      { label: "Certification", value: "workshops/certification" },
-    ],
-  },
-  { label: "Networking", value: "networking", icon: "i-ph-users-three" },
-];
-
 // One field per DefaultDataTypes input (plus the textarea/range/multiple
 // variants) so the page demonstrates every form input the DMS ships.
 @RegisterPage()
@@ -199,16 +175,6 @@ export class PageComponentForm extends PageController("form", {
         }),
       },
       {
-        id: "interests",
-        label: "$demo.form.interests.label",
-        description: "$demo.form.interests.description",
-        type: new DefaultDataTypes.TreeType({
-          items: INTEREST_NODES,
-          multiple: true,
-          placeholder: "...",
-        }),
-      },
-      {
         id: "track",
         label: "$demo.form.track.label",
         description: "$demo.form.track.description",
@@ -228,14 +194,6 @@ export class PageComponentForm extends PageController("form", {
           dataApiController: demoTaskController,
           deselectable: true,
           keyMapping: { label: "name", value: "_id" },
-        }),
-      },
-      {
-        id: "permissions",
-        label: "$demo.form.permissions.label",
-        description: "$demo.form.permissions.description",
-        type: new DefaultDataTypes.PermissionsType({
-          fetchUrl: "/settings/user/roles/permissions-tree",
         }),
       },
       {

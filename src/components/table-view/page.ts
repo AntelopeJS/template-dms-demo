@@ -230,9 +230,7 @@ export class PageComponentTableView extends PageController(
         icon: status.icon,
         iconColor: status.iconColor,
         textColor: status.textColor,
-        filters: [
-          { accessorKey: "status", value: status.value, mode: "is" as const },
-        ],
+        filter: { accessorKey: "status", value: status.value, mode: "is" },
       })),
       {
         id: "high_priority",
@@ -240,7 +238,7 @@ export class PageComponentTableView extends PageController(
         icon: "i-ph-fire",
         iconColor: "error",
         textColor: "error",
-        filters: [{ accessorKey: "priority", value: "high", mode: "is" }],
+        filter: { accessorKey: "priority", value: "high", mode: "is" },
       },
     ],
   });

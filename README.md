@@ -54,7 +54,6 @@ The local module lives in [`src/`](./src):
   | Form           | `Form` with field groups, every `DefaultDataTypes` input and a media-library `AssetType` gallery |
   | Dashboard      | `PeriodSelector` + `KpiCard` ×3 + `ChartCard` + `TopListCard`, all sharing one period scope |
   | TableView      | `TableView` over a demo Mongo collection: filter tabs, CRUD, archive, export |
-  | Tree           | `Tree` (static nodes, multi-select, propagation)      |
   | Tab            | `Tab` (icons, badges, shortcuts, persisted state)     |
   | Grid           | `Grid` / `GridRow` (colSpan, nested grid)             |
   | Stack          | `HStack` / `VStack` / `Spacer` app shell              |
@@ -195,6 +194,14 @@ pnpm frontend:dev
 holds only the backend's pid, start time and listening endpoints), reads its
 per-boot bootstrap credential from `.antelope/dms-dev.json`, and serves the
 dashboard on `http://localhost:3001`. Both files are rewritten on every boot.
+
+`ajs dms dev` listens on `127.0.0.1` only, so the dev server (and the module
+sources it serves) is not reachable from another machine. To open the dashboard
+from elsewhere — a container, a VM, a phone on the same network — set `HOST`:
+
+```bash
+HOST=0.0.0.0 pnpm frontend:dev
+```
 
 `ajs dms start` — the production server, as opposed to `ajs dms dev` — defaults
 `DMS_COOKIE_SECURE` to `true`, so the browser drops the session cookie and every
