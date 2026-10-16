@@ -92,18 +92,30 @@ The local module lives in [`src/`](./src):
 
 ## Getting started
 
-Clone the template, then install and start it:
+With a CLI release that supports project templates, select **DMS Demo** in
+`ajs project init`, or create the project without prompts:
+
+```bash
+ajs project init my-app --template "DMS Demo" --yes
+cd my-app
+pnpm run setup
+pnpm dev
+```
+
+The CLI installs the root dependencies with pnpm and preserves
+`antelope.config.ts`, including its module configuration and template name.
+`pnpm run setup` installs the Vue module dependencies and creates `.env` with
+a random session secret. It leaves an existing `.env` unchanged. Start
+MongoDB before `pnpm dev`; set `MONGODB_URL` in `.env` for a non-default instance.
+
+Older CLI releases, including 1.15.2, do not preserve complete project
+templates. Clone directly instead:
 
 ```bash
 git clone https://github.com/AntelopeJS/template-dms-demo.git my-app
 cd my-app
 pnpm install
-pnpm --dir frontend-vue install
-cat > .env <<EOF
-DMS_API_BASE_URL=http://localhost:5010
-DMS_SESSION_SECRET=$(openssl rand -hex 32)
-EOF
-pnpm exec ajs project modules install
+pnpm run setup
 pnpm dev
 ```
 
