@@ -4,7 +4,6 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "setup": "pnpm --dir frontend-vue install && node scripts/setup.mjs",
     "build": "rimraf dist && tsc",
     "dev": "ajs project run -w",
     "frontend:dev": "ajs dms dev",
