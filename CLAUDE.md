@@ -15,8 +15,8 @@ downloaded them into `.antelope/cache`. If they seem missing, run
 `/antelopejs:sync-skills`; `/antelopejs:skills` lists what is synced.
 
 Start with the `dms` skill for the mental model and its routing, and follow
-`dms-best-practices` when building pages and blocks. `dms-dev` runs the dev
-servers.
+`dms-best-practices` when building pages and blocks. `dms-project` runs the
+dev servers, and `dms-frontend` covers the `ajs dms` CLI.
 
 The backend lives in `src/` and the Vue frontend module in `frontend-vue/`,
 which is a separate package with its own ESLint, Prettier and Vitest setup —
