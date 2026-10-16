@@ -235,24 +235,42 @@ later sign-ins go through **`/auth`**, the login screen (there is no `/login`
 route). `/auth/forgot`, `/auth/recover`, `/auth/2fa` and the other auth screens
 live under the same prefix.
 
-## Claude Code
+## AI coding agents
 
-The DMS and its modules ship their own Claude Code skills (pages and blocks,
-auth and permissions, module authoring, dev servers, best practices). The
-[antelopejs plugin](https://github.com/AntelopeJS/claude-antelopejs) syncs them
-into `.claude/skills/`, and this repository's `.claude/settings.json` registers
-it: open the project in Claude Code, accept the folder trust dialog, and the
-plugin is enabled. To install it by hand instead:
+The DMS and its modules ship their own agent skills (pages and blocks, auth and
+permissions, module authoring, dev servers, best practices). The
+[antelopejs plugin](https://github.com/AntelopeJS/agent-skills) syncs them into
+the project. The skills appear after `pnpm install` (the `@antelopejs/dms`
+skills) and the first `pnpm dev` (one skill per `dms-*` module). Start with the
+`dms` skill. `AGENTS.md` (which `CLAUDE.md` imports) holds the agent guidance
+for this project.
+
+### Claude Code
+
+This repository's `.claude/settings.json` registers the plugin: open the
+project in Claude Code, accept the folder trust dialog, and the plugin is
+enabled. It syncs the skills into `.claude/skills/`, and `/antelopejs:skills`
+lists them. To install it by hand instead:
 
 ```bash
-claude plugin marketplace add AntelopeJS/claude-antelopejs
+claude plugin marketplace add AntelopeJS/agent-skills
 claude plugin install antelopejs@antelopejs
 ```
 
-The plugin repository is internal to the AntelopeJS organization for now: your
-git credentials need read access to it. The skills appear after `pnpm install`
-(the `@antelopejs/dms` skills) and the first `pnpm dev` (one skill per `dms-*`
-module); `/antelopejs:skills` lists them. Start with the `dms` skill.
+### Codex
+
+Add the marketplace, then install `antelopejs` from `/plugins` in Codex:
+
+```bash
+codex plugin marketplace add AntelopeJS/agent-skills
+```
+
+Sync the skills into `.agents/skills/` from the project root, and again after
+installing or upgrading packages:
+
+```bash
+npx -y github:AntelopeJS/agent-skills sync --target codex
+```
 
 ## Configuration notes
 
