@@ -7,7 +7,6 @@
 			"form": "Form",
 			"dashboard": "Dashboard",
 			"tableView": "TableView",
-			"tree": "Tree",
 			"tab": "Tab",
 			"grid": "Grid",
 			"stack": "Stack",
@@ -22,16 +21,13 @@
 				"description": "Ce qu'est ce template et ce que vous y trouverez"
 			},
 			"form": {
-				"description": "Formulaire avec groupes de champs, validation obligatoire et tous les types de données : texte, mot de passe, couleur, adresse, arbre, cascader, relation, permissions, fichier…"
+				"description": "Formulaire avec groupes de champs, validation obligatoire et tous les types de données : texte, mot de passe, couleur, adresse, cascader, relation, fichier…"
 			},
 			"dashboard": {
 				"description": "PeriodSelector, KpiCard, ChartCard et TopListCard branchés sur le même scope de période : changez la période et chaque carte se recharge"
 			},
 			"tableView": {
 				"description": "TableView adossé à une collection Mongo de démo : onglets de filtrage, colonnes recherchables, filtrables et triables, actions CRUD, mode archive et export"
-			},
-			"tree": {
-				"description": "Tree avec nœuds statiques, propagation de la multi-sélection, expansion par défaut et icônes personnalisées"
 			},
 			"tab": {
 				"description": "Tab avec icônes, badges, raccourcis clavier, un onglet désactivé et l'onglet actif persistant"
@@ -133,10 +129,6 @@
 				"label": "Adresse de facturation",
 				"description": "Adresse structurée avec suggestions d'autocomplétion"
 			},
-			"interests": {
-				"label": "Centres d'intérêt",
-				"description": "Multi-sélection dans un arbre statique"
-			},
 			"track": {
 				"label": "Track préférée",
 				"description": "Sujets hiérarchiques depuis une collection auto-référencée (cascader)"
@@ -144,10 +136,6 @@
 			"relatedTask": {
 				"label": "Tâche liée",
 				"description": "Relation vers la collection de démo du TableView"
-			},
-			"permissions": {
-				"label": "Permissions accordées",
-				"description": "L'arbre des permissions du DMS, réutilisé comme input de formulaire"
 			},
 			"bio": {
 				"label": "Courte bio",
@@ -233,10 +221,6 @@
 				"high": "Haute"
 			}
 		},
-		"tree": {
-			"title": "Explorateur de projet",
-			"description": "Nœuds statiques avec icônes, multi-sélection et propagation"
-		},
 		"tab": {
 			"items": {
 				"overview": "Aperçu",
@@ -270,7 +254,7 @@
 						"form": "Formulaires avec groupes et validation",
 						"dashboard": "Un dashboard sensible à la période avec graphiques",
 						"tableview": "Un TableView CRUD complet",
-						"layout": "Mises en page Grid, Stack, Tab, Tree",
+						"layout": "Mises en page Grid, Stack, Tab",
 						"custom": "Vos propres composants Vue"
 					}
 				},

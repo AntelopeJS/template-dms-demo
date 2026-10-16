@@ -97,12 +97,10 @@ export class PageDemoAppTasks extends PageController(
       hasSelection: true,
     },
     defaultSort: { field: "dueDate" },
-    // New in dms 0.0.16: kanban display mode. Cards are grouped by the
-    // status SelectType column and can be dragged between columns.
-    kanban: {
-      groupByField: "status",
-      cardFields: ["priority", "assignee", "dueDate", "progress"],
-    },
+    // Kanban display mode: cards are grouped by the status SelectType column
+    // and can be dragged between columns. The table view's card draws them.
+    kanban: { groupByField: "status" },
+    card: { fields: ["priority", "assignee", "dueDate", "progress"] },
     defaultDisplay: "kanban",
     tabs: [
       ...TASK_STATUSES.map((status) => ({
@@ -111,9 +109,7 @@ export class PageDemoAppTasks extends PageController(
         icon: status.icon,
         iconColor: status.iconColor,
         textColor: status.textColor,
-        filters: [
-          { accessorKey: "status", value: status.value, mode: "is" as const },
-        ],
+        filter: { accessorKey: "status", value: status.value, mode: "is" },
       })),
       {
         id: "high_priority",
@@ -121,7 +117,7 @@ export class PageDemoAppTasks extends PageController(
         icon: "i-ph-fire",
         iconColor: "error",
         textColor: "error",
-        filters: [{ accessorKey: "priority", value: "high", mode: "is" }],
+        filter: { accessorKey: "priority", value: "high", mode: "is" },
       },
     ],
   });

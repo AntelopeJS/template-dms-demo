@@ -1,7 +1,6 @@
 import "./form";
 import "./dashboard";
 import "./table-view";
-import "./tree";
 import "./tab";
 import "./grid";
 import "./stack";
