@@ -14,8 +14,8 @@
     "format": "oxfmt . && pnpm --dir frontend-vue format",
     "typecheck": "tsc --noEmit",
     "test": "pnpm --dir frontend-vue test",
-    "knip": "knip --dependencies",
-    "knip:all": "knip"
+    "knip": "knip --workspace . --dependencies",
+    "knip:all": "knip --workspace ."
   },
   "dependencies": {
     "@antelopejs/core": "1.15.2",
