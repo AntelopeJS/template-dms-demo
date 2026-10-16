@@ -92,18 +92,29 @@ The local module lives in [`src/`](./src):
 
 ## Getting started
 
-Clone the template, then install and start it:
+With a CLI release that supports project templates, select **DMS Demo** in
+`ajs project init`, or create the project without prompts:
+
+```bash
+ajs project init my-app --template "DMS Demo" --yes
+cd my-app
+pnpm dev
+```
+
+The CLI installs both workspace packages with pnpm and preserves
+`antelope.config.ts`, including its module configuration and template name.
+No setup script or `.env` is required for development. Start MongoDB before
+`pnpm dev`; set `MONGODB_URL` in an optional `.env` for a non-default instance.
+The frontend discovers the backend and generates an ephemeral session secret.
+Restarting the frontend can invalidate sessions.
+
+Older CLI releases, including 1.15.2, do not preserve complete project
+templates. Clone directly instead:
 
 ```bash
 git clone https://github.com/AntelopeJS/template-dms-demo.git my-app
 cd my-app
 pnpm install
-pnpm --dir frontend-vue install
-cat > .env <<EOF
-DMS_API_BASE_URL=http://localhost:5010
-DMS_SESSION_SECRET=$(openssl rand -hex 32)
-EOF
-pnpm exec ajs project modules install
 pnpm dev
 ```
 
@@ -166,7 +177,8 @@ live under the same prefix.
 
 ## Environment
 
-Create a git-ignored `.env` at the repository root. Two processes read it:
+For optional overrides, create a git-ignored `.env` at the repository root.
+The default development workflow does not need one. Two processes read it:
 
 - the **backend** (`pnpm dev`) only reads the variables mapped in the
   `envOverrides` block of `antelope.config.ts`;
@@ -176,8 +188,8 @@ Create a git-ignored `.env` at the repository root. Two processes read it:
 
 | Variable | Read by | Purpose | Needed locally |
 | --- | --- | --- | --- |
-| `DMS_API_BASE_URL` | loader | Backend URL the loader fetches the manifest from. | yes |
-| `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). | yes |
+| `DMS_API_BASE_URL` | loader | Backend URL the loader fetches the manifest from; discovered automatically in dev. | no |
+| `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). Ephemeral in dev; explicit for build/start. | no |
 | `DMS_CLIENT_BASE_URL` | loader | Dashboard URL. | no |
 | `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
 | `DMS_HTML_RENDER_SECRET` | loader | Must equal the backend's `dms.config.htmlRender.serviceSecret` (default `dev`). | no |
@@ -234,8 +246,9 @@ module ships:
 - `app/components/Callout.vue` → `DemoCallout`, the CustomComponent demo.
 - `i18n/locales/demo-*.json`, merged into the dashboard's catalogs.
 
-It is a standalone package with its own ESLint, Prettier and Vitest setup. Its
-dependencies are installed separately, in [Getting started](#getting-started):
+It is a workspace package with its own ESLint, Prettier and Vitest setup.
+The root `pnpm install` installs both packages. Each package keeps its existing
+lockfile to preserve its dependency resolution. Run frontend checks separately:
 
 ```bash
 pnpm --dir frontend-vue lint
