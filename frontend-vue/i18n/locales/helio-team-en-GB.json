@@ -49,6 +49,10 @@
 					"label": "Role and region",
 					"description": "Where the member works and since when."
 				},
+				"availability": {
+					"label": "Availability",
+					"description": "Whether the member can take work today, and their colour on the planning."
+				},
 				"profile": {
 					"label": "Profile",
 					"description": "Skills used to staff sites and the short bio shown to colleagues."

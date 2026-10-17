@@ -257,7 +257,7 @@ export class PageHelioTeam extends PageController(
     },
     formContainer: {
       type: "modal",
-      size: "lg",
+      size: "2xl",
       pages: {
         new: {
           displayName: "$helio.team.form.new_title",

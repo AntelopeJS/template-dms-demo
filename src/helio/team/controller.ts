@@ -104,17 +104,26 @@ const SKILL_SUGGESTIONS = [
 @ColumnGroup("identity", {
   label: "$helio.team.groups.identity.label",
   description: "$helio.team.groups.identity.description",
+  orientation: "vertical",
   order: 0,
 })
 @ColumnGroup("assignment", {
   label: "$helio.team.groups.assignment.label",
   description: "$helio.team.groups.assignment.description",
+  orientation: "vertical",
   order: 1,
+})
+@ColumnGroup("availability", {
+  label: "$helio.team.groups.availability.label",
+  description: "$helio.team.groups.availability.description",
+  orientation: "vertical",
+  order: 2,
 })
 @ColumnGroup("profile", {
   label: "$helio.team.groups.profile.label",
   description: "$helio.team.groups.profile.description",
-  order: 2,
+  orientation: "vertical",
+  order: 3,
 })
 class teamDataAPI extends DataController(
   TeamMember,
@@ -214,7 +223,6 @@ class teamDataAPI extends DataController(
     group: "assignment",
     type: new DefaultDataTypes.SelectType({ items: [...TEAM_REGIONS] }),
     filterable: true,
-    defaultValue: "liege",
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -223,7 +231,7 @@ class teamDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.team.columns.online",
-    group: "assignment",
+    group: "availability",
     type: new StatusType({
       onlineLabel: "$helio.team.status.online",
       offlineLabel: "$helio.team.status.offline",
@@ -231,7 +239,6 @@ class teamDataAPI extends DataController(
       offlineColor: "neutral",
     }),
     filterable: true,
-    defaultValue: false,
   })
   @Access(AccessMode.ReadWrite)
   declare online: boolean;
@@ -271,9 +278,8 @@ class teamDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.team.columns.color",
-    group: "assignment",
+    group: "availability",
     type: new DefaultDataTypes.ColorType(),
-    defaultValue: "#f59e0b",
     isVisible: false,
   })
   @Optional()

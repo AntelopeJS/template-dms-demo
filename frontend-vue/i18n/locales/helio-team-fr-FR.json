@@ -49,6 +49,10 @@
 					"label": "Fonction et région",
 					"description": "Où le membre intervient et depuis quand."
 				},
+				"availability": {
+					"label": "Disponibilité",
+					"description": "Si le membre peut être affecté aujourd’hui, et sa couleur sur le planning."
+				},
 				"profile": {
 					"label": "Profil",
 					"description": "Compétences utilisées pour composer les équipes de chantier et courte présentation."
