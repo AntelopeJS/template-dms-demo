@@ -4,7 +4,7 @@ import { AddFrontendModule } from "@antelopejs/interface-dms/page";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./components";
-import "./demo-app";
+import "./helio";
 
 export async function construct(): Promise<void> {}
 

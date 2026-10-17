@@ -1,0 +1,47 @@
+{
+	"helio": {
+		"finance": {
+			"statuses": {
+				"draft": "Brouillon",
+				"sent": "Envoyée",
+				"overdue": "En retard",
+				"paid": "Payée",
+				"cancelled": "Annulée"
+			},
+			"paymentMethods": {
+				"transfer": "Virement",
+				"directDebit": "Domiciliation",
+				"card": "Carte"
+			},
+			"invoices": {
+				"columns": {
+					"number": "Numéro",
+					"customer": "Client",
+					"project": "Chantier",
+					"quote": "Devis",
+					"status": "Statut",
+					"issuedAt": "Émise le",
+					"dueAt": "Échéance",
+					"paidAt": "Payée le",
+					"amountExcl": "Montant HTVA",
+					"vatRate": "Taux de TVA",
+					"vatAmount": "TVA",
+					"total": "Total TVAC",
+					"amountDue": "Reste dû",
+					"paymentMethod": "Mode de paiement"
+				},
+				"placeholders": {
+					"number": "F-2026-0201",
+					"customer": "Choisir un client",
+					"project": "Lier un chantier (facultatif)",
+					"quote": "Lier un devis (facultatif)"
+				},
+				"detail": {
+					"paid": "Payée le {date}",
+					"late": "{count} jour de retard | {count} jours de retard",
+					"due": "Échéance le {date}"
+				}
+			}
+		}
+	}
+}

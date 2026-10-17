@@ -1,0 +1,35 @@
+{
+	"helio": {
+		"monitoring": {
+			"inverterStatuses": {
+				"online": "En ligne",
+				"degraded": "Dégradé",
+				"offline": "Hors ligne"
+			},
+			"sites": {
+				"columns": {
+					"name": "Site",
+					"city": "Localité",
+					"customer": "Client",
+					"project": "Chantier",
+					"inverterStatus": "Onduleur",
+					"capacityKwp": "Puissance",
+					"todayKwh": "Aujourd'hui",
+					"last7Days": "7 derniers jours",
+					"lastSeenAt": "Dernier signal",
+					"commissionedAt": "Mise en service"
+				},
+				"placeholders": {
+					"name": "Toiture de la famille Dupont",
+					"customer": "Choisir un client",
+					"project": "Lier le chantier d'installation"
+				},
+				"liveNow": "En direct"
+			},
+			"units": {
+				"kwp": "kWc",
+				"kwh": "kWh"
+			}
+		}
+	}
+}

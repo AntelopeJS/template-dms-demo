@@ -1,0 +1,54 @@
+{
+	"helio": {
+		"sales": {
+			"quotes": {
+				"columns": {
+					"number": "Number",
+					"customer": "Customer",
+					"deal": "Deal",
+					"status": "Status",
+					"lines": "Lines",
+					"subtotal": "Subtotal (excl. VAT)",
+					"vatRate": "VAT rate",
+					"vatAmount": "VAT",
+					"total": "Total (incl. VAT)",
+					"issuedAt": "Issued",
+					"validUntil": "Valid until",
+					"sentAt": "Sent",
+					"signedAt": "Signed",
+					"portalToken": "Portal token",
+					"notes": "Internal notes"
+				},
+				"placeholders": {
+					"number": "Q-2026-0151",
+					"customer": "Choose a customer",
+					"deal": "Link a deal (optional)",
+					"notes": "Access, roof type, payment terms…"
+				},
+				"addCustomer": {
+					"title": "New customer",
+					"description": "Create the customer, then finish the quote."
+				},
+				"statuses": {
+					"draft": "Draft",
+					"sent": "Sent",
+					"accepted": "Accepted",
+					"rejected": "Rejected",
+					"expired": "Expired"
+				},
+				"lines": {
+					"product": "Product",
+					"label": "Description",
+					"qty": "Qty",
+					"unitPrice": "Unit price",
+					"add": "Add a line"
+				},
+				"linesSummary": "{label} | {label} + {count} more line | {label} + {count} more lines",
+				"detail": {
+					"signed": "Signed {date}",
+					"validUntil": "Valid until {date}"
+				}
+			}
+		}
+	}
+}

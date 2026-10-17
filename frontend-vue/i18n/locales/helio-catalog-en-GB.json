@@ -1,0 +1,59 @@
+{
+	"helio": {
+		"catalog": {
+			"categories": {
+				"columns": {
+					"name": "Category",
+					"parent": "Family"
+				},
+				"placeholders": {
+					"name": "e.g. Hybrid inverters",
+					"parent": "None (top-level family)"
+				}
+			},
+			"products": {
+				"columns": {
+					"name": "Product",
+					"sku": "SKU",
+					"category": "Category",
+					"description": "Description",
+					"price": "Price excl. VAT",
+					"cost": "Purchase cost",
+					"margin": "Margin",
+					"power": "Power / capacity",
+					"unit": "Unit",
+					"stock": "Stock",
+					"stockMin": "Reorder threshold",
+					"lowStock": "Stock level",
+					"image": "Image URL",
+					"tags": "Tags",
+					"warrantyYears": "Warranty",
+					"isActive": "Status",
+					"displayOrder": "Position"
+				},
+				"placeholders": {
+					"name": "e.g. Helio Mono 430 W Black",
+					"category": "Choose a range",
+					"tags": "Add a tag"
+				},
+				"badges": {
+					"inactive": "Discontinued"
+				},
+				"stock": {
+					"low": "Reorder",
+					"ok": "In stock"
+				},
+				"active": "On sale",
+				"activeSwitch": "Offered in new quotes",
+				"powerSuffix": "W / Wh",
+				"yearsSuffix": "years"
+			},
+			"units": {
+				"piece": "Piece",
+				"hour": "Hour",
+				"year": "Year",
+				"flat": "Flat rate"
+			}
+		}
+	}
+}

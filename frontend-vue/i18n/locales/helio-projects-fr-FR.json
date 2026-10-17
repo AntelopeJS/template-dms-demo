@@ -1,0 +1,71 @@
+{
+	"helio": {
+		"projects": {
+			"columns": {
+				"code": "Code",
+				"name": "Chantier",
+				"customer": "Client",
+				"quote": "Devis",
+				"type": "Type",
+				"status": "Statut",
+				"progress": "Tâches",
+				"plannedStart": "Début",
+				"plannedEnd": "Fin",
+				"leadTechnician": "Chef de chantier",
+				"crew": "Équipe",
+				"address": "Adresse du chantier",
+				"capacityKwp": "Puissance",
+				"budget": "Budget HTVA",
+				"notes": "Notes"
+			},
+			"placeholders": {
+				"code": "CH-0181",
+				"name": "Installation photovoltaïque 6,2 kWc — Famille Dupont",
+				"customer": "Choisir un client",
+				"quote": "Lier le devis signé",
+				"leadTechnician": "Choisir le chef de chantier",
+				"crew": "Ajouter des techniciens",
+				"notes": "Accès, contraintes, contacts sur place…"
+			},
+			"types": {
+				"residentialPv": "Photovoltaïque résidentiel",
+				"commercialPv": "Photovoltaïque professionnel",
+				"battery": "Batterie domestique",
+				"evCharger": "Borne de recharge"
+			},
+			"statuses": {
+				"planned": "Planifié",
+				"scheduled": "Programmé",
+				"inProgress": "En cours",
+				"inspection": "Contrôle",
+				"done": "Terminé",
+				"onHold": "En attente"
+			},
+			"taskStatuses": {
+				"todo": "À faire",
+				"doing": "En cours",
+				"done": "Fait"
+			},
+			"tasks": {
+				"columns": {
+					"position": "Ordre",
+					"title": "Tâche",
+					"project": "Chantier",
+					"status": "Statut",
+					"assignee": "Responsable",
+					"dueDate": "Échéance",
+					"estimateHours": "Estimation"
+				},
+				"placeholders": {
+					"title": "Commander l'onduleur",
+					"project": "Choisir un chantier",
+					"assignee": "Attribuer à quelqu'un"
+				}
+			},
+			"units": {
+				"kwp": "kWc",
+				"hours": "h"
+			}
+		}
+	}
+}

@@ -1,0 +1,59 @@
+{
+	"helio": {
+		"catalog": {
+			"categories": {
+				"columns": {
+					"name": "Catégorie",
+					"parent": "Famille"
+				},
+				"placeholders": {
+					"name": "p. ex. Onduleurs hybrides",
+					"parent": "Aucune (famille principale)"
+				}
+			},
+			"products": {
+				"columns": {
+					"name": "Produit",
+					"sku": "Référence",
+					"category": "Catégorie",
+					"description": "Description",
+					"price": "Prix HTVA",
+					"cost": "Prix d'achat",
+					"margin": "Marge",
+					"power": "Puissance / capacité",
+					"unit": "Unité",
+					"stock": "Stock",
+					"stockMin": "Seuil de réapprovisionnement",
+					"lowStock": "Niveau de stock",
+					"image": "URL de l'image",
+					"tags": "Étiquettes",
+					"warrantyYears": "Garantie",
+					"isActive": "Statut",
+					"displayOrder": "Position"
+				},
+				"placeholders": {
+					"name": "p. ex. Helio Mono 430 W Black",
+					"category": "Choisir une gamme",
+					"tags": "Ajouter une étiquette"
+				},
+				"badges": {
+					"inactive": "Plus commercialisé"
+				},
+				"stock": {
+					"low": "À commander",
+					"ok": "En stock"
+				},
+				"active": "En vente",
+				"activeSwitch": "Proposé dans les nouvelles offres",
+				"powerSuffix": "W / Wh",
+				"yearsSuffix": "ans"
+			},
+			"units": {
+				"piece": "Pièce",
+				"hour": "Heure",
+				"year": "Année",
+				"flat": "Forfait"
+			}
+		}
+	}
+}

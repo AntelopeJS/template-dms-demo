@@ -1,0 +1,64 @@
+{
+	"helio": {
+		"service": {
+			"statuses": {
+				"new": "Nouveau",
+				"open": "Ouvert",
+				"waiting": "En attente du client",
+				"resolved": "Résolu",
+				"closed": "Clôturé"
+			},
+			"priorities": {
+				"low": "Basse",
+				"normal": "Normale",
+				"high": "Haute",
+				"urgent": "Urgente"
+			},
+			"categories": {
+				"noProduction": "Pas de production",
+				"inverterError": "Erreur d'onduleur",
+				"monitoring": "Monitoring",
+				"damage": "Dégâts",
+				"billing": "Facturation",
+				"other": "Autre"
+			},
+			"channels": {
+				"phone": "Téléphone",
+				"email": "E-mail",
+				"portal": "Portail client",
+				"monitoringAlert": "Alerte monitoring"
+			},
+			"tickets": {
+				"columns": {
+					"number": "Ticket",
+					"subject": "Objet",
+					"customer": "Client",
+					"site": "Site",
+					"category": "Catégorie",
+					"priority": "Priorité",
+					"status": "Statut",
+					"channel": "Canal",
+					"assignee": "Responsable",
+					"slaDueAt": "SLA",
+					"createdAt": "Ouvert le",
+					"resolvedAt": "Résolu le",
+					"description": "Description",
+					"pinned": "Épinglé"
+				},
+				"placeholders": {
+					"number": "T-1301",
+					"subject": "L'onduleur affiche un code d'erreur",
+					"customer": "Choisir un client",
+					"site": "Choisir l'installation",
+					"assignee": "Attribuer à un technicien",
+					"description": "Ce que signale le client, ce qui a déjà été vérifié…"
+				},
+				"detail": {
+					"resolved": "Résolu le {date}",
+					"slaBreached": "SLA dépassé"
+				},
+				"justNow": "À l'instant"
+			}
+		}
+	}
+}

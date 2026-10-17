@@ -1,0 +1,93 @@
+{
+	"helio": {
+		"crm": {
+			"kinds": {
+				"residential": "Residential",
+				"business": "Business"
+			},
+			"sources": {
+				"website": "Website",
+				"referral": "Referral",
+				"fair": "Trade fair",
+				"partner": "Partner",
+				"phone": "Phone"
+			},
+			"stages": {
+				"lead": "Lead",
+				"qualified": "Qualified",
+				"siteVisit": "Site visit",
+				"proposal": "Proposal",
+				"negotiation": "Negotiation",
+				"won": "Won",
+				"lost": "Lost"
+			},
+			"lostReasons": {
+				"price": "Price too high",
+				"competitor": "Went with a competitor",
+				"timing": "Postponed",
+				"financing": "Financing refused",
+				"roof": "Roof unsuitable",
+				"noResponse": "No response"
+			},
+			"customers": {
+				"columns": {
+					"name": "Customer",
+					"kind": "Type",
+					"vatNumber": "VAT number",
+					"contactName": "Contact person",
+					"email": "E-mail",
+					"phone": "Phone",
+					"address": "Address",
+					"segments": "Segments",
+					"source": "Source",
+					"isVip": "VIP",
+					"owner": "Account manager",
+					"website": "Website",
+					"notes": "Notes",
+					"createdAt": "Customer since"
+				},
+				"placeholders": {
+					"name": "Household or company name",
+					"contactName": "First and last name",
+					"email": "name@example.be",
+					"segments": "Add a segment",
+					"owner": "Assign a sales rep",
+					"notes": "Roof, consumption, wishes…"
+				},
+				"badges": {
+					"vip": "VIP",
+					"archived": "Archived"
+				},
+				"standard": "Standard",
+				"vipSwitch": "VIP customer: priority on planning and service"
+			},
+			"deals": {
+				"columns": {
+					"title": "Deal",
+					"customer": "Customer",
+					"stage": "Stage",
+					"amount": "Amount excl. VAT",
+					"probability": "Probability",
+					"weightedAmount": "Weighted amount",
+					"owner": "Sales rep",
+					"source": "Source",
+					"expectedClose": "Expected close",
+					"lastActivityAt": "Last activity",
+					"nextStep": "Next step",
+					"lostReason": "Reason lost"
+				},
+				"placeholders": {
+					"title": "e.g. 6.4 kWp installation + 10 kWh battery",
+					"customer": "Find a customer",
+					"owner": "Assign a sales rep",
+					"nextStep": "e.g. Plan the site visit"
+				},
+				"addCustomer": {
+					"title": "New customer",
+					"description": "Create the customer without leaving the deal."
+				},
+				"activeNow": "Just now"
+			}
+		}
+	}
+}

@@ -1,0 +1,47 @@
+{
+	"helio": {
+		"finance": {
+			"statuses": {
+				"draft": "Draft",
+				"sent": "Sent",
+				"overdue": "Overdue",
+				"paid": "Paid",
+				"cancelled": "Cancelled"
+			},
+			"paymentMethods": {
+				"transfer": "Bank transfer",
+				"directDebit": "Direct debit",
+				"card": "Card"
+			},
+			"invoices": {
+				"columns": {
+					"number": "Number",
+					"customer": "Customer",
+					"project": "Project",
+					"quote": "Quote",
+					"status": "Status",
+					"issuedAt": "Issued",
+					"dueAt": "Due",
+					"paidAt": "Paid",
+					"amountExcl": "Amount (excl. VAT)",
+					"vatRate": "VAT rate",
+					"vatAmount": "VAT",
+					"total": "Total (incl. VAT)",
+					"amountDue": "Amount due",
+					"paymentMethod": "Payment method"
+				},
+				"placeholders": {
+					"number": "F-2026-0201",
+					"customer": "Choose a customer",
+					"project": "Link a project (optional)",
+					"quote": "Link a quote (optional)"
+				},
+				"detail": {
+					"paid": "Paid {date}",
+					"late": "{count} day late | {count} days late",
+					"due": "Due {date}"
+				}
+			}
+		}
+	}
+}

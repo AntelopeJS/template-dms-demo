@@ -1,0 +1,17 @@
+{
+	"helio": {
+		"dashboard": {
+			"activityTypes": {
+				"dealWon": "Affaire gagnée",
+				"quoteSent": "Devis envoyé",
+				"quoteAccepted": "Devis accepté",
+				"projectStarted": "Chantier démarré",
+				"projectDone": "Installation terminée",
+				"ticketOpened": "Ticket ouvert",
+				"ticketResolved": "Ticket résolu",
+				"invoicePaid": "Facture payée",
+				"invoiceOverdue": "Facture en retard"
+			}
+		}
+	}
+}

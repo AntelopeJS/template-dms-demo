@@ -1,0 +1,137 @@
+import {
+  Controller,
+  type ControllerClass,
+  Parameter,
+} from "@antelopejs/interface-api";
+import {
+  DataController,
+  RegisterDataController,
+} from "@antelopejs/interface-data-api";
+import {
+  Access,
+  AccessMode,
+  Listable,
+  Mandatory,
+  ModelReference,
+  ModifierKey,
+  Optional,
+  Sortable,
+} from "@antelopejs/interface-data-api/metadata";
+import {
+  LocalizationModifier,
+  Model,
+} from "@antelopejs/interface-database-decorators";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import {
+  Column,
+  Exported,
+  Select,
+  TableViewRoutes,
+} from "@antelopejs/interface-dms/base/table-view";
+import { ProductCategory, ProductCategoryModel } from "./database";
+
+// The top-level families only, for the parent picker of a category: a
+// category tree stays two levels deep. Read-only, select route only.
+@RegisterDataController()
+class productFamilyDataAPI extends DataController(
+  ProductCategory,
+  { select: TableViewRoutes.Select },
+  Controller("/api/helio/product-families"),
+) {
+  @ModelReference()
+  @Model(ProductCategoryModel)
+  declare model: ProductCategoryModel;
+
+  @Parameter("x-content-language", "header")
+  @ModifierKey(LocalizationModifier)
+  declare language: string;
+
+  @Select()
+  @Access(AccessMode.ReadOnly)
+  declare _id: string;
+
+  @Select()
+  @Column({
+    name: "$helio.catalog.categories.columns.name",
+    type: new DefaultDataTypes.StringType(),
+  })
+  @Access(AccessMode.ReadOnly)
+  declare name: string;
+
+  @Select()
+  @Column({
+    name: "$helio.catalog.categories.columns.parent",
+    type: new DefaultDataTypes.StringType(),
+  })
+  @Access(AccessMode.ReadOnly)
+  declare parent: string;
+}
+
+// Not exported on purpose: emitting a .d.ts for this class would require
+// naming types from the nested @antelopejs/interface-core copies (TS2742).
+@RegisterDataController()
+class productCategoryDataAPI extends DataController(
+  ProductCategory,
+  TableViewRoutes.All,
+  Controller("/api/helio/product-categories"),
+) {
+  @ModelReference()
+  @Model(ProductCategoryModel)
+  declare model: ProductCategoryModel;
+
+  // Localized names are read and written in the caller's language; forms ask
+  // with "*" and get every language at once.
+  @Parameter("x-content-language", "header")
+  @ModifierKey(LocalizationModifier)
+  declare language: string;
+
+  @Select()
+  @Listable()
+  @Exported()
+  @Access(AccessMode.ReadOnly)
+  declare _id: string;
+
+  @Searchable()
+  @Select()
+  @Listable()
+  @Sortable({ noIndex: true })
+  @Exported()
+  @Column({
+    name: "$helio.catalog.categories.columns.name",
+    type: new DefaultDataTypes.StringType({
+      placeholder: "$helio.catalog.categories.placeholders.name",
+      maxLength: 60,
+    }),
+    filterable: true,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare name: string;
+
+  // Self-reference kept as the raw parent id (`filterOnly`: no join), which
+  // the products' CascaderRelationType needs to rebuild the tree.
+  @Select()
+  @Listable()
+  @Exported()
+  @Column({
+    name: "$helio.catalog.categories.columns.parent",
+    type: new DefaultDataTypes.CascaderRelationType({
+      dataApiController: productFamilyDataAPI,
+      keyMapping: { label: "name", value: "_id", parent: "parent" },
+      maxDepth: 1,
+      deselectable: true,
+      filterOnly: true,
+      placeholder: "$helio.catalog.categories.placeholders.parent",
+    }),
+    filterable: true,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare parent: string;
+}
+
+// ControllerClass-typed alias for the products' CascaderRelationType and the
+// catalog pages (see the TS2742 note above).
+export const productCategoryController: ControllerClass =
+  productCategoryDataAPI;

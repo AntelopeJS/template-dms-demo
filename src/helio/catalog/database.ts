@@ -1,0 +1,82 @@
+import {
+  BasicDataModel,
+  Field,
+  Fixture,
+  Index,
+  LocalizationModifier,
+  Localized,
+  RegisterTable,
+  Relation,
+  Table,
+} from "@antelopejs/interface-database-decorators";
+import { DEMO_SCHEMA_NAME } from "../../schema";
+import type { ProductRosterEntry } from "../shared/roster";
+import { buildProductCategories, buildProducts } from "./fixtures";
+
+const CATEGORIES_TABLE = "helio_product_categories";
+const PRODUCTS_TABLE = "helio_products";
+
+export type ProductUnit = ProductRosterEntry["unit"];
+
+// Localized fields store one value per interface language ({ en, fr }); a
+// language without a value reads the English one.
+const LOCALIZED = { fallbackLocale: "en" };
+
+/** Two-level product tree (family → range), read by a CascaderRelationType. */
+@RegisterTable(CATEGORIES_TABLE, DEMO_SCHEMA_NAME)
+@Fixture(() =>
+  // `localize("*")` writes the whole { en, fr } record of each localized field.
+  buildProductCategories().map((row) =>
+    ProductCategoryModel.fromPlainData(row).localize("*"),
+  ),
+)
+export class ProductCategory extends Table.with(LocalizationModifier) {
+  @Field("string") declare _id: string;
+
+  @Localized(LOCALIZED) @Field("string") declare name: string;
+  @Index()
+  @Field("string")
+  @Relation({ to: () => ProductCategory })
+  declare parent?: string;
+}
+
+export class ProductCategoryModel extends BasicDataModel(
+  ProductCategory,
+  CATEGORIES_TABLE,
+) {}
+
+/** What Helio sells: hardware from PRODUCT_ROSTER and its services. */
+@RegisterTable(PRODUCTS_TABLE, DEMO_SCHEMA_NAME)
+@Fixture(() =>
+  buildProducts().map((row) => ProductModel.fromPlainData(row).localize("*")),
+)
+export class Product extends Table.with(LocalizationModifier) {
+  @Field("string") declare _id: string;
+
+  @Index() @Field("string") declare sku: string;
+  @Field("string") declare name: string;
+  @Localized(LOCALIZED) @Field("string") declare description?: string;
+  @Index()
+  @Field("string")
+  @Relation({ to: () => ProductCategory })
+  declare category: string;
+  /** Unit price excluding VAT, in euros. */
+  @Field("number") declare price: number;
+  /** Purchase cost excluding VAT, in euros. */
+  @Field("number") declare cost: number;
+  /** Peak power (W) for panels and inverters, capacity (Wh) for batteries, 0 for services. */
+  @Field("number") declare power: number;
+  @Field("string") declare unit: ProductUnit;
+  /** Units in the warehouse; absent for services. */
+  @Field("number") declare stock?: number;
+  /** Reorder threshold; absent for services. */
+  @Field("number") declare stockMin?: number;
+  /** A remote image URL (see the controller for why it is not an ImageType). */
+  @Field("string") declare image?: string;
+  @Field(["string"]) declare tags: string[];
+  @Index() @Field("boolean") declare isActive: boolean;
+  @Index() @Field("number") declare displayOrder: number;
+  @Field("number") declare warrantyYears: number;
+}
+
+export class ProductModel extends BasicDataModel(Product, PRODUCTS_TABLE) {}

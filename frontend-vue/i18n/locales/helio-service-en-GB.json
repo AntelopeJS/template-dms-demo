@@ -1,0 +1,64 @@
+{
+	"helio": {
+		"service": {
+			"statuses": {
+				"new": "New",
+				"open": "Open",
+				"waiting": "Waiting on customer",
+				"resolved": "Resolved",
+				"closed": "Closed"
+			},
+			"priorities": {
+				"low": "Low",
+				"normal": "Normal",
+				"high": "High",
+				"urgent": "Urgent"
+			},
+			"categories": {
+				"noProduction": "No production",
+				"inverterError": "Inverter error",
+				"monitoring": "Monitoring",
+				"damage": "Damage",
+				"billing": "Billing",
+				"other": "Other"
+			},
+			"channels": {
+				"phone": "Phone",
+				"email": "Email",
+				"portal": "Customer portal",
+				"monitoringAlert": "Monitoring alert"
+			},
+			"tickets": {
+				"columns": {
+					"number": "Ticket",
+					"subject": "Subject",
+					"customer": "Customer",
+					"site": "Site",
+					"category": "Category",
+					"priority": "Priority",
+					"status": "Status",
+					"channel": "Channel",
+					"assignee": "Assignee",
+					"slaDueAt": "SLA",
+					"createdAt": "Opened",
+					"resolvedAt": "Resolved",
+					"description": "Description",
+					"pinned": "Pinned"
+				},
+				"placeholders": {
+					"number": "T-1301",
+					"subject": "Inverter shows an error code",
+					"customer": "Choose a customer",
+					"site": "Choose the installation",
+					"assignee": "Assign to a technician",
+					"description": "What the customer reports, what was already checked…"
+				},
+				"detail": {
+					"resolved": "Resolved {date}",
+					"slaBreached": "SLA breached"
+				},
+				"justNow": "Just now"
+			}
+		}
+	}
+}

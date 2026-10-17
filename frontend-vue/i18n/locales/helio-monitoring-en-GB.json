@@ -1,0 +1,35 @@
+{
+	"helio": {
+		"monitoring": {
+			"inverterStatuses": {
+				"online": "Online",
+				"degraded": "Degraded",
+				"offline": "Offline"
+			},
+			"sites": {
+				"columns": {
+					"name": "Site",
+					"city": "City",
+					"customer": "Customer",
+					"project": "Project",
+					"inverterStatus": "Inverter",
+					"capacityKwp": "Capacity",
+					"todayKwh": "Today",
+					"last7Days": "Last 7 days",
+					"lastSeenAt": "Last seen",
+					"commissionedAt": "Commissioned"
+				},
+				"placeholders": {
+					"name": "Dupont family roof",
+					"customer": "Choose a customer",
+					"project": "Link the installation project"
+				},
+				"liveNow": "Live"
+			},
+			"units": {
+				"kwp": "kWp",
+				"kwh": "kWh"
+			}
+		}
+	}
+}

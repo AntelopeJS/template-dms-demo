@@ -1,0 +1,71 @@
+{
+	"helio": {
+		"projects": {
+			"columns": {
+				"code": "Code",
+				"name": "Project",
+				"customer": "Customer",
+				"quote": "Quote",
+				"type": "Type",
+				"status": "Status",
+				"progress": "Tasks",
+				"plannedStart": "Start",
+				"plannedEnd": "End",
+				"leadTechnician": "Lead technician",
+				"crew": "Crew",
+				"address": "Site address",
+				"capacityKwp": "Capacity",
+				"budget": "Budget (excl. VAT)",
+				"notes": "Notes"
+			},
+			"placeholders": {
+				"code": "CH-0181",
+				"name": "Solar installation 6.2 kWp — Dupont family",
+				"customer": "Choose a customer",
+				"quote": "Link the signed quote",
+				"leadTechnician": "Choose the lead technician",
+				"crew": "Add technicians",
+				"notes": "Access, constraints, contacts on site…"
+			},
+			"types": {
+				"residentialPv": "Residential solar",
+				"commercialPv": "Commercial solar",
+				"battery": "Home battery",
+				"evCharger": "EV charger"
+			},
+			"statuses": {
+				"planned": "Planned",
+				"scheduled": "Scheduled",
+				"inProgress": "In progress",
+				"inspection": "Inspection",
+				"done": "Done",
+				"onHold": "On hold"
+			},
+			"taskStatuses": {
+				"todo": "To do",
+				"doing": "In progress",
+				"done": "Done"
+			},
+			"tasks": {
+				"columns": {
+					"position": "Order",
+					"title": "Task",
+					"project": "Project",
+					"status": "Status",
+					"assignee": "Assignee",
+					"dueDate": "Due",
+					"estimateHours": "Estimate"
+				},
+				"placeholders": {
+					"title": "Order the inverter",
+					"project": "Choose a project",
+					"assignee": "Assign to someone"
+				}
+			},
+			"units": {
+				"kwp": "kWp",
+				"hours": "h"
+			}
+		}
+	}
+}

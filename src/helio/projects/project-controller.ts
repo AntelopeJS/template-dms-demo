@@ -1,0 +1,392 @@
+import { Controller, type ControllerClass } from "@antelopejs/interface-api";
+import {
+  DataController,
+  RegisterDataController,
+} from "@antelopejs/interface-data-api";
+import {
+  Access,
+  AccessMode,
+  Computed,
+  Listable,
+  Mandatory,
+  ModelReference,
+  Optional,
+  Sortable,
+} from "@antelopejs/interface-data-api/metadata";
+import { Model } from "@antelopejs/interface-database-decorators";
+import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import {
+  Column,
+  DefaultDisplays,
+  Exported,
+  Select,
+  TableViewRoutes,
+} from "@antelopejs/interface-dms/base/table-view";
+import { customerController } from "../crm/controller";
+import { quoteController } from "../sales/controller";
+import { DAY_MS } from "../shared/seed";
+import { teamController } from "../team/controller";
+import { Project, ProjectModel } from "./database";
+
+// What Helio installs. Exported for the tabs, filters and charts.
+export const PROJECT_TYPES = [
+  {
+    value: "residential_pv",
+    label: "$helio.projects.types.residentialPv",
+    icon: "i-ph-house-line",
+    iconColor: "primary",
+    textColor: "primary",
+  },
+  {
+    value: "commercial_pv",
+    label: "$helio.projects.types.commercialPv",
+    icon: "i-ph-factory",
+    iconColor: "secondary",
+    textColor: "secondary",
+  },
+  {
+    value: "battery",
+    label: "$helio.projects.types.battery",
+    icon: "i-ph-battery-charging",
+    iconColor: "success",
+    textColor: "success",
+  },
+  {
+    value: "ev_charger",
+    label: "$helio.projects.types.evCharger",
+    icon: "i-ph-charging-station",
+    iconColor: "info",
+    textColor: "info",
+  },
+] as const;
+
+// A project's progress, in order. Exported for the kanban, tabs and views.
+export const PROJECT_STATUSES = [
+  {
+    value: "planned",
+    label: "$helio.projects.statuses.planned",
+    icon: "i-ph-calendar-blank",
+    iconColor: "neutral",
+    textColor: "neutral",
+  },
+  {
+    value: "scheduled",
+    label: "$helio.projects.statuses.scheduled",
+    icon: "i-ph-calendar-check",
+    iconColor: "info",
+    textColor: "info",
+  },
+  {
+    value: "in_progress",
+    label: "$helio.projects.statuses.inProgress",
+    icon: "i-ph-hard-hat",
+    iconColor: "primary",
+    textColor: "primary",
+  },
+  {
+    value: "inspection",
+    label: "$helio.projects.statuses.inspection",
+    icon: "i-ph-clipboard-text",
+    iconColor: "secondary",
+    textColor: "secondary",
+  },
+  {
+    value: "done",
+    label: "$helio.projects.statuses.done",
+    icon: "i-ph-check-circle",
+    iconColor: "success",
+    textColor: "success",
+  },
+  {
+    value: "on_hold",
+    label: "$helio.projects.statuses.onHold",
+    icon: "i-ph-pause-circle",
+    iconColor: "warning",
+    textColor: "warning",
+  },
+] as const;
+
+const TASKS_TABLE = "helio_project_tasks";
+
+// Not exported on purpose: emitting a .d.ts for this class would require
+// naming types from the nested @antelopejs/interface-core copies (TS2742).
+@RegisterDataController()
+class projectDataAPI extends DataController(
+  Project,
+  TableViewRoutes.All,
+  Controller("/api/helio/projects"),
+) {
+  @ModelReference()
+  @Model(ProjectModel)
+  declare model: ProjectModel;
+
+  @Select()
+  @Listable()
+  @Exported()
+  @Access(AccessMode.ReadOnly)
+  declare _id: string;
+
+  @Searchable()
+  @Select()
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.code",
+    type: new DefaultDataTypes.StringType({
+      placeholder: "$helio.projects.placeholders.code",
+      maxLength: 12,
+    }),
+    filterable: true,
+    display: new DefaultDisplays.MonoDisplay({ copy: true }),
+    size: 110,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare code: string;
+
+  @Searchable()
+  @Select()
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.name",
+    type: new DefaultDataTypes.StringType({
+      placeholder: "$helio.projects.placeholders.name",
+      maxLength: 160,
+    }),
+    filterable: true,
+    size: 300,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare name: string;
+
+  @Listable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.customer",
+    type: new DefaultDataTypes.RelationType({
+      dataApiController: customerController,
+      keyMapping: { label: "name", value: "_id" },
+      placeholder: "$helio.projects.placeholders.customer",
+    }),
+    filterable: true,
+    size: 200,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare customer: string;
+
+  @Listable()
+  @Column({
+    name: "$helio.projects.columns.quote",
+    type: new DefaultDataTypes.RelationType({
+      dataApiController: quoteController,
+      keyMapping: { label: "number", value: "_id" },
+      placeholder: "$helio.projects.placeholders.quote",
+      deselectable: true,
+    }),
+    filterable: true,
+    isVisible: false,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare quote: string;
+
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.type",
+    type: new DefaultDataTypes.SelectType({ items: [...PROJECT_TYPES] }),
+    filterable: true,
+    defaultValue: "residential_pv",
+    size: 170,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare type: string;
+
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.status",
+    type: new DefaultDataTypes.SelectType({ items: [...PROJECT_STATUSES] }),
+    filterable: true,
+    defaultValue: "planned",
+    display: new DefaultDisplays.StatusPillDisplay({
+      tones: {
+        planned: "neutral",
+        scheduled: "info",
+        in_progress: "primary",
+        inspection: "secondary",
+        done: "success",
+        on_hold: "warning",
+      },
+      liveValues: ["in_progress"],
+    }),
+    size: 160,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare status: string;
+
+  // Tasks done over tasks in all, counted in the database from
+  // helio_project_tasks, so the bar follows every task moved.
+  @Listable()
+  @Sortable()
+  @Computed(
+    (row, db) =>
+      db
+        .table(TASKS_TABLE)
+        .getAll(row.key("_id"), "project")
+        .filter((task) => task.key("status").eq("done"))
+        .count(),
+    { default: 0 },
+  )
+  @Column({
+    name: "$helio.projects.columns.progress",
+    type: new DefaultDataTypes.NumberType({ min: 0 }),
+    validate: false,
+    display: new DefaultDisplays.ProgressDisplay({
+      doneField: "tasksDone",
+      totalField: "tasksTotal",
+    }),
+    size: 150,
+  })
+  declare tasksDone: number;
+
+  @Listable()
+  @Computed(
+    (row, db) =>
+      db.table(TASKS_TABLE).getAll(row.key("_id"), "project").count(),
+    { default: 0 },
+  )
+  declare tasksTotal: number;
+
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.plannedStart",
+    type: new DefaultDataTypes.DateType(),
+    filterable: true,
+    display: new DefaultDisplays.RelativeDateDisplay({
+      style: "day",
+      soonWithinMs: 7 * DAY_MS,
+      soonTone: "warning",
+    }),
+    size: 140,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare plannedStart: Date;
+
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.plannedEnd",
+    type: new DefaultDataTypes.DateType(),
+    filterable: true,
+    display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
+    size: 140,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare plannedEnd: Date;
+
+  @Listable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.leadTechnician",
+    type: new DefaultDataTypes.RelationType({
+      dataApiController: teamController,
+      keyMapping: { label: "name", value: "_id", avatar: "avatar" },
+      placeholder: "$helio.projects.placeholders.leadTechnician",
+      deselectable: true,
+    }),
+    filterable: true,
+    size: 190,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare leadTechnician: string;
+
+  @Listable()
+  @Column({
+    name: "$helio.projects.columns.crew",
+    type: new DefaultDataTypes.RelationType({
+      dataApiController: teamController,
+      keyMapping: { label: "name", value: "_id", avatar: "avatar" },
+      placeholder: "$helio.projects.placeholders.crew",
+      multiple: true,
+    }),
+    filterable: true,
+    display: new DefaultDisplays.PillsDisplay({ labelKey: "name" }),
+    isVisible: false,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare crew: string[];
+
+  @Listable()
+  @Column({
+    name: "$helio.projects.columns.address",
+    type: new DefaultDataTypes.AddressType(),
+    isVisible: false,
+  })
+  @Mandatory("new", "edit")
+  @Access(AccessMode.ReadWrite)
+  declare address: DefaultDataTypes.Address;
+
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.capacityKwp",
+    type: new DefaultDataTypes.NumberType({
+      min: 0,
+      step: 0.1,
+      suffix: "$helio.projects.units.kwp",
+    }),
+    filterable: true,
+    size: 120,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare capacityKwp: number;
+
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.projects.columns.budget",
+    type: new DefaultDataTypes.PriceType({ step: 100 }),
+    filterable: true,
+    size: 130,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare budget: number;
+
+  @Column({
+    name: "$helio.projects.columns.notes",
+    type: new DefaultDataTypes.StringType({
+      textarea: true,
+      rows: 4,
+      placeholder: "$helio.projects.placeholders.notes",
+    }),
+    isVisible: false,
+  })
+  @Optional()
+  @Access(AccessMode.ReadWrite)
+  declare notes: string;
+}
+
+// ControllerClass-typed alias for relations and pages (see the TS2742 note).
+export const projectController: ControllerClass = projectDataAPI;

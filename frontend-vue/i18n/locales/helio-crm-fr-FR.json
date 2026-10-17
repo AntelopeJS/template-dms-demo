@@ -1,0 +1,93 @@
+{
+	"helio": {
+		"crm": {
+			"kinds": {
+				"residential": "Particulier",
+				"business": "Entreprise"
+			},
+			"sources": {
+				"website": "Site web",
+				"referral": "Recommandation",
+				"fair": "Salon",
+				"partner": "Partenaire",
+				"phone": "Téléphone"
+			},
+			"stages": {
+				"lead": "Piste",
+				"qualified": "Qualifié",
+				"siteVisit": "Visite technique",
+				"proposal": "Offre",
+				"negotiation": "Négociation",
+				"won": "Gagné",
+				"lost": "Perdu"
+			},
+			"lostReasons": {
+				"price": "Prix trop élevé",
+				"competitor": "Parti chez un concurrent",
+				"timing": "Projet reporté",
+				"financing": "Financement refusé",
+				"roof": "Toiture inadaptée",
+				"noResponse": "Sans réponse"
+			},
+			"customers": {
+				"columns": {
+					"name": "Client",
+					"kind": "Type",
+					"vatNumber": "Numéro de TVA",
+					"contactName": "Personne de contact",
+					"email": "E-mail",
+					"phone": "Téléphone",
+					"address": "Adresse",
+					"segments": "Segments",
+					"source": "Origine",
+					"isVip": "VIP",
+					"owner": "Gestionnaire du compte",
+					"website": "Site web",
+					"notes": "Notes",
+					"createdAt": "Client depuis"
+				},
+				"placeholders": {
+					"name": "Nom du ménage ou de la société",
+					"contactName": "Prénom et nom",
+					"email": "nom@exemple.be",
+					"segments": "Ajouter un segment",
+					"owner": "Attribuer à un commercial",
+					"notes": "Toiture, consommation, souhaits…"
+				},
+				"badges": {
+					"vip": "VIP",
+					"archived": "Archivé"
+				},
+				"standard": "Standard",
+				"vipSwitch": "Client VIP : prioritaire au planning et au SAV"
+			},
+			"deals": {
+				"columns": {
+					"title": "Opportunité",
+					"customer": "Client",
+					"stage": "Étape",
+					"amount": "Montant HTVA",
+					"probability": "Probabilité",
+					"weightedAmount": "Montant pondéré",
+					"owner": "Commercial",
+					"source": "Origine",
+					"expectedClose": "Signature prévue",
+					"lastActivityAt": "Dernière activité",
+					"nextStep": "Prochaine étape",
+					"lostReason": "Motif de perte"
+				},
+				"placeholders": {
+					"title": "p. ex. Installation 6,4 kWc + batterie 10 kWh",
+					"customer": "Rechercher un client",
+					"owner": "Attribuer à un commercial",
+					"nextStep": "p. ex. Planifier la visite technique"
+				},
+				"addCustomer": {
+					"title": "Nouveau client",
+					"description": "Créez le client sans quitter l'opportunité."
+				},
+				"activeNow": "À l'instant"
+			}
+		}
+	}
+}

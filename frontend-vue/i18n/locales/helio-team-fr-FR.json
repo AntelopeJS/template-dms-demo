@@ -1,0 +1,41 @@
+{
+	"helio": {
+		"team": {
+			"columns": {
+				"name": "Membre",
+				"email": "E-mail",
+				"phone": "Téléphone",
+				"role": "Fonction",
+				"region": "Région",
+				"online": "Disponibilité",
+				"skills": "Compétences",
+				"avatar": "URL de la photo",
+				"color": "Couleur au planning",
+				"hiredAt": "Arrivée",
+				"bio": "Présentation"
+			},
+			"placeholders": {
+				"name": "Prénom et nom",
+				"email": "prenom.nom@helio.example",
+				"skills": "Ajouter une compétence"
+			},
+			"roles": {
+				"manager": "Direction",
+				"sales": "Commercial",
+				"technician": "Technicien",
+				"office": "Administration"
+			},
+			"regions": {
+				"liege": "Liège",
+				"namur": "Namur",
+				"brussels": "Bruxelles",
+				"hainaut": "Hainaut",
+				"luxembourg": "Luxembourg"
+			},
+			"status": {
+				"online": "Disponible",
+				"offline": "Indisponible"
+			}
+		}
+	}
+}

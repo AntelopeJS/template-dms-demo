@@ -1,0 +1,54 @@
+{
+	"helio": {
+		"sales": {
+			"quotes": {
+				"columns": {
+					"number": "Numéro",
+					"customer": "Client",
+					"deal": "Opportunité",
+					"status": "Statut",
+					"lines": "Lignes",
+					"subtotal": "Sous-total HTVA",
+					"vatRate": "Taux de TVA",
+					"vatAmount": "TVA",
+					"total": "Total TVAC",
+					"issuedAt": "Émis le",
+					"validUntil": "Valable jusqu'au",
+					"sentAt": "Envoyé le",
+					"signedAt": "Signé le",
+					"portalToken": "Jeton du portail",
+					"notes": "Notes internes"
+				},
+				"placeholders": {
+					"number": "Q-2026-0151",
+					"customer": "Choisir un client",
+					"deal": "Lier une opportunité (facultatif)",
+					"notes": "Accès, type de toiture, modalités de paiement…"
+				},
+				"addCustomer": {
+					"title": "Nouveau client",
+					"description": "Créez le client, puis terminez le devis."
+				},
+				"statuses": {
+					"draft": "Brouillon",
+					"sent": "Envoyé",
+					"accepted": "Accepté",
+					"rejected": "Refusé",
+					"expired": "Expiré"
+				},
+				"lines": {
+					"product": "Produit",
+					"label": "Description",
+					"qty": "Qté",
+					"unitPrice": "Prix unitaire",
+					"add": "Ajouter une ligne"
+				},
+				"linesSummary": "{label} | {label} + {count} autre ligne | {label} + {count} autres lignes",
+				"detail": {
+					"signed": "Signé le {date}",
+					"validUntil": "Valable jusqu'au {date}"
+				}
+			}
+		}
+	}
+}
