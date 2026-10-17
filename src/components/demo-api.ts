@@ -84,12 +84,24 @@ function buildDailySeries(
   seed: number,
   min: number,
   max: number,
+  { from, to }: { from?: string; to?: string },
 ): Series {
-  const days = 30;
-  const today = new Date();
-  const data: Point[] = Array.from({ length: days }, (_, index) => {
-    const date = new Date(today);
-    date.setDate(date.getDate() - (days - 1 - index));
+  const day = 24 * 60 * 60 * 1000;
+  const requestedEnd = Date.parse(to ?? "");
+  const end = Number.isFinite(requestedEnd) ? requestedEnd : Date.now();
+  const requestedStart = Date.parse(from ?? "");
+  const start = Number.isFinite(requestedStart)
+    ? requestedStart
+    : end - 29 * day;
+  const firstDay = Math.floor(start / day);
+  const lastDay = Math.max(firstDay, Math.floor(end / day));
+  const points = Math.min(30, lastDay - firstDay + 1);
+  const data: Point[] = Array.from({ length: points }, (_, index) => {
+    const offset =
+      points === 1
+        ? 0
+        : Math.round((index * (lastDay - firstDay)) / (points - 1));
+    const date = new Date((firstDay + offset) * day);
     return {
       x: date.toISOString().slice(0, 10),
       y: Math.round(min + pseudoRandom(seed, index) * (max - min)),
@@ -119,12 +131,13 @@ export class ComponentsDemoApi extends Controller("/api/components-demo") {
     @Parameter("preset", "query") preset?: string,
     @Parameter("from", "query") from?: string,
     @Parameter("comparison", "query") comparison?: string,
+    @Parameter("to", "query") to?: string,
   ): ChartCardPayload {
     const seed = periodSeed(preset, from);
-    const current = buildDailySeries("Period", seed, 4500, 9500);
+    const current = buildDailySeries("Period", seed, 4500, 9500, { from, to });
     const comparisonSeries =
       comparison && comparison !== "none"
-        ? [buildDailySeries("Comparison", seed + 11, 4000, 10500)]
+        ? [buildDailySeries("Comparison", seed + 11, 4000, 10500, { from, to })]
         : undefined;
     const currentTotal = totalOf(current);
     const previousTotal = comparisonSeries
