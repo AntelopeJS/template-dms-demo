@@ -1,6 +1,7 @@
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import { TableView } from "@antelopejs/interface-dms/base/table-view";
+import type { TableViewTab } from "@antelopejs/interface-dms/base/table-view/options";
 import { demoAppCategory } from "./category";
 // Value import, not a type-only one: evaluating this module is what registers
 // the data controllers the TableViews below reference.
@@ -35,15 +36,13 @@ export class PageDemoAppUsers extends PageController(
       hasSelection: true,
     },
     defaultSort: { field: "name" },
-    tabs: USER_ROLES.map((role) => ({
+    tabs: USER_ROLES.map((role): TableViewTab => ({
       id: role.value,
       label: role.label,
       icon: role.icon,
       iconColor: role.iconColor,
       textColor: role.textColor,
-      filters: [
-        { accessorKey: "role", value: role.value, mode: "is" as const },
-      ],
+      filter: { accessorKey: "role", value: role.value, mode: "is" },
     })),
   });
 }
