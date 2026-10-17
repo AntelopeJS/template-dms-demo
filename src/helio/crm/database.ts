@@ -13,6 +13,7 @@ import type { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types
 import { DEMO_SCHEMA_NAME } from "../../schema";
 import { TeamMember } from "../team/database";
 import { buildCustomers, buildDeals } from "./fixtures";
+import { withFirstContact } from "./first-contact";
 
 const CUSTOMERS_TABLE = "helio_customers";
 const DEALS_TABLE = "helio_deals";
@@ -30,7 +31,7 @@ export type DealStage =
 
 /** Households and companies Helio sells to. */
 @RegisterTable(CUSTOMERS_TABLE, DEMO_SCHEMA_NAME)
-@Fixture(() => buildCustomers())
+@Fixture(() => withFirstContact(buildCustomers()))
 export class Customer extends Table {
   @Field("string") declare _id: string;
 

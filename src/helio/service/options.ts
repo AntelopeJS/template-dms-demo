@@ -22,7 +22,11 @@ export const TICKET_ASSIGNEES = TEAM_ROSTER.filter(
   ({ role }) => role === "technician" || role === "office",
 ).map(({ id, name }) => ({ value: id, label: name }));
 
-/** Hours to the first answer promised, by priority. */
+/**
+ * Hours Helio promises to resolve a ticket in, by priority, from its creation.
+ * An unresolved ticket past it breaches its SLA, whoever holds it: the desk,
+ * the team page and the dashboard all count it so.
+ */
 export const SLA_HOURS: Record<TicketPriority, number> = {
   urgent: 4,
   high: 24,

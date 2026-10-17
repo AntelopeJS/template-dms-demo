@@ -301,13 +301,15 @@ export const LAST_NAMES = [
   "Graindorge",
 ];
 
+// Reserved example domains only (RFC 2606): a real mail server configured
+// on the demo can never reach a real person.
 export const MAIL_DOMAINS = [
-  "gmail.com",
-  "skynet.be",
-  "proximus.be",
-  "outlook.be",
-  "telenet.be",
-  "hotmail.com",
+  "mail.example",
+  "courriel.example",
+  "example.be",
+  "boite.example",
+  "example.com",
+  "webmail.example",
 ];
 
 export const RESIDENTIAL_NOTES = [

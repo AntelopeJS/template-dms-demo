@@ -72,9 +72,9 @@
 				"open": "Open tickets",
 				"openDetail": "{fresh} new · {unassigned} unassigned",
 				"urgent": "Urgent",
-				"urgentDetail": "Open, 4-hour pick-up promised",
+				"urgentDetail": "Open, resolution promised within {hours} hour | Open, resolution promised within {hours} hours",
 				"breaching": "Past their SLA",
-				"breachingDetail": "Nobody took them in hand within the promised time",
+				"breachingDetail": "Still open past the promised resolution time",
 				"resolution": "Average resolution",
 				"resolutionValue": "{hours} h",
 				"resolutionDetail": "Tickets resolved in the last 30 days"
@@ -148,6 +148,11 @@
 					"title": "Urgent ticket {number}",
 					"description": "{customer}: {subject}"
 				}
+			},
+			"quickView": {
+				"action": "Open",
+				"title": "Ticket",
+				"description": "The customer's request, its SLA and who handles it."
 			}
 		}
 	}

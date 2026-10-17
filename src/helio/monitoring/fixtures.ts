@@ -3,6 +3,7 @@
 // autumn weather pattern, so the sparklines of the fleet move together, with
 // a few degraded inverters and two sites gone offline.
 
+import { addWorkdays } from "../projects/calendar";
 import { type ProjectPlan, projectPlans } from "../projects/plan";
 import { COUNTS, siteId } from "../shared/roster";
 import { createRng, DAY_MS, type Rng } from "../shared/seed";
@@ -91,7 +92,8 @@ function toSite(rng: Rng, plan: ProjectPlan, index: number): SiteSeed {
     city: plan.customer.address.city,
     capacityKwp: plan.capacityKwp,
     inverterStatus: status,
-    commissionedAt: new Date(plan.end.getTime() + rng.int(1, 3) * DAY_MS),
+    // Commissioned with the grid operator a few working days after the work.
+    commissionedAt: addWorkdays(plan.end, rng.int(1, 3)),
     todayKwh,
     last7Days,
     lastSeenAt: lastSeen(rng, status, silentDays),

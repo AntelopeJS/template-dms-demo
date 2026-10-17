@@ -37,16 +37,15 @@ function averageResolutionHours(tickets: Ticket[], now: number): number {
 export function serviceStats(
   tickets: Ticket[],
   links: ServiceStatLinks,
+  urgentHours: number,
   now = Date.now(),
 ): StatGroupItem[] {
   const open = tickets.filter((ticket) => !ticket.resolvedAt);
   const unassigned = open.filter((ticket) => !ticket.assignee).length;
   const urgent = open.filter((ticket) => ticket.priority === "urgent");
-  // The SLA promises someone takes the ticket in hand: past it, a ticket
-  // nobody was assigned to breaches it.
-  const breaching = open.filter(
-    (ticket) => !ticket.assignee && ticket.slaDueAt.getTime() < now,
-  );
+  // The SLA is the promised resolution time: an open ticket past it
+  // breaches it, assigned or not.
+  const breaching = open.filter((ticket) => ticket.slaDueAt.getTime() < now);
   const fresh = open.filter((ticket) => ticket.status === "new").length;
   const hours = averageResolutionHours(tickets, now);
   return [
@@ -68,7 +67,10 @@ export function serviceStats(
       tone: urgent.length > 0 ? "error" : "success",
       eyebrow: "$helio.service.stats.urgent",
       value: urgent.length,
-      detail: "$helio.service.stats.urgentDetail",
+      detail: {
+        key: "$helio.service.stats.urgentDetail",
+        params: { hours: count(urgentHours) },
+      },
       detailTone: urgent.length > 0 ? "error" : "neutral",
       to: links.urgent,
     },

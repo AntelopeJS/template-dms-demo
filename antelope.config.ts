@@ -139,6 +139,10 @@ export default defineConfig({
         package: "@antelopejs/dms-marketing",
         version: ">=0.5.1 <1.0.0",
       },
+      config: {
+        // Track the dashboard itself, so Marketing shows how the demo is used.
+        dashboardTracking: { enabled: true, websiteName: "Helio dashboard" },
+      },
     },
     "dms-mailing": {
       source: {

@@ -230,26 +230,26 @@
 				"open": "Open Helio"
 			},
 			"figures": {
-				"label": "Helio in figures",
+				"label": "Helio in figures, counted live",
 				"pages": {
 					"eyebrow": "Pages in the Helio menu",
-					"detail": "Plus hidden detail and form pages"
+					"detail": "No detail or form page | Plus {count} detail or form page | Plus {count} detail and form pages"
 				},
 				"collections": {
 					"eyebrow": "MongoDB collections",
-					"detail": "Seeded with coherent demo data"
+					"detail": "Registered tables, seeded with coherent demo data"
 				},
 				"controllers": {
 					"eyebrow": "Data controllers",
-					"detail": "CRUD routes generated from decorated classes"
+					"detail": "CRUD, export and permissions generated from decorated classes"
 				},
 				"vue": {
-					"eyebrow": "Lines of Vue in Helio",
-					"detail": "Every screen is made of generic blocks"
+					"eyebrow": "Custom Vue blocks in Helio",
+					"detail": "Counted in the compiled Helio code: every screen is made of generic blocks"
 				},
 				"modules": {
 					"eyebrow": "Feature modules",
-					"detail": "Installed in antelope.config.ts"
+					"detail": "DMS modules whose screens this dashboard loaded"
 				}
 			},
 			"helio": {

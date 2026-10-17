@@ -1,9 +1,12 @@
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
-import { TableView } from "@antelopejs/interface-dms/base/table-view";
+import {
+  ResourceForm,
+  TableView,
+} from "@antelopejs/interface-dms/base/table-view";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
 import { dealController } from "./deal-controller";
-import { afterDealWrite } from "./deal-derived";
+import { afterDealEdit, afterDealWrite } from "./deal-derived";
 import { CUSTOMER_QUICK_VIEW_URL } from "./links";
 import { PIPELINE_VIEWS } from "./pipeline-views";
 
@@ -117,6 +120,27 @@ export class PageHelioPipeline extends PageController(
         },
       },
       custom: [
+        // `?record=<deal id>` (the dashboard's activity feed, a customer's
+        // deals) opens the deal read-only in a right drawer. Its form reads
+        // the row from the URL, so the drawer is only opened from it: a rule
+        // no row meets keeps it out of the menus, a click edits the deal.
+        {
+          id: "quick-view",
+          label: "$helio.crm.pipeline.quickView.action",
+          icon: "i-ph-sidebar-simple",
+          deepLink: true,
+          rule: { field: "_id", in: [] },
+          target: {
+            type: "drawer",
+            direction: "right",
+            title: "$helio.crm.pipeline.quickView.title",
+            description: "$helio.crm.pipeline.quickView.description",
+            component: ResourceForm(dealController, {
+              mode: "view",
+              rowId: "{{query.record}}",
+            }),
+          },
+        },
         {
           id: "customer",
           label: "$helio.crm.pipeline.actions.customer",
@@ -128,7 +152,8 @@ export class PageHelioPipeline extends PageController(
     // The stored derived fields follow each write (see deal-derived.ts).
     guards: {
       new: afterDealWrite,
-      edit: afterDealWrite,
+      edit: (_ctx, { id, body, current }) =>
+        afterDealEdit(id, body.stage, current.stage),
     },
   });
 }

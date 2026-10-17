@@ -114,15 +114,3 @@ export function documentLanguage(acceptLanguage: string | undefined) {
 export function documentTexts(language: DocumentLanguage): DocumentTexts {
   return language === "en" ? EN : FR;
 }
-
-/** Helio's own details, printed on every quote (a fictional company). */
-export const HELIO_COMPANY = {
-  name: "Helio SRL",
-  street: "Quai de Rome 25",
-  city: "4000 Liège",
-  vatNumber: "BE 0712.345.678",
-  phone: "+32 4 222 18 40",
-  email: "devis@helio.example",
-  website: "helio.example",
-  iban: "BE68 5390 0754 7034",
-};

@@ -26,6 +26,11 @@ function dealMap(): Map<string, DealFacts> {
   return deals;
 }
 
+/** A seeded customer, or undefined for one created since (or unknown). */
+export function findCustomerFacts(id: string): CustomerFacts | undefined {
+  return customerMap().get(id);
+}
+
 export function customerFacts(id: string): CustomerFacts {
   const found = customerMap().get(id);
   if (!found) throw new Error(`Unknown Helio customer ${id}`);

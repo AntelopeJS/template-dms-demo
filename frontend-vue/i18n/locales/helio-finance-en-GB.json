@@ -91,6 +91,11 @@
 					"impactStamp": "The reminder date is recorded on the invoice",
 					"success": "Reminder sent",
 					"nothing": "Only overdue invoices can be reminded."
+				},
+				"quickView": {
+					"action": "Open",
+					"title": "Invoice",
+					"description": "Amounts, due date and payment of the invoice."
 				}
 			},
 			"nav": {

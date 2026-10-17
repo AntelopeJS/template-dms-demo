@@ -16,9 +16,11 @@ import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { helioOperationsCategory } from "../category";
 import { helioQuickActions } from "../shared/quick-actions";
 import { setTicketWriteAction } from "./access";
+import { logTicketResolved } from "./activity";
 import { ticketController } from "./controller";
 import { TicketModel } from "./database";
 import { SERVICE_DESK_PATH, SERVICE_TOPIC } from "./options";
+import { refreshSlaHours, slaHours } from "./sla";
 import { serviceStats } from "./stats";
 import {
   ticketFooter,
@@ -29,9 +31,13 @@ import {
 
 const route = (path: string) => pageRoutePath(SERVICE_DESK_PATH, path);
 
+const isClosing = (status: string | undefined): boolean =>
+  status === "resolved" || status === "closed";
+
 // The after-sales desk: the tickets as they arrive (a live page, the
-// simulator writing one every minute and a half), opened in a drawer with a
-// click, triaged with saved views, quick filters and bulk actions.
+// simulator writing one every few minutes during office hours), opened in a
+// drawer with a click, triaged with saved views, quick filters and bulk
+// actions.
 @RegisterPage()
 export class PageHelioService extends PageController(
   "service",
@@ -121,20 +127,42 @@ export class PageHelioService extends PageController(
       },
     },
     rowActions: ticketRowActions,
+    // A ticket resolved or closed from its form reaches the activity feed,
+    // as the "Resolve" bulk action does.
+    // Every write first reads the service levels of the Settings page, which
+    // the priority sets the SLA from.
+    guards: {
+      new: async () => {
+        await refreshSlaHours();
+      },
+      edit: async (_ctx, { id, body, current }) => {
+        await refreshSlaHours();
+        return isClosing(body.status) && !isClosing(current.status)
+          ? () => logTicketResolved(id)
+          : undefined;
+      },
+    },
   });
 
   @Get("stats")
   async stats() {
     const tickets = await GetModel(TicketModel).getAll();
+    await refreshSlaHours();
     const link = (view: string) =>
       tableViewLink(PageHelioService, "table", { view });
     return {
-      items: serviceStats(tickets, {
-        open: link("open"),
-        urgent: link("urgent"),
-        breaching: link("breaching"),
-        resolved: tableViewLink(PageHelioService, "table", { tab: "resolved" }),
-      }),
+      items: serviceStats(
+        tickets,
+        {
+          open: link("open"),
+          urgent: link("urgent"),
+          breaching: link("breaching"),
+          resolved: tableViewLink(PageHelioService, "table", {
+            tab: "resolved",
+          }),
+        },
+        slaHours("urgent"),
+      ),
     };
   }
 }

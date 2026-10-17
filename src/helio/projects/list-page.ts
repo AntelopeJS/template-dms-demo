@@ -5,6 +5,7 @@ import {
   type TableViewView,
 } from "@antelopejs/interface-dms/base/table-view";
 import { helioOperationsCategory } from "../category";
+import { afterProjectEdit } from "./activity-log";
 import { PROJECT_PAGE_URL } from "./links";
 import { projectController } from "./project-controller";
 
@@ -200,6 +201,11 @@ export class PageHelioProjects extends PageController(
           target: { type: "page", url: `${PROJECT_PAGE_URL}/{{row._id}}` },
         },
       ],
+    },
+    // A project moved on site or to done reaches the activity feed.
+    guards: {
+      edit: (_ctx, { id, body, current }) =>
+        afterProjectEdit(id, body.status, current.status),
     },
   });
 }

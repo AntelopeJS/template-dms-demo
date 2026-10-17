@@ -11,6 +11,7 @@ import { tableViewRowTopic } from "@antelopejs/interface-dms/base/table-view";
 import type { ConfirmDialog } from "@antelopejs/interface-dms/base/types";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
+import { logProjectStatus } from "./activity-log";
 import { projectActivity } from "./detail-activity";
 import {
   addressLine,
@@ -270,6 +271,7 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
       id,
       open.map((task) => task._id),
     );
+    await logProjectStatus(id, "done");
     return { ok: true };
   }
 }

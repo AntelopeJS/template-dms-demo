@@ -6,12 +6,14 @@
 import type { Action } from "@antelopejs/interface-dms/component";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import {
+  ResourceForm,
   TableView,
   type TableViewTab,
   type TableViewView,
 } from "@antelopejs/interface-dms/base/table-view";
 import type { CustomRowAction } from "@antelopejs/interface-dms/base/types/row-action";
 import { pageRoutePath } from "@antelopejs/interface-dms/page";
+import { logInvoicePaid } from "./actions";
 import {
   INVOICE_STATUSES,
   invoiceController,
@@ -161,6 +163,28 @@ const downloadAction: CustomRowAction = {
   },
 };
 
+// `?record=<invoice id>` (the dashboard's activity feed, a project's
+// invoicing tab) opens the invoice read-only in a right drawer. Its form reads
+// the row from the URL, so the drawer is only opened from it: a rule no row
+// meets keeps it out of the menus.
+const quickViewAction: CustomRowAction = {
+  id: "quick-view",
+  label: "$helio.finance.invoices.quickView.action",
+  icon: "i-ph-sidebar-simple",
+  deepLink: true,
+  rule: { field: "_id", in: [] },
+  target: {
+    type: "drawer",
+    direction: "right",
+    title: "$helio.finance.invoices.quickView.title",
+    description: "$helio.finance.invoices.quickView.description",
+    component: ResourceForm(invoiceController, {
+      mode: "view",
+      rowId: "{{query.record}}",
+    }),
+  },
+};
+
 const NOT_ARCHIVED = { field: "isArchived", notEquals: true } as const;
 
 export const invoicesTable = TableView(invoiceController, {
@@ -254,7 +278,13 @@ export const invoicesTable = TableView(invoiceController, {
       },
     },
     restore: true,
-    custom: [downloadAction, markPaidAction, remindAction],
+    custom: [quickViewAction, downloadAction, markPaidAction, remindAction],
+  },
+  // An invoice marked paid from its form reaches the activity feed, as one
+  // paid through the "Mark as paid" action does.
+  guards: {
+    edit: (_ctx, { id, body }) =>
+      body.status === "paid" ? () => logInvoicePaid(id) : undefined,
   },
 });
 

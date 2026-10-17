@@ -4,12 +4,12 @@
 import type { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import type { Customer } from "../crm/database";
 import { PRODUCT_ROSTER } from "../shared/roster";
+import type { CompanyIdentity } from "../settings/company";
 import type { Quote, QuoteLine } from "./database";
 import {
   type DocumentTexts,
   documentTexts,
   type DocumentLanguage,
-  HELIO_COMPANY,
 } from "./document-texts";
 import {
   fitText,
@@ -25,6 +25,8 @@ export interface QuoteDocumentInput {
   customer?: Customer;
   dealTitle?: string;
   language: DocumentLanguage;
+  /** The issuer, as saved on the Settings page. */
+  company: CompanyIdentity;
 }
 
 const LEFT = 48;
@@ -115,14 +117,15 @@ function drawBrand(page: PdfPage, f: Formatters, quote: Quote): void {
 }
 
 function drawParties(page: PdfPage, f: Formatters, input: QuoteDocumentInput) {
+  const issuer = input.company;
   const company = [
-    HELIO_COMPANY.street,
-    HELIO_COMPANY.city,
-    `${f.texts.vat} ${HELIO_COMPANY.vatNumber}`,
-    HELIO_COMPANY.phone,
-    HELIO_COMPANY.email,
+    issuer.street,
+    issuer.city,
+    `${f.texts.vat} ${issuer.vatNumber}`,
+    issuer.phone,
+    issuer.email,
   ];
-  page.text(LEFT, 116, HELIO_COMPANY.name, {
+  page.text(LEFT, 116, issuer.name, {
     size: 9.5,
     font: "bold",
     color: INK,
@@ -320,13 +323,17 @@ function drawTermsAndSignature(
   );
 }
 
-function drawFooters(doc: PdfDocument, f: Formatters): void {
+function drawFooters(
+  doc: PdfDocument,
+  f: Formatters,
+  company: CompanyIdentity,
+): void {
   const line = [
-    HELIO_COMPANY.name,
-    `${HELIO_COMPANY.street}, ${HELIO_COMPANY.city}`,
-    `${f.texts.vat} ${HELIO_COMPANY.vatNumber}`,
-    `IBAN ${HELIO_COMPANY.iban}`,
-    HELIO_COMPANY.website,
+    company.name,
+    `${company.street}, ${company.city}`,
+    `${f.texts.vat} ${company.vatNumber}`,
+    `IBAN ${company.iban}`,
+    company.website,
   ].join("  ·  ");
   doc.pages.forEach((page, i) => {
     page.line(LEFT, PAGE_HEIGHT - 44, RIGHT, HAIRLINE);
@@ -380,6 +387,6 @@ export function renderQuoteDocument(input: QuoteDocumentInput): string {
   }
   drawTotals(page, f, quote, y);
   drawTermsAndSignature(page, f, input, y);
-  drawFooters(doc, f);
+  drawFooters(doc, f, input.company);
   return doc.toString();
 }

@@ -5,7 +5,10 @@ import { Grid, GridRow } from "@antelopejs/interface-dms/base/grid";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import { Meter } from "@antelopejs/interface-dms/base/meter";
 import { StatGroup } from "@antelopejs/interface-dms/base/stat-group";
-import { TableView } from "@antelopejs/interface-dms/base/table-view";
+import {
+  ResourceForm,
+  TableView,
+} from "@antelopejs/interface-dms/base/table-view";
 import { TopListCard } from "@antelopejs/interface-dms/base/top-list-card";
 import {
   PageController,
@@ -283,6 +286,28 @@ export class PageHelioTeam extends PageController(
           confirmLabel: "$helio.team.delete.confirm",
         },
       },
+      // `?record=<member id>` (a project's crew) opens the member read-only
+      // in a right drawer. Its form reads the row from the URL, so the drawer
+      // is only opened from it: a rule no row meets keeps it out of the menus.
+      custom: [
+        {
+          id: "quick-view",
+          label: "$helio.team.quickView.action",
+          icon: "i-ph-sidebar-simple",
+          deepLink: true,
+          rule: { field: "_id", in: [] },
+          target: {
+            type: "drawer",
+            direction: "right",
+            title: "$helio.team.quickView.title",
+            description: "$helio.team.quickView.description",
+            component: ResourceForm(teamController, {
+              mode: "view",
+              rowId: "{{query.record}}",
+            }),
+          },
+        },
+      ],
     },
   });
 

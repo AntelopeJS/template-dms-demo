@@ -72,9 +72,9 @@
 				"open": "Tickets ouverts",
 				"openDetail": "{fresh} nouveau · {unassigned} sans technicien | {fresh} nouveaux · {unassigned} sans technicien",
 				"urgent": "Urgents",
-				"urgentDetail": "Ouverts, prise en charge promise sous 4 heures",
+				"urgentDetail": "Ouverts, résolution promise sous {hours} heure | Ouverts, résolution promise sous {hours} heures",
 				"breaching": "Hors délai",
-				"breachingDetail": "Personne ne les a pris en charge dans le délai promis",
+				"breachingDetail": "Toujours ouverts au-delà du délai de résolution promis",
 				"resolution": "Résolution moyenne",
 				"resolutionValue": "{hours} h",
 				"resolutionDetail": "Tickets résolus ces 30 derniers jours"
@@ -148,6 +148,11 @@
 					"title": "Ticket urgent {number}",
 					"description": "{customer} : {subject}"
 				}
+			},
+			"quickView": {
+				"action": "Ouvrir",
+				"title": "Ticket",
+				"description": "La demande du client, son SLA et qui la traite."
 			}
 		}
 	}

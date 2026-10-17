@@ -15,9 +15,13 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
 import { CustomerModel, DealModel } from "../crm/database";
+import { fireQuoteAccepted } from "../platform/automation/events";
+import { mailQuoteAccepted, mailQuoteSent } from "../platform/mailing/send";
+import { readCompanyIdentity } from "../settings/company";
 import { DAY_MS } from "../shared/seed";
 import { type Quote, QuoteModel, type QuoteStatus } from "./database";
 import { renderQuoteDocument } from "./document";
+import { quoteAccepted, quoteSent } from "./lifecycle";
 import { documentLanguage } from "./document-texts";
 import { PORTAL_BASE_URL, QUOTE_ACTIONS_API } from "./links";
 import { VALIDITY_DAYS } from "./options";
@@ -137,6 +141,10 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
       sentAt: now,
       validUntil,
     });
+    // Helio platform (mailing): the customer receives the quote and its
+    // portal link; a failed e-mail is logged, the quote stays sent.
+    void mailQuoteSent(id);
+    await quoteSent(quote);
     return { ok: true };
   }
 
@@ -145,11 +153,17 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     @Parameter("id", "query") id: string,
     @AuthUserWithPermission(canEdit) _user: User,
   ): Promise<{ ok: true }> {
-    await quoteIn(id, "sent");
+    const quote = await quoteIn(id, "sent");
     await GetModel(QuoteModel).update(id, {
       status: "accepted",
       signedAt: new Date(),
     });
+    // Its deal is won at the signed amount; both reach the activity feed.
+    await quoteAccepted(quote);
+    // Helio platform: the thank-you e-mail, and the "Quote accepted"
+    // automation trigger (kick-off procedure). Neither can fail the accept.
+    void mailQuoteAccepted(id);
+    fireQuoteAccepted(quote);
     return { ok: true };
   }
 
@@ -197,6 +211,7 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
       quote.deal ? GetModel(DealModel).get(quote.deal) : undefined,
     ]);
     const pdf = renderQuoteDocument({
+      company: await readCompanyIdentity(),
       quote,
       customer,
       dealTitle: deal?.title,

@@ -230,26 +230,26 @@
 				"open": "Ouvrir Helio"
 			},
 			"figures": {
-				"label": "Helio en chiffres",
+				"label": "Helio en chiffres, comptés en direct",
 				"pages": {
 					"eyebrow": "Pages du menu Helio",
-					"detail": "Plus des pages de détail et de formulaire masquées"
+					"detail": "Aucune page de détail ou de formulaire | Plus {count} page de détail ou de formulaire | Plus {count} pages de détail et de formulaire"
 				},
 				"collections": {
 					"eyebrow": "Collections MongoDB",
-					"detail": "Alimentées par des données de démo cohérentes"
+					"detail": "Tables déclarées, alimentées par des données de démo cohérentes"
 				},
 				"controllers": {
 					"eyebrow": "Contrôleurs de données",
-					"detail": "Routes CRUD générées à partir de classes décorées"
+					"detail": "CRUD, export et permissions générés à partir de classes décorées"
 				},
 				"vue": {
-					"eyebrow": "Lignes de Vue dans Helio",
-					"detail": "Chaque écran est fait de blocs génériques"
+					"eyebrow": "Blocs Vue sur mesure dans Helio",
+					"detail": "Comptés dans le code compilé de Helio : chaque écran est fait de blocs génériques"
 				},
 				"modules": {
 					"eyebrow": "Modules fonctionnels",
-					"detail": "Installés dans antelope.config.ts"
+					"detail": "Modules DMS dont ce tableau de bord a chargé les écrans"
 				}
 			},
 			"helio": {

@@ -127,6 +127,11 @@
 			},
 			"quick": {
 				"add": "New team member"
+			},
+			"quickView": {
+				"action": "Open",
+				"title": "Team member",
+				"description": "Role, region, skills and contact details."
 			}
 		}
 	}

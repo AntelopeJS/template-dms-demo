@@ -197,7 +197,12 @@
 					"description": "Its amount and history leave the pipeline. Mark it as lost instead to keep track of it.",
 					"confirm": "Delete the deal"
 				},
-				"newDeal": "New deal"
+				"newDeal": "New deal",
+				"quickView": {
+					"action": "Open",
+					"title": "Deal",
+					"description": "Stage, amount, owner and next step of the deal."
+				}
 			}
 		}
 	}

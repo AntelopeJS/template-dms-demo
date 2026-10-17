@@ -8,20 +8,12 @@ import {
 } from "@antelopejs/interface-database-decorators";
 import type { Tone } from "@antelopejs/interface-dms/base/types";
 import { DEMO_SCHEMA_NAME } from "../../schema";
+import type { ActivityType } from "./activity-links";
 import { buildActivity } from "./fixtures";
 
-const TABLE_NAME = "helio_activity";
+export type { ActivityType } from "./activity-links";
 
-export type ActivityType =
-  | "deal_won"
-  | "quote_sent"
-  | "quote_accepted"
-  | "project_started"
-  | "project_done"
-  | "ticket_opened"
-  | "ticket_resolved"
-  | "invoice_paid"
-  | "invoice_overdue";
+const TABLE_NAME = "helio_activity";
 
 // The business events the dashboard's activity feed lists, newest first.
 @RegisterTable(TABLE_NAME, DEMO_SCHEMA_NAME)

@@ -5,6 +5,7 @@
 
 import { buildSites, type SiteSeed } from "../monitoring/fixtures";
 import { customerFacts, isBusiness } from "../projects/crm-facts";
+import { nextWorkday, previousWorkday } from "../projects/calendar";
 import { type ProjectPlan, projectPlans } from "../projects/plan";
 import { quoteTotals, VAT_BUSINESS, VAT_RESIDENTIAL } from "../sales/lines";
 import type { QuoteLine } from "../sales/database";
@@ -68,7 +69,8 @@ function projectDrafts(plan: ProjectPlan): InvoiceDraft[] {
     vatRate: plan.vatRate,
   };
   const drafts: InvoiceDraft[] = [];
-  const depositAt = plusDays(plan.signedAt, 2);
+  // Invoices go out on working days.
+  const depositAt = nextWorkday(plusDays(plan.signedAt, 2));
   if (daysAgo(depositAt) > 0 && daysAgo(depositAt) < YEAR_DAYS) {
     drafts.push({
       ...base,
@@ -77,8 +79,13 @@ function projectDrafts(plan: ProjectPlan): InvoiceDraft[] {
     });
   }
   if (plan.status === "done" || plan.status === "inspection") {
-    const balanceAt = new Date(
-      Math.min(plusDays(plan.end, 3).getTime(), Date.now() - DAY_MS),
+    const balanceAt = previousWorkday(
+      new Date(
+        Math.min(
+          nextWorkday(plusDays(plan.end, 3)).getTime(),
+          Date.now() - DAY_MS,
+        ),
+      ),
     );
     drafts.push({
       ...base,
@@ -140,7 +147,9 @@ function serviceDraft(rng: Rng, site: SiteSeed): InvoiceDraft {
     business,
     amountExcl: quoteTotals(lines, vatRate).subtotal,
     vatRate,
-    issuedAt: plusDays(new Date(), -rng.int(1, Math.max(2, since))),
+    issuedAt: previousWorkday(
+      plusDays(new Date(), -rng.int(1, Math.max(2, since))),
+    ),
   };
 }
 
@@ -157,6 +166,24 @@ function paymentMethod(rng: Rng, business: boolean): PaymentMethod {
       ]);
 }
 
+// Payments are booked on a working day, during office hours, and never
+// later than a few hours ago; undefined when that falls before the invoice
+// (an invoice issued this morning is not paid yet).
+function bookedPayment(
+  rng: Rng,
+  wanted: number,
+  issuedAt: Date,
+): Date | undefined {
+  const latest = Date.now() - DAY_MS / 4;
+  const day = previousWorkday(new Date(Math.min(wanted, latest)));
+  day.setHours(rng.int(9, 16), rng.int(0, 59), 0, 0);
+  const booked =
+    day.getTime() > latest
+      ? previousWorkday(new Date(day.getTime() - DAY_MS))
+      : day;
+  return booked > issuedAt ? booked : undefined;
+}
+
 // Paid, waiting or overdue, from the due date: a quarter of the invoices
 // that fell due in the last two months are still unpaid.
 function settle(
@@ -165,31 +192,24 @@ function settle(
   dueAt: Date,
 ): { status: InvoiceStatus; paidAt?: Date } {
   if (draft.draft) return { status: "draft" };
-  const now = Date.now();
-  if (dueAt.getTime() > now) {
+  const issued = draft.issuedAt.getTime();
+  if (dueAt.getTime() > Date.now()) {
     if (!rng.chance(0.35)) return { status: "sent" };
-    return {
-      status: "paid",
-      paidAt: new Date(
-        Math.min(
-          draft.issuedAt.getTime() + rng.int(1, 10) * DAY_MS,
-          now - DAY_MS / 4,
-        ),
-      ),
-    };
+    const paidAt = bookedPayment(
+      rng,
+      issued + rng.int(1, 10) * DAY_MS,
+      draft.issuedAt,
+    );
+    return paidAt ? { status: "paid", paidAt } : { status: "sent" };
   }
   if (daysAgo(dueAt) < 60 && rng.chance(0.25)) return { status: "overdue" };
-  const paidAt =
-    draft.issuedAt.getTime() +
-    rng.int(
-      3,
-      Math.round((dueAt.getTime() - draft.issuedAt.getTime()) / DAY_MS) + 5,
-    ) *
-      DAY_MS;
-  return {
-    status: "paid",
-    paidAt: new Date(Math.min(paidAt, now - DAY_MS / 4)),
-  };
+  const termDays = Math.round((dueAt.getTime() - issued) / DAY_MS);
+  const paidAt = bookedPayment(
+    rng,
+    issued + rng.int(3, termDays + 5) * DAY_MS,
+    draft.issuedAt,
+  );
+  return paidAt ? { status: "paid", paidAt } : { status: "overdue" };
 }
 
 function toSeed(rng: Rng, draft: InvoiceDraft, index: number): InvoiceSeed {

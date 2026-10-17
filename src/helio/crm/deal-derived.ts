@@ -1,5 +1,6 @@
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { AfterWrite } from "@antelopejs/interface-dms/base/types/guards";
+import { logActivity } from "../dashboard/log";
 import { cents } from "../shared/seed";
 import { type Deal, DealModel } from "./database";
 
@@ -51,4 +52,33 @@ async function syncDerivedFields(): Promise<void> {
  */
 export function afterDealWrite(): AfterWrite {
   return syncDerivedFields;
+}
+
+// A deal moved to "won" (across the board or from its form) reaches the
+// dashboard's activity feed, in its owner's name.
+async function logDealWon(id: string): Promise<void> {
+  const deal = await GetModel(DealModel).get(id);
+  if (deal?.stage !== "won") return;
+  await logActivity({
+    type: "deal_won",
+    actor: deal.owner,
+    subject: deal.title,
+    record: { kind: "deal", id },
+  });
+}
+
+/**
+ * The pipeline table's edit guard result: the derived fields follow, and a
+ * deal just won is logged.
+ */
+export function afterDealEdit(
+  id: string,
+  stage: string | undefined,
+  previous: string | undefined,
+): AfterWrite {
+  if (stage !== "won" || previous === "won") return syncDerivedFields;
+  return async () => {
+    await syncDerivedFields();
+    await logDealWon(id);
+  };
 }

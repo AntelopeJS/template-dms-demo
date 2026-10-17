@@ -8,7 +8,8 @@ import { CustomerModel } from "../crm/database";
 import { ProjectModel } from "../projects/database";
 import { QuoteModel } from "../sales/database";
 import type { Invoice, InvoiceStatus } from "./database";
-import { type DocumentTexts, documentTexts, ISSUER } from "./document-texts";
+import { type CompanyIdentity, readCompanyIdentity } from "../settings/company";
+import { type DocumentTexts, documentTexts } from "./document-texts";
 
 interface DocumentParty {
   name: string;
@@ -20,6 +21,8 @@ interface DocumentParty {
 
 interface DocumentData {
   invoice: Invoice;
+  /** The issuer, as saved on the Settings page. */
+  company: CompanyIdentity;
   customer: DocumentParty;
   projectCode?: string;
   quoteNumber?: string;
@@ -54,13 +57,15 @@ export function structuredReference(number: string): string {
 export async function loadDocumentData(
   invoice: Invoice,
 ): Promise<DocumentData> {
-  const [customer, project, quote] = await Promise.all([
+  const [company, customer, project, quote] = await Promise.all([
+    readCompanyIdentity(),
     GetModel(CustomerModel).get(invoice.customer),
     invoice.project ? GetModel(ProjectModel).get(invoice.project) : undefined,
     invoice.quote ? GetModel(QuoteModel).get(invoice.quote) : undefined,
   ]);
   return {
     invoice,
+    company,
     customer: customer ?? { name: invoice.customer },
     projectCode: project?.code,
     quoteNumber: quote?.number,
@@ -102,7 +107,7 @@ function stamp(invoice: Invoice, texts: DocumentTexts): string {
 }
 
 function partiesBlock(data: DocumentData, texts: DocumentTexts): string {
-  const { customer } = data;
+  const { customer, company: issuer } = data;
   const customerLines = [
     customer.name,
     customer.contactName === customer.name ? undefined : customer.contactName,
@@ -110,8 +115,8 @@ function partiesBlock(data: DocumentData, texts: DocumentTexts): string {
     customer.vatNumber ? `${texts.vatNumber} ${customer.vatNumber}` : undefined,
   ].filter((line): line is string => !!line);
   return `<section class="parties">
-  <div><h2>${escapeHtml(ISSUER.name)}</h2>
-    <p>${[ISSUER.street, ISSUER.city, ISSUER.country, `${texts.vatNumber} ${ISSUER.vatNumber}`, ISSUER.email, ISSUER.phone].map(escapeHtml).join("<br>")}</p></div>
+  <div><h2>${escapeHtml(issuer.name)}</h2>
+    <p>${[issuer.street, issuer.city, issuer.country, `${texts.vatNumber} ${issuer.vatNumber}`, issuer.email, issuer.phone].map(escapeHtml).join("<br>")}</p></div>
   <div class="billed"><h3>${escapeHtml(texts.billedTo)}</h3>
     <p>${customerLines.map(escapeHtml).join("<br>")}</p></div>
 </section>`;
@@ -175,8 +180,8 @@ function paymentBlock(data: DocumentData, texts: DocumentTexts): string {
   if (invoice.status === "cancelled") return "";
   const line = fill(texts.paymentLine, {
     date: format.date(invoice.dueAt),
-    iban: ISSUER.iban,
-    bic: ISSUER.bic,
+    iban: data.company.iban,
+    bic: data.company.bic,
   });
   return `<section class="payment"><h3>${escapeHtml(texts.paymentTitle)}</h3><p>${escapeHtml(line)}</p>
 <p>${escapeHtml(texts.communication)} <strong class="mono">${escapeHtml(structuredReference(invoice.number))}</strong></p></section>`;

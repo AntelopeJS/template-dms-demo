@@ -1,8 +1,11 @@
+import { Get } from "@antelopejs/interface-api";
 import {
   PageController,
+  pageRoutePath,
   pagesCategory,
   RegisterPage,
 } from "@antelopejs/interface-dms/page";
+import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import {
   Banner,
   Card,
@@ -14,8 +17,60 @@ import {
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import { helioCategory } from "./helio/category";
 import { HOME_EXCERPT } from "./home-excerpt";
+import { type HomeFigures, homeFigures } from "./home-figures";
 
 const DOCS = "https://dms.antelopejs.com/docs";
+const HOME_SLUG = "/home";
+
+const count = (value: number) => ({ type: "count", value }) as const;
+
+// The five cells, from the figures counted at runtime.
+function figureItems(figures: HomeFigures): StatGroupItem[] {
+  return [
+    {
+      id: "pages",
+      icon: "i-ph-browsers",
+      eyebrow: "$demo.home.figures.pages.eyebrow",
+      value: figures.menuPages,
+      detail: {
+        key: "$demo.home.figures.pages.detail",
+        params: { count: count(figures.detailPages) },
+      },
+      to: "/helio/dashboard",
+    },
+    {
+      id: "collections",
+      icon: "i-ph-database",
+      eyebrow: "$demo.home.figures.collections.eyebrow",
+      value: figures.collections,
+      detail: "$demo.home.figures.collections.detail",
+    },
+    {
+      id: "controllers",
+      icon: "i-ph-plugs-connected",
+      eyebrow: "$demo.home.figures.controllers.eyebrow",
+      value: figures.dataControllers,
+      detail: "$demo.home.figures.controllers.detail",
+    },
+    {
+      id: "vue",
+      icon: "i-ph-file-vue",
+      tone: figures.customBlocks === 0 ? "success" : "warning",
+      eyebrow: "$demo.home.figures.vue.eyebrow",
+      value: figures.customBlocks,
+      detail: "$demo.home.figures.vue.detail",
+      detailTone: figures.customBlocks === 0 ? "success" : "neutral",
+    },
+    {
+      id: "modules",
+      icon: "i-ph-puzzle-piece",
+      eyebrow: "$demo.home.figures.modules.eyebrow",
+      value: figures.modules,
+      detail: "$demo.home.figures.modules.detail",
+      to: "/modules",
+    },
+  ];
+}
 
 // The home page presents the template with DMS blocks only, like Helio
 // itself: what the demo is, what AntelopeJS brought to build it, and where
@@ -51,54 +106,20 @@ export class PageHome extends PageController(
     ],
   });
 
-  // Counted from src/helio (pages in the menu, @RegisterTable collections,
-  // @RegisterDataController classes): keep these figures in step with it.
+  // Counted when the page is read, from what the module registered (see
+  // home-figures.ts): nothing here is typed by hand.
   static figures = StatGroup({
     layout: "cards",
     columns: 5,
     label: "$demo.home.figures.label",
-    items: [
-      {
-        id: "pages",
-        icon: "i-ph-browsers",
-        eyebrow: "$demo.home.figures.pages.eyebrow",
-        value: 11,
-        detail: "$demo.home.figures.pages.detail",
-        to: "/helio/dashboard",
-      },
-      {
-        id: "collections",
-        icon: "i-ph-database",
-        eyebrow: "$demo.home.figures.collections.eyebrow",
-        value: 13,
-        detail: "$demo.home.figures.collections.detail",
-      },
-      {
-        id: "controllers",
-        icon: "i-ph-plugs-connected",
-        eyebrow: "$demo.home.figures.controllers.eyebrow",
-        value: 12,
-        detail: "$demo.home.figures.controllers.detail",
-      },
-      {
-        id: "vue",
-        icon: "i-ph-file-vue",
-        tone: "success",
-        eyebrow: "$demo.home.figures.vue.eyebrow",
-        value: 0,
-        detail: "$demo.home.figures.vue.detail",
-        detailTone: "success",
-      },
-      {
-        id: "modules",
-        icon: "i-ph-puzzle-piece",
-        eyebrow: "$demo.home.figures.modules.eyebrow",
-        value: 10,
-        detail: "$demo.home.figures.modules.detail",
-        to: "/modules",
-      },
-    ],
+    fetchUrl: pageRoutePath(HOME_SLUG, "/figures"),
+    skeletonCount: 5,
   });
+
+  @Get("figures")
+  async figureValues(): Promise<{ items: StatGroupItem[] }> {
+    return { items: figureItems(await homeFigures()) };
+  }
 
   // One card per Helio page, read from the menu: a new page shows up here
   // on its own, and a viewer only sees the pages their role opens.

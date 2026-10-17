@@ -36,9 +36,11 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import { customerController } from "../crm/controller";
+import { mailTicketsResolved } from "../platform/mailing/send";
 import { siteController } from "../monitoring/controller";
 import { teamController } from "../team/controller";
 import { assertCanWriteTickets } from "./access";
+import { logTicketsResolved } from "./activity";
 import {
   Ticket,
   TicketModel,
@@ -46,9 +48,9 @@ import {
   type TicketStatus,
 } from "./database";
 import { withTicketNumber } from "./numbering";
+import { slaHours } from "./sla";
 import {
   SERVICE_TOPIC,
-  SLA_HOURS,
   TICKET_ASSIGNEES,
   TICKET_CATEGORIES,
   TICKET_CHANNELS,
@@ -196,7 +198,7 @@ class ticketDataAPI extends DataController(
   set priority(value: TicketPriority) {
     this.table.priority = value;
     this.table.createdAt ??= new Date();
-    const hours = SLA_HOURS[value] ?? SLA_HOURS.normal;
+    const hours = slaHours(value);
     this.table.slaDueAt = new Date(
       new Date(this.table.createdAt).getTime() + hours * HOUR_MS,
     );
@@ -340,12 +342,12 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare pinned: boolean;
 
-  // Under the status: an open ticket nobody took in hand within its SLA in
-  // red, else when a resolved one was resolved.
-  @Listable(["status", "slaDueAt", "resolvedAt", "assignee"])
+  // Under the status: an open ticket past its SLA (the promised resolution
+  // time) in red, else when a resolved one was resolved.
+  @Listable(["status", "slaDueAt", "resolvedAt"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
-    const { status, slaDueAt, resolvedAt, assignee } = this.table;
+    const { status, slaDueAt, resolvedAt } = this.table;
     if (CLOSED.includes(status)) {
       return resolvedAt
         ? {
@@ -356,7 +358,7 @@ class ticketDataAPI extends DataController(
           }
         : null;
     }
-    if (!assignee && slaDueAt && slaDueAt.getTime() < Date.now()) {
+    if (slaDueAt && new Date(slaDueAt).getTime() < Date.now()) {
       return {
         text: "$helio.service.tickets.detail.slaBreached",
         tone: "error",
@@ -413,6 +415,9 @@ class ticketDataAPI extends DataController(
         this.model.update(_id, { status: "resolved", resolvedAt }),
       ),
     );
+    // Helio platform (mailing): each customer is told, in the background.
+    void mailTicketsResolved(open.map(({ _id }) => _id));
+    await logTicketsResolved(open);
     return this.published(open.map(({ _id }) => _id));
   }
 

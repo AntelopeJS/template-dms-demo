@@ -1,87 +1,82 @@
-// A demo needs a desk that moves: every ninety seconds or so a customer of
-// one of the monitored installations writes in, and the new ticket reaches
-// the open desks through the realtime topic (the "N new tickets · Show" strip
-// while paused). HELIO_SIMULATORS=off switches it off. The simulated tickets
-// are capped, the oldest removed first, so a long-running instance never
-// piles them up.
+// A demo needs a desk that moves, at the pace of a real one: during office
+// hours a customer of one of the monitored installations writes in every few
+// minutes (outside them, only an inverter alert now and then), and the
+// tickets it wrote move along like real ones — the dispatcher assigns a new
+// ticket to a technician of the customer's region (the office for a billing
+// question), who resolves it a little later. Resolved simulated tickets are
+// then cleared, so the open, unassigned and weekday/hour counts stay steady
+// however long the instance runs. Every change reaches the open desks
+// through the realtime topic. HELIO_SIMULATORS=off switches it off.
 
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import { SiteModel, type Site } from "../monitoring/database";
+import { fireTicketOpened } from "../platform/automation/events";
+import { createRng, type Rng } from "../shared/seed";
+import { type Ticket, type TicketChannel, TicketModel } from "./database";
 import {
-  type TicketCategory,
-  type TicketChannel,
-  TicketModel,
-  type TicketPriority,
-} from "./database";
+  assigneeFor,
+  channelFor,
+  isBusinessHours,
+  isTechnical,
+  pickCategory,
+  priorityFor,
+} from "./desk-rules";
 import type { TicketSeed } from "./fixtures";
 import { notifyUrgentTicket } from "./notifications";
 import { nextTicketNumber } from "./numbering";
-import { SERVICE_TOPIC, SLA_HOURS } from "./options";
+import { SERVICE_TOPIC } from "./options";
+import { refreshSlaHours, slaHours } from "./sla";
 import { SUBJECTS } from "./subjects";
 
 const SIMULATED_PREFIX = "ticket-sim-";
-const MAX_SIMULATED = 30;
-const FIRST_TICKET_MS = 30_000;
-const INTERVAL_MS = 90_000;
-const JITTER_MS = 15_000;
-const HOUR_MS = 60 * 60 * 1000;
+const MINUTE_MS = 60_000;
+const HOUR_MS = 60 * MINUTE_MS;
+const FIRST_TICK_MS = 30_000;
+const INTERVAL_MS = 5 * MINUTE_MS;
+const JITTER_MS = MINUTE_MS;
+/** Outside office hours, the share of ticks that bring an inverter alert. */
+const NIGHT_ALERT_CHANCE = 0.3;
+/** A new simulated ticket is assigned after this long… */
+const ASSIGN_AFTER_MS = 3 * MINUTE_MS;
+/** …resolved this long after it arrived… */
+const RESOLVE_AFTER_MS = 15 * MINUTE_MS;
+/** …and cleared from the desk this long after it was resolved. */
+const CLEAR_AFTER_MS = 10 * MINUTE_MS;
+/** A safety net: never more simulated tickets than this at once. */
+const MAX_SIMULATED = 12;
 
-type Weighted<T> = ReadonlyArray<readonly [T, number]>;
+const isOpen = (ticket: Ticket): boolean => !ticket.resolvedAt;
 
-const CATEGORIES: Weighted<TicketCategory> = [
-  ["no_production", 3],
-  ["inverter_error", 5],
-  ["monitoring", 4],
-  ["damage", 1],
-  ["billing", 3],
-  ["other", 2],
-];
-// A billing or general question is never urgent; a technical one can be.
-const TECHNICAL_PRIORITIES: Weighted<TicketPriority> = [
-  ["low", 2],
-  ["normal", 5],
-  ["high", 3],
-  ["urgent", 1],
-];
-const OFFICE_PRIORITIES: Weighted<TicketPriority> = [
-  ["low", 3],
-  ["normal", 5],
-  ["high", 1],
-];
-const TECHNICAL_CHANNELS: Weighted<TicketChannel> = [
-  ["monitoring_alert", 4],
-  ["phone", 3],
-  ["portal", 2],
-  ["email", 1],
-];
-const OFFICE_CHANNELS: Weighted<TicketChannel> = [
-  ["email", 3],
-  ["portal", 2],
-  ["phone", 2],
-];
-
-function pick<T>(items: Weighted<T>): T {
-  const total = items.reduce((sum, [, weight]) => sum + weight, 0);
-  let roll = Math.random() * total;
-  for (const [item, weight] of items) {
-    roll -= weight;
-    if (roll < 0) return item;
+/** Open tickets held, by assignee: the dispatcher evens the load out. */
+function loadOf(tickets: Ticket[]): Map<string, number> {
+  const load = new Map<string, number>();
+  for (const ticket of tickets.filter(isOpen)) {
+    if (ticket.assignee)
+      load.set(ticket.assignee, (load.get(ticket.assignee) ?? 0) + 1);
   }
-  return items[0][0];
+  return load;
 }
 
-const pickOne = <T>(items: readonly T[]): T =>
-  items[Math.floor(Math.random() * items.length)];
-
 // A customer whose installation Helio monitors: a technical request names
-// the site, a billing or general one only the customer.
-function draftTicket(site: Site, number: string): TicketSeed {
-  const category = pick(CATEGORIES);
-  const technical = category !== "billing" && category !== "other";
-  const priority = pick(technical ? TECHNICAL_PRIORITIES : OFFICE_PRIORITIES);
-  const text = pickOne(SUBJECTS[category]);
+// the site, a billing or general one only the customer. Outside office hours
+// only the inverters write in.
+function draftTicket(
+  rng: Rng,
+  site: Site,
+  number: string,
+  alertOnly: boolean,
+): TicketSeed {
+  const category = alertOnly
+    ? rng.pick(["inverter_error", "no_production"] as const)
+    : pickCategory(rng);
+  const technical = isTechnical(category);
+  const priority = priorityFor(rng, category);
+  const channel: TicketChannel = alertOnly
+    ? "monitoring_alert"
+    : channelFor(rng, category);
+  const text = rng.pick(SUBJECTS[category]);
   const createdAt = new Date();
   return {
     _id: `${SIMULATED_PREFIX}${createdAt.getTime().toString(36)}`,
@@ -92,8 +87,8 @@ function draftTicket(site: Site, number: string): TicketSeed {
     category,
     priority,
     status: "new",
-    channel: pick(technical ? TECHNICAL_CHANNELS : OFFICE_CHANNELS),
-    slaDueAt: new Date(createdAt.getTime() + SLA_HOURS[priority] * HOUR_MS),
+    channel,
+    slaDueAt: new Date(createdAt.getTime() + slaHours(priority) * HOUR_MS),
     createdAt,
     resolvedAt: undefined,
     assignee: undefined,
@@ -102,36 +97,88 @@ function draftTicket(site: Site, number: string): TicketSeed {
   };
 }
 
-// The simulated tickets beyond the cap, oldest first.
-async function pruneSimulated(model: TicketModel): Promise<string[]> {
-  const simulated = (await model.getAll())
-    .filter(({ _id }) => _id.startsWith(SIMULATED_PREFIX))
-    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-  const extra = simulated.slice(
-    0,
-    Math.max(0, simulated.length - MAX_SIMULATED),
-  );
-  await Promise.all(extra.map(({ _id }) => model.delete(_id)));
-  return extra.map(({ _id }) => _id);
+interface Changes {
+  updated: string[];
+  deleted: string[];
 }
 
-/** Writes one realistic ticket and announces it on the desk's topic. */
+// Moves the simulated tickets along: assigned, then resolved, then cleared.
+// Tickets a user already handled (assigned or resolved by hand) follow the
+// same clock from where they stand.
+async function advanceSimulated(
+  rng: Rng,
+  model: TicketModel,
+  tickets: Ticket[],
+): Promise<Changes> {
+  const now = Date.now();
+  const load = loadOf(tickets);
+  const changes: Changes = { updated: [], deleted: [] };
+  const simulated = tickets
+    .filter(({ _id }) => _id.startsWith(SIMULATED_PREFIX))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  for (const [index, ticket] of simulated.entries()) {
+    const age = now - ticket.createdAt.getTime();
+    const resolvedFor = ticket.resolvedAt
+      ? now - ticket.resolvedAt.getTime()
+      : 0;
+    if (resolvedFor > CLEAR_AFTER_MS || index >= MAX_SIMULATED) {
+      await model.delete(ticket._id);
+      changes.deleted.push(ticket._id);
+    } else if (!ticket.resolvedAt && age > RESOLVE_AFTER_MS) {
+      await model.update(ticket._id, {
+        status: "resolved",
+        resolvedAt: new Date(),
+        assignee:
+          ticket.assignee ??
+          assigneeFor(rng, ticket.category, ticket.customer, load),
+      });
+      changes.updated.push(ticket._id);
+    } else if (
+      !ticket.assignee &&
+      !ticket.resolvedAt &&
+      age > ASSIGN_AFTER_MS
+    ) {
+      const assignee = assigneeFor(rng, ticket.category, ticket.customer, load);
+      load.set(assignee, (load.get(assignee) ?? 0) + 1);
+      await model.update(ticket._id, {
+        assignee,
+        status: ticket.status === "new" ? "open" : ticket.status,
+      });
+      changes.updated.push(ticket._id);
+    }
+  }
+  return changes;
+}
+
+async function announce(event: string, ids: readonly string[]): Promise<void> {
+  if (ids.length === 0) return;
+  await PublishMessage(SERVICE_TOPIC, event, { payload: { ids: [...ids] } });
+}
+
+/** One tick: the desk's simulated tickets move on, and one may arrive. */
 export async function simulateTicket(): Promise<void> {
+  const rng = createRng(Date.now() >>> 0);
+  const model = GetModel(TicketModel);
+  const changes = await advanceSimulated(rng, model, await model.getAll());
+  await announce("tickets.updated", changes.updated);
+  await announce("tickets.deleted", changes.deleted);
+
+  const officeHours = isBusinessHours(new Date());
+  await refreshSlaHours();
+  if (!officeHours && !rng.chance(NIGHT_ALERT_CHANCE)) return;
   const sites = await GetModel(SiteModel).getAll();
   if (sites.length === 0) return;
-  const model = GetModel(TicketModel);
-  const ticket = draftTicket(pickOne(sites), await nextTicketNumber());
+  const ticket = draftTicket(
+    rng,
+    rng.pick(sites),
+    await nextTicketNumber(),
+    !officeHours,
+  );
   await model.insert(ticket);
-  const removed = await pruneSimulated(model);
-  await PublishMessage(SERVICE_TOPIC, "tickets.created", {
-    payload: { ids: [ticket._id] },
-  });
-  if (removed.length > 0) {
-    await PublishMessage(SERVICE_TOPIC, "tickets.deleted", {
-      payload: { ids: removed },
-    });
-  }
+  await announce("tickets.created", [ticket._id]);
   if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);
+  // Helio platform (automation): procedures on "Ticket opened" may start.
+  fireTicketOpened(ticket);
 }
 
 // The timer lives on globalThis: a hot reload re-imports this module, and the
@@ -174,7 +221,7 @@ export function startServiceSimulator(): void {
   if (!isServiceSimulatorEnabled()) return;
   const token = Symbol("run");
   globalThis.helioServiceSimulator = { token };
-  schedule(token, FIRST_TICKET_MS);
+  schedule(token, FIRST_TICK_MS);
 }
 
 /** Stops the simulator; safe to call when it is not running. */

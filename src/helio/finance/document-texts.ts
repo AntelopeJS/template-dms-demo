@@ -109,16 +109,3 @@ const EN: DocumentTexts = {
 export function documentTexts(language: string | undefined): DocumentTexts {
   return language?.toLowerCase().startsWith("fr") ? FR : EN;
 }
-
-/** The fictional company issuing the invoices. */
-export const ISSUER = {
-  name: "Helio SRL",
-  street: "Quai de la Boverie 12",
-  city: "4020 Liège",
-  country: "Belgique",
-  vatNumber: "BE0789.456.123",
-  email: "billing@helio.example",
-  phone: "+32 4 123 45 67",
-  iban: "BE68 5390 0754 7034",
-  bic: "HELIBEBB",
-};

@@ -5,6 +5,8 @@
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
+import { fireTicketOpened } from "../platform/automation/events";
+import { mailTicketReceived } from "../platform/mailing/send";
 import { TicketModel } from "./database";
 import { notifyUrgentTicket } from "./notifications";
 
@@ -33,9 +35,14 @@ function readBody(raw: Buffer | string): Record<string, unknown> | undefined {
 // Once written, an urgent ticket warns the owners. Looked up by its number:
 // the data API's insert does not hand the new id back in a stable shape.
 async function afterCreate(body: Record<string, unknown>): Promise<void> {
-  if (body.priority !== "urgent" || typeof body.number !== "string") return;
+  if (typeof body.number !== "string") return;
   const [ticket] = await GetModel(TicketModel).getBy("number", body.number);
-  if (ticket) await notifyUrgentTicket(ticket);
+  if (!ticket) return;
+  if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);
+  // Helio platform: the customer's acknowledgement e-mail (in the background,
+  // never failing the creation) and the "Ticket opened" automation trigger.
+  void mailTicketReceived(ticket);
+  fireTicketOpened(ticket);
 }
 
 /**

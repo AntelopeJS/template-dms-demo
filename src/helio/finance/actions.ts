@@ -3,11 +3,49 @@
 
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
+import { mailInvoiceReminder } from "../platform/mailing/send";
+import { CustomerModel } from "../crm/database";
+import { type ActivityEntry, logActivity } from "../dashboard/log";
+import { teamIdsByRole } from "../shared/roster";
 import { DAY_MS } from "../shared/seed";
 import { type Invoice, InvoiceModel, type PaymentMethod } from "./database";
 
 const HTTP_BAD_REQUEST = 400;
 const HTTP_CONFLICT = 409;
+
+// Payments and reminders are the accounts office's: its first member signs
+// the activity feed entries.
+const ACCOUNTS = teamIdsByRole("office")[0] ?? "";
+
+/**
+ * Logs invoice events to the dashboard's activity feed, each named
+ * "F-2026-0315 · customer".
+ */
+export async function logInvoiceEvents(
+  type: "invoice_paid" | "invoice_overdue",
+  invoices: readonly Invoice[],
+): Promise<void> {
+  const customers = GetModel(CustomerModel);
+  const entries = await Promise.all(
+    invoices.map(async (invoice): Promise<ActivityEntry> => {
+      const customer = await customers.get(invoice.customer);
+      return {
+        type,
+        actor: ACCOUNTS,
+        subject: [invoice.number, customer?.name].filter(Boolean).join(" · "),
+        record: { kind: "invoice", id: invoice._id },
+      };
+    }),
+  );
+  await logActivity(...entries);
+}
+
+/** Logs an invoice marked paid from its form (read once written). */
+export async function logInvoicePaid(id: string): Promise<void> {
+  const invoice = await GetModel(InvoiceModel).get(id);
+  if (invoice?.status === "paid")
+    await logInvoiceEvents("invoice_paid", [invoice]);
+}
 
 /** Statuses an invoice can be paid from: issued, not settled. */
 export const PAYABLE_STATUSES = ["sent", "overdue"] as const;
@@ -90,12 +128,13 @@ export async function markInvoicesPaid(
       }),
     ),
   );
+  await logInvoiceEvents("invoice_paid", invoices);
   return invoices.length;
 }
 
 /**
- * Stamps a reminder on the overdue invoices among `ids` (the e-mail itself
- * is out of the demo's scope). Answers how many were reminded.
+ * Stamps a reminder on the overdue invoices among `ids` and e-mails it to
+ * their customers. Answers how many were reminded.
  */
 export async function remindInvoices(ids: string[]): Promise<number> {
   const model = GetModel(InvoiceModel);
@@ -116,6 +155,11 @@ export async function remindInvoices(ids: string[]): Promise<number> {
       }),
     ),
   );
+  // Helio platform (mailing): the reminder e-mails go out in the background;
+  // a failed one is logged and the reminder stays recorded.
+  for (const invoice of invoices) {
+    void mailInvoiceReminder(invoice, (invoice.reminderCount ?? 0) + 1);
+  }
   return invoices.length;
 }
 
@@ -136,4 +180,5 @@ export async function sweepOverdueInvoices(): Promise<void> {
   await Promise.all(
     late.map((invoice) => model.update(invoice._id, { status: "overdue" })),
   );
+  await logInvoiceEvents("invoice_overdue", late);
 }

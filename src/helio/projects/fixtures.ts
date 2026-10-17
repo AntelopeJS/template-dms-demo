@@ -12,6 +12,7 @@ import type {
   ProjectType,
 } from "./database";
 import { linesSubtotal } from "../sales/lines";
+import { previousWorkday } from "./calendar";
 import { type ProjectPlan, projectPlans } from "./plan";
 
 export type ProjectSeed = Pick<
@@ -192,11 +193,12 @@ const TASKS: Record<ProjectType, TaskTemplate[]> = {
   ],
 };
 
+// Due on a working day: a step falling on a weekend is due the Friday before.
 function dueDate(plan: ProjectPlan, template: TaskTemplate): Date {
   const from = typeof template.due === "number" ? plan.start : plan.end;
   const days =
     typeof template.due === "number" ? template.due : template.due.end;
-  return new Date(from.getTime() + days * DAY_MS);
+  return previousWorkday(new Date(from.getTime() + days * DAY_MS));
 }
 
 // How far a project has gone: the share of its tasks already done.

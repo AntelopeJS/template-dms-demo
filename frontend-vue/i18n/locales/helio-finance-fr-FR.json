@@ -91,6 +91,11 @@
 					"impactStamp": "La date du rappel est enregistrée sur la facture",
 					"success": "Rappel envoyé",
 					"nothing": "Seules les factures en retard peuvent faire l'objet d'un rappel."
+				},
+				"quickView": {
+					"action": "Ouvrir",
+					"title": "Facture",
+					"description": "Montants, échéance et paiement de la facture."
 				}
 			},
 			"nav": {

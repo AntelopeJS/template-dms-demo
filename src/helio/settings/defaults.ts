@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { SLA_HOURS } from "../service/options";
 import { daysFromNow } from "../shared/seed";
 import {
   type CompanySettings,
@@ -26,11 +27,19 @@ export function generateApiKey(): string {
   return `hk_live_${randomBytes(API_KEY_BYTES).toString("hex")}`;
 }
 
-const INVOICE_FOOTER = [
-  "<p><strong>Helio SRL</strong> · Rue de l'Énergie 12, 4040 Herstal · TVA BE0742.318.065</p>",
-  "<p>Payable within 30 days by transfer to BE71 0961 2345 6769 (GEBABEBB), quoting the invoice number. ",
-  "Any amount unpaid on its due date bears interest at 10% a year and a flat recovery fee of €40.</p>",
-].join("");
+const IBAN = "BE71 0961 2345 6769";
+const BIC = "GEBABEBB";
+
+// Written from the company defaults, so the footer names the same address,
+// VAT number and account as the rest of the settings.
+function invoiceFooter(company: CompanySettings): string {
+  const { address } = company;
+  return [
+    `<p><strong>${company.companyName}</strong> · ${address.streetName} ${address.houseNumber}, ${address.postalCode} ${address.city} · TVA BE${company.enterpriseNumber}</p>`,
+    `<p>Payable within ${DEFAULT_PAYMENT_TERMS_DAYS} days by transfer to ${IBAN} (${BIC}), quoting the invoice number. `,
+    "Any amount unpaid on its due date bears interest at 10% a year and a flat recovery fee of €40.</p>",
+  ].join("");
+}
 
 const ALERT_PAYLOAD_TEMPLATE = `{
   "text": "Helio alert: {{alert.kind}} on {{site.name}} ({{site.city}})",
@@ -83,11 +92,11 @@ function invoicingDefaults(): InvoicingSettings {
     defaultVatRate: 0.21,
     reducedVatRate: 0.06,
     pricesIncludeVat: true,
-    iban: "BE71 0961 2345 6769",
-    bic: "GEBABEBB",
+    iban: IBAN,
+    bic: BIC,
     invoiceNumberPattern: DEFAULT_INVOICE_PATTERN,
     quoteNumberPattern: "Q-{YYYY}-{SEQ:4}",
-    invoiceFooter: INVOICE_FOOTER,
+    invoiceFooter: invoiceFooter(companyDefaults()),
     lateInterestRate: 0.1,
     recoveryFee: 40,
     reminders: [
@@ -103,10 +112,11 @@ function operationsDefaults(): OperationsSettings {
     workdayStart: 7 * HOUR_MS + 30 * MINUTE_MS,
     workdayEnd: 17 * HOUR_MS,
     workingDays: ["mon", "tue", "wed", "thu", "fri"],
-    slaUrgentHours: 4,
-    slaHighHours: 8,
-    slaNormalHours: 24,
-    slaLowHours: 72,
+    // The promises the service desk computes its SLAs with.
+    slaUrgentHours: SLA_HOURS.urgent,
+    slaHighHours: SLA_HOURS.high,
+    slaNormalHours: SLA_HOURS.normal,
+    slaLowHours: SLA_HOURS.low,
     winterClosure: nextWinterClosure(),
     // Bridge days the crews take off (jours de pont), spread over the season.
     bridgeDays: [daysFromNow(23, 0), daysFromNow(60, 0), daysFromNow(97, 0)],

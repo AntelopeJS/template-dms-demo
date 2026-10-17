@@ -44,8 +44,16 @@ function projectPeople(project: Project): Set<string> {
   return people;
 }
 
-/** Projects whose crew is on site right now: started, not yet over. */
+const isWeekend = (date: Date): boolean =>
+  date.getDay() === 0 || date.getDay() === 6;
+
+/**
+ * Projects whose crew is on site today: started, not yet over. Crews do not
+ * work at weekends, so a site spanning one stands still on Saturday and
+ * Sunday.
+ */
 function sitesToday(rows: WorkloadRows): Project[] {
+  if (isWeekend(rows.now)) return [];
   const now = rows.now.getTime();
   return rows.projects.filter(
     (project) =>

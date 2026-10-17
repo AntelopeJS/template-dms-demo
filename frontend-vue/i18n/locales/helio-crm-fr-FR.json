@@ -197,7 +197,12 @@
 					"description": "Son montant et son historique quittent le pipeline. Marquez-la plutôt comme perdue pour en garder la trace.",
 					"confirm": "Supprimer l'affaire"
 				},
-				"newDeal": "Nouvelle affaire"
+				"newDeal": "Nouvelle affaire",
+				"quickView": {
+					"action": "Ouvrir",
+					"title": "Affaire",
+					"description": "Étape, montant, responsable et prochaine action de l'affaire."
+				}
 			}
 		}
 	}

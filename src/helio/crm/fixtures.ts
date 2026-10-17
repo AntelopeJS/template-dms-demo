@@ -139,6 +139,13 @@ function landline(rng: Rng, province: string): string {
     : `+32 ${area} ${middle} ${tail}`;
 }
 
+// The businesses' names read as Belgian domains (garage-delvaux.be); their
+// e-mail and website use the reserved .example top-level domain instead, so
+// no seeded address or link points at a real company.
+function fictionalDomain(domain: string): string {
+  return domain.replace(/\.[a-z]+$/, ".example");
+}
+
 // A valid Belgian VAT number: 0 + 7 digits, then 97 − (those 8 digits mod 97).
 function vatNumber(index: number): string {
   const base = 4_000_000 + ((index * 137_731) % 5_999_999);
@@ -220,14 +227,14 @@ function businessCustomer(
     name: business.name,
     vatNumber: vatNumber(index),
     contactName: business.contactName,
-    email: `${slug(contactFirst)}@${business.domain}`,
+    email: `${slug(contactFirst)}@${fictionalDomain(business.domain)}`,
     phone: landline(rng, locality.province),
     address: address(rng, locality),
     segments: [...business.segments],
     source: rng.weighted(SOURCES),
     isVip: business.isVip ?? false,
     owner: rng.chance(0.7) ? KEY_ACCOUNT_MANAGER : rng.pick(SALES_REPS),
-    website: `https://www.${business.domain}`,
+    website: `https://www.${fictionalDomain(business.domain)}`,
     notes: `<p>${business.notes}</p>`,
     createdAt: daysFromNow(-rng.int(30, 1100), rng.int(8, 18)),
     isArchived: ARCHIVED.has(index),

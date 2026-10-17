@@ -17,6 +17,7 @@ import { TopListCard } from "@antelopejs/interface-dms/base/top-list-card";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioCategory } from "../category";
 import { HELIO_PAGES } from "./links";
+import { ACTIVITY_TOPIC } from "./log";
 
 // One scope for the whole page: every card follows the period selector.
 const SCOPE = "helio";
@@ -259,6 +260,9 @@ export class PageHelioDashboard extends PageController(
           ActivityFeed({
             title: "$helio.dashboard.activity.title",
             fetchUrl: `${API}/activity`,
+            // What users do elsewhere (a quote accepted, a ticket resolved)
+            // shows up without a reload.
+            realtimeTopic: ACTIVITY_TOPIC,
             periodScope: SCOPE,
             groupByDay: true,
             maxItems: 12,

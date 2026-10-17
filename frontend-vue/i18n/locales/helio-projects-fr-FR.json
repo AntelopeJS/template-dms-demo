@@ -163,7 +163,7 @@
 					"tasks": "Tâches",
 					"tasksValue": "{done} sur {total}",
 					"tasksOpen": "plus rien à faire | {count} encore ouverte | {count} encore ouvertes",
-					"invoiced": "Facturé",
+					"invoiced": "Facturé TVAC",
 					"money": "{amount}",
 					"due": "{amount} restant dû",
 					"settled": "Plus rien à payer"

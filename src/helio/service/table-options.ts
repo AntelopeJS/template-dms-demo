@@ -3,12 +3,14 @@
 
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import {
+  ResourceForm,
   type TableViewFooterOptions,
   type TableViewRowActionOptions,
   type TableViewTab,
   type TableViewViewsOptions,
 } from "@antelopejs/interface-dms/base/table-view";
 import type { CustomRowAction } from "@antelopejs/interface-dms/base/types/row-action";
+import { ticketController } from "./controller";
 import { TICKET_ASSIGNEES, TICKET_STATUSES } from "./options";
 
 const TICKETS_API = "/api/helio/tickets";
@@ -68,10 +70,9 @@ export const ticketViews: TableViewViewsOptions = {
       icon: "i-ph-alarm",
       tone: "error",
       count: true,
-      // Nobody took it in hand within the promised time.
+      // Still open past the promised resolution time, whoever holds it.
       filters: [
         STILL_OPEN,
-        { accessorKey: "assignee", mode: "is_empty" },
         { accessorKey: "slaDueAt", mode: "less_than", value: "{{now}}" },
       ],
       sort: [{ field: "slaDueAt" }],
@@ -178,6 +179,28 @@ const resolveAction: CustomRowAction = {
   },
 };
 
+// `?record=<ticket id>` (the dashboard's activity feed) opens the ticket
+// read-only in a right drawer. Its form reads the row from the URL, so the
+// drawer is only opened from it: a rule no row meets keeps it out of the
+// menus, and a click still opens the edit form.
+const quickViewAction: CustomRowAction = {
+  id: "quick-view",
+  label: "$helio.service.quickView.action",
+  icon: "i-ph-sidebar-simple",
+  deepLink: true,
+  rule: { field: "_id", in: [] },
+  target: {
+    type: "drawer",
+    direction: "right",
+    title: "$helio.service.quickView.title",
+    description: "$helio.service.quickView.description",
+    component: ResourceForm(ticketController, {
+      mode: "view",
+      rowId: "{{query.record}}",
+    }),
+  },
+};
+
 // A click on a ticket opens its edit form (rowClick "single" on the page).
 // The row side panel was tried first: with a ResourceForm reading
 // `{{query.record}}` it shows the right ticket only when the page is loaded
@@ -190,5 +213,5 @@ export const ticketRowActions: TableViewRowActionOptions = {
   duplicate: false,
   delete: false,
   hasSelection: true,
-  custom: [assignAction, resolveAction],
+  custom: [quickViewAction, assignAction, resolveAction],
 };

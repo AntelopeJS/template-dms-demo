@@ -3,7 +3,6 @@
 // and finished, tickets opened and resolved, invoices paid or overdue), so
 // every entry of the feed points at a record that exists.
 
-import type { Tone } from "@antelopejs/interface-dms/base/types";
 import { buildInvoices } from "../finance/fixtures";
 import { customerFacts, dealFacts } from "../projects/crm-facts";
 import { buildProjects } from "../projects/fixtures";
@@ -11,8 +10,8 @@ import { buildQuotes } from "../sales/fixtures";
 import { buildTickets } from "../service/fixtures";
 import { teamIdsByRole } from "../shared/roster";
 import { createRng, DAY_MS, padId, type Rng } from "../shared/seed";
-import type { Activity, ActivityType } from "./database";
-import { HELIO_PAGES } from "./links";
+import type { Activity } from "./database";
+import { ACTIVITY_TONES, activityLink } from "./activity-links";
 
 export type ActivitySeed = Pick<
   Activity,
@@ -23,40 +22,18 @@ const WINDOW_DAYS = 30;
 const MAX_EVENTS = 150;
 const HOUR_MS = 60 * 60 * 1000;
 
+const NOT_STARTED = new Set(["planned", "scheduled", "on_hold"]);
 const SALES = teamIdsByRole("sales");
 const OFFICE = teamIdsByRole("office");
 const TECHNICIANS = teamIdsByRole("technician");
 
-/**
- * Dashboard paths the feed links to, by record kind. Built on HELIO_PAGES so
- * the pages and these links agree; `{id}` is the record's `_id`, and
- * `?record=` opens it in the list page's deep-linked drawer or side panel.
- */
-export const HELIO_LINKS = {
-  deal: `${HELIO_PAGES.pipeline}?record={id}`,
-  quote: `${HELIO_PAGES.quotes}?record={id}`,
-  project: `${HELIO_PAGES.project}/{id}`,
-  ticket: `${HELIO_PAGES.service}?record={id}`,
-  invoice: `${HELIO_PAGES.invoices}?record={id}`,
-} as const;
-
-const TONES: Record<ActivityType, Tone> = {
-  deal_won: "success",
-  quote_sent: "info",
-  quote_accepted: "success",
-  project_started: "primary",
-  project_done: "success",
-  ticket_opened: "warning",
-  ticket_resolved: "success",
-  invoice_paid: "success",
-  invoice_overdue: "error",
-};
+// The links and tones are those of the live log (see log.ts), so a seeded
+// entry and one written by a user read and open the same way.
+export { HELIO_LINKS } from "./activity-links";
 
 type EventDraft = Omit<ActivitySeed, "_id" | "tone">;
 
-function link(kind: keyof typeof HELIO_LINKS, id: string): string {
-  return HELIO_LINKS[kind].replace("{id}", id);
-}
+const link = activityLink;
 
 function recent(date: Date | undefined): date is Date {
   if (!date) return false;
@@ -107,11 +84,8 @@ function projectEvents(): EventDraft[] {
   for (const project of buildProjects()) {
     const actor = project.leadTechnician ?? TECHNICIANS[0] ?? "";
     const subject = `${project.code} · ${project.name}`;
-    if (
-      recent(project.plannedStart) &&
-      project.status !== "planned" &&
-      project.status !== "scheduled"
-    ) {
+    // Planned, booked or paused projects have not started on site.
+    if (recent(project.plannedStart) && !NOT_STARTED.has(project.status)) {
       events.push({
         at: project.plannedStart,
         actor,
@@ -140,10 +114,12 @@ function projectEvents(): EventDraft[] {
 function ticketEvents(rng: Rng): EventDraft[] {
   const events: EventDraft[] = [];
   for (const ticket of buildTickets()) {
+    // Only the high and urgent requests make the history: with every ticket
+    // the feed would read as the desk's log.
+    if (ticket.priority !== "high" && ticket.priority !== "urgent") continue;
     const subject = `${ticket.number} · ${ticket.subject}`;
     const actor = ticket.assignee ?? rng.pick(OFFICE);
-    // Low-priority requests stay out of the feed: it would read as a ticket log.
-    if (recent(ticket.createdAt) && ticket.priority !== "low") {
+    if (recent(ticket.createdAt)) {
       events.push({
         at: ticket.createdAt,
         actor,
@@ -209,7 +185,7 @@ export function buildActivity(): ActivitySeed[] {
     activity = events.map((event, at) => ({
       ...event,
       _id: padId("act", at + 1, 3),
-      tone: TONES[event.type],
+      tone: ACTIVITY_TONES[event.type],
     }));
   }
   return activity;

@@ -163,7 +163,7 @@
 					"tasks": "Tasks",
 					"tasksValue": "{done} of {total}",
 					"tasksOpen": "nothing left to do | {count} still open | {count} still open",
-					"invoiced": "Invoiced",
+					"invoiced": "Invoiced incl. VAT",
 					"money": "{amount}",
 					"due": "{amount} still due",
 					"settled": "Nothing left to pay"

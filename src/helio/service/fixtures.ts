@@ -1,11 +1,14 @@
-// Seed of helio_tickets: six months of after-sales requests. Technical
-// tickets sit on a monitored site of their customer, billing questions on the
-// customer alone; the newest are still new or open, a handful of urgent ones
-// close to their SLA, and the offline and degraded sites have their alerts.
+// Seed of helio_tickets: six months of after-sales requests, as a desk that
+// keeps its promises holds them. Nearly every past ticket was resolved within
+// its SLA (a few were late); the tickets still open are recent ones, inside
+// their SLA, except the alerts of the two offline sites and a couple of
+// tickets that slipped. Technical tickets sit on a monitored site of their
+// customer, commissioned before the ticket, and go to a technician of the
+// customer's region; billing and general questions go to the office.
 
 import { buildSites, type SiteSeed } from "../monitoring/fixtures";
 import { activeCustomers } from "../projects/crm-facts";
-import { COUNTS, teamIdsByRole, ticketId } from "../shared/roster";
+import { COUNTS, ticketId } from "../shared/roster";
 import { createRng, DAY_MS, type Rng } from "../shared/seed";
 import type {
   Ticket,
@@ -14,6 +17,14 @@ import type {
   TicketPriority,
   TicketStatus,
 } from "./database";
+import {
+  assigneeFor,
+  channelFor,
+  isTechnical,
+  pickCategory,
+  priorityFor,
+  sampleArrival,
+} from "./desk-rules";
 import { SLA_HOURS } from "./options";
 import { SUBJECTS } from "./subjects";
 
@@ -37,11 +48,16 @@ export type TicketSeed = Pick<
 >;
 
 const HOUR_MS = 60 * 60 * 1000;
+const MINUTE_MS = 60 * 1000;
 const HISTORY_DAYS = 182;
 const FIRST_NUMBER = 1000;
-
-const TECHNICIANS = teamIdsByRole("technician");
-const OFFICE = teamIdsByRole("office");
+/** Share of the past tickets resolved after their SLA. */
+const LATE_SHARE = 0.07;
+/** A resolved ticket the customer did not reopen is closed after a week. */
+const CLOSE_AFTER_MS = 7 * DAY_MS;
+/** Open tickets inside their SLA, then the ones that slipped past it. */
+const BACKLOG = 14;
+const SLIPPED = 2;
 
 interface TicketDraft {
   createdAt: Date;
@@ -51,177 +67,159 @@ interface TicketDraft {
   channel: TicketChannel;
   site?: SiteSeed;
   customer: string;
+  assignee?: string;
+  resolvedAt?: Date;
 }
 
-// Business hours mostly, monitoring alerts at any time: the weekday/hour
-// heatmap of the dashboard reads these.
-function createdAt(rng: Rng, daysAgo: number, alert: boolean): Date {
-  const date = new Date(Date.now() - daysAgo * DAY_MS);
-  const hour = alert
-    ? rng.int(0, 23)
-    : rng.weighted([
-        [8, 3],
-        [9, 6],
-        [10, 7],
-        [11, 6],
-        [12, 3],
-        [13, 5],
-        [14, 6],
-        [15, 5],
-        [16, 4],
-        [17, 2],
-        [19, 1],
-      ] as const);
-  date.setHours(hour, rng.int(0, 59), 0, 0);
-  return date.getTime() > Date.now()
-    ? new Date(Date.now() - rng.int(5, 50) * 60 * 1000)
-    : date;
-}
+const slaMs = (priority: TicketPriority): number =>
+  SLA_HOURS[priority] * HOUR_MS;
 
-function statusFor(rng: Rng, ageDays: number): TicketStatus {
-  if (ageDays < 1) return rng.chance(0.7) ? "new" : "open";
-  if (ageDays < 7)
-    return rng.weighted<TicketStatus>([
-      ["new", 1],
-      ["open", 4],
-      ["waiting", 2],
-      ["resolved", 3],
-    ]);
-  if (ageDays < 21)
-    return rng.weighted<TicketStatus>([
-      ["open", 2],
-      ["waiting", 2],
-      ["resolved", 5],
-      ["closed", 2],
-    ]);
-  return rng.weighted<TicketStatus>([
-    ["waiting", 1],
-    ["resolved", 5],
-    ["closed", 30],
-  ]);
-}
-
-const TECHNICAL: TicketCategory[] = [
-  "no_production",
-  "inverter_error",
-  "monitoring",
-  "damage",
-];
-
-function channelFor(rng: Rng, category: TicketCategory): TicketChannel {
-  if (category === "inverter_error" || category === "no_production") {
-    return rng.weighted<TicketChannel>([
-      ["monitoring_alert", 5],
-      ["phone", 3],
-      ["email", 1],
-      ["portal", 1],
-    ]);
+// The installation a technical ticket is about: one already commissioned when
+// the customer wrote. A billing or general question names the customer only,
+// most often one Helio already installed for.
+function subjectOf(
+  rng: Rng,
+  sites: SiteSeed[],
+  category: TicketCategory,
+  createdAt: Date,
+): { site?: SiteSeed; customer: string } {
+  const running = sites.filter(
+    (site) => site.commissionedAt.getTime() + DAY_MS < createdAt.getTime(),
+  );
+  if (isTechnical(category) && running.length > 0) {
+    const site = rng.pick(running);
+    return { site, customer: site.customer };
   }
-  if (category === "monitoring")
-    return rng.weighted<TicketChannel>([
-      ["monitoring_alert", 3],
-      ["portal", 2],
-      ["email", 2],
-    ]);
-  return rng.weighted<TicketChannel>([
-    ["email", 4],
-    ["phone", 3],
-    ["portal", 3],
-  ]);
-}
-
-function regularDraft(rng: Rng, sites: SiteSeed[]): TicketDraft {
-  const category = rng.weighted<TicketCategory>([
-    ["no_production", 14],
-    ["inverter_error", 22],
-    ["monitoring", 20],
-    ["damage", 8],
-    ["billing", 22],
-    ["other", 14],
-  ]);
-  const ageDays =
-    rng.next() < 0.3 ? rng.next() * 21 : rng.next() * HISTORY_DAYS;
-  const channel = channelFor(rng, category);
-  const site =
-    TECHNICAL.includes(category) || rng.chance(0.4)
-      ? rng.pick(sites)
-      : undefined;
+  if (running.length > 0 && rng.chance(0.6))
+    return { customer: rng.pick(running).customer };
+  const known = activeCustomers().filter(
+    (customer) => customer.createdAt.getTime() < createdAt.getTime(),
+  );
   return {
-    createdAt: createdAt(rng, ageDays, channel === "monitoring_alert"),
-    category,
-    priority: rng.weighted<TicketPriority>([
-      ["low", 25],
-      ["normal", 47],
-      ["high", 22],
-      ["urgent", 6],
-    ]),
-    status: statusFor(rng, ageDays),
-    channel,
-    site,
-    customer: site?.customer ?? rng.pick(activeCustomers())._id,
+    customer: rng.pick(known.length > 0 ? known : activeCustomers())._id,
   };
 }
 
-// The alerts of the offline and degraded inverters, and a handful of urgent
-// tickets opened in the last hours, close to (or just past) their SLA.
-function hotDrafts(rng: Rng, sites: SiteSeed[]): TicketDraft[] {
-  const alerts = sites
+// A past ticket: resolved within its SLA, sometimes after it, and closed once
+// a week went by without the customer reopening it.
+function historyDraft(rng: Rng, sites: SiteSeed[]): TicketDraft {
+  const now = Date.now();
+  const category = pickCategory(rng);
+  const channel = channelFor(rng, category);
+  const priority = priorityFor(rng, category);
+  const sla = slaMs(priority);
+  const createdAt = sampleArrival(
+    rng,
+    channel,
+    now - HISTORY_DAYS * DAY_MS,
+    now - sla,
+  );
+  const share = rng.chance(LATE_SHARE)
+    ? 1.05 + rng.next() * 1.2
+    : 0.08 + rng.next() * 0.85;
+  const resolvedAt = new Date(
+    Math.min(createdAt.getTime() + sla * share, now - 30 * MINUTE_MS),
+  );
+  const { site, customer } = subjectOf(rng, sites, category, createdAt);
+  return {
+    createdAt,
+    category,
+    priority,
+    status: now - resolvedAt.getTime() < CLOSE_AFTER_MS ? "resolved" : "closed",
+    channel,
+    site,
+    customer,
+    assignee: assigneeFor(rng, category, customer),
+    resolvedAt,
+  };
+}
+
+// An open ticket: new when it arrived in the last hours (most not assigned
+// yet), else in the hands of someone, possibly waiting on the customer.
+function openStatus(rng: Rng, ageMs: number): TicketStatus {
+  if (ageMs < 6 * HOUR_MS && rng.chance(0.6)) return "new";
+  if (ageMs < DAY_MS) return "open";
+  return rng.chance(0.35) ? "waiting" : "open";
+}
+
+function openDraft(rng: Rng, sites: SiteSeed[], slipped: boolean): TicketDraft {
+  const now = Date.now();
+  const category = pickCategory(rng);
+  const channel = channelFor(rng, category);
+  const priority = slipped ? "high" : priorityFor(rng, category);
+  const sla = slaMs(priority);
+  // Inside the SLA, or up to twice past it for the ones that slipped.
+  const [minAge, maxAge] = slipped
+    ? [sla * 1.15, sla * 1.9]
+    : [10 * MINUTE_MS, sla * 0.9];
+  const createdAt = sampleArrival(rng, channel, now - maxAge, now - minAge);
+  const status = slipped ? "open" : openStatus(rng, now - createdAt.getTime());
+  const { site, customer } = subjectOf(rng, sites, category, createdAt);
+  const assigned = status !== "new" || rng.chance(0.3);
+  return {
+    createdAt,
+    category,
+    priority,
+    status,
+    channel,
+    site,
+    customer,
+    assignee: assigned ? assigneeFor(rng, category, customer) : undefined,
+  };
+}
+
+// The alerts of the offline and degraded inverters: an offline site waits
+// for a replacement inverter (past its SLA, pinned), a degraded one was
+// flagged in the last hours.
+function alertDrafts(rng: Rng, sites: SiteSeed[]): TicketDraft[] {
+  return sites
     .filter((site) => site.inverterStatus !== "online")
     .map((site): TicketDraft => {
       const offline = site.inverterStatus === "offline";
+      const createdAt = offline
+        ? new Date(site.lastSeenAt.getTime() + 30 * MINUTE_MS)
+        : new Date(Date.now() - rng.int(2 * 60, 20 * 60) * MINUTE_MS);
+      const status: TicketStatus = offline
+        ? "waiting"
+        : rng.pick(["new", "open", "open"] as const);
+      const category = offline ? "no_production" : "inverter_error";
       return {
-        createdAt: new Date(
-          Math.max(
-            site.lastSeenAt.getTime() + 30 * 60 * 1000,
-            Date.now() - 2 * DAY_MS,
-          ),
-        ),
-        category: offline ? "no_production" : "inverter_error",
+        createdAt,
+        category,
         priority: offline ? "urgent" : "high",
-        status: offline
-          ? "open"
-          : rng.pick(["new", "open", "waiting"] as const),
+        status,
         channel: "monitoring_alert",
         site,
         customer: site.customer,
+        assignee:
+          status === "new"
+            ? undefined
+            : assigneeFor(rng, category, site.customer),
       };
     });
-  const urgent = [1.2, 2.1, 2.9, 3.5, 4.6].map((hoursAgo): TicketDraft => {
-    const site = rng.pick(
-      sites.filter((row) => row.inverterStatus === "online"),
-    );
+}
+
+// Urgent calls of the last hours, still inside their four-hour SLA.
+function urgentDrafts(rng: Rng, sites: SiteSeed[]): TicketDraft[] {
+  const online = sites.filter((row) => row.inverterStatus === "online");
+  return [0.5, 1.4, 2.3, 3.2].map((hoursAgo): TicketDraft => {
+    const site = rng.pick(online);
+    const category = rng.pick(["no_production", "damage"] as const);
+    const status: TicketStatus = hoursAgo < 1.5 ? "new" : "open";
     return {
       createdAt: new Date(Date.now() - hoursAgo * HOUR_MS),
-      category: rng.pick([
-        "no_production",
-        "damage",
-        "inverter_error",
-      ] as const),
+      category,
       priority: "urgent",
-      status: hoursAgo < 2 ? "new" : "open",
+      status,
       channel: rng.pick(["phone", "portal"] as const),
       site,
       customer: site.customer,
+      assignee:
+        status === "new"
+          ? undefined
+          : assigneeFor(rng, category, site.customer),
     };
   });
-  return [...alerts, ...urgent];
-}
-
-function assigneeFor(rng: Rng, draft: TicketDraft): string | undefined {
-  if (draft.status === "new" && rng.chance(0.7)) return undefined;
-  if (draft.status === "open" && rng.chance(0.15)) return undefined;
-  return draft.category === "billing"
-    ? rng.pick(OFFICE)
-    : rng.pick(TECHNICIANS);
-}
-
-function resolvedAt(rng: Rng, draft: TicketDraft): Date | undefined {
-  if (draft.status !== "resolved" && draft.status !== "closed")
-    return undefined;
-  const hours = rng.int(2, SLA_HOURS[draft.priority] * 2);
-  return new Date(
-    Math.min(draft.createdAt.getTime() + hours * HOUR_MS, Date.now() - HOUR_MS),
-  );
 }
 
 function toSeed(rng: Rng, draft: TicketDraft, index: number): TicketSeed {
@@ -236,12 +234,10 @@ function toSeed(rng: Rng, draft: TicketDraft, index: number): TicketSeed {
     priority: draft.priority,
     status: draft.status,
     channel: draft.channel,
-    assignee: assigneeFor(rng, draft),
-    slaDueAt: new Date(
-      draft.createdAt.getTime() + SLA_HOURS[draft.priority] * HOUR_MS,
-    ),
+    assignee: draft.assignee,
+    slaDueAt: new Date(draft.createdAt.getTime() + slaMs(draft.priority)),
     createdAt: draft.createdAt,
-    resolvedAt: resolvedAt(rng, draft),
+    resolvedAt: draft.resolvedAt,
     description: text.description,
     pinned: false,
   };
@@ -262,9 +258,8 @@ function finish(seeds: TicketSeed[], sites: SiteSeed[]): void {
       .map(({ _id }) => _id),
   );
   for (const seed of seeds) {
-    const live = seed.status !== "resolved" && seed.status !== "closed";
     seed.pinned =
-      live &&
+      !seed.resolvedAt &&
       seed.channel === "monitoring_alert" &&
       seed.site !== undefined &&
       offline.has(seed.site);
@@ -278,9 +273,14 @@ export function buildTickets(): TicketSeed[] {
   if (!tickets) {
     const rng = createRng(0x9e110006);
     const sites = buildSites();
-    const drafts = hotDrafts(rng, sites);
+    const drafts = [
+      ...alertDrafts(rng, sites),
+      ...urgentDrafts(rng, sites),
+      ...Array.from({ length: SLIPPED }, () => openDraft(rng, sites, true)),
+      ...Array.from({ length: BACKLOG }, () => openDraft(rng, sites, false)),
+    ];
     while (drafts.length < COUNTS.tickets)
-      drafts.push(regularDraft(rng, sites));
+      drafts.push(historyDraft(rng, sites));
     tickets = drafts.map((draft, at) => toSeed(rng, draft, at + 1));
     finish(tickets, sites);
   }
