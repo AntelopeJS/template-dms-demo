@@ -1,6 +1,7 @@
 import path from "node:path";
 import { RegisterSchema } from "@antelopejs/interface-database-decorators";
 import { AddFrontendModule } from "@antelopejs/interface-dms/page";
+import { stopServiceSimulator } from "./helio/service";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./components";
@@ -22,6 +23,12 @@ export async function start(): Promise<void> {
   });
 }
 
-export function destroy(): void {}
+// The service desk simulator runs on a timer started when its module is
+// imported; stop it with the module so no ticket is created afterwards.
+export function destroy(): void {
+  stopServiceSimulator();
+}
 
-export function stop(): void {}
+export function stop(): void {
+  stopServiceSimulator();
+}

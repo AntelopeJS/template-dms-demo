@@ -24,7 +24,6 @@ import {
 } from "@antelopejs/interface-database-decorators";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
-import type { Tone } from "@antelopejs/interface-dms/base/types/tone";
 import {
   Column,
   DefaultDisplays,
@@ -32,29 +31,19 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
+import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
+import type { CellSubline } from "@antelopejs/interface-dms/base/table-view/column-display";
 import { productCategoryController } from "./category-controller";
-import { Product, ProductModel } from "./database";
-
-// Option list exported for the pages (filters, grouping).
-export const PRODUCT_UNITS = [
-  { value: "piece", label: "$helio.catalog.units.piece", icon: "i-ph-package" },
-  { value: "hour", label: "$helio.catalog.units.hour", icon: "i-ph-clock" },
-  { value: "year", label: "$helio.catalog.units.year", icon: "i-ph-calendar" },
-  { value: "flat", label: "$helio.catalog.units.flat", icon: "i-ph-tag" },
-] as const;
-
-/** Tags offered while typing; they stay free tags. */
-export const PRODUCT_TAGS = [
-  "bestseller",
-  "résidentiel",
-  "entreprises",
-  "batterie",
-  "borne",
-  "hybride",
-  "triphasé",
-  "service",
-  "contrat",
-];
+import { CATEGORIES_TABLE, Product, ProductModel } from "./database";
+import {
+  FORMS_ONLY_VIEW,
+  LOW_STOCK_MARGIN,
+  PRODUCT_FAMILIES,
+  PRODUCT_TAGS,
+  PRODUCT_UNITS,
+  STOCK_LEVELS,
+  type StockLevel,
+} from "./options";
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
@@ -130,6 +119,7 @@ class productDataAPI extends DataController(
   declare sku: string;
 
   @Listable()
+  @Sortable()
   @Exported()
   @Column({
     name: "$helio.catalog.products.columns.category",
@@ -146,6 +136,31 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare category: string;
 
+  // The family is the parent of the product's range, read in the database
+  // from helio_product_categories: the views and the quick filter narrow on
+  // five families instead of eleven ranges, without a stored copy that could
+  // drift when a range moves. Hidden: the DMS list route only returns a
+  // computed field it filters or sorts on, so a cell would read empty.
+  @Listable()
+  @Sortable()
+  @Computed(
+    (row, db) =>
+      db.table(CATEGORIES_TABLE).get(row.key("category")).key("parent"),
+    { default: null },
+  )
+  @Column({
+    name: "$helio.catalog.products.columns.family",
+    readonlyBehavior: FORMS_ONLY_VIEW,
+    type: new DefaultDataTypes.SelectType({ items: [...PRODUCT_FAMILIES] }),
+    filterable: true,
+    validate: false,
+    size: 170,
+    isVisible: false,
+  })
+  @Access(AccessMode.ReadOnly)
+  declare family: string;
+
+  @Listable()
   @Column({
     name: "$helio.catalog.products.columns.description",
     type: new DefaultDataTypes.StringType({
@@ -154,6 +169,7 @@ class productDataAPI extends DataController(
       maxLength: 300,
       showCount: true,
     }),
+    isVisible: false,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
@@ -188,6 +204,7 @@ class productDataAPI extends DataController(
   @Listable(["price", "cost"])
   @Column({
     name: "$helio.catalog.products.columns.margin",
+    readonlyBehavior: FORMS_ONLY_VIEW,
     type: new DefaultDataTypes.PercentageType(),
     validate: false,
     size: 110,
@@ -210,6 +227,7 @@ class productDataAPI extends DataController(
       suffix: "$helio.catalog.products.powerSuffix",
     }),
     filterable: true,
+    isVisible: false,
     size: 120,
   })
   @Optional()
@@ -235,10 +253,16 @@ class productDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.catalog.products.columns.stock",
+    description: "$helio.catalog.products.stockHint",
     type: new DefaultDataTypes.NumberType({ min: 0, step: 1 }),
     filterable: true,
-    display: new DefaultDisplays.TextDisplay({ toneField: "stockTone" }),
-    size: 100,
+    // The units in stock over the reorder threshold, toned by how close the
+    // stock is to it.
+    display: new DefaultDisplays.TwoLineDisplay({
+      subField: "stockStatus",
+      emptyLabel: "$helio.catalog.products.stock.notStocked",
+    }),
+    size: 130,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
@@ -255,7 +279,8 @@ class productDataAPI extends DataController(
   declare stockMin: number;
 
   // Below the reorder threshold, computed in the database so a view or a
-  // quick filter can list the products to reorder.
+  // quick filter can list the products to reorder. Hidden: `stockLevel`
+  // says the same with more nuance, in the grid and on the cards.
   @Listable()
   @Computed(
     (row) => {
@@ -266,6 +291,7 @@ class productDataAPI extends DataController(
   )
   @Column({
     name: "$helio.catalog.products.columns.lowStock",
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
     type: new DefaultDataTypes.BooleanType(),
     filterable: true,
     validate: false,
@@ -277,20 +303,47 @@ class productDataAPI extends DataController(
       onTone: "error",
       offTone: "success",
     }),
+    isVisible: false,
     size: 130,
   })
+  @Access(AccessMode.ReadOnly)
   declare lowStock: boolean;
 
+  // A plain text and not a UrlType: the seeded visuals are paths on the
+  // dashboard's own origin (/api/helio/catalog-visuals/…), which a URL check
+  // refuses. Not an ImageType either: its values are uploads the DMS tracks,
+  // which a fixture cannot create.
   @Select()
   @Listable()
   @Column({
     name: "$helio.catalog.products.columns.image",
-    type: new DefaultDataTypes.UrlType({ placeholder: "https://…" }),
+    description: "$helio.catalog.products.imageHint",
+    type: new DefaultDataTypes.StringType({
+      placeholder: "https://…",
+      maxLength: 500,
+    }),
     isVisible: false,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
   declare image: string;
+
+  // The same picture typed as an image, for the cards display: a card field
+  // renders through its column's data type and ignores `display`, so the
+  // name column's avatar never reaches a card. The image type draws a URL
+  // string as an avatar. Read-only: forms keep editing `image`.
+  @Listable(["image"])
+  @Column({
+    name: "$helio.catalog.products.columns.picture",
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
+    type: new DefaultDataTypes.ImageType(),
+    validate: false,
+    isVisible: false,
+  })
+  @Access(AccessMode.ReadOnly)
+  get picture(): string | null {
+    return this.table.image ?? null;
+  }
 
   @Listable()
   @Exported()
@@ -302,6 +355,7 @@ class productDataAPI extends DataController(
       placeholder: "$helio.catalog.products.placeholders.tags",
     }),
     filterable: true,
+    isVisible: false,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
@@ -355,14 +409,52 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare displayOrder: number;
 
-  // The stock in red once below the threshold, orange when close to it.
+  // Where the stock stands against its threshold, as a select so it reads
+  // the same on the cards (which draw a column's data type, not its
+  // display) as in the grid (a toned pill).
+  @Listable(["stock", "stockMin"])
+  @Column({
+    name: "$helio.catalog.products.columns.stockLevel",
+    readonlyBehavior: FORMS_ONLY_VIEW,
+    type: new DefaultDataTypes.SelectType({ items: [...STOCK_LEVELS] }),
+    validate: false,
+    display: new DefaultDisplays.StatusPillDisplay({
+      tones: {
+        in_stock: "success",
+        running_low: "warning",
+        reorder: "error",
+        not_stocked: "neutral",
+      },
+    }),
+    size: 140,
+  })
+  @Access(AccessMode.ReadOnly)
+  get stockLevel(): StockLevel {
+    const { stock, stockMin } = this.table;
+    if (stock === undefined) return "not_stocked";
+    if (!stockMin) return "in_stock";
+    if (stock < stockMin) return "reorder";
+    return stock < stockMin * LOW_STOCK_MARGIN ? "running_low" : "in_stock";
+  }
+
+  // The line under the stock: the reorder threshold, in red once the stock
+  // fell below it, in orange when it gets close (less than 1.5 times it).
   @Listable(["stock", "stockMin"])
   @Access(AccessMode.ReadOnly)
-  get stockTone(): Tone | null {
+  get stockStatus(): CellSubline | null {
     const { stock, stockMin } = this.table;
     if (stock === undefined || !stockMin) return null;
-    if (stock < stockMin) return "error";
-    return stock < stockMin * 1.5 ? "warning" : null;
+    const params = { min: stockMin };
+    if (stock < stockMin) {
+      return {
+        text: { key: "$helio.catalog.products.stock.belowMin", params },
+        tone: "error",
+      };
+    }
+    return {
+      text: { key: "$helio.catalog.products.stock.min", params },
+      tone: stock < stockMin * LOW_STOCK_MARGIN ? "warning" : "muted",
+    };
   }
 }
 

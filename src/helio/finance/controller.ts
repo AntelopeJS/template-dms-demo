@@ -30,6 +30,7 @@ import { quoteController } from "../sales/controller";
 import { VAT_RESIDENTIAL } from "../sales/lines";
 import { cents, DAY_MS } from "../shared/seed";
 import { Invoice, InvoiceModel, type InvoiceStatus } from "./database";
+import { withInvoiceNumber } from "./numbering";
 
 // An invoice's life. Exported for the status tabs, nav badge and row rules.
 export const INVOICE_STATUSES = [
@@ -99,7 +100,7 @@ const day = (date: Date) =>
 @RegisterDataController()
 class invoiceDataAPI extends DataController(
   Invoice,
-  TableViewRoutes.All,
+  { ...TableViewRoutes.All, new: withInvoiceNumber(TableViewRoutes.New) },
   Controller("/api/helio/invoices"),
 ) {
   @ModelReference()
@@ -127,7 +128,8 @@ class invoiceDataAPI extends DataController(
     display: new DefaultDisplays.MonoDisplay({ copy: true }),
     size: 140,
   })
-  @Mandatory("new", "edit")
+  // Left empty on a new invoice, it takes the next number (see numbering.ts).
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare number: string;
 
@@ -268,7 +270,7 @@ class invoiceDataAPI extends DataController(
     name: "$helio.finance.invoices.columns.amountExcl",
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
-    size: 130,
+    size: 165,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -318,7 +320,7 @@ class invoiceDataAPI extends DataController(
     name: "$helio.finance.invoices.columns.total",
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
-    size: 130,
+    size: 165,
   })
   @Access(AccessMode.ReadOnly)
   declare total: number;
@@ -348,16 +350,32 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare paymentMethod: string;
 
+  // Stamped by the "Send reminder" action; shown under an overdue status.
+  @Listable()
+  @Sortable()
+  @Exported()
+  @Column({
+    name: "$helio.finance.invoices.columns.remindedAt",
+    type: new DefaultDataTypes.DateType(),
+    filterable: true,
+    display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
+    isVisible: false,
+  })
+  @Access(AccessMode.ReadOnly)
+  declare remindedAt: Date;
+
+  // Listed so the row rules (edit, archive) can read it in the browser.
+  @Listable()
   @ArchiveField()
   @Access(AccessMode.ReadOnly)
   declare isArchived: boolean;
 
   // Under the status: when a sent invoice falls due, how late an overdue one
   // is (in red), when a paid one was paid.
-  @Listable(["status", "dueAt", "paidAt"])
+  @Listable(["status", "dueAt", "paidAt", "remindedAt"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
-    const { status, dueAt, paidAt } = this.table;
+    const { status, dueAt, paidAt, remindedAt } = this.table;
     if (status === "paid" && paidAt) {
       return {
         text: {
@@ -371,11 +389,14 @@ class invoiceDataAPI extends DataController(
         1,
         Math.floor((Date.now() - dueAt.getTime()) / DAY_MS),
       );
+      const count = { type: "count", value: late } as const;
       return {
-        text: {
-          key: "$helio.finance.invoices.detail.late",
-          params: { count: { type: "count", value: late } },
-        },
+        text: remindedAt
+          ? {
+              key: "$helio.finance.invoices.detail.lateReminded",
+              params: { count, date: day(remindedAt) },
+            }
+          : { key: "$helio.finance.invoices.detail.late", params: { count } },
         tone: "error",
       };
     }

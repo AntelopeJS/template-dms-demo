@@ -89,9 +89,9 @@ export default defineConfig({
       },
       config: {
         stripe: {
-          secretKey: "sk_test_replace_me",
-          publishableKey: "pk_test_replace_me",
-          webhookSecret: "whsec_replace_me",
+          secretKey: "sk_test_placeholder",
+          publishableKey: "pk_test_placeholder",
+          webhookSecret: "whsec_placeholder",
         },
         allowedRedirectHosts: CLIENT_ORIGINS.map(
           (origin) => new URL(origin).host,

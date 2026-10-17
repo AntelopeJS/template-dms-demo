@@ -22,6 +22,7 @@ import {
   Model,
 } from "@antelopejs/interface-database-decorators";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
+import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   Column,
@@ -29,6 +30,7 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
+import { countCategoryProducts } from "./category-usage";
 import { ProductCategory, ProductCategoryModel } from "./database";
 
 // The top-level families only, for the parent picker of a category: a
@@ -129,6 +131,22 @@ class productCategoryDataAPI extends DataController(
   @Optional()
   @Access(AccessMode.ReadWrite)
   declare parent: string;
+
+  // Products filed under the category, or under the ranges of a family.
+  // Read by a getter and not a database `@Computed`: the DMS list route
+  // leaves out a computed field the request neither filters nor sorts on.
+  @Listable(["_id", "parent"])
+  @Column({
+    name: "$helio.catalog.categories.columns.productCount",
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
+    type: new DefaultDataTypes.NumberType({ min: 0 }),
+    validate: false,
+    size: 120,
+  })
+  @Access(AccessMode.ReadOnly)
+  get productCount(): Promise<number> {
+    return countCategoryProducts(this.table._id, !this.table.parent);
+  }
 }
 
 // ControllerClass-typed alias for the products' CascaderRelationType and the

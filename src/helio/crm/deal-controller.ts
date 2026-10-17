@@ -6,7 +6,6 @@ import {
 import {
   Access,
   AccessMode,
-  Computed,
   Listable,
   Mandatory,
   ModelReference,
@@ -16,6 +15,7 @@ import {
 import { Model } from "@antelopejs/interface-database-decorators";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import {
   type CellSubline,
   Column,
@@ -248,24 +248,37 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare probability: number;
 
-  // amount × probability, computed in the database so it sorts, filters and
-  // sums (pipeline footer) over every listed row.
+  // amount × probability, stored with the deal (deal-derived.ts keeps it in
+  // step on every write) so it lists, sorts and sums in the pipeline footer.
+  // Not @Computed: see deal-derived.ts.
   @Listable()
   @Sortable()
-  @Computed(
-    (row) =>
-      row.key("amount").default(0).mul(row.key("probability").default(0)),
-    {
-      default: 0,
-    },
-  )
+  @Exported()
   @Column({
     name: "$helio.crm.deals.columns.weightedAmount",
     type: new DefaultDataTypes.PriceType(),
     validate: false,
     size: 130,
+    // Nothing to show before the deal exists; shown, read-only, once it does.
+    readonlyBehavior: { new: ReadonlyBehaviorType.hidden },
   })
+  @Access(AccessMode.ReadOnly)
   declare weightedAmount: number;
+
+  // Neither won nor lost, stored with the deal (deal-derived.ts keeps it in
+  // step): a list filter takes one value per column, so the saved views
+  // ("Big deals", "Stalled"…) narrow the open deals through this flag.
+  @Listable()
+  @Column({
+    name: "$helio.crm.deals.columns.isOpen",
+    type: new DefaultDataTypes.BooleanType(),
+    validate: false,
+    filterable: true,
+    isVisible: false,
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
+  })
+  @Access(AccessMode.ReadOnly)
+  declare isOpen: boolean;
 
   @Listable()
   @Exported()

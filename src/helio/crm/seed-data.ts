@@ -1,6 +1,8 @@
 // Raw material of the CRM fixtures: Belgian names and real Walloon and
 // Brussels localities with their postcodes.
 
+import type { DealStage } from "./database";
+
 export interface Locality {
   city: string;
   postalCode: string;
@@ -316,3 +318,35 @@ export const RESIDENTIAL_NOTES = [
   "<p>Compteur bidirectionnel déjà installé.</p>",
   "<p>Ombrage partiel le matin (grand chêne côté est).</p>",
 ];
+
+/** What a sales rep plans next on a deal, by stage. */
+export const NEXT_STEPS: Record<DealStage, readonly string[]> = {
+  lead: [
+    "Premier appel de qualification",
+    "Envoyer la brochure et une simulation",
+    "Rappeler après les congés",
+  ],
+  qualified: [
+    "Planifier la visite technique",
+    "Récupérer les factures d'électricité",
+    "Vérifier l'orientation de la toiture",
+  ],
+  site_visit: [
+    "Visite technique à confirmer",
+    "Rédiger le rapport de visite",
+    "Contrôler la charpente",
+  ],
+  proposal: [
+    "Envoyer l'offre",
+    "Relancer sur l'offre envoyée",
+    "Présenter l'offre au gérant",
+  ],
+  negotiation: [
+    "Revoir la remise sur la batterie",
+    "Attendre l'accord de la banque",
+    "Valider l'échéancier de paiement",
+    "Faire signer le bon de commande",
+  ],
+  won: ["Transmis à la planification", "Planifier le chantier"],
+  lost: [],
+};

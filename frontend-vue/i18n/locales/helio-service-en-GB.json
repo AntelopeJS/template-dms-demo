@@ -46,7 +46,7 @@
 					"pinned": "Pinned"
 				},
 				"placeholders": {
-					"number": "T-1301",
+					"number": "Leave empty for the next number",
 					"subject": "Inverter shows an error code",
 					"customer": "Choose a customer",
 					"site": "Choose the installation",
@@ -58,6 +58,96 @@
 					"slaBreached": "SLA breached"
 				},
 				"justNow": "Just now"
+			},
+			"page": {
+				"name": "Service desk",
+				"description": "After-sales tickets as they arrive: triage, assign and resolve them, reading each one next to the list."
+			},
+			"live": {
+				"missed": "{count} new ticket | {count} new tickets",
+				"newTickets": "{count} new ticket | {count} new tickets"
+			},
+			"stats": {
+				"label": "Service desk at a glance",
+				"open": "Open tickets",
+				"openDetail": "{fresh} new · {unassigned} unassigned",
+				"urgent": "Urgent",
+				"urgentDetail": "Open, 4-hour pick-up promised",
+				"breaching": "Past their SLA",
+				"breachingDetail": "Nobody took them in hand within the promised time",
+				"resolution": "Average resolution",
+				"resolutionValue": "{hours} h",
+				"resolutionDetail": "Tickets resolved in the last 30 days"
+			},
+			"table": {
+				"caption": "Tickets",
+				"search": "Search a ticket number or subject",
+				"count": "{count} ticket | {count} tickets",
+				"expandLabel": "Customer's message",
+				"filters": {
+					"assignee": "Assignee",
+					"priority": "Priority",
+					"category": "Category",
+					"ticket": "Ticket"
+				},
+				"footer": {
+					"urgent": "Urgent open",
+					"waiting": "Waiting on customer"
+				},
+				"empty": {
+					"firstRunTitle": "No ticket yet",
+					"firstRunDescription": "Customer requests, monitoring alerts and calls logged by the office land here.",
+					"filteredTitle": "Nothing to handle here",
+					"filteredDescription": "No ticket matches these filters. Clear them to see the whole desk."
+				}
+			},
+			"views": {
+				"all": "All tickets",
+				"open": "Open",
+				"urgent": "Urgent",
+				"unassigned": "Unassigned",
+				"waiting": "Waiting on customer",
+				"breaching": "Breaching SLA"
+			},
+			"form": {
+				"newTitle": "New ticket",
+				"newDescription": "Log a customer request. The number and the SLA are set automatically.",
+				"editTitle": "Edit ticket",
+				"detailsTitle": "Ticket details"
+			},
+			"actions": {
+				"assign": "Assign to…",
+				"resolve": "Resolve"
+			},
+			"bulk": {
+				"assign": {
+					"title": "Assign tickets",
+					"description": "Pick who takes them over. New tickets become open.",
+					"field": "Assign to",
+					"placeholder": "Choose a technician",
+					"confirm": "Assign",
+					"done": "Tickets assigned",
+					"invalid": "Choose someone from the service team"
+				},
+				"resolve": {
+					"title": "Resolve these tickets?",
+					"description": "Open tickets are marked resolved now; resolved and closed ones stay as they are.",
+					"confirm": "Resolve",
+					"done": "Tickets resolved"
+				}
+			},
+			"quickActions": {
+				"newTicket": "New service ticket"
+			},
+			"notifications": {
+				"category": "Service desk",
+				"categoryDescription": "After-sales tickets that need attention",
+				"urgentSubject": "Urgent tickets",
+				"urgentSubjectDescription": "A customer opened an urgent ticket (4-hour SLA)",
+				"urgent": {
+					"title": "Urgent ticket {number}",
+					"description": "{customer}: {subject}"
+				}
 			}
 		}
 	}

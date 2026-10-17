@@ -1,4 +1,12 @@
-import { Controller, type ControllerClass } from "@antelopejs/interface-api";
+import {
+  Context,
+  Controller,
+  type ControllerClass,
+  HTTPResult,
+  JSONBody,
+  Post,
+  type RequestContext,
+} from "@antelopejs/interface-api";
 import {
   DataController,
   RegisterDataController,
@@ -13,6 +21,8 @@ import {
   Sortable,
 } from "@antelopejs/interface-data-api/metadata";
 import { Model } from "@antelopejs/interface-database-decorators";
+import { AuthUser } from "@antelopejs/interface-dms/auth";
+import type { User } from "@antelopejs/interface-dms/auth/db";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
@@ -20,20 +30,26 @@ import {
   Column,
   DefaultDisplays,
   Exported,
+  resolveBulkRowIds,
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
+import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import { customerController } from "../crm/controller";
 import { siteController } from "../monitoring/controller";
 import { teamController } from "../team/controller";
+import { assertCanWriteTickets } from "./access";
 import {
   Ticket,
   TicketModel,
   type TicketPriority,
   type TicketStatus,
 } from "./database";
+import { withTicketNumber } from "./numbering";
 import {
+  SERVICE_TOPIC,
   SLA_HOURS,
+  TICKET_ASSIGNEES,
   TICKET_CATEGORIES,
   TICKET_CHANNELS,
   TICKET_PRIORITIES,
@@ -45,6 +61,8 @@ export * from "./options";
 const HOUR_MS = 60 * 60 * 1000;
 const CLOSED: readonly string[] = ["resolved", "closed"];
 
+const ASSIGNABLE = new Set(TICKET_ASSIGNEES.map(({ value }) => value));
+
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
 
@@ -53,7 +71,7 @@ const day = (date: Date) =>
 @RegisterDataController()
 class ticketDataAPI extends DataController(
   Ticket,
-  TableViewRoutes.All,
+  { ...TableViewRoutes.All, new: withTicketNumber(TableViewRoutes.New) },
   Controller("/api/helio/tickets"),
 ) {
   @ModelReference()
@@ -81,7 +99,8 @@ class ticketDataAPI extends DataController(
     display: new DefaultDisplays.MonoDisplay(),
     size: 100,
   })
-  @Mandatory("new", "edit")
+  // Left empty on a new ticket, it takes the next number (see numbering.ts).
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare number: string;
 
@@ -321,12 +340,12 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare pinned: boolean;
 
-  // Under the status: an open ticket past its SLA in red, else when a
-  // resolved one was resolved.
-  @Listable(["status", "slaDueAt", "resolvedAt"])
+  // Under the status: an open ticket nobody took in hand within its SLA in
+  // red, else when a resolved one was resolved.
+  @Listable(["status", "slaDueAt", "resolvedAt", "assignee"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
-    const { status, slaDueAt, resolvedAt } = this.table;
+    const { status, slaDueAt, resolvedAt, assignee } = this.table;
     if (CLOSED.includes(status)) {
       return resolvedAt
         ? {
@@ -337,13 +356,84 @@ class ticketDataAPI extends DataController(
           }
         : null;
     }
-    if (slaDueAt && slaDueAt.getTime() < Date.now()) {
+    if (!assignee && slaDueAt && slaDueAt.getTime() < Date.now()) {
       return {
         text: "$helio.service.tickets.detail.slaBreached",
         tone: "error",
       };
     }
     return null;
+  }
+
+  // "Assign to…" on the selection bar: the selected tickets, or every ticket
+  // the filters match, go to the person picked in the confirmation. A new
+  // ticket someone took is open from then on.
+  @Post("bulk/assign")
+  async bulkAssign(
+    @Context() ctx: RequestContext,
+    @AuthUser() user: User,
+    @JSONBody() body: { assignee?: string },
+  ): Promise<{ count: number }> {
+    await assertCanWriteTickets(ctx, user);
+    const assignee = body?.assignee;
+    if (!assignee || !ASSIGNABLE.has(assignee)) {
+      throw new HTTPResult(400, {
+        message: "$helio.service.bulk.assign.invalid",
+        field: "assignee",
+      });
+    }
+    const ids = await resolveBulkRowIds(this, ctx, user);
+    const tickets = await this.loadTickets(ids);
+    await Promise.all(
+      tickets.map((ticket) =>
+        this.model.update(ticket._id, {
+          assignee,
+          status: ticket.status === "new" ? "open" : ticket.status,
+        }),
+      ),
+    );
+    return this.published(tickets.map(({ _id }) => _id));
+  }
+
+  // "Resolve" on the selection bar: the tickets still open are resolved now;
+  // resolved and closed ones are left as they are.
+  @Post("bulk/resolve")
+  async bulkResolve(
+    @Context() ctx: RequestContext,
+    @AuthUser() user: User,
+  ): Promise<{ count: number }> {
+    await assertCanWriteTickets(ctx, user);
+    const ids = await resolveBulkRowIds(this, ctx, user);
+    const open = (await this.loadTickets(ids)).filter(
+      ({ status }) => !CLOSED.includes(status),
+    );
+    const resolvedAt = new Date();
+    await Promise.all(
+      open.map(({ _id }) =>
+        this.model.update(_id, { status: "resolved", resolvedAt }),
+      ),
+    );
+    return this.published(open.map(({ _id }) => _id));
+  }
+
+  // A selection-bar run also sends the row token of the actions, unresolved
+  // or empty: an id naming no ticket is skipped.
+  private async loadTickets(ids: string[]): Promise<Ticket[]> {
+    const rows = await Promise.all(
+      ids.filter(Boolean).map((id) => this.model.get(id)),
+    );
+    return rows.filter((row): row is Ticket => row !== undefined);
+  }
+
+  // Written through the model, which the table's own realtime does not see:
+  // the desk's table and stats follow the topic instead.
+  private async published(ids: string[]): Promise<{ count: number }> {
+    if (ids.length > 0) {
+      await PublishMessage(SERVICE_TOPIC, "tickets.updated", {
+        payload: { ids },
+      });
+    }
+    return { count: ids.length };
   }
 }
 

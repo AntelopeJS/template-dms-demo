@@ -112,7 +112,10 @@ class projectTaskDataAPI extends DataController(
     filterable: true,
     size: 240,
   })
-  @Mandatory("new", "edit")
+  // Not mandatory in the "new" form: the project page's tasks table fills it
+  // from the URL when the form is submitted (routeParamFilters), after the
+  // form's own required check. Its guard refuses a task without a project.
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare project: string;
 

@@ -4,11 +4,35 @@
 			"categories": {
 				"columns": {
 					"name": "Category",
-					"parent": "Family"
+					"parent": "Family",
+					"productCount": "Products"
 				},
 				"placeholders": {
 					"name": "e.g. Hybrid inverters",
 					"parent": "None (top-level family)"
+				},
+				"caption": "Ranges",
+				"search": "Search a range…",
+				"footer": {
+					"count": "{count} range | {count} ranges"
+				},
+				"empty": {
+					"title": "No range yet",
+					"description": "Create the families of the catalog first, then the ranges products are filed under."
+				},
+				"form": {
+					"newTitle": "New range",
+					"newDescription": "A family has no parent; a range sits under a family.",
+					"editTitle": "Edit range"
+				},
+				"delete": {
+					"title": "Delete this range?",
+					"description": "Only an empty range can be deleted: move its products to another range first.",
+					"confirm": "Delete range"
+				},
+				"errors": {
+					"inUse": "This range still holds products: move them to another range before deleting it.",
+					"hasRanges": "This family still has ranges: delete or move them first."
 				}
 			},
 			"products": {
@@ -24,12 +48,15 @@
 					"unit": "Unit",
 					"stock": "Stock",
 					"stockMin": "Reorder threshold",
-					"lowStock": "Stock level",
+					"lowStock": "Below threshold",
 					"image": "Image URL",
 					"tags": "Tags",
 					"warrantyYears": "Warranty",
 					"isActive": "Status",
-					"displayOrder": "Position"
+					"displayOrder": "Position",
+					"family": "Family",
+					"picture": "Picture",
+					"stockLevel": "Stock level"
 				},
 				"placeholders": {
 					"name": "e.g. Helio Mono 430 W Black",
@@ -41,18 +68,87 @@
 				},
 				"stock": {
 					"low": "Reorder",
-					"ok": "In stock"
+					"ok": "In stock",
+					"min": "Threshold {min}",
+					"belowMin": "Below threshold {min}",
+					"notStocked": "Not stocked"
 				},
 				"active": "On sale",
 				"activeSwitch": "Offered in new quotes",
 				"powerSuffix": "W / Wh",
-				"yearsSuffix": "years"
+				"yearsSuffix": "years",
+				"caption": "Products",
+				"search": "Search a product, a SKU…",
+				"imageHint": "Address of the product picture, on the web or on this server.",
+				"views": {
+					"all": "All products",
+					"active": "On sale",
+					"toReorder": "To reorder",
+					"hardware": "Hardware",
+					"services": "Services",
+					"byFamily": "By range",
+					"discontinued": "Discontinued"
+				},
+				"footer": {
+					"count": "{count} product | {count} products",
+					"units": "Units in stock",
+					"onSale": "On sale"
+				},
+				"empty": {
+					"firstRunTitle": "The catalog is empty",
+					"firstRunDescription": "Add the panels, inverters, batteries and services your quotes will offer.",
+					"filteredTitle": "No product matches “{search}”",
+					"filteredDescription": "Try another name or SKU, or clear the filters."
+				},
+				"form": {
+					"newTitle": "New product",
+					"newDescription": "It is offered in new quotes as soon as it is on sale.",
+					"editTitle": "Edit product",
+					"editDescription": "Quotes already sent keep the price they were sent with.",
+					"detailsTitle": "Product sheet"
+				},
+				"delete": {
+					"title": "Delete this product?",
+					"description": "Quotes that already list it keep their line. To stop offering it, mark it as discontinued instead.",
+					"confirm": "Delete product"
+				},
+				"stockLevels": {
+					"inStock": "In stock",
+					"runningLow": "Running low",
+					"reorder": "To reorder",
+					"notStocked": "Not stocked"
+				},
+				"stockHint": "Leave empty for a service: it is not stocked."
 			},
 			"units": {
 				"piece": "Piece",
 				"hour": "Hour",
 				"year": "Year",
 				"flat": "Flat rate"
+			},
+			"page": {
+				"name": "Catalog",
+				"description": "Products and services Helio sells and installs, with their stock and margin."
+			},
+			"families": {
+				"panels": "Solar panels",
+				"inverters": "Inverters",
+				"storage": "Storage",
+				"ev": "EV charging",
+				"services": "Services"
+			},
+			"stats": {
+				"amount": "{amount}",
+				"percent": "{value}",
+				"onSale": "On sale",
+				"onSaleDetail": "{hardware} products · {services} services",
+				"stockValue": "Stock value",
+				"stockValueDetail": "At purchase cost · {units} units in the warehouse",
+				"toReorder": "To reorder",
+				"toReorderDetail": "{names}",
+				"toReorderNone": "Every product is above its threshold",
+				"margin": "Average hardware margin",
+				"marginDetail": "Over the hardware on sale, before installation"
 			}
 		}
 	}

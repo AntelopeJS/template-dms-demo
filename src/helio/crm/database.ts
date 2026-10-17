@@ -87,10 +87,14 @@ export class Deal extends Table {
   @Relation({ to: () => TeamMember })
   declare owner: string;
   @Index() @Field("string") declare stage: DealStage;
+  /** Neither won nor lost, kept in step on every write (deal-derived.ts). */
+  @Index() @Field("boolean") declare isOpen: boolean;
   /** Expected amount excluding VAT, in euros. */
   @Field("number") declare amount: number;
   /** Win probability, 0–1. */
   @Field("number") declare probability: number;
+  /** amount × probability, kept in step on every write (deal-derived.ts). */
+  @Field("number") declare weightedAmount: number;
   @Index() @Field("string") declare source: LeadSource;
   @Index() @Field("date") declare expectedClose: Date;
   @Index() @Field("date") declare lastActivityAt: Date;

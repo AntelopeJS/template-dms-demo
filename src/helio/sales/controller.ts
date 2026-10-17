@@ -24,64 +24,43 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
-import type { ComposedText } from "@antelopejs/interface-dms/base/types";
+import {
+  type ComposedText,
+  ReadonlyBehaviorType,
+} from "@antelopejs/interface-dms/base/types";
 import { customerController, dealController } from "../crm/controller";
-import { PRODUCT_ROSTER } from "../shared/roster";
 import { DAY_MS } from "../shared/seed";
 import { Quote, type QuoteLine, QuoteModel } from "./database";
 import { quoteTotals, VAT_RESIDENTIAL } from "./lines";
+import { takeQuoteNumber } from "./numbering";
+import {
+  EXPIRING_WITHIN_MS,
+  QUOTE_PRODUCT_ITEMS,
+  QUOTE_STATUSES,
+  VALIDITY_DAYS,
+} from "./options";
+import { lineText, otherLinesText } from "./summary";
 
-// A quote's life, in order. Exported for the status tabs, views and actions.
-export const QUOTE_STATUSES = [
-  {
-    value: "draft",
-    label: "$helio.sales.quotes.statuses.draft",
-    icon: "i-ph-pencil-simple-line",
-    iconColor: "neutral",
-    textColor: "neutral",
-  },
-  {
-    value: "sent",
-    label: "$helio.sales.quotes.statuses.sent",
-    icon: "i-ph-paper-plane-tilt",
-    iconColor: "info",
-    textColor: "info",
-  },
-  {
-    value: "accepted",
-    label: "$helio.sales.quotes.statuses.accepted",
-    icon: "i-ph-seal-check",
-    iconColor: "success",
-    textColor: "success",
-  },
-  {
-    value: "rejected",
-    label: "$helio.sales.quotes.statuses.rejected",
-    icon: "i-ph-x-circle",
-    iconColor: "error",
-    textColor: "error",
-  },
-  {
-    value: "expired",
-    label: "$helio.sales.quotes.statuses.expired",
-    icon: "i-ph-hourglass-simple-low",
-    iconColor: "warning",
-    textColor: "warning",
-  },
-] as const;
-
-// The products a quote line picks from: the catalog roster, by name (data,
-// not a translation).
-export const QUOTE_PRODUCT_ITEMS = PRODUCT_ROSTER.map((product) => ({
-  value: product.id,
-  label: product.name,
-}));
-
-// A sent quote this close to its end of validity is flagged.
-const EXPIRING_WITHIN_MS = 7 * DAY_MS;
+export { QUOTE_PRODUCT_ITEMS, QUOTE_STATUSES } from "./options";
 
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
+
+// Fields the system writes (number, status, dates of the life cycle): absent
+// from the creation form, shown read-only afterwards.
+const HIDDEN_ON_NEW = { new: ReadonlyBehaviorType.hidden };
+
+// A line slot of the expanded row: hidden from the grid and the forms, read
+// for the band only.
+const lineSlot = (name: string) => ({
+  name,
+  type: new DefaultDataTypes.StringType(),
+  isVisible: false,
+  validate: false,
+  readonlyBehavior: ReadonlyBehaviorType.hidden,
+  // Writes the line's composed text ("12 × … · €2,268.00").
+  display: new DefaultDisplays.TwoLineDisplay({}),
+});
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
@@ -101,6 +80,7 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare _id: string;
 
+  // Given on creation (see `creation`), never typed in.
   @Searchable()
   @Select()
   @Listable()
@@ -108,16 +88,13 @@ class quoteDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.sales.quotes.columns.number",
-    type: new DefaultDataTypes.StringType({
-      placeholder: "$helio.sales.quotes.placeholders.number",
-      maxLength: 20,
-    }),
+    type: new DefaultDataTypes.StringType({ maxLength: 20 }),
     filterable: true,
     size: 170,
+    readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.TwoLineDisplay({ subField: "linesSummary" }),
   })
-  @Mandatory("new", "edit")
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadOnly)
   declare number: string;
 
   @Select()
@@ -157,6 +134,8 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare deal: string;
 
+  // Moved by the row actions (send, accept, reject), which also stamp the
+  // matching date: a form editing it would leave those dates behind.
   @Listable()
   @Sortable()
   @Exported()
@@ -164,7 +143,7 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.status",
     type: new DefaultDataTypes.SelectType({ items: [...QUOTE_STATUSES] }),
     filterable: true,
-    defaultValue: "draft",
+    readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.StatusPillDisplay({
       tones: {
         draft: "neutral",
@@ -179,8 +158,7 @@ class quoteDataAPI extends DataController(
     }),
     size: 170,
   })
-  @Mandatory("new", "edit")
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadOnly)
   declare status: string;
 
   // The lines are the source of truth: writing them (or the VAT rate)
@@ -235,6 +213,7 @@ class quoteDataAPI extends DataController(
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
     size: 130,
+    readonlyBehavior: HIDDEN_ON_NEW,
   })
   @Access(AccessMode.ReadOnly)
   declare subtotal: number;
@@ -243,6 +222,7 @@ class quoteDataAPI extends DataController(
   @Exported(["vatRate"])
   @Column({
     name: "$helio.sales.quotes.columns.vatRate",
+    description: "$helio.sales.quotes.hints.vatRate",
     type: new DefaultDataTypes.PercentageType({ max: 0.21 }),
     filterable: true,
     defaultValue: VAT_RESIDENTIAL,
@@ -266,10 +246,15 @@ class quoteDataAPI extends DataController(
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
     size: 130,
+    readonlyBehavior: HIDDEN_ON_NEW,
   })
   @Access(AccessMode.ReadOnly)
   declare total: number;
 
+  // A new quote is issued today and holds VALIDITY_DAYS (see `creation`);
+  // sending it renews a validity that ran out. Read-only in the forms: they
+  // only read a field's default access mode, not its per-action overrides,
+  // so "writable on edit only" cannot be shown.
   @Listable()
   @Sortable()
   @Exported()
@@ -277,11 +262,11 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.issuedAt",
     type: new DefaultDataTypes.DateType(),
     filterable: true,
+    readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
     size: 130,
   })
-  @Mandatory("new", "edit")
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadOnly)
   declare issuedAt: Date;
 
   @Listable()
@@ -291,6 +276,7 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.validUntil",
     type: new DefaultDataTypes.DateType(),
     filterable: true,
+    readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.RelativeDateDisplay({
       soonWithinMs: EXPIRING_WITHIN_MS,
       soonTone: "warning",
@@ -299,8 +285,7 @@ class quoteDataAPI extends DataController(
     }),
     size: 140,
   })
-  @Mandatory("new", "edit")
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadOnly)
   declare validUntil: Date;
 
   @Listable()
@@ -308,11 +293,11 @@ class quoteDataAPI extends DataController(
   @Column({
     name: "$helio.sales.quotes.columns.sentAt",
     type: new DefaultDataTypes.DateType(),
+    readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.RelativeDateDisplay(),
     isVisible: false,
   })
-  @Optional()
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadOnly)
   declare sentAt: Date;
 
   @Listable()
@@ -322,28 +307,12 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.signedAt",
     type: new DefaultDataTypes.DateType(),
     filterable: true,
+    readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
     isVisible: false,
   })
-  @Optional()
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadOnly)
   declare signedAt: Date;
-
-  // The secret of the customer portal link: drawn when the quote is created
-  // ("Copy portal link" reads it), never typed in.
-  @Listable(["portalToken"])
-  @Column({
-    name: "$helio.sales.quotes.columns.portalToken",
-    type: new DefaultDataTypes.StringType({ copyable: true }),
-    isVisible: false,
-  })
-  @Access(AccessMode.ReadOnly, { new: AccessMode.ReadWrite })
-  get portalToken(): string {
-    return this.table.portalToken;
-  }
-  set portalToken(_value: string) {
-    this.table.portalToken ||= randomBytes(12).toString("hex");
-  }
 
   @Column({
     name: "$helio.sales.quotes.columns.notes",
@@ -358,13 +327,14 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare notes: string;
 
-  // VAT of the quote, for the footer and the document.
+  // VAT of the quote, for the expanded row and the document.
   @Listable(["subtotal", "total"])
   @Column({
     name: "$helio.sales.quotes.columns.vatAmount",
     type: new DefaultDataTypes.PriceType(),
     validate: false,
     isVisible: false,
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
   })
   @Access(AccessMode.ReadOnly)
   get vatAmount(): number {
@@ -372,6 +342,34 @@ class quoteDataAPI extends DataController(
       Math.round(((this.table.total ?? 0) - (this.table.subtotal ?? 0)) * 100) /
       100
     );
+  }
+
+  @Listable(["lines"])
+  @Column(lineSlot("$helio.sales.quotes.columns.line1"))
+  @Access(AccessMode.ReadOnly)
+  get line1(): ComposedText | null {
+    return lineText(this.table.lines, 0);
+  }
+
+  @Listable(["lines"])
+  @Column(lineSlot("$helio.sales.quotes.columns.line2"))
+  @Access(AccessMode.ReadOnly)
+  get line2(): ComposedText | null {
+    return lineText(this.table.lines, 1);
+  }
+
+  @Listable(["lines"])
+  @Column(lineSlot("$helio.sales.quotes.columns.line3"))
+  @Access(AccessMode.ReadOnly)
+  get line3(): ComposedText | null {
+    return lineText(this.table.lines, 2);
+  }
+
+  @Listable(["lines"])
+  @Column(lineSlot("$helio.sales.quotes.columns.otherLines"))
+  @Access(AccessMode.ReadOnly)
+  get otherLines(): ComposedText | null {
+    return otherLinesText(this.table.lines);
   }
 
   // Under the number: the first line and how many follow.
@@ -414,6 +412,25 @@ class quoteDataAPI extends DataController(
       };
     }
     return null;
+  }
+
+  // Not a column, so no form shows it; writable on "new" only, so the data
+  // API calls this setter once per creation, whatever the body holds. It
+  // gives the quote what the system owns: its number, a draft status, its
+  // dates and the secret of its portal link.
+  @Access(AccessMode.ReadOnly, { new: AccessMode.ReadWrite })
+  get creation(): undefined {
+    return undefined;
+  }
+  set creation(_value: undefined) {
+    const issuedAt = new Date();
+    this.table.issuedAt = issuedAt;
+    this.table.validUntil = new Date(
+      issuedAt.getTime() + VALIDITY_DAYS * DAY_MS,
+    );
+    this.table.status = "draft";
+    this.table.number = takeQuoteNumber(issuedAt);
+    this.table.portalToken = randomBytes(12).toString("hex");
   }
 
   private applyTotals(): void {

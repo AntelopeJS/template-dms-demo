@@ -6,7 +6,6 @@ import {
 import {
   Access,
   AccessMode,
-  Computed,
   Listable,
   Mandatory,
   ModelReference,
@@ -16,6 +15,7 @@ import {
 import { Model } from "@antelopejs/interface-database-decorators";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import {
   Column,
   DefaultDisplays,
@@ -28,6 +28,7 @@ import { quoteController } from "../sales/controller";
 import { DAY_MS } from "../shared/seed";
 import { teamController } from "../team/controller";
 import { Project, ProjectModel } from "./database";
+import { projectTaskCounts } from "./task-counts";
 
 // What Helio installs. Exported for the tabs, filters and charts.
 export const PROJECT_TYPES = [
@@ -106,8 +107,6 @@ export const PROJECT_STATUSES = [
     textColor: "warning",
   },
 ] as const;
-
-const TASKS_TABLE = "helio_project_tasks";
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
@@ -235,38 +234,39 @@ class projectDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare status: string;
 
-  // Tasks done over tasks in all, counted in the database from
-  // helio_project_tasks, so the bar follows every task moved.
+  // The task bar: done over all tasks, read by the two getters below. Not a
+  // @Computed field: on this controller one made the `get` route answer
+  // null for every single relation (customer, quote, lead technician), and
+  // the TableView list leaves out a computed field it neither sorts nor
+  // filters on. The column holds no value of its own, so it is hidden from
+  // the forms.
   @Listable()
-  @Sortable()
-  @Computed(
-    (row, db) =>
-      db
-        .table(TASKS_TABLE)
-        .getAll(row.key("_id"), "project")
-        .filter((task) => task.key("status").eq("done"))
-        .count(),
-    { default: 0 },
-  )
   @Column({
     name: "$helio.projects.columns.progress",
     type: new DefaultDataTypes.NumberType({ min: 0 }),
     validate: false,
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
     display: new DefaultDisplays.ProgressDisplay({
-      doneField: "tasksDone",
-      totalField: "tasksTotal",
+      doneField: "progressDone",
+      totalField: "progressTotal",
     }),
     size: 150,
   })
+  @Access(AccessMode.ReadOnly)
   declare tasksDone: number;
 
-  @Listable()
-  @Computed(
-    (row, db) =>
-      db.table(TASKS_TABLE).getAll(row.key("_id"), "project").count(),
-    { default: 0 },
-  )
-  declare tasksTotal: number;
+  // The task counts of the row, read once per listed row for both getters.
+  @Listable(["_id"])
+  @Access(AccessMode.ReadOnly)
+  get progressDone(): Promise<number> {
+    return projectTaskCounts(this.table).then((counts) => counts.done);
+  }
+
+  @Listable(["_id"])
+  @Access(AccessMode.ReadOnly)
+  get progressTotal(): Promise<number> {
+    return projectTaskCounts(this.table).then((counts) => counts.total);
+  }
 
   @Listable()
   @Sortable()

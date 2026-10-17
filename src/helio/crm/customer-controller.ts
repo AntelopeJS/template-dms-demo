@@ -15,9 +15,11 @@ import {
 import { Model } from "@antelopejs/interface-database-decorators";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import {
   ArchiveField,
   Column,
+  ColumnGroup,
   DefaultDisplays,
   Exported,
   Select,
@@ -104,6 +106,25 @@ const KIND_ICONS: Record<CustomerKind, string> = {
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
+// The form's cards, in the order their first field is declared below.
+@ColumnGroup("identity", {
+  label: "$helio.crm.customers.groups.identity",
+  orientation: "vertical",
+  description: "$helio.crm.customers.groups.identityHint",
+})
+@ColumnGroup("contact", {
+  label: "$helio.crm.customers.groups.contact",
+  orientation: "vertical",
+})
+@ColumnGroup("location", {
+  label: "$helio.crm.customers.groups.location",
+  orientation: "vertical",
+})
+@ColumnGroup("relationship", {
+  label: "$helio.crm.customers.groups.relationship",
+  orientation: "vertical",
+  description: "$helio.crm.customers.groups.relationshipHint",
+})
 @RegisterDataController()
 class customerDataAPI extends DataController(
   Customer,
@@ -127,6 +148,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.name",
+    group: "identity",
     type: new DefaultDataTypes.StringType({
       placeholder: "$helio.crm.customers.placeholders.name",
       maxLength: 120,
@@ -160,6 +182,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.kind",
+    group: "identity",
     type: new DefaultDataTypes.SelectType({
       items: [...CUSTOMER_KINDS],
       display: "segmented",
@@ -180,6 +203,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.vatNumber",
+    group: "identity",
     type: new DefaultDataTypes.StringType({
       placeholder: "BE0123.456.789",
       maxLength: 20,
@@ -196,6 +220,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.contactName",
+    group: "contact",
     type: new DefaultDataTypes.StringType({
       placeholder: "$helio.crm.customers.placeholders.contactName",
     }),
@@ -210,6 +235,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.email",
+    group: "contact",
     type: new DefaultDataTypes.EmailType({
       placeholder: "$helio.crm.customers.placeholders.email",
     }),
@@ -223,6 +249,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.phone",
+    group: "contact",
     type: new DefaultDataTypes.PhoneType({ placeholder: "+32 4xx xx xx xx" }),
   })
   @Optional()
@@ -233,6 +260,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.address",
+    group: "location",
     type: new DefaultDataTypes.AddressType({
       autocomplete: { enabled: true, lang: "fr" },
     }),
@@ -247,6 +275,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.segments",
+    group: "relationship",
     type: new DefaultDataTypes.TagsType({
       max: 6,
       suggestions: CUSTOMER_SEGMENTS,
@@ -263,6 +292,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.source",
+    group: "relationship",
     type: new DefaultDataTypes.SelectType({ items: [...LEAD_SOURCES] }),
     filterable: true,
     defaultValue: "website",
@@ -275,6 +305,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.isVip",
+    group: "relationship",
     type: new DefaultDataTypes.BooleanType({
       label: "$helio.crm.customers.vipSwitch",
     }),
@@ -296,6 +327,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.owner",
+    group: "relationship",
     type: new DefaultDataTypes.RelationType({
       dataApiController: teamController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
@@ -313,6 +345,7 @@ class customerDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.website",
+    group: "contact",
     type: new DefaultDataTypes.UrlType({ placeholder: "https://…" }),
     isVisible: false,
   })
@@ -339,6 +372,8 @@ class customerDataAPI extends DataController(
     filterable: true,
     display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
     size: 140,
+    // Stamped on creation: nothing to show in the new form.
+    readonlyBehavior: { new: ReadonlyBehaviorType.hidden },
   })
   @Access(AccessMode.ReadOnly)
   declare createdAt: Date;

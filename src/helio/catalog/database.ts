@@ -13,8 +13,8 @@ import { DEMO_SCHEMA_NAME } from "../../schema";
 import type { ProductRosterEntry } from "../shared/roster";
 import { buildProductCategories, buildProducts } from "./fixtures";
 
-const CATEGORIES_TABLE = "helio_product_categories";
-const PRODUCTS_TABLE = "helio_products";
+export const CATEGORIES_TABLE = "helio_product_categories";
+export const PRODUCTS_TABLE = "helio_products";
 
 export type ProductUnit = ProductRosterEntry["unit"];
 
@@ -71,7 +71,7 @@ export class Product extends Table.with(LocalizationModifier) {
   @Field("number") declare stock?: number;
   /** Reorder threshold; absent for services. */
   @Field("number") declare stockMin?: number;
-  /** A remote image URL (see the controller for why it is not an ImageType). */
+  /** An image URL: by default the product visual the backend draws (visuals.ts). */
   @Field("string") declare image?: string;
   @Field(["string"]) declare tags: string[];
   @Index() @Field("boolean") declare isActive: boolean;

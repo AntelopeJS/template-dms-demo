@@ -28,10 +28,11 @@
 					"vatAmount": "VAT",
 					"total": "Total (incl. VAT)",
 					"amountDue": "Amount due",
-					"paymentMethod": "Payment method"
+					"paymentMethod": "Payment method",
+					"remindedAt": "Last reminder"
 				},
 				"placeholders": {
-					"number": "F-2026-0201",
+					"number": "Assigned automatically (F-2026-…)",
 					"customer": "Choose a customer",
 					"project": "Link a project (optional)",
 					"quote": "Link a quote (optional)"
@@ -39,7 +40,93 @@
 				"detail": {
 					"paid": "Paid {date}",
 					"late": "{count} day late | {count} days late",
-					"due": "Due {date}"
+					"due": "Due {date}",
+					"lateReminded": "{count} day late · reminded {date} | {count} days late · reminded {date}"
+				},
+				"caption": "Invoices",
+				"search": "Search by invoice number",
+				"download": "Download the invoice",
+				"deleted": "Invoice deleted | {count} invoices deleted",
+				"views": {
+					"dueThisWeek": "Due this week",
+					"overdue30": "Overdue > 30 days",
+					"paidRecently": "Paid in the last 30 days"
+				},
+				"form": {
+					"new": "New invoice",
+					"newDescription": "Leave the number empty: the next one of the year is assigned on save.",
+					"edit": "Edit invoice",
+					"details": "Invoice details"
+				},
+				"footer": {
+					"count": "{count} invoice | {count} invoices",
+					"invoiced": "Invoiced",
+					"due": "Amount due",
+					"overdue": "Overdue"
+				},
+				"empty": {
+					"title": "No invoice yet",
+					"description": "Invoices issued for deposits, balances and service calls appear here.",
+					"filteredTitle": "No invoice matches",
+					"filteredDescription": "Try another status, view or search."
+				},
+				"markPaid": {
+					"action": "Mark as paid",
+					"title": "Record the payment",
+					"description": "The invoice is marked paid and nothing remains due. The customer leaves the reminder schedule.",
+					"confirm": "Record payment",
+					"paidAt": "Payment date",
+					"paidAtHint": "Leave empty for today.",
+					"success": "Payment recorded",
+					"futureDate": "A payment cannot be dated in the future.",
+					"methodRequired": "Choose how the customer paid.",
+					"nothing": "None of these invoices is waiting for a payment."
+				},
+				"remind": {
+					"action": "Send reminder",
+					"title": "Send a payment reminder",
+					"description": "The customer receives a reminder with the invoice and the payment details.",
+					"confirm": "Send reminder",
+					"impactEmail": "Sent to the customer's billing e-mail address",
+					"impactStamp": "The reminder date is recorded on the invoice",
+					"success": "Reminder sent",
+					"nothing": "Only overdue invoices can be reminded."
+				}
+			},
+			"nav": {
+				"invoices": "Invoices"
+			},
+			"page": {
+				"description": "Issued invoices, payments received and collection of overdue amounts."
+			},
+			"quickActions": {
+				"newInvoice": "New invoice",
+				"overdue": "Overdue invoices"
+			},
+			"banner": {
+				"overdue": "{count} invoice overdue · {amount} to collect | {count} invoices overdue · {amount} to collect",
+				"action": "See overdue invoices"
+			},
+			"kpis": {
+				"label": "Receivables at a glance",
+				"amount": "{amount}",
+				"outstanding": {
+					"label": "Outstanding",
+					"detail": "No invoice awaiting payment | {count} invoice awaiting payment | {count} invoices awaiting payment"
+				},
+				"overdue": {
+					"label": "Overdue",
+					"detail": "{count} invoice · oldest {days} days late | {count} invoices · oldest {days} days late",
+					"none": "Nothing overdue"
+				},
+				"collected": {
+					"label": "Collected this month",
+					"detail": "No payment yet | {count} payment received | {count} payments received"
+				},
+				"dso": {
+					"label": "DSO",
+					"value": "{count} day | {count} days",
+					"detail": "Customers pay {days} days after the invoice on average"
 				}
 			}
 		}

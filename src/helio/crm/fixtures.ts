@@ -21,6 +21,7 @@ import {
   type Locality,
   localityIndex,
   MAIL_DOMAINS,
+  NEXT_STEPS,
   RESIDENTIAL_NOTES,
 } from "./seed-data";
 
@@ -51,6 +52,10 @@ export interface DealSeed {
   stage: DealStage;
   amount: number;
   probability: number;
+  /** amount × probability, stored so the pipeline lists and sums it. */
+  weightedAmount: number;
+  /** Neither won nor lost, stored so the pipeline views filter on it. */
+  isOpen: boolean;
   source: LeadSource;
   expectedClose: Date;
   lastActivityAt: Date;
@@ -254,37 +259,6 @@ const OPEN_STAGE_COUNTS: ReadonlyArray<readonly [DealStage, number]> = [
   ["lost", 16],
 ];
 
-const NEXT_STEPS: Record<DealStage, readonly string[]> = {
-  lead: [
-    "Premier appel de qualification",
-    "Envoyer la brochure et une simulation",
-    "Rappeler après les congés",
-  ],
-  qualified: [
-    "Planifier la visite technique",
-    "Récupérer les factures d'électricité",
-    "Vérifier l'orientation de la toiture",
-  ],
-  site_visit: [
-    "Visite technique à confirmer",
-    "Rédiger le rapport de visite",
-    "Contrôler la charpente",
-  ],
-  proposal: [
-    "Envoyer l'offre",
-    "Relancer sur l'offre envoyée",
-    "Présenter l'offre au gérant",
-  ],
-  negotiation: [
-    "Revoir la remise sur la batterie",
-    "Attendre l'accord de la banque",
-    "Valider l'échéancier de paiement",
-    "Faire signer le bon de commande",
-  ],
-  won: ["Transmis à la planification", "Planifier le chantier"],
-  lost: [],
-};
-
 const LOST_REASON_VALUES = [
   "price",
   "competitor",
@@ -365,6 +339,8 @@ function baseDeal({ index, customer, stage, rng }: DealDraft): DealSeed {
     stage,
     amount,
     probability: STAGE_PROBABILITY[stage],
+    weightedAmount: 0,
+    isOpen: stage !== "won" && stage !== "lost",
     source: rng.chance(0.8) ? customer.source : rng.weighted(SOURCES),
     expectedClose: daysFromNow(30),
     lastActivityAt: daysFromNow(-1),
@@ -436,7 +412,7 @@ export function buildDeals(): DealSeed[] {
       Array.from({ length: count }, () => stage),
     ),
   );
-  dealCache = Array.from({ length: COUNTS.deals }, (_, offset) => {
+  const drafts = Array.from({ length: COUNTS.deals }, (_, offset) => {
     const index = offset + 1;
     const rng = createRng(5000 + index);
     if (index <= WON_DEAL_COUNT) {
@@ -463,6 +439,11 @@ export function buildDeals(): DealSeed[] {
       rng,
     });
   });
+  // Weighted once the probability is final: open deals nudge theirs.
+  dealCache = drafts.map((deal) => ({
+    ...deal,
+    weightedAmount: cents(deal.amount * deal.probability),
+  }));
   return dealCache;
 }
 

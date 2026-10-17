@@ -18,6 +18,7 @@ import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/defa
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   Column,
+  ColumnGroup,
   DefaultDisplays,
   Exported,
   Select,
@@ -98,7 +99,23 @@ const SKILL_SUGGESTIONS = [
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
+// The groups split the generated add/edit form into three titled parts.
 @RegisterDataController()
+@ColumnGroup("identity", {
+  label: "$helio.team.groups.identity.label",
+  description: "$helio.team.groups.identity.description",
+  order: 0,
+})
+@ColumnGroup("assignment", {
+  label: "$helio.team.groups.assignment.label",
+  description: "$helio.team.groups.assignment.description",
+  order: 1,
+})
+@ColumnGroup("profile", {
+  label: "$helio.team.groups.profile.label",
+  description: "$helio.team.groups.profile.description",
+  order: 2,
+})
 class teamDataAPI extends DataController(
   TeamMember,
   TableViewRoutes.All,
@@ -121,6 +138,7 @@ class teamDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.team.columns.name",
+    group: "identity",
     type: new DefaultDataTypes.StringType({
       placeholder: "$helio.team.placeholders.name",
       maxLength: 80,
@@ -141,6 +159,7 @@ class teamDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.team.columns.email",
+    group: "identity",
     type: new DefaultDataTypes.EmailType({
       placeholder: "$helio.team.placeholders.email",
     }),
@@ -155,6 +174,7 @@ class teamDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.team.columns.phone",
+    group: "identity",
     type: new DefaultDataTypes.PhoneType({
       placeholder: "+32 470 00 00 00",
     }),
@@ -169,6 +189,7 @@ class teamDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.team.columns.role",
+    group: "assignment",
     type: new DefaultDataTypes.SelectType({ items: [...TEAM_ROLES] }),
     filterable: true,
     defaultValue: "technician",
@@ -190,6 +211,7 @@ class teamDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.team.columns.region",
+    group: "assignment",
     type: new DefaultDataTypes.SelectType({ items: [...TEAM_REGIONS] }),
     filterable: true,
     defaultValue: "liege",
@@ -201,6 +223,7 @@ class teamDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.team.columns.online",
+    group: "assignment",
     type: new StatusType({
       onlineLabel: "$helio.team.status.online",
       offlineLabel: "$helio.team.status.offline",
@@ -217,6 +240,7 @@ class teamDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.team.columns.skills",
+    group: "profile",
     type: new DefaultDataTypes.TagsType({
       max: 8,
       suggestions: SKILL_SUGGESTIONS,
@@ -234,6 +258,7 @@ class teamDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.team.columns.avatar",
+    group: "identity",
     type: new DefaultDataTypes.UrlType({
       placeholder: "https://…",
     }),
@@ -246,6 +271,7 @@ class teamDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.team.columns.color",
+    group: "assignment",
     type: new DefaultDataTypes.ColorType(),
     defaultValue: "#f59e0b",
     isVisible: false,
@@ -254,21 +280,27 @@ class teamDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare color: string;
 
+  // The plain date format, with its year: the "day" style of
+  // RelativeDateDisplay drops the year, which reads wrong for a hire date
+  // years back.
   @Listable()
   @Sortable()
   @Exported()
   @Column({
     name: "$helio.team.columns.hiredAt",
+    group: "assignment",
     type: new DefaultDataTypes.DateType(),
     filterable: true,
-    display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
   declare hiredAt: Date;
 
+  // Listable so the expandable rows of the team page can show it.
+  @Listable()
   @Column({
     name: "$helio.team.columns.bio",
+    group: "profile",
     type: new DefaultDataTypes.StringType({
       textarea: true,
       rows: 3,

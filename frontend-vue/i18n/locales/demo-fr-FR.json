@@ -3,7 +3,6 @@
 		"nav": {
 			"home": "Accueil",
 			"components": "Composants",
-			"demoApp": "App démo",
 			"form": "Form",
 			"dashboard": "Dashboard",
 			"tableView": "TableView",
@@ -11,14 +10,11 @@
 			"grid": "Grid",
 			"stack": "Stack",
 			"placeholder": "Placeholder",
-			"custom": "CustomComponent",
-			"users": "Utilisateurs",
-			"projects": "Projets",
-			"tasks": "Tâches"
+			"custom": "CustomComponent"
 		},
 		"pages": {
 			"home": {
-				"description": "Ce qu'est ce template et ce que vous y trouverez"
+				"description": "Une démonstration du DMS AntelopeJS : Helio, le template et par où commencer"
 			},
 			"form": {
 				"description": "Formulaire avec groupes de champs, validation obligatoire et tous les types de données : texte, mot de passe, couleur, adresse, cascader, relation, fichier…"
@@ -43,15 +39,6 @@
 			},
 			"custom": {
 				"description": "Un composant Vue défini par le projet, livré via un module frontend local et rendu avec CustomComponent"
-			},
-			"users": {
-				"description": "Les personnes de l'app démo, utilisées comme cible de relation par les tâches"
-			},
-			"projects": {
-				"description": "Les projets de l'app démo, utilisés comme cible de relation par les tâches"
-			},
-			"tasks": {
-				"description": "Tâches liées à un projet et à un responsable, affichées en tableau kanban groupé par statut (retour au tableau possible)"
 			}
 		},
 		"form": {
@@ -235,136 +222,100 @@
 				"message": "Il vit dans frontend-vue/app/components/Callout.vue, est livré par AddFrontendModule et référencé par nom avec CustomComponent(\"demo-callout\")."
 			}
 		},
-		"readme": {
-			"hero": {
-				"title": "Template de démo AntelopeJS DMS",
-				"subtitle": "Un DMS prêt à explorer qui câble tous les modules, un catalogue de composants et une petite application de démo — le tout piloté par un minuscule module TypeScript."
+		"home": {
+			"intro": {
+				"title": "Ce tableau de bord est une démonstration du DMS AntelopeJS",
+				"description": "Helio, dans la barre latérale, est un installateur photovoltaïque liégeois fictif. Tout son back-office — pipeline commercial, devis, clients, catalogue, chantiers, service après-vente en direct, équipe, factures, supervision du parc en direct, paramètres et tableau de bord — est construit uniquement avec les blocs génériques du DMS, déclarés en TypeScript côté backend.",
+				"docs": "Lire la documentation",
+				"open": "Ouvrir Helio"
 			},
-			"stack": {
-				"antelope": "AntelopeJS",
-				"vue": "Frontend Vue",
-				"mongodb": "MongoDB",
-				"typescript": "TypeScript"
-			},
-			"sections": {
-				"components": {
-					"title": "Catalogue de composants",
-					"description": "Une page par composant intégré du DMS, chacune montrant son exemple le plus complet.",
-					"items": {
-						"form": "Formulaires avec groupes et validation",
-						"dashboard": "Un dashboard sensible à la période avec graphiques",
-						"tableview": "Un TableView CRUD complet",
-						"layout": "Mises en page Grid, Stack, Tab",
-						"custom": "Vos propres composants Vue"
-					}
+			"figures": {
+				"label": "Helio en chiffres",
+				"pages": {
+					"eyebrow": "Pages du menu Helio",
+					"detail": "Plus des pages de détail et de formulaire masquées"
 				},
-				"demoApp": {
-					"title": "App démo",
-					"description": "Une petite app de gestion de projet adossée à de vraies collections Mongo.",
-					"items": {
-						"users": "Utilisateurs avec rôles et avatars",
-						"projects": "Projets avec statut et budget",
-						"tasks": "Tâches liées aux deux par relations"
-					}
+				"collections": {
+					"eyebrow": "Collections MongoDB",
+					"detail": "Alimentées par des données de démo cohérentes"
+				},
+				"controllers": {
+					"eyebrow": "Contrôleurs de données",
+					"detail": "Routes CRUD générées à partir de classes décorées"
+				},
+				"vue": {
+					"eyebrow": "Lignes de Vue dans Helio",
+					"detail": "Chaque écran est fait de blocs génériques"
 				},
 				"modules": {
-					"title": "Modules DMS",
-					"description": "Chaque module fonctionnel est installé et activé dans ce template.",
-					"items": {
-						"api": "API — endpoints REST",
-						"database": "Database — explorateur Mongo",
-						"automation": "Automation — workflows",
-						"saas": "SaaS — facturation Stripe",
-						"ai": "AI — assistants",
-						"lang": "Lang — traductions",
-						"builder": "Builder — ressources visuelles",
-						"media": "Médias — médiathèque partagée"
-					}
+					"eyebrow": "Modules fonctionnels",
+					"detail": "Installés dans antelope.config.ts"
 				}
 			},
-			"how": {
-				"title": "Comment ça marche",
-				"description": "Tout ce que vous voyez est déclaré par le module local dans src/ — les pages sont des classes TypeScript, les données vivent dans MongoDB et les widgets personnalisés sont livrés via un module frontend Vue local.",
-				"steps": {
-					"pages": {
-						"title": "1. Déclarer les pages",
-						"description": "Les classes PageController dans src/ enregistrent pages, catégories et composants."
-					},
-					"data": {
-						"title": "2. Brancher les données",
-						"description": "Jeux de données statiques, endpoints API de démo ou tables Mongo avec fixtures."
-					},
-					"frontend": {
-						"title": "3. Étendre le frontend",
-						"description": "Livrez composants Vue et traductions via le module frontend-vue local."
-					}
-				}
-			}
-		},
-		"app": {
-			"users": {
-				"caption": "Utilisateurs",
-				"roles": {
-					"admin": "Admin",
-					"manager": "Manager",
-					"member": "Membre"
+			"helio": {
+				"title": "Helio, page par page",
+				"description": "Une carte par page du menu Helio, lue dans le menu lui-même."
+			},
+			"antelope": {
+				"title": "Ce qu'AntelopeJS a apporté",
+				"description": "Ce que le framework et le DMS ont pris en charge, pour qu'Helio n'ait plus qu'à décrire son métier.",
+				"pages": {
+					"title": "Des pages déclarées côté backend",
+					"description": "Chaque écran est une classe PageController dont les champs statiques sont des blocs : tableaux, formulaires, graphiques, cartes. Le frontend commun les affiche : Helio ne contient aucun fichier Vue."
 				},
-				"columns": {
-					"name": "Nom",
-					"email": "Email",
-					"phone": "Téléphone",
-					"role": "Rôle",
-					"avatar": "Avatar",
-					"active": "Actif",
-					"hiredAt": "Embauché le"
+				"data": {
+					"title": "Des contrôleurs de données",
+					"description": "Une classe décorée posée sur une table génère les routes de liste, lecture, création, modification, suppression, export et archivage, avec les colonnes, filtres et formulaires correspondants."
+				},
+				"permissions": {
+					"title": "Des permissions par bloc et par action",
+					"description": "Chaque page, bloc et action devient une ligne de l'éditeur de rôles, sans code supplémentaire : un rôle voit exactement ce qui lui est accordé."
+				},
+				"realtime": {
+					"title": "Temps réel et pages en direct",
+					"description": "Le service après-vente et la supervision du parc se mettent à jour d'eux-mêmes quand le backend publie des événements sur des canaux temps réel."
+				},
+				"i18n": {
+					"title": "Traductions",
+					"description": "Chaque texte est une clé i18n résolue dans la langue du lecteur : passez de l'anglais au français depuis le menu utilisateur."
+				},
+				"modules": {
+					"title": "Modules fonctionnels",
+					"description": "Consoles API et base de données, automatisation, facturation SaaS, assistant IA, traductions, éditeur de pages, médiathèque, statistiques marketing et e-mailing : une entrée chacun dans antelope.config.ts."
 				}
 			},
-			"projects": {
-				"caption": "Projets",
-				"statuses": {
-					"planned": "Planifié",
-					"active": "Actif",
-					"onHold": "En pause",
-					"completed": "Terminé"
-				},
-				"columns": {
-					"name": "Nom",
-					"description": "Description",
-					"status": "Statut",
-					"startDate": "Date de début",
-					"endDate": "Date de fin",
-					"budget": "Budget",
-					"progress": "Avancement"
+			"modules": {
+				"title": "Modules installés",
+				"description": "Chacun ajoute ses propres pages sous Modules ; retirez son entrée dans antelope.config.ts pour vous en passer.",
+				"items": {
+					"api": "Console API",
+					"database": "Console base de données",
+					"automation": "Automatisation",
+					"saas": "SaaS et facturation",
+					"ai": "Assistant IA",
+					"lang": "Traductions",
+					"media": "Médiathèque",
+					"marketing": "Statistiques marketing",
+					"mailing": "E-mailing",
+					"builder": "Éditeur de pages"
 				}
 			},
-			"tasks": {
-				"caption": "Tâches",
-				"statuses": {
-					"pending": "En attente",
-					"inProgress": "En cours",
-					"completed": "Terminée",
-					"cancelled": "Annulée"
-				},
-				"priorities": {
-					"low": "Basse",
-					"medium": "Moyenne",
-					"high": "Haute"
-				},
-				"tabs": {
-					"highPriority": "Priorité haute"
-				},
-				"columns": {
-					"name": "Nom",
-					"description": "Description",
-					"status": "Statut",
-					"priority": "Priorité",
-					"project": "Projet",
-					"assignee": "Responsable",
-					"dueDate": "Échéance",
-					"estimate": "Estimation (h)",
-					"progress": "Avancement",
-					"done": "Terminé"
-				}
+			"start": {
+				"title": "Pour commencer",
+				"description": "D'une instance vierge à vos propres pages.",
+				"admin": "Créer le premier administrateur",
+				"helio": "Explorer Helio",
+				"helioLink": "Tableau de bord Helio",
+				"search": "Rechercher pages et actions",
+				"builder": "Modifier la page courante dans l'éditeur",
+				"components": "Un exemple par bloc",
+				"componentsLink": "Composants",
+				"simulators": "Arrêter les simulateurs en direct"
+			},
+			"code": {
+				"title": "Lire le code",
+				"description": "Un extrait du service après-vente en direct : la page est une classe, chaque champ statique un bloc avec ses options.",
+				"docs": "Pages et composants"
 			}
 		}
 	}

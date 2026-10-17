@@ -12,6 +12,7 @@ import { buildTickets } from "../service/fixtures";
 import { teamIdsByRole } from "../shared/roster";
 import { createRng, DAY_MS, padId, type Rng } from "../shared/seed";
 import type { Activity, ActivityType } from "./database";
+import { HELIO_PAGES } from "./links";
 
 export type ActivitySeed = Pick<
   Activity,
@@ -27,15 +28,16 @@ const OFFICE = teamIdsByRole("office");
 const TECHNICIANS = teamIdsByRole("technician");
 
 /**
- * Dashboard paths the feed links to, by record kind. Kept in one place so the
- * pages (wave B) and these links agree; `{id}` is the record's `_id`.
+ * Dashboard paths the feed links to, by record kind. Built on HELIO_PAGES so
+ * the pages and these links agree; `{id}` is the record's `_id`, and
+ * `?record=` opens it in the list page's deep-linked drawer or side panel.
  */
 export const HELIO_LINKS = {
-  deal: "/helio/sales/pipeline?record={id}",
-  quote: "/helio/sales/quotes?record={id}",
-  project: "/helio/operations/projects/{id}",
-  ticket: "/helio/operations/service-desk?record={id}",
-  invoice: "/helio/invoices?record={id}",
+  deal: `${HELIO_PAGES.pipeline}?record={id}`,
+  quote: `${HELIO_PAGES.quotes}?record={id}`,
+  project: `${HELIO_PAGES.project}/{id}`,
+  ticket: `${HELIO_PAGES.service}?record={id}`,
+  invoice: `${HELIO_PAGES.invoices}?record={id}`,
 } as const;
 
 const TONES: Record<ActivityType, Tone> = {

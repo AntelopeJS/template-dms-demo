@@ -36,6 +36,9 @@ export class Invoice extends Table {
   /** What is still to be paid: 0 once paid or cancelled. */
   @Field("number") declare amountDue: number;
   @Field("string") declare paymentMethod: PaymentMethod;
+  /** Last payment reminder sent for an overdue invoice, and how many so far. */
+  @Field("date") declare remindedAt?: Date;
+  @Field("number") declare reminderCount?: number;
   @Index() @Field("boolean") declare isArchived: boolean;
 }
 

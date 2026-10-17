@@ -3,7 +3,6 @@
 		"nav": {
 			"home": "Home",
 			"components": "Components",
-			"demoApp": "Demo app",
 			"form": "Form",
 			"dashboard": "Dashboard",
 			"tableView": "TableView",
@@ -11,14 +10,11 @@
 			"grid": "Grid",
 			"stack": "Stack",
 			"placeholder": "Placeholder",
-			"custom": "CustomComponent",
-			"users": "Users",
-			"projects": "Projects",
-			"tasks": "Tasks"
+			"custom": "CustomComponent"
 		},
 		"pages": {
 			"home": {
-				"description": "What this template is and what you will find inside"
+				"description": "A demonstration of the AntelopeJS DMS: Helio, the template, and where to start"
 			},
 			"form": {
 				"description": "Form with grouped fields, required validation and every data type: text, password, color, address, cascader, relation, file…"
@@ -43,15 +39,6 @@
 			},
 			"custom": {
 				"description": "A project-defined Vue component shipped by a local frontend module and rendered with CustomComponent"
-			},
-			"users": {
-				"description": "The people of the demo app, used as relation target by the tasks"
-			},
-			"projects": {
-				"description": "The projects of the demo app, used as relation target by the tasks"
-			},
-			"tasks": {
-				"description": "Tasks linked to a project and an assignee, displayed as a kanban board grouped by status (switchable back to the table)"
 			}
 		},
 		"form": {
@@ -235,136 +222,100 @@
 				"message": "It lives in frontend-vue/app/components/Callout.vue, is shipped by AddFrontendModule and referenced by name with CustomComponent(\"demo-callout\")."
 			}
 		},
-		"readme": {
-			"hero": {
-				"title": "AntelopeJS DMS demo template",
-				"subtitle": "A ready-to-explore DMS wiring every feature module, a component catalog and a small demo application — all driven by a tiny TypeScript module."
+		"home": {
+			"intro": {
+				"title": "This dashboard is a demonstration of the AntelopeJS DMS",
+				"description": "Helio, in the sidebar, is a fictional solar installer from Liège. Its whole back-office — sales pipeline, quotes, customers, catalog, projects, live service desk, team, invoices, live fleet monitoring, settings and dashboard — is built only from the DMS's generic blocks, declared in TypeScript on the backend.",
+				"docs": "Read the docs",
+				"open": "Open Helio"
 			},
-			"stack": {
-				"antelope": "AntelopeJS",
-				"vue": "Vue frontend",
-				"mongodb": "MongoDB",
-				"typescript": "TypeScript"
-			},
-			"sections": {
-				"components": {
-					"title": "Components catalog",
-					"description": "One page per built-in DMS component, each showing its most complete example.",
-					"items": {
-						"form": "Forms with groups and validation",
-						"dashboard": "A period-aware dashboard with charts",
-						"tableview": "A full CRUD TableView",
-						"layout": "Grid, Stack, Tab layouts",
-						"custom": "Your own Vue components"
-					}
+			"figures": {
+				"label": "Helio in figures",
+				"pages": {
+					"eyebrow": "Pages in the Helio menu",
+					"detail": "Plus hidden detail and form pages"
 				},
-				"demoApp": {
-					"title": "Demo app",
-					"description": "A small project-management app backed by real Mongo collections.",
-					"items": {
-						"users": "Users with roles and avatars",
-						"projects": "Projects with status and budget",
-						"tasks": "Tasks linked to both by relations"
-					}
+				"collections": {
+					"eyebrow": "MongoDB collections",
+					"detail": "Seeded with coherent demo data"
+				},
+				"controllers": {
+					"eyebrow": "Data controllers",
+					"detail": "CRUD routes generated from decorated classes"
+				},
+				"vue": {
+					"eyebrow": "Lines of Vue in Helio",
+					"detail": "Every screen is made of generic blocks"
 				},
 				"modules": {
-					"title": "DMS modules",
-					"description": "Every feature module is installed and enabled in this template.",
-					"items": {
-						"api": "API — REST endpoints",
-						"database": "Database — Mongo browser",
-						"automation": "Automation — workflows",
-						"saas": "SaaS — Stripe billing",
-						"ai": "AI — assistants",
-						"lang": "Lang — translations",
-						"builder": "Builder — visual resources",
-						"media": "Media — shared asset library"
-					}
+					"eyebrow": "Feature modules",
+					"detail": "Installed in antelope.config.ts"
 				}
 			},
-			"how": {
-				"title": "How it works",
-				"description": "Everything you see is declared by the local module in src/ — pages are TypeScript classes, data lives in MongoDB, and custom widgets ship through a local Vue frontend module.",
-				"steps": {
-					"pages": {
-						"title": "1. Declare pages",
-						"description": "PageController classes in src/ register pages, categories and components."
-					},
-					"data": {
-						"title": "2. Plug data",
-						"description": "Static datasets, demo API endpoints or Mongo tables with fixtures."
-					},
-					"frontend": {
-						"title": "3. Extend the frontend",
-						"description": "Ship Vue components and translations through the local frontend-vue module."
-					}
-				}
-			}
-		},
-		"app": {
-			"users": {
-				"caption": "Users",
-				"roles": {
-					"admin": "Admin",
-					"manager": "Manager",
-					"member": "Member"
+			"helio": {
+				"title": "Helio, page by page",
+				"description": "One card per page of the Helio menu, read from the menu itself."
+			},
+			"antelope": {
+				"title": "What AntelopeJS brought",
+				"description": "What the framework and the DMS took care of, so that Helio only had to describe its business.",
+				"pages": {
+					"title": "Pages declared on the backend",
+					"description": "Each screen is a PageController class whose static fields are blocks: tables, forms, charts, cards. The shared frontend renders them, so Helio ships no Vue."
 				},
-				"columns": {
-					"name": "Name",
-					"email": "Email",
-					"phone": "Phone",
-					"role": "Role",
-					"avatar": "Avatar",
-					"active": "Active",
-					"hiredAt": "Hired on"
+				"data": {
+					"title": "Data controllers",
+					"description": "A decorated class over a table generates the list, read, create, edit, delete, export and archive routes, with the matching columns, filters and forms."
+				},
+				"permissions": {
+					"title": "Permissions per block and action",
+					"description": "Every page, block and action is a line of the roles editor, with no extra code: a role sees exactly what it is granted."
+				},
+				"realtime": {
+					"title": "Realtime and live pages",
+					"description": "The service desk and fleet monitoring refresh themselves as the backend publishes events on realtime topics."
+				},
+				"i18n": {
+					"title": "Translations",
+					"description": "Every text is an i18n key resolved in the reader's language: switch between English and French from the user menu."
+				},
+				"modules": {
+					"title": "Feature modules",
+					"description": "API and database consoles, automation, SaaS billing, AI assistant, translations, page builder, media library, marketing analytics and mailing: one entry each in antelope.config.ts."
 				}
 			},
-			"projects": {
-				"caption": "Projects",
-				"statuses": {
-					"planned": "Planned",
-					"active": "Active",
-					"onHold": "On hold",
-					"completed": "Completed"
-				},
-				"columns": {
-					"name": "Name",
-					"description": "Description",
-					"status": "Status",
-					"startDate": "Start date",
-					"endDate": "End date",
-					"budget": "Budget",
-					"progress": "Progress"
+			"modules": {
+				"title": "Installed modules",
+				"description": "Each one adds its own pages under Modules; remove its entry in antelope.config.ts to drop it.",
+				"items": {
+					"api": "API console",
+					"database": "Database console",
+					"automation": "Automation",
+					"saas": "SaaS and billing",
+					"ai": "AI assistant",
+					"lang": "Translations",
+					"media": "Media library",
+					"marketing": "Marketing analytics",
+					"mailing": "Mailing",
+					"builder": "Page builder"
 				}
 			},
-			"tasks": {
-				"caption": "Tasks",
-				"statuses": {
-					"pending": "Pending",
-					"inProgress": "In progress",
-					"completed": "Completed",
-					"cancelled": "Cancelled"
-				},
-				"priorities": {
-					"low": "Low",
-					"medium": "Medium",
-					"high": "High"
-				},
-				"tabs": {
-					"highPriority": "High priority"
-				},
-				"columns": {
-					"name": "Name",
-					"description": "Description",
-					"status": "Status",
-					"priority": "Priority",
-					"project": "Project",
-					"assignee": "Assignee",
-					"dueDate": "Due date",
-					"estimate": "Estimate (h)",
-					"progress": "Progress",
-					"done": "Done"
-				}
+			"start": {
+				"title": "Getting started",
+				"description": "From a fresh instance to your own pages.",
+				"admin": "Create the first administrator",
+				"helio": "Explore Helio",
+				"helioLink": "Helio dashboard",
+				"search": "Search pages and actions",
+				"builder": "Edit the current page in the builder",
+				"components": "One example per block",
+				"componentsLink": "Components",
+				"simulators": "Stop the live simulators"
+			},
+			"code": {
+				"title": "Read the code",
+				"description": "An excerpt of the live service desk: the page is a class, each static field a block with its options.",
+				"docs": "Pages and components"
 			}
 		}
 	}

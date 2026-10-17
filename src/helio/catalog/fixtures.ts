@@ -7,6 +7,7 @@ import {
   PRODUCT_ROSTER,
   type ProductRosterEntry,
 } from "../shared/roster";
+import { productVisualUrl } from "./visuals";
 
 interface Localized {
   en: string;
@@ -56,15 +57,6 @@ interface ProductDetail {
   warrantyYears: number;
   isActive?: boolean;
 }
-
-// One background colour per family, so the placeholder images read as a range.
-const FAMILY_COLORS: Record<string, string> = {
-  "cat-panels": "1e3a8a",
-  "cat-inverters": "065f46",
-  "cat-storage": "7c2d12",
-  "cat-ev": "4c1d95",
-  "cat-services": "334155",
-};
 
 const PANEL = (watts: number, extra: Localized): Localized => ({
   en: `Monocrystalline ${watts} Wp module, 25-year linear performance warranty. ${extra.en}`,
@@ -313,14 +305,6 @@ function familyOf(categoryId: string): string {
   return leaf?.parent ?? categoryId;
 }
 
-// A neutral placeholder image naming the product, served by placehold.co:
-// remote, deterministic, and readable on a product card.
-function placeholderImage(product: ProductRosterEntry): string {
-  const color = FAMILY_COLORS[familyOf(product.category)] ?? "334155";
-  const text = encodeURIComponent(product.sku);
-  return `https://placehold.co/480x360/${color}/ffffff/png?text=${text}`;
-}
-
 export function buildProducts(): ProductSeed[] {
   return PRODUCT_ROSTER.map((product, index) => {
     const detail = DETAILS[product.id];
@@ -336,7 +320,8 @@ export function buildProducts(): ProductSeed[] {
       cost: Math.round(product.price * detail.costRatio * 100) / 100,
       power: product.power,
       unit: product.unit,
-      image: placeholderImage(product),
+      // Drawn by the backend (visuals.ts): no network, same on every machine.
+      image: productVisualUrl(familyOf(product.category), product.sku),
       tags: detail.tags,
       isActive: detail.isActive ?? true,
       displayOrder: (index + 1) * 10,

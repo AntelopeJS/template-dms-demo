@@ -16,7 +16,7 @@
 			},
 			"placeholders": {
 				"name": "First and last name",
-				"email": "first.last@helio.example",
+				"email": "first.last{'@'}helio.example",
 				"skills": "Add a skill"
 			},
 			"roles": {
@@ -35,6 +35,98 @@
 			"status": {
 				"online": "Available",
 				"offline": "Unavailable"
+			},
+			"page": {
+				"name": "Team",
+				"description": "Who works at Helio, who is available today and how loaded each technician is."
+			},
+			"groups": {
+				"identity": {
+					"label": "Identity",
+					"description": "Name, contact details and photo."
+				},
+				"assignment": {
+					"label": "Role and region",
+					"description": "Where the member works and since when."
+				},
+				"profile": {
+					"label": "Profile",
+					"description": "Skills used to staff sites and the short bio shown to colleagues."
+				}
+			},
+			"stats": {
+				"label": "Team at a glance",
+				"headcount": "Headcount",
+				"headcount_detail": "{technicians} technicians · {sales} sales · {office} office & management",
+				"available": "Available now",
+				"available_detail": "Everyone is reachable | {count} member unavailable | {count} members unavailable",
+				"on_site": "Technicians on site",
+				"on_site_value": "{onSite} / {total}",
+				"on_site_detail": "No site running today | {count} site running today | {count} sites running today",
+				"per_tech": "Open tickets per technician",
+				"per_tech_detail": "Every open ticket is assigned | {count} open ticket unassigned | {count} open tickets unassigned"
+			},
+			"load": {
+				"tickets_title": "Service load",
+				"tickets_description": "Open tickets each person holds",
+				"tickets_detail": "Urgent: {urgent} · past SLA: {late}",
+				"tickets_empty": "No open ticket: the service desk is clear.",
+				"tickets_action": "Service desk",
+				"sites_title": "Site assignments",
+				"sites_description": "Running, in inspection or starting within 14 days",
+				"sites_detail": "Lead on {lead} · crew on {crew}",
+				"sites_empty": "No active project to staff.",
+				"sites_action": "Projects"
+			},
+			"capacity": {
+				"title": "Capacity today",
+				"description": "Field team, availability and ticket coverage",
+				"on_site": "Technicians on site",
+				"on_site_hint": "no site running | {count} site running | {count} sites running",
+				"availability": "Team availability",
+				"availability_hint": "everyone reachable | {count} unavailable | {count} unavailable",
+				"tickets": "Open tickets by holder",
+				"tickets_value": "no open ticket | {count} open | {count} open",
+				"tickets_technicians": "{count} with technicians",
+				"tickets_office": "{count} with the office",
+				"tickets_unassigned": "{count} unassigned"
+			},
+			"table": {
+				"caption": "Team members",
+				"search": "Search a name or an e-mail",
+				"count": "No member | {count} member | {count} members",
+				"summary_available": "Available",
+				"summary_technicians": "Technicians",
+				"expand_label": "Profile and contact",
+				"expand_bio": "About"
+			},
+			"views": {
+				"everyone": "Everyone",
+				"available": "Available now",
+				"by_role": "By role",
+				"newcomers": "Joined this year",
+				"directory": "Phone directory"
+			},
+			"empty": {
+				"first_title": "No team member yet",
+				"first_description": "Add your technicians, sales reps and office staff to plan sites and assign tickets.",
+				"filtered_title": "No member matches",
+				"filtered_description": "Try another role, region or name."
+			},
+			"form": {
+				"new_title": "New team member",
+				"new_description": "Their role and region decide which sites and tickets they receive.",
+				"edit_title": "Edit team member",
+				"edit_description": "Changes apply to plannings and ticket assignment straight away.",
+				"details_title": "Team member"
+			},
+			"delete": {
+				"title": "Remove {name} from the team?",
+				"description": "Their tickets and sites keep the history but will need a new owner.",
+				"confirm": "Remove member"
+			},
+			"quick": {
+				"add": "New team member"
 			}
 		}
 	}

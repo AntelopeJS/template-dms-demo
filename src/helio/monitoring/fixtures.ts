@@ -111,7 +111,26 @@ let sites: SiteSeed[] | undefined;
 export function buildSites(): SiteSeed[] {
   if (!sites) {
     const rng = createRng(0x9e110005);
-    sites = monitoredProjects().map((plan, at) => toSite(rng, plan, at + 1));
+    sites = distinctNames(
+      monitoredProjects().map((plan, at) => toSite(rng, plan, at + 1)),
+    );
   }
   return sites;
+}
+
+// A customer with a second installation (another building, an annex) must
+// not show two identical lines in the fleet table.
+function distinctNames(seeds: SiteSeed[]): SiteSeed[] {
+  const seen = new Map<string, number>();
+  return seeds.map((site) => {
+    const count = (seen.get(site.name) ?? 0) + 1;
+    seen.set(site.name, count);
+    if (count === 1) return site;
+    const suffix = site.name.startsWith("Centrale")
+      ? `bâtiment ${count}`
+      : count === 2
+        ? "annexe"
+        : `annexe ${count - 1}`;
+    return { ...site, name: `${site.name} · ${suffix}` };
+  });
 }

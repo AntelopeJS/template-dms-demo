@@ -17,5 +17,5 @@ it('registers every demo component under its Demo prefix', async () => {
 	})
 	const names = registerComponent.mock.calls.map(([name]) => name)
 	// The backend references these exact names through CustomComponent().
-	expect(names).toEqual(['DemoCallout', 'DemoReadme'])
+	expect(names).toEqual(['DemoCallout'])
 })
