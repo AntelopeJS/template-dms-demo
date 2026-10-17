@@ -78,7 +78,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: ">=0.4.1 <1.0.0",
+        version: ">=0.5.0 <1.0.0",
       },
     },
     "dms-saas": {
@@ -113,7 +113,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: ">=0.2.1 <1.0.0",
+        version: ">=0.3.0 <1.0.0",
       },
       config: {
         editable: true,
@@ -137,7 +137,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.5.1 <1.0.0",
+        version: ">=0.6.0 <1.0.0",
       },
       config: {
         // Track the dashboard itself, so Marketing shows how the demo is used.
@@ -148,7 +148,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.5.1 <1.0.0",
+        version: ">=0.6.0 <1.0.0",
       },
     },
 
