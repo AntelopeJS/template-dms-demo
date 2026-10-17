@@ -41,7 +41,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.9.3 <1.0.0",
+        version: ">=0.9.4 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -71,7 +71,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: ">=0.2.1 <1.0.0",
+        version: ">=0.2.2 <1.0.0",
       },
     },
     "dms-automation": {
@@ -102,7 +102,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: ">=0.4.0 <1.0.0",
+        version: ">=0.4.1 <1.0.0",
       },
       config: {
         // The sidecar runs on this host, so it reaches the API over loopback.
