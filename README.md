@@ -255,6 +255,12 @@ pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
 
+The backend uses TypeScript 7. The frontend installs the same compiler as
+`@typescript/native`, alongside `typescript` aliased to
+`@typescript/typescript6`: `typescript-eslint` still needs the TypeScript 6
+JavaScript API. This follows the [TypeScript migration guide](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0).
+Keep both packages until the parser supports the TypeScript 7 API.
+
 ### Verifying the frontend source
 
 `pnpm frontend:verify` builds and type-checks `frontend-vue` against the

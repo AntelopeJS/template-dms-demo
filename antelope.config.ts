@@ -41,7 +41,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.9.0 <1.0.0",
+        version: ">=0.9.3 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -64,28 +64,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: ">=0.1.7 <1.0.0",
+        version: ">=0.4.1 <1.0.0",
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: ">=0.0.14 <1.0.0",
+        version: ">=0.2.1 <1.0.0",
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: ">=0.2.6 <1.0.0",
+        version: ">=0.4.1 <1.0.0",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.3.14 <1.0.0",
+        version: ">=0.6.1 <1.0.0",
       },
       config: {
         stripe: {
@@ -102,7 +102,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: ">=0.1.6 <1.0.0",
+        version: ">=0.4.0 <1.0.0",
       },
       config: {
         // The sidecar runs on this host, so it reaches the API over loopback.
@@ -113,7 +113,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: ">=0.0.7 <1.0.0",
+        version: ">=0.2.1 <1.0.0",
       },
       config: {
         editable: true,
@@ -123,28 +123,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: ">=0.2.6 <1.0.0",
+        version: ">=0.4.1 <1.0.0",
       },
     },
     "dms-media": {
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: ">=0.2.0 <1.0.0",
+        version: ">=0.4.1 <1.0.0",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.3.3 <1.0.0",
+        version: ">=0.5.1 <1.0.0",
       },
     },
     "dms-mailing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.3.4 <1.0.0",
+        version: ">=0.5.1 <1.0.0",
       },
     },
 
@@ -152,7 +152,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "^1.4.1",
+        version: "^1.4.3",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -163,7 +163,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "^1.0.3",
+        version: "^1.0.4",
       },
       config: {
         secret: "dev",
@@ -175,7 +175,7 @@ export default defineConfig({
         package: "@antelopejs/api",
         // 1.3.0 publishes the API_* variables referenced above; 1.3.3 ends open
         // connections on stop, so Ctrl+C does not wait for a dashboard tab.
-        version: "^1.3.3",
+        version: "^1.3.5",
       },
       config: {
         servers: [
@@ -193,7 +193,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.1.6",
+        version: "^0.1.9",
       },
       config: {
         storagePath: ".antelope/file-storage",
@@ -206,7 +206,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.5",
+        version: "^0.0.6",
       },
       config: {
         ethereal: true,
