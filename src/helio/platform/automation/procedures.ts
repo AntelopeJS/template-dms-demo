@@ -1,6 +1,8 @@
 // The procedures Helio ships, as the builder would export them. Each one is
 // declared on every boot; the automation module creates it once, refreshes it
-// while nobody touched it, and keeps whatever a user changed since.
+// while nobody touched it, and keeps whatever a user changed since. Names and
+// descriptions are shown as written (the automation pages do not translate
+// them), so they are in French, the demo's language.
 
 import type { ProcedureDeclaration } from "@antelopejs/interface-dms-automation";
 import { graph, next, node, wire } from "./graph";
@@ -14,9 +16,9 @@ const MANAGERS = "helio.find-managers";
 
 const urgentTicketDispatch: ProcedureDeclaration = {
   id: "helio.urgent-ticket-dispatch",
-  name: "Urgent ticket → dispatch the on-call technician",
+  name: "Ticket urgent → attribuer au technicien de garde",
   description:
-    "When an urgent ticket arrives, the technician with the fewest open tickets takes it and the managers are notified.",
+    "À l'arrivée d'un ticket urgent, le technicien qui a le moins de tickets ouverts le prend en charge et les responsables sont prévenus.",
   enabled: true,
   graph: graph(
     [
@@ -46,9 +48,9 @@ const urgentTicketDispatch: ProcedureDeclaration = {
 
 const overdueInvoiceReminders: ProcedureDeclaration = {
   id: "helio.overdue-invoice-reminders",
-  name: "Weekdays 8:00 → remind invoices overdue for 14 days",
+  name: "En semaine à 8 h → relancer les factures en retard de 14 jours",
   description:
-    "Every weekday morning, e-mails a payment reminder for each invoice overdue for more than 14 days (at most one a week per invoice), then tells the managers.",
+    "Chaque matin de semaine, envoie par e-mail une relance de paiement pour chaque facture en retard de plus de 14 jours (au plus une par semaine et par facture), puis prévient les responsables.",
   enabled: true,
   graph: graph(
     [
@@ -89,8 +91,8 @@ const overdueInvoiceReminders: ProcedureDeclaration = {
 
 const monitoringAlertTicket: ProcedureDeclaration = {
   id: "helio.monitoring-alert-ticket",
-  name: "Monitoring alert webhook → open a service ticket",
-  description: `The monitoring platform posts { siteId, alert, severity, message } to ${MONITORING_WEBHOOK_PATH}: a ticket is opened on the site (one per open problem), urgent when the alert is critical.`,
+  name: "Alerte de supervision (webhook) → ouvrir un ticket SAV",
+  description: `La plateforme de supervision envoie { siteId, alert, severity, message } à ${MONITORING_WEBHOOK_PATH} : un ticket est ouvert sur le site (un par problème en cours), urgent si l'alerte est critique.`,
   enabled: true,
   graph: graph(
     [
@@ -111,9 +113,9 @@ const monitoringAlertTicket: ProcedureDeclaration = {
 
 const quoteAcceptedKickoff: ProcedureDeclaration = {
   id: "helio.quote-accepted-kickoff",
-  name: "Quote accepted → plan the kick-off",
+  name: "Devis accepté → planifier le lancement",
   description:
-    "When a customer signs a quote, a kick-off call is added to its project (or to the deal's next step) and the managers are notified.",
+    "Quand un client signe un devis, un appel de lancement est ajouté à son chantier (ou à la prochaine étape de l'affaire) et les responsables sont prévenus.",
   enabled: true,
   graph: graph(
     [
@@ -141,9 +143,9 @@ const quoteAcceptedKickoff: ProcedureDeclaration = {
 
 const installationConfirmations: ProcedureDeclaration = {
   id: "helio.installation-confirmations",
-  name: "Fridays 14:00 → confirm the coming installations",
+  name: "Le vendredi à 14 h → confirmer les prochaines installations",
   description:
-    "Every Friday afternoon, e-mails the customers whose installation starts within 14 days the date, the address and their team lead (once per project).",
+    "Chaque vendredi après-midi, envoie par e-mail aux clients dont l'installation commence dans les 14 jours la date, l'adresse et leur chef d'équipe (une fois par chantier).",
   enabled: true,
   graph: graph(
     [

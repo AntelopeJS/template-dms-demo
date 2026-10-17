@@ -139,11 +139,13 @@ export async function conversionKpi(period: Period): Promise<KpiPayload> {
   };
 }
 
+// Running total in cents, rounded to the euro once per point: its last point
+// is the revenue KPI to the euro (see sumByRange).
 function cumulative(values: readonly number[]): number[] {
-  let total = 0;
+  let cents = 0;
   return values.map((value) => {
-    total += value;
-    return roundAmount(total);
+    cents += Math.round(value * 100);
+    return roundAmount(cents / 100);
   });
 }
 

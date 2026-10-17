@@ -34,6 +34,11 @@ const sitePanel = KeyValueList({
   skeletonCount: 9,
 });
 
+// Sized to fit a 1440 px screen with the sidebar open: figures are written
+// by the server as composed texts ("1 712,2 kWh"), grouped and with their
+// unit, so a narrow cell never cuts a number, and headers are one short word
+// (their description says the rest). The city (a quick filter) and the last
+// report (under the pill of an offline inverter) start hidden.
 const columns = {
   name: {
     name: "$helio.monitoring.table.columns.site",
@@ -43,13 +48,14 @@ const columns = {
       subtitleField: "customerName",
     }),
     sortable: true,
-    size: 300,
+    size: 205,
     order: 1,
   },
   city: {
     name: "$helio.monitoring.table.columns.city",
     type: new DefaultDataTypes.StringType(),
     sortable: true,
+    isVisible: false,
     size: 130,
     order: 2,
   },
@@ -62,54 +68,64 @@ const columns = {
       subField: "statusDetail",
     }),
     sortable: true,
-    size: 170,
+    size: 150,
     order: 3,
   },
   powerKw: {
     name: "$helio.monitoring.table.columns.power",
     description: "$helio.monitoring.table.columns.powerDescription",
-    type: new DefaultDataTypes.NumberType({
-      suffix: "$helio.monitoring.units.kw",
-    }),
+    type: new DefaultDataTypes.NumberType(),
     display: new DefaultDisplays.TwoLineDisplay({
       primaryField: "powerLabel",
       subField: "powerShare",
     }),
     sortable: true,
-    size: 120,
+    size: 150,
     order: 4,
   },
   capacityKwp: {
     name: "$helio.monitoring.table.columns.capacity",
-    type: new DefaultDataTypes.NumberType({
-      suffix: "$helio.monitoring.units.kwp",
+    description: "$helio.monitoring.table.columns.capacityDescription",
+    type: new DefaultDataTypes.NumberType(),
+    display: new DefaultDisplays.TwoLineDisplay({
+      primaryField: "capacityLabel",
     }),
     sortable: true,
-    size: 120,
+    size: 135,
     order: 5,
   },
   periodKwh: {
     name: "$helio.monitoring.table.columns.period",
     description: "$helio.monitoring.table.columns.periodDescription",
-    type: new DefaultDataTypes.NumberType({
-      suffix: "$helio.monitoring.units.kwh",
+    type: new DefaultDataTypes.NumberType(),
+    display: new DefaultDisplays.TwoLineDisplay({
+      primaryField: "periodLabel",
     }),
+    sortable: true,
+    size: 125,
+    order: 6,
+  },
+  periodTrend: {
+    name: "$helio.monitoring.table.columns.trend",
+    description: "$helio.monitoring.table.columns.trendDescription",
+    type: new DefaultDataTypes.NumberType(),
     display: new DefaultDisplays.SparklineDisplay({
       field: "trend",
       tone: "warning",
     }),
-    sortable: true,
-    size: 170,
-    order: 6,
+    size: 115,
+    order: 7,
   },
   todayKwh: {
     name: "$helio.monitoring.table.columns.today",
-    type: new DefaultDataTypes.NumberType({
-      suffix: "$helio.monitoring.units.kwh",
+    description: "$helio.monitoring.table.columns.todayDescription",
+    type: new DefaultDataTypes.NumberType(),
+    display: new DefaultDisplays.TwoLineDisplay({
+      primaryField: "todayLabel",
     }),
     sortable: true,
-    size: 120,
-    order: 7,
+    size: 155,
+    order: 8,
   },
   lastSeenAt: {
     name: "$helio.monitoring.table.columns.lastSeen",
@@ -120,8 +136,9 @@ const columns = {
       pastTone: "muted",
     }),
     sortable: true,
-    size: 140,
-    order: 8,
+    isVisible: false,
+    size: 130,
+    order: 9,
   },
 };
 

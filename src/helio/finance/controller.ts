@@ -30,6 +30,7 @@ import { quoteController } from "../sales/controller";
 import { VAT_RESIDENTIAL } from "../sales/lines";
 import { cents, DAY_MS } from "../shared/seed";
 import { Invoice, InvoiceModel, type InvoiceStatus } from "./database";
+import { daysLate } from "./due";
 import { withInvoiceNumber } from "./numbering";
 
 // An invoice's life. Exported for the status tabs, nav badge and row rules.
@@ -385,10 +386,7 @@ class invoiceDataAPI extends DataController(
       };
     }
     if (status === "overdue" && dueAt) {
-      const late = Math.max(
-        1,
-        Math.floor((Date.now() - dueAt.getTime()) / DAY_MS),
-      );
+      const late = Math.max(1, daysLate(dueAt));
       const count = { type: "count", value: late } as const;
       return {
         text: remindedAt

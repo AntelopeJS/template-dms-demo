@@ -9,6 +9,7 @@ import { type ActivityEntry, logActivity } from "../dashboard/log";
 import { teamIdsByRole } from "../shared/roster";
 import { DAY_MS } from "../shared/seed";
 import { type Invoice, InvoiceModel, type PaymentMethod } from "./database";
+import { isPastDue } from "./due";
 
 const HTTP_BAD_REQUEST = 400;
 const HTTP_CONFLICT = 409;
@@ -163,22 +164,50 @@ export async function remindInvoices(ids: string[]): Promise<number> {
   return invoices.length;
 }
 
+/**
+ * Cancels the issued, unpaid invoices among `ids`: in Belgian practice an
+ * issued invoice is never deleted, a credit note cancels it. Nothing is left
+ * to pay; the number stays taken. Answers how many were cancelled.
+ */
+export async function cancelInvoices(ids: string[]): Promise<number> {
+  const invoices = await payableInvoices(ids);
+  if (invoices.length === 0) {
+    throw new HTTPResult(HTTP_CONFLICT, {
+      message: "$helio.finance.invoices.cancel.nothing",
+    });
+  }
+  const model = GetModel(InvoiceModel);
+  await Promise.all(
+    invoices.map((invoice) =>
+      model.update(invoice._id, { status: "cancelled", amountDue: 0 }),
+    ),
+  );
+  return invoices.length;
+}
+
 const OVERDUE_SWEEP_EVERY_MS = 5 * 60 * 1000;
 let lastSweep = 0;
 
 /**
- * Moves the sent invoices whose due date passed to "overdue". The seed is
- * written once, relative to its boot: without this, an invoice due tomorrow
- * would stay "sent" forever. Read paths call it, at most every few minutes.
+ * Moves the sent invoices whose due day is over to "overdue" (an invoice due
+ * today is late from tomorrow, see ./due), and back to "sent" one marked late
+ * on its due day. The seed is written once, relative to its boot: without
+ * this, an invoice due tomorrow would stay "sent" forever. Read paths call
+ * it, at most every few minutes.
  */
 export async function sweepOverdueInvoices(): Promise<void> {
   if (Date.now() - lastSweep < OVERDUE_SWEEP_EVERY_MS) return;
   lastSweep = Date.now();
   const model = GetModel(InvoiceModel);
-  const sent = await model.getBy("status", "sent");
-  const late = sent.filter((invoice) => invoice.dueAt.getTime() < Date.now());
-  await Promise.all(
-    late.map((invoice) => model.update(invoice._id, { status: "overdue" })),
-  );
+  const [sent, overdue] = await Promise.all([
+    model.getBy("status", "sent"),
+    model.getBy("status", "overdue"),
+  ]);
+  const late = sent.filter((invoice) => isPastDue(invoice.dueAt));
+  const early = overdue.filter((invoice) => !isPastDue(invoice.dueAt));
+  await Promise.all([
+    ...late.map((invoice) => model.update(invoice._id, { status: "overdue" })),
+    ...early.map((invoice) => model.update(invoice._id, { status: "sent" })),
+  ]);
   await logInvoiceEvents("invoice_overdue", late);
 }

@@ -7,6 +7,7 @@ import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { ComposedText } from "@antelopejs/interface-dms/base/types/composed-text";
 import { DAY_MS } from "../shared/seed";
 import { type Invoice, InvoiceModel } from "./database";
+import { daysLate } from "./due";
 
 /** Window of the DSO: receivables over the sales of the last 90 days. */
 const DSO_WINDOW_DAYS = 90;
@@ -15,7 +16,8 @@ const NOT_BILLED: readonly string[] = ["draft", "cancelled"];
 /** Where the cells lead: tabs and views of the invoice table. */
 export interface KpiLinks {
   overdue: string;
-  sent: string;
+  /** The view listing every issued invoice still to be paid. */
+  outstanding: string;
   paid: string;
 }
 
@@ -26,11 +28,11 @@ const money = (euros: number): ComposedText => ({
   },
 });
 
+// To the euro: the detail line of a card has no room for cents.
+const wholeEuros = (euros: number): ComposedText => money(Math.round(euros));
+
 const sum = (invoices: Invoice[], pick: (invoice: Invoice) => number) =>
   invoices.reduce((total, invoice) => total + pick(invoice), 0);
-
-const daysBetween = (from: Date, to: Date) =>
-  Math.max(0, Math.round((to.getTime() - from.getTime()) / DAY_MS));
 
 function startOfMonth(): Date {
   const date = new Date();
@@ -57,9 +59,8 @@ function outstandingCell(invoices: Invoice[], to: string): StatGroupItem {
 
 function overdueCell(invoices: Invoice[], to: string): StatGroupItem {
   const late = invoices.filter((invoice) => invoice.status === "overdue");
-  const now = new Date();
   const oldest = late.reduce(
-    (days, invoice) => Math.max(days, daysBetween(invoice.dueAt, now)),
+    (days, invoice) => Math.max(days, daysLate(invoice.dueAt)),
     0,
   );
   return {
@@ -106,10 +107,10 @@ function collectedCell(invoices: Invoice[], to: string): StatGroupItem {
 }
 
 // DSO = receivables / sales of the window × days of the window. The detail
-// gives the plain average: days between issue and payment, recently.
+// names the two amounts of that division, so the figure can be checked; an
+// average of payment delays would read as a second, contradicting figure.
 function dsoCell(invoices: Invoice[]): StatGroupItem {
-  const now = new Date();
-  const since = now.getTime() - DSO_WINDOW_DAYS * DAY_MS;
+  const since = Date.now() - DSO_WINDOW_DAYS * DAY_MS;
   const billed = invoices.filter(
     (invoice) =>
       !NOT_BILLED.includes(invoice.status) &&
@@ -122,19 +123,6 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
   const sales = sum(billed, (invoice) => invoice.total);
   const dso =
     sales > 0 ? Math.round((receivable / sales) * DSO_WINDOW_DAYS) : 0;
-  const delays = invoices.flatMap((invoice) =>
-    invoice.status === "paid" &&
-    invoice.paidAt &&
-    invoice.paidAt.getTime() >= since
-      ? [daysBetween(invoice.issuedAt, invoice.paidAt)]
-      : [],
-  );
-  const average =
-    delays.length > 0
-      ? Math.round(
-          delays.reduce((total, days) => total + days, 0) / delays.length,
-        )
-      : 0;
   return {
     id: "dso",
     icon: "i-ph-calendar-check",
@@ -146,7 +134,11 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
     },
     detail: {
       key: "$helio.finance.kpis.dso.detail",
-      params: { days: { type: "number", value: average } },
+      params: {
+        receivable: wholeEuros(receivable),
+        sales: wholeEuros(sales),
+        days: { type: "number", value: DSO_WINDOW_DAYS },
+      },
     },
   };
 }
@@ -155,7 +147,7 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
 export async function invoiceKpis(links: KpiLinks): Promise<StatGroupItem[]> {
   const invoices = await GetModel(InvoiceModel).getAll();
   return [
-    outstandingCell(invoices, links.sent),
+    outstandingCell(invoices, links.outstanding),
     overdueCell(invoices, links.overdue),
     collectedCell(invoices, links.paid),
     dsoCell(invoices),

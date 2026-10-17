@@ -45,6 +45,12 @@ export const ACTIVITY_TYPES = [
     iconColor: "success",
   },
   {
+    value: "ticket_reopened",
+    label: "$helio.dashboard.activityTypes.ticketReopened",
+    icon: "i-ph-arrow-counter-clockwise",
+    iconColor: "warning",
+  },
+  {
     value: "invoice_paid",
     label: "$helio.dashboard.activityTypes.invoicePaid",
     icon: "i-ph-currency-eur",

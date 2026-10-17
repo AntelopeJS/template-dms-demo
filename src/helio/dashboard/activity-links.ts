@@ -12,6 +12,7 @@ export type ActivityType =
   | "project_done"
   | "ticket_opened"
   | "ticket_resolved"
+  | "ticket_reopened"
   | "invoice_paid"
   | "invoice_overdue";
 
@@ -37,6 +38,7 @@ export const ACTIVITY_TONES: Record<ActivityType, Tone> = {
   project_done: "success",
   ticket_opened: "warning",
   ticket_resolved: "success",
+  ticket_reopened: "warning",
   invoice_paid: "success",
   invoice_overdue: "error",
 };

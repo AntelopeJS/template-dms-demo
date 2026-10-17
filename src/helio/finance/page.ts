@@ -15,7 +15,11 @@ import {
   StatGroup,
   type StatGroupItem,
 } from "@antelopejs/interface-dms/base/stat-group";
-import { tableViewLink } from "@antelopejs/interface-dms/base/table-view";
+import {
+  serializeConfirmDialog,
+  tableViewLink,
+} from "@antelopejs/interface-dms/base/table-view";
+import type { ConfirmDialogSerialized } from "@antelopejs/interface-dms/base/types/confirm-dialog";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
 import {
   NotifyMenuChanged,
@@ -29,6 +33,7 @@ import { getRequestTenantId } from "@antelopejs/interface-dms/request-tenant";
 import { helioCategory } from "../category";
 import { helioQuickActions } from "../shared/quick-actions";
 import {
+  cancelInvoices,
   markInvoicesPaid,
   type PaymentInput,
   remindInvoices,
@@ -43,6 +48,7 @@ import {
   invoiceEditAction,
   invoiceListAction,
   invoicesTable,
+  markPaidFields,
 } from "./table";
 
 const HTTP_NOT_FOUND = 404;
@@ -86,7 +92,7 @@ export class PageHelioInvoices extends PageController(
       tableViewLink(PageHelioInvoices, "table", target);
     const items = await invoiceKpis({
       overdue: link({ tab: "overdue" }),
-      sent: link({ tab: "sent" }),
+      outstanding: link({ view: "outstanding" }),
       paid: link({ view: "paid-recently" }),
     });
     return { items };
@@ -111,6 +117,23 @@ export class PageHelioInvoices extends PageController(
     );
   }
 
+  // Noon of today: a date-only field reads the same day in every time zone.
+  @Get("mark-paid-confirm")
+  markPaidConfirm(
+    @AuthUserWithPermission(invoiceEditAction) _user: User,
+  ): ConfirmDialogSerialized {
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+    return serializeConfirmDialog({
+      title: "$helio.finance.invoices.markPaid.title",
+      description: "$helio.finance.invoices.markPaid.description",
+      icon: "i-ph-hand-coins",
+      color: "success",
+      confirmLabel: "$helio.finance.invoices.markPaid.confirm",
+      fields: markPaidFields(today),
+    });
+  }
+
   @Post("mark-paid")
   async markPaid(
     @Context() ctx: RequestContext,
@@ -120,6 +143,17 @@ export class PageHelioInvoices extends PageController(
   ): Promise<ActionResult> {
     const count = await markInvoicesPaid(ids, body ?? {});
     await announceChange(ctx, "paid", count);
+    return { count };
+  }
+
+  @Post("cancel")
+  async cancel(
+    @Context() ctx: RequestContext,
+    @MultiParameter("ids") ids: string[],
+    @AuthUserWithPermission(invoiceEditAction) _user: User,
+  ): Promise<ActionResult> {
+    const count = await cancelInvoices(ids);
+    await announceChange(ctx, "cancelled", count);
     return { count };
   }
 

@@ -7,7 +7,12 @@ import {
 import { TeamMemberModel } from "../team/database";
 import { HelioSettingsModel } from "./database";
 import { buildDefaultSettings, generateApiKey } from "./defaults";
-import { HELIO_SETTINGS_ID, type HelioSettingsValues } from "./types";
+import {
+  HELIO_SETTINGS_ID,
+  type HelioSettingsValues,
+  type ToggleableValue,
+} from "./types";
+import { isValidVatNumber, normalizeVatNumber } from "./vat";
 
 const HTTP_BAD_REQUEST = 400;
 
@@ -99,6 +104,30 @@ function parseChanges(
   return result.data;
 }
 
+// Stored the way VIES writes it (BE0123456789); anything that is not an EU
+// VAT number is refused under the field.
+function checkVatNumber(changes: Partial<HelioSettingsValues>): void {
+  if (typeof changes.vatNumber !== "string") return;
+  const normalized = normalizeVatNumber(changes.vatNumber);
+  if (!isValidVatNumber(normalized)) {
+    throw new HTTPResult(HTTP_BAD_REQUEST, {
+      message: "$helio.settings.errors.vatNumber",
+      field: "vatNumber",
+    });
+  }
+  changes.vatNumber = normalized;
+}
+
+// The header list keeps a blank row for the next entry: a header without a
+// name is that row, not a header to send.
+function withoutBlankHeaders(
+  headers: Record<string, ToggleableValue>,
+): Record<string, ToggleableValue> {
+  return Object.fromEntries(
+    Object.entries(headers).filter(([name]) => name.trim() !== ""),
+  );
+}
+
 export async function readSettings(): Promise<SettingsFormValues> {
   return toFormValues(await readStored());
 }
@@ -111,6 +140,9 @@ export async function saveSettings(
   const changes = parseChanges(body, entries);
   // An emptied password field means "keep the current one", not "remove it".
   if (!changes.smtpPassword) delete changes.smtpPassword;
+  checkVatNumber(changes);
+  if (changes.webhookHeaders)
+    changes.webhookHeaders = withoutBlankHeaders(changes.webhookHeaders);
   const merged: HelioSettingsValues = { ...(await readStored()), ...changes };
   await writeStored(merged);
   return toFormValues(merged);

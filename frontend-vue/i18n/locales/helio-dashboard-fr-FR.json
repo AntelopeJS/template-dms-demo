@@ -12,6 +12,7 @@
 				"projectDone": "Installation terminée",
 				"ticketOpened": "Ticket ouvert",
 				"ticketResolved": "Ticket résolu",
+				"ticketReopened": "Ticket rouvert",
 				"invoicePaid": "Facture payée",
 				"invoiceOverdue": "Facture en retard"
 			},
@@ -57,7 +58,7 @@
 			},
 			"installations": {
 				"title": "Installations par mois",
-				"description": "Chantiers démarrés, par type d'installation"
+				"description": "Chiffre : chantiers démarrés sur la période. Graphique : par mois et par type, sur six mois au moins"
 			},
 			"topReps": {
 				"title": "Classement des commerciaux",

@@ -8,7 +8,7 @@ import { Section } from "@antelopejs/interface-dms/base/section";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioCategory } from "../category";
-import { notificationFields } from "./notifications";
+import { notificationsSection } from "./notifications";
 import {
   SETTINGS_DANGER_URL,
   SETTINGS_RESET_URL,
@@ -29,8 +29,8 @@ import {
 
 /**
  * The company settings of Helio: one sectioned form saved through the save
- * bar, a notifications form that saves each change as it is made, and a
- * danger zone. Both forms read and write the one settings document.
+ * bar (notifications included), and a danger zone. The form reads and writes
+ * the one settings document.
  */
 @RegisterPage()
 export class PageHelioSettings extends PageController(
@@ -54,22 +54,10 @@ export class PageHelioSettings extends PageController(
       ...companySections(PageHelioSettings),
       ...financeSections,
       ...operationsSections,
+      notificationsSection,
       ...integrationSections,
     ],
   });
-
-  static notifications = Section({
-    title: "$helio.settings.sections.notifications",
-    description: "$helio.settings.sections.notifications_description",
-  }).child(
-    "form",
-    Form({
-      fetchUrl: SETTINGS_VALUES_URL,
-      submitUrl: SETTINGS_VALUES_URL,
-      saveMode: "instant",
-      fields: notificationFields,
-    }),
-  );
 
   static dangerZone = Section({
     title: "$helio.settings.danger.title",
@@ -85,15 +73,12 @@ export class PageHelioSettings extends PageController(
     return readSettings();
   }
 
-  /** A partial save from either form: absent keys stay as they are. */
+  /** A partial save of the form: absent keys stay as they are. */
   @Put("/values")
   putValues(
     @JSONBody() body: Record<string, unknown>,
   ): Promise<SettingsFormValues> {
-    return saveSettings(body, [
-      ...PageHelioSettings.form.fields,
-      ...notificationFields,
-    ]);
+    return saveSettings(body, PageHelioSettings.form.fields);
   }
 
   @Post("/api-key/rotate")

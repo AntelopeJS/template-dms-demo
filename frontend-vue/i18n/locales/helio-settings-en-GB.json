@@ -31,7 +31,7 @@
 				"accounting": "Accounting",
 				"accounting_description": "Where issued and paid invoices are exported every night.",
 				"notifications": "Notifications",
-				"notifications_description": "Who is alerted and how. Each change is saved as soon as it is made."
+				"notifications_description": "Who is alerted and how."
 			},
 			"fields": {
 				"companyName": "Company name",
@@ -133,7 +133,7 @@
 				"notifyOverdueInvoices": "Sent to the office the morning after the due date."
 			},
 			"hints": {
-				"vatNumber": "BE followed by the 10 digits of the enterprise number.",
+				"vatNumber": "BE followed by the 10 digits of the enterprise number, or another EU VAT number.",
 				"brandColor": "Used for buttons and headings in the customer portal and on documents.",
 				"paymentTermsDays": "Counted from the invoice date.",
 				"numberPattern": "Year and sequence tokens between braces, for example F-2026-0315.",
@@ -235,6 +235,9 @@
 				"impact_operations": "Working hours, service levels and intervention zones",
 				"impact_notifications": "Alert channels and recipients",
 				"impact_credentials": "The API key and the SMTP password are kept"
+			},
+			"errors": {
+				"vatNumber": "Not a VAT number: BE followed by 10 digits (BE0123456789), or another EU VAT number."
 			}
 		}
 	}

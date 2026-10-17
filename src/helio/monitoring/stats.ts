@@ -67,7 +67,16 @@ function sitesItem(sites: readonly FleetSite[]): StatGroupItem {
     },
     detail: {
       key: "$helio.monitoring.stats.sitesDetail",
-      params: { degraded, offline },
+      params: {
+        degraded: {
+          key: "$helio.monitoring.stats.degradedCount",
+          params: { count: { type: "count", value: degraded } },
+        },
+        offline: {
+          key: "$helio.monitoring.stats.offlineCount",
+          params: { count: { type: "count", value: offline } },
+        },
+      },
     },
     detailTone: offline > 0 ? "warning" : "neutral",
     to: `${MONITORING_PAGE_PATH}?table.tab=offline`,

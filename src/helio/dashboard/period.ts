@@ -25,6 +25,10 @@ export interface Period {
 // "All time" sends no bounds: the Helio seeds cover the last twelve months,
 // so a thirteen-month window holds every record.
 const ALL_TIME_DAYS = 395;
+// How far back the seeds write activity: a comparison reaching before it
+// compares with an empty or partial past (a year-over-year delta of +11 000 %),
+// so it is dropped and the cards print no delta.
+const HISTORY_DAYS = 365;
 const SPARKLINE_POINTS = 12;
 const DAILY_LIMIT_DAYS = 45;
 const WEEKLY_LIMIT_DAYS = 210;
@@ -42,13 +46,38 @@ function rangeOf(from?: string, to?: string): TimeRange | undefined {
   return { from: start, to: end };
 }
 
+// "This month" runs to the end of the month: the days still to come hold
+// nothing yet, so the range stops now, and its comparison keeps the same
+// length (the first days of last month, not all of it).
+function clampToNow(
+  range: TimeRange,
+  compare: TimeRange | undefined,
+  now: number,
+) {
+  if (range.to <= now || range.from > now) return { range, compare };
+  const clamped = { from: range.from, to: now };
+  return {
+    range: clamped,
+    compare: compare && {
+      from: compare.from,
+      to: Math.min(compare.to, compare.from + (now - range.from)),
+    },
+  };
+}
+
 export function readPeriod(query: PeriodQuery): Period {
   const now = Date.now();
-  const range = rangeOf(query.from, query.to) ?? {
+  const asked = rangeOf(query.from, query.to) ?? {
     from: now - ALL_TIME_DAYS * DAY_MS,
     to: now,
   };
-  return { range, compare: rangeOf(query.compareFrom, query.compareTo) };
+  const { range, compare } = clampToNow(
+    asked,
+    rangeOf(query.compareFrom, query.compareTo),
+    now,
+  );
+  const covered = compare && compare.from >= now - HISTORY_DAYS * DAY_MS;
+  return { range, compare: covered ? compare : undefined };
 }
 
 export function toTime(value: Date | string | undefined | null): number {
@@ -138,19 +167,26 @@ export function bucketLabel(bucket: TimeRange): string {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
-/** Sums `amount` of the rows whose date falls in each range. */
+/**
+ * Sums `amount` of the rows whose date falls in each range. Added up in
+ * cents, so every card summing the same rows lands on the same euro once
+ * rounded (floating-point euros drift by one around a half).
+ */
 export function sumByRange<T>(
   rows: readonly T[],
   ranges: readonly TimeRange[],
   dateOf: (row: T) => Date | string | undefined | null,
   amount: (row: T) => number,
 ): number[] {
-  return ranges.map((range) =>
-    rows.reduce(
-      (total, row) =>
-        within(dateOf(row), range) ? total + amount(row) : total,
-      0,
-    ),
+  return ranges.map(
+    (range) =>
+      rows.reduce(
+        (total, row) =>
+          within(dateOf(row), range)
+            ? total + Math.round(amount(row) * 100)
+            : total,
+        0,
+      ) / 100,
   );
 }
 

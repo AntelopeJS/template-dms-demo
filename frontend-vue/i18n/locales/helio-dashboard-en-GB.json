@@ -12,6 +12,7 @@
 				"projectDone": "Installation finished",
 				"ticketOpened": "Ticket opened",
 				"ticketResolved": "Ticket resolved",
+				"ticketReopened": "Ticket reopened",
 				"invoicePaid": "Invoice paid",
 				"invoiceOverdue": "Invoice overdue"
 			},
@@ -57,7 +58,7 @@
 			},
 			"installations": {
 				"title": "Installations per month",
-				"description": "Worksites started, by type of installation"
+				"description": "Figure: worksites started over the period. Chart: per month and type, over six months at least"
 			},
 			"topReps": {
 				"title": "Sales leaderboard",

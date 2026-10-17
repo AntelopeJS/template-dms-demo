@@ -50,7 +50,8 @@
 				"views": {
 					"dueThisWeek": "Échéance cette semaine",
 					"overdue30": "Retard > 30 jours",
-					"paidRecently": "Payées ces 30 derniers jours"
+					"paidRecently": "Payées ces 30 derniers jours",
+					"outstanding": "Encours"
 				},
 				"form": {
 					"new": "Nouvelle facture",
@@ -76,7 +77,7 @@
 					"description": "La facture est marquée payée et plus rien n'est dû. Le client sort du cycle de rappels.",
 					"confirm": "Enregistrer le paiement",
 					"paidAt": "Date du paiement",
-					"paidAtHint": "Laissez vide pour aujourd'hui.",
+					"paidAtHint": "Aujourd'hui par défaut : indiquez le jour où l'argent est arrivé.",
 					"success": "Paiement enregistré",
 					"futureDate": "Un paiement ne peut pas être daté dans le futur.",
 					"methodRequired": "Indiquez le mode de paiement du client.",
@@ -96,7 +97,18 @@
 					"action": "Ouvrir",
 					"title": "Facture",
 					"description": "Montants, échéance et paiement de la facture."
-				}
+				},
+				"cancel": {
+					"action": "Annuler la facture",
+					"title": "Annuler cette facture ?",
+					"description": "Une note de crédit annule la facture : plus rien n'est dû et le client sort du calendrier de relances. Son numéro reste utilisé.",
+					"confirm": "Annuler la facture",
+					"impactCredit": "Enregistrée comme créditée, plus rien à payer",
+					"impactLocked": "Plus modifiable, peut être archivée",
+					"success": "Facture annulée",
+					"nothing": "Aucune de ces factures ne peut être annulée : seule une facture émise et impayée peut l'être."
+				},
+				"customerChip": "Client"
 			},
 			"nav": {
 				"invoices": "Factures"
@@ -131,7 +143,7 @@
 				"dso": {
 					"label": "DSO",
 					"value": "{count} jour | {count} jours",
-					"detail": "Vos clients paient en moyenne {days} jours après la facture"
+					"detail": "{receivable} dus pour {sales} facturés en {days} jours"
 				}
 			}
 		}

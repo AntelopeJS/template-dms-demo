@@ -41,6 +41,20 @@ const STATUS_TABS: TableViewTab[] = INVOICE_STATUSES.map((status) => ({
 // Ways the accounts team looks at the ledger. Filter tokens are resolved by
 // the server on every request, so "this week" always means this week.
 const VIEWS: TableViewView[] = [
+  // Every issued invoice still to be paid, on time or late: what the
+  // "Outstanding" KPI adds up (drafts are not issued yet).
+  {
+    id: "outstanding",
+    label: "$helio.finance.invoices.views.outstanding",
+    icon: "i-ph-hourglass-medium",
+    tone: "info",
+    count: true,
+    filters: [
+      { accessorKey: "status", mode: "is_not", value: "draft" },
+      { accessorKey: "amountDue", mode: "greater_than", value: "0" },
+    ],
+    sort: [{ field: "dueAt" }],
+  },
   {
     id: "due-this-week",
     label: "$helio.finance.invoices.views.dueThisWeek",
@@ -95,29 +109,64 @@ const markPaidAction: CustomRowAction = {
     url: pageRoute("/mark-paid?ids={{row._id}}"),
     successMessage: "$helio.finance.invoices.markPaid.success",
   },
+  // Worded by the server so the payment date starts on today's date, the day
+  // the dialog opens rather than the day the page was declared.
+  confirm: { from: pageRoute("/mark-paid-confirm?ids={{row._id}}") },
+};
+
+// A credit note cancels an issued invoice: nothing left to pay, the number
+// stays used, and the invoice can then be archived or deleted.
+const cancelAction: CustomRowAction = {
+  id: "cancel",
+  label: "$helio.finance.invoices.cancel.action",
+  icon: "i-ph-prohibit",
+  color: "error",
+  permission: "edit",
+  rule: { field: "status", in: ["sent", "overdue"] },
+  target: {
+    type: "api",
+    method: "POST",
+    url: pageRoute("/cancel?ids={{row._id}}"),
+    successMessage: "$helio.finance.invoices.cancel.success",
+  },
   confirm: {
-    title: "$helio.finance.invoices.markPaid.title",
-    description: "$helio.finance.invoices.markPaid.description",
-    icon: "i-ph-hand-coins",
-    color: "success",
-    confirmLabel: "$helio.finance.invoices.markPaid.confirm",
-    fields: [
+    title: "$helio.finance.invoices.cancel.title",
+    description: "$helio.finance.invoices.cancel.description",
+    icon: "i-ph-prohibit",
+    color: "error",
+    confirmLabel: "$helio.finance.invoices.cancel.confirm",
+    impact: [
       {
-        id: "paymentMethod",
-        label: "$helio.finance.invoices.columns.paymentMethod",
-        type: new DefaultDataTypes.SelectType({ items: [...PAYMENT_METHODS] }),
-        required: true,
-        defaultValue: "transfer",
+        icon: "i-ph-receipt-x",
+        label: "$helio.finance.invoices.cancel.impactCredit",
       },
       {
-        id: "paidAt",
-        label: "$helio.finance.invoices.markPaid.paidAt",
-        hint: "$helio.finance.invoices.markPaid.paidAtHint",
-        type: new DefaultDataTypes.DateType(),
+        icon: "i-ph-lock-simple",
+        label: "$helio.finance.invoices.cancel.impactLocked",
       },
     ],
   },
 };
+
+/** The fields of the "Mark as paid" dialog: the payment date starts today. */
+export function markPaidFields(today: Date) {
+  return [
+    {
+      id: "paymentMethod",
+      label: "$helio.finance.invoices.columns.paymentMethod",
+      type: new DefaultDataTypes.SelectType({ items: [...PAYMENT_METHODS] }),
+      required: true,
+      defaultValue: "transfer",
+    },
+    {
+      id: "paidAt",
+      label: "$helio.finance.invoices.markPaid.paidAt",
+      hint: "$helio.finance.invoices.markPaid.paidAtHint",
+      type: new DefaultDataTypes.DateType(),
+      defaultValue: today,
+    },
+  ];
+}
 
 const remindAction: CustomRowAction = {
   id: "remind",
@@ -198,6 +247,14 @@ export const invoicesTable = TableView(invoiceController, {
   defaultSort: { field: "issuedAt", desc: true },
   tabs: STATUS_TABS,
   views: { layout: "strip", userViews: true, items: VIEWS },
+  // "Invoices" of a customer (customers page): ?customer=<id>, as a chip.
+  queryParamFilters: {
+    customer: {
+      field: "customer",
+      visible: true,
+      label: "$helio.finance.invoices.customerChip",
+    },
+  },
   quickFilters: [
     {
       field: "paymentMethod",
@@ -278,7 +335,13 @@ export const invoicesTable = TableView(invoiceController, {
       },
     },
     restore: true,
-    custom: [quickViewAction, downloadAction, markPaidAction, remindAction],
+    custom: [
+      quickViewAction,
+      downloadAction,
+      markPaidAction,
+      remindAction,
+      cancelAction,
+    ],
   },
   // An invoice marked paid from its form reaches the activity feed, as one
   // paid through the "Mark as paid" action does.

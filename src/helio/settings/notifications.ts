@@ -1,14 +1,14 @@
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
-import type { FormField } from "@antelopejs/interface-dms/base/form";
+import type {
+  FormField,
+  FormSection,
+} from "@antelopejs/interface-dms/base/form";
 import { ALERT_CHANNELS, DIGEST_FREQUENCIES } from "./options";
 
 const MAX_RECIPIENTS = 20;
 
-/**
- * The fields of the notifications form. It saves instantly, so each change is
- * a partial body of one field sent to the same route as the main form.
- */
-export const notificationFields: FormField[] = [
+/** Who is alerted, and how: a section of the settings form. */
+const notificationFields: FormField[] = [
   {
     id: "alertChannels",
     label: "$helio.settings.fields.alertChannels",
@@ -64,3 +64,15 @@ export const notificationFields: FormField[] = [
     hint: "$helio.settings.hints.alertRecipients",
   },
 ];
+
+// Saved with the rest of the form, through its save bar: an instant form on
+// the same page put "Saved instantly" in the page header, which read as true
+// for every section.
+export const notificationsSection: FormSection = {
+  id: "notifications",
+  label: "$helio.settings.sections.notifications",
+  description: "$helio.settings.sections.notifications_description",
+  icon: "i-ph-bell",
+  navGroup: "$helio.settings.groups.operations",
+  fields: notificationFields,
+};

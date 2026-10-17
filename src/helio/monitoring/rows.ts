@@ -24,10 +24,20 @@ export interface SiteRow {
   /** "15.7 kW" over "12 % of peak": the power column's two lines. */
   powerLabel: ComposedText;
   powerShare: ComposedText;
+  capacityLabel: ComposedText;
   periodKwh: number;
+  periodLabel: ComposedText;
+  /** The period's energy again, under the sparkline column (sorting unused). */
+  periodTrend: number;
   trend: number[];
   todayKwh: number;
+  todayLabel: ComposedText;
   lastSeenAt: string;
+}
+
+// "1 712,2 kWh": grouped digits and the unit, in the reader's locale.
+function quantity(key: string, value: number): ComposedText {
+  return { key, params: { value: { type: "number", value } } };
 }
 
 // What the pill says under an inverter that needs someone.
@@ -49,6 +59,8 @@ function statusDetail(site: FleetSite): CellSubline | null {
 
 export function siteRow(site: FleetSite, period: Period, now: number): SiteRow {
   const power = currentPowerKw(site, now);
+  const periodKwh = round1(energyKwh([site], period.from, period.to, now));
+  const todayKwh = round1(energyKwh([site], startOfLocalDay(now), now, now));
   return {
     _id: site.id,
     name: site.name,
@@ -58,11 +70,12 @@ export function siteRow(site: FleetSite, period: Period, now: number): SiteRow {
     inverterStatus: site.status,
     statusDetail: statusDetail(site),
     capacityKwp: site.capacityKwp,
+    capacityLabel: quantity(
+      "$helio.monitoring.units.kwpValue",
+      site.capacityKwp,
+    ),
     powerKw: power,
-    powerLabel: {
-      key: "$helio.monitoring.units.kwValue",
-      params: { value: { type: "number", value: power } },
-    },
+    powerLabel: quantity("$helio.monitoring.units.kwValue", power),
     powerShare: {
       key: "$helio.monitoring.table.powerShare",
       params: {
@@ -73,9 +86,12 @@ export function siteRow(site: FleetSite, period: Period, now: number): SiteRow {
         },
       },
     },
-    periodKwh: round1(energyKwh([site], period.from, period.to, now)),
+    periodKwh,
+    periodLabel: quantity("$helio.monitoring.units.kwhValue", periodKwh),
+    periodTrend: periodKwh,
     trend: sparkline(site, period, now),
-    todayKwh: round1(energyKwh([site], startOfLocalDay(now), now, now)),
+    todayKwh,
+    todayLabel: quantity("$helio.monitoring.units.kwhValue", todayKwh),
     lastSeenAt: new Date(lastSeenAt(site, now)).toISOString(),
   };
 }

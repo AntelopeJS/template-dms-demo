@@ -8,6 +8,7 @@ import { Logging } from "@antelopejs/interface-core/logging";
 import {
   DeclareProcedure,
   InvokeProcedure,
+  ListActionTypes,
   RegisterActionType,
   RegisterTriggerType,
 } from "@antelopejs/interface-dms-automation";
@@ -38,7 +39,45 @@ async function firstRun(id: string): Promise<void> {
   }
 }
 
+const TYPE_WAIT_MS = 30_000;
+const TYPE_POLL_MS = 500;
+
+// The action types the shipped procedures use: Helio's own, and those other
+// modules register (the DMS's "dms.send-notification").
+function actionTypesUsed(): Set<string> {
+  const ids = new Set<string>();
+  for (const declaration of HELIO_PROCEDURES) {
+    for (const node of declaration.graph.nodes) {
+      if (node.kind === "action" && node.typeId) ids.add(node.typeId);
+    }
+  }
+  return ids;
+}
+
+/**
+ * Waits until every action type the procedures use is registered. Modules
+ * register their node types as they start, in no set order: declared before
+ * the DMS added "dms.send-notification", a procedure is stored with an
+ * "unknown type" warning. Gives up after a while and declares anyway (the
+ * automation module tolerates a type that comes late).
+ */
+async function waitForActionTypes(): Promise<void> {
+  const wanted = actionTypesUsed();
+  const deadline = Date.now() + TYPE_WAIT_MS;
+  let missing: string[] = [...wanted];
+  while (Date.now() < deadline) {
+    const known = new Set((await ListActionTypes()).map((type) => type.id));
+    missing = [...wanted].filter((id) => !known.has(id));
+    if (missing.length === 0) return;
+    await new Promise((resolve) => setTimeout(resolve, TYPE_POLL_MS));
+  }
+  Logging.Warn(
+    `[helio] declaring procedures without action types: ${missing.join(", ")}`,
+  );
+}
+
 async function declareProcedures(): Promise<void> {
+  await waitForActionTypes();
   const outcomes: string[] = [];
   for (const declaration of HELIO_PROCEDURES) {
     const declared = await DeclareProcedure(declaration);

@@ -81,7 +81,8 @@ function repItem(
     avatar: member.avatar
       ? { src: member.avatar, alt: member.name }
       : undefined,
-    to: HELIO_PAGES.pipeline,
+    // The pipeline filtered on the rep (its `owner` query filter).
+    to: `${HELIO_PAGES.pipeline}?owner=${encodeURIComponent(member._id)}`,
   };
 }
 

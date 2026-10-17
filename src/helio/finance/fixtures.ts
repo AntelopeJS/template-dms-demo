@@ -12,6 +12,7 @@ import type { QuoteLine } from "../sales/database";
 import { COUNTS, invoiceId, PRODUCT_ROSTER } from "../shared/roster";
 import { cents, createRng, DAY_MS, type Rng } from "../shared/seed";
 import type { Invoice, InvoiceStatus, PaymentMethod } from "./database";
+import { isPastDue } from "./due";
 
 export type InvoiceSeed = Pick<
   Invoice,
@@ -193,7 +194,8 @@ function settle(
 ): { status: InvoiceStatus; paidAt?: Date } {
   if (draft.draft) return { status: "draft" };
   const issued = draft.issuedAt.getTime();
-  if (dueAt.getTime() > Date.now()) {
+  // Due today is not late yet: overdue starts the day after (see ./due).
+  if (!isPastDue(dueAt)) {
     if (!rng.chance(0.35)) return { status: "sent" };
     const paidAt = bookedPayment(
       rng,

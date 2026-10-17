@@ -42,7 +42,8 @@ const identitySection: FormSection = {
       label: "$helio.settings.fields.vatNumber",
       type: new DefaultDataTypes.StringType({
         placeholder: "BE0123456789",
-        maxLength: 12,
+        // Room for "BE 0123.456.789": stored without spaces or dots.
+        maxLength: 17,
       }),
       hint: "$helio.settings.hints.vatNumber",
       required: true,
