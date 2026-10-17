@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import type {
   AclEntry,
   AclRight,
@@ -56,6 +57,7 @@ const P = HELIO_PAGE_PERMISSIONS;
 export function libraryFolders(): MediaFolderDeclaration[] {
   const roots: MediaFolderDeclaration[] = [
     {
+      tenantId: DEFAULT_TENANT_ID,
       key: FOLDER_KEYS.datasheets,
       name: "Fiches techniques",
       visibility: "public",
@@ -66,22 +68,26 @@ export function libraryFolders(): MediaFolderDeclaration[] {
       ],
     },
     {
+      tenantId: DEFAULT_TENANT_ID,
       key: FOLDER_KEYS.photos,
       name: "Photos de chantier",
       acl: [grant(P.projects, "write"), grant(P.service, "read")],
     },
     {
+      tenantId: DEFAULT_TENANT_ID,
       key: FOLDER_KEYS.contracts,
       name: "Contrats et certificats",
       acl: [grant(P.invoices, "write"), grant(P.customers, "read")],
     },
     {
+      tenantId: DEFAULT_TENANT_ID,
       key: FOLDER_KEYS.brand,
       name: "Marque et communication",
       visibility: "public",
       acl: [grant(P.settings, "write"), grant(P.quotes, "read")],
     },
     {
+      tenantId: DEFAULT_TENANT_ID,
       key: FOLDER_KEYS.training,
       name: "Formation et sécurité",
       acl: [
@@ -92,6 +98,7 @@ export function libraryFolders(): MediaFolderDeclaration[] {
     },
   ];
   const families = HARDWARE_FAMILIES.map((family): MediaFolderDeclaration => ({
+    tenantId: DEFAULT_TENANT_ID,
     key: DATASHEET_FOLDER_KEYS[family],
     name: DATASHEET_FOLDER_NAMES[family],
     parent: FOLDER_KEYS.datasheets,

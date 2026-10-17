@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { setImmediate as yieldToEventLoop } from "node:timers/promises";
 import { Logging } from "@antelopejs/interface-core/logging";
 import {
@@ -150,7 +151,11 @@ async function declareMedia(): Promise<Tally> {
   for (const { source, ...asset } of assets) {
     await yieldToEventLoop();
     await declare(tally, asset.key, () =>
-      ImportMediaAsset({ ...asset, source: source() }),
+      ImportMediaAsset({
+        tenantId: DEFAULT_TENANT_ID,
+        ...asset,
+        source: source(),
+      }),
     );
   }
   return tally;

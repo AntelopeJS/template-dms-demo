@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import type {
   MarketingFunnelDeclaration,
   MarketingWebsiteDeclaration,
@@ -12,6 +13,7 @@ export const WEBSITE_ID = "helio-website";
 export const SITE_ORIGIN = "https://helio.example";
 
 export const HELIO_WEBSITE: MarketingWebsiteDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   id: WEBSITE_ID,
   name: "Helio — site public",
   // The company's domain in the settings (helio.example); www and the
@@ -368,6 +370,7 @@ export function helioFunnels(now: number): MarketingFunnelDeclaration[] {
   const at = (days: number) => new Date(now - days * DAY_MS).toISOString();
   return [
     {
+      tenantId: DEFAULT_TENANT_ID,
       id: "helio-quote-request",
       websiteId: WEBSITE_ID,
       name: "Demande de devis",
@@ -389,6 +392,7 @@ export function helioFunnels(now: number): MarketingFunnelDeclaration[] {
       },
     },
     {
+      tenantId: DEFAULT_TENANT_ID,
       id: "helio-autumn-battery",
       websiteId: WEBSITE_ID,
       name: "Offre d'automne batterie",
@@ -401,6 +405,7 @@ export function helioFunnels(now: number): MarketingFunnelDeclaration[] {
       conversionWindowHours: 24,
     },
     {
+      tenantId: DEFAULT_TENANT_ID,
       id: "helio-callback",
       websiteId: WEBSITE_ID,
       name: "Demande de rappel",

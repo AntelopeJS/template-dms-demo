@@ -28,7 +28,7 @@
     "@antelopejs/interface-dms": ">=0.7.2 <1.0.0",
     "@antelopejs/interface-dms-automation": ">=0.3.0 <1.0.0",
     "@antelopejs/interface-dms-mailing": ">=0.8.0 <1.0.0",
-    "@antelopejs/interface-dms-marketing": ">=0.4.2 <1.0.0",
+    "@antelopejs/interface-dms-marketing": ">=0.5.0 <1.0.0",
     "@antelopejs/interface-dms-media": ">=0.3.0 <1.0.0",
     "@antelopejs/interface-dms-saas": ">=0.4.1 <1.0.0"
   },

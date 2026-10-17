@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 // The e-mails of the sales cycle: the quote a customer receives, the thank
 // you once it is signed, and the confirmation of the installation date.
 
@@ -13,6 +14,7 @@ import {
 import { HELIO_MAIL_CATEGORY, HELIO_TEMPLATES } from "./format";
 
 const quoteSent: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.quoteSent,
   name: "Quote sent to the customer",
   category: HELIO_MAIL_CATEGORY,
@@ -88,6 +90,7 @@ const quoteSent: TemplateDeclaration = {
 };
 
 const quoteAccepted: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.quoteAccepted,
   name: "Quote accepted: thank you and next steps",
   category: HELIO_MAIL_CATEGORY,
@@ -174,6 +177,7 @@ const quoteAccepted: TemplateDeclaration = {
 };
 
 const installationScheduled: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.installationScheduled,
   name: "Installation scheduled",
   category: HELIO_MAIL_CATEGORY,

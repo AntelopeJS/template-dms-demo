@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import type { MediaFolderDeclaration } from "@antelopejs/interface-dms-media";
 import { buildProjects, type ProjectSeed } from "../../projects/fixtures";
 import type { ContractProject } from "./contracts";
@@ -119,6 +120,7 @@ function photoProject(project: ProjectSeed): PhotoProject {
     project,
     customerName,
     folder: {
+      tenantId: DEFAULT_TENANT_ID,
       key: folderKey,
       name: `${project.code} - ${customerName}${city ? `, ${city}` : ""}`,
       parent: FOLDER_KEYS.photos,

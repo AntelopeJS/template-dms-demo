@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 // The after-sales e-mails: the acknowledgement of a service request, with the
 // time Helio commits to answer by, and the notice once it is resolved.
 
@@ -19,6 +20,7 @@ const TEST_TICKET = {
 };
 
 const ticketReceived: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.ticketReceived,
   name: "Service request received",
   category: HELIO_MAIL_CATEGORY,
@@ -86,6 +88,7 @@ const ticketReceived: TemplateDeclaration = {
 };
 
 const ticketResolved: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.ticketResolved,
   name: "Service request resolved",
   category: HELIO_MAIL_CATEGORY,

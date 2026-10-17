@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 // Helio's transactional e-mails, shipped as code to the Mailing module: one
 // "Helio" category, seven templates in French and English, and the history of
 // the last weeks. Every declaration is idempotent and keeps what a user edited
@@ -34,6 +35,7 @@ const TEMPLATES = [
 
 async function declareTemplates(): Promise<void> {
   await DeclareTemplateCategory({
+    tenantId: DEFAULT_TENANT_ID,
     id: HELIO_MAIL_CATEGORY,
     label: "Helio",
     icon: "i-ph-sun",

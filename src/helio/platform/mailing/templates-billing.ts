@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 // The billing e-mails: an invoice issued, and the reminder of an unpaid one.
 // Both carry the Belgian structured reference the bank transfer quotes.
 
@@ -25,6 +26,7 @@ const TEST_INVOICE = {
 };
 
 const invoiceIssued: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.invoiceIssued,
   name: "Invoice issued",
   category: HELIO_MAIL_CATEGORY,
@@ -103,6 +105,7 @@ const FIRM_REMINDER: Condition = {
 };
 
 const invoiceReminder: TemplateDeclaration = {
+  tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.invoiceReminder,
   name: "Invoice payment reminder",
   category: HELIO_MAIL_CATEGORY,

@@ -1,3 +1,4 @@
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import type {
   MarketingAnalyticsImport,
   MarketingImportSession,
@@ -133,6 +134,7 @@ export function historyImports(now: number): MarketingAnalyticsImport[] {
       sessions.push(...sessionsOfDay(rng, pool, day, now));
     }
     imports.push({
+      tenantId: DEFAULT_TENANT_ID,
       importId: `helio-website-history-${imports.length + 1}`,
       websiteId: WEBSITE_ID,
       sessions,
