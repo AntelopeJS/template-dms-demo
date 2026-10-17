@@ -1,0 +1,26 @@
+{
+	"helio": {
+		"platform": {
+			"saas": {
+				"plans": {
+					"starter": {
+						"description": "Pour les installateurs indépendants : clients, catalogue, devis, chantiers et factures."
+					},
+					"pro": {
+						"description": "Pour les équipes d'installateurs en croissance : pipeline commercial, SAV avec SLA et planning d'équipe."
+					},
+					"business": {
+						"description": "Pour les installateurs établis qui entretiennent un parc : supervision en direct de chaque installation, automatisations et API.",
+						"badge": "Le plus choisi"
+					},
+					"enterprise": {
+						"description": "Pour les installateurs multi-agences et les réseaux de franchise : utilisateurs et sites illimités, SSO et un responsable dédié. Facturé à l'année."
+					},
+					"hq": {
+						"description": "Espace interne de Helio SRL, l'éditeur de Helio. Tous les modules, hors vente."
+					}
+				}
+			}
+		}
+	}
+}

@@ -79,8 +79,7 @@ export const PLANS: SeedPlan[] = [
     id: PLAN_IDS.starter,
     slug: "starter",
     name: "Starter",
-    description:
-      "For independent installers: customers, catalogue, quotes, installation projects and invoices.",
+    description: "$helio.platform.saas.plans.starter.description",
     audience: "individual",
     price: 0,
     currency: EUR,
@@ -111,8 +110,7 @@ export const PLANS: SeedPlan[] = [
     id: PLAN_IDS.pro,
     slug: "pro",
     name: "Pro",
-    description:
-      "For growing installer teams: sales pipeline, service desk with SLA and team planning.",
+    description: "$helio.platform.saas.plans.pro.description",
     audience: "any",
     price: 89,
     currency: EUR,
@@ -137,8 +135,7 @@ export const PLANS: SeedPlan[] = [
     id: PLAN_IDS.business,
     slug: "business",
     name: "Business",
-    description:
-      "For established installers with a fleet to maintain: live monitoring of every installed site, automation and API.",
+    description: "$helio.platform.saas.plans.business.description",
     audience: "business",
     price: 219,
     currency: EUR,
@@ -148,7 +145,7 @@ export const PLANS: SeedPlan[] = [
     maxMembers: 15,
     isPublic: true,
     order: 3,
-    borderLabel: "Most popular",
+    borderLabel: "$helio.platform.saas.plans.business.badge",
     inheritsFromPlanId: PLAN_IDS.pro,
     grant: { kind: "subtrees", prefixes: BUSINESS_SUBTREES },
     features: {
@@ -165,8 +162,7 @@ export const PLANS: SeedPlan[] = [
     id: PLAN_IDS.enterprise,
     slug: "enterprise",
     name: "Enterprise",
-    description:
-      "For multi-branch installers and franchise networks: unlimited users and sites, SSO and a dedicated success manager. Billed yearly.",
+    description: "$helio.platform.saas.plans.enterprise.description",
     audience: "business",
     price: 4990,
     currency: EUR,
@@ -195,8 +191,7 @@ export const PLANS: SeedPlan[] = [
     id: PLAN_IDS.hq,
     slug: "helio-hq",
     name: "Helio HQ",
-    description:
-      "Internal workspace of Helio SRL, the publisher of Helio. Every module, not for sale.",
+    description: "$helio.platform.saas.plans.hq.description",
     audience: "business",
     price: 0,
     currency: EUR,
