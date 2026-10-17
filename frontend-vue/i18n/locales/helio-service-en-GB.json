@@ -117,7 +117,8 @@
 			},
 			"actions": {
 				"assign": "Assign to…",
-				"resolve": "Resolve"
+				"resolve": "Resolve",
+				"reopen": "Reopen"
 			},
 			"bulk": {
 				"assign": {
@@ -134,6 +135,12 @@
 					"description": "Open tickets are marked resolved now; resolved and closed ones stay as they are.",
 					"confirm": "Resolve",
 					"done": "Tickets resolved"
+				},
+				"reopen": {
+					"title": "Reopen these tickets?",
+					"description": "Resolved or closed tickets go back to \"Open\" and their resolution time counts again; tickets still open are left as they are.",
+					"confirm": "Reopen",
+					"done": "Tickets reopened"
 				}
 			},
 			"quickActions": {
@@ -153,6 +160,11 @@
 				"action": "Open",
 				"title": "Ticket",
 				"description": "The customer's request, its SLA and who handles it."
+			},
+			"delete": {
+				"title": "Delete these tickets?",
+				"description": "Only resolved or closed tickets can be deleted. This cannot be undone.",
+				"confirm": "Delete"
 			}
 		}
 	}

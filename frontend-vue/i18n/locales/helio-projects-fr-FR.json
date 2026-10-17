@@ -19,7 +19,7 @@
 				"notes": "Notes"
 			},
 			"placeholders": {
-				"code": "CH-0181",
+				"code": "Laisser vide pour le code suivant",
 				"name": "Installation photovoltaïque 6,2 kWc — Famille Dupont",
 				"customer": "Choisir un client",
 				"quote": "Lier le devis signé",
@@ -95,7 +95,10 @@
 					"description": "Le chantier et son planning seront supprimés pour toute l'équipe.",
 					"confirm": "Supprimer le chantier"
 				},
-				"add": "Nouveau chantier"
+				"add": "Nouveau chantier",
+				"filters": {
+					"customer": "Client"
+				}
 			},
 			"views": {
 				"planning": "Planning",
@@ -166,7 +169,9 @@
 					"invoiced": "Facturé TVAC",
 					"money": "{amount}",
 					"due": "{amount} restant dû",
-					"settled": "Plus rien à payer"
+					"settled": "Plus rien à payer",
+					"noTasks": "Aucune tâche",
+					"noInvoices": "Aucune facture"
 				},
 				"banner": {
 					"onHoldTitle": "Ce chantier est en pause",
@@ -266,6 +271,10 @@
 			"quickActions": {
 				"newProject": "Nouveau chantier",
 				"planning": "Planning des chantiers"
+			},
+			"rules": {
+				"codeTaken": "Ce code est déjà utilisé par un autre chantier. Laissez-le vide pour prendre le code suivant.",
+				"endBeforeStart": "La fin prévue ne peut pas précéder le début."
 			}
 		}
 	}

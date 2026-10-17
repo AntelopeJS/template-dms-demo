@@ -85,7 +85,7 @@
 				"count": "{count} ticket | {count} tickets",
 				"expandLabel": "Message du client",
 				"filters": {
-					"assignee": "Technicien",
+					"assignee": "Responsable",
 					"priority": "Priorité",
 					"category": "Catégorie",
 					"ticket": "Ticket"
@@ -117,7 +117,8 @@
 			},
 			"actions": {
 				"assign": "Attribuer à…",
-				"resolve": "Résoudre"
+				"resolve": "Résoudre",
+				"reopen": "Rouvrir"
 			},
 			"bulk": {
 				"assign": {
@@ -134,6 +135,12 @@
 					"description": "Les tickets ouverts sont marqués résolus maintenant ; les tickets résolus ou clôturés restent inchangés.",
 					"confirm": "Résoudre",
 					"done": "Tickets résolus"
+				},
+				"reopen": {
+					"title": "Rouvrir les tickets ?",
+					"description": "Les tickets résolus ou clôturés repassent au statut « Ouvert » et leur délai de résolution compte à nouveau ; les tickets encore ouverts restent inchangés.",
+					"confirm": "Rouvrir",
+					"done": "Tickets rouverts"
 				}
 			},
 			"quickActions": {
@@ -153,6 +160,11 @@
 				"action": "Ouvrir",
 				"title": "Ticket",
 				"description": "La demande du client, son SLA et qui la traite."
+			},
+			"delete": {
+				"title": "Supprimer les tickets ?",
+				"description": "Seuls les tickets résolus ou clôturés peuvent être supprimés. Cette action est définitive.",
+				"confirm": "Supprimer"
 			}
 		}
 	}

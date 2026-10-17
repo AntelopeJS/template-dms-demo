@@ -29,7 +29,16 @@ export async function assertCanWriteTickets(
   ctx: RequestContext,
   user: User,
 ): Promise<void> {
-  const permissionId = writeAction?.permissionId;
+  await assertCanRun(writeAction, ctx, user);
+}
+
+/** Refuses (403) a caller who lacks the permission of `action`. */
+export async function assertCanRun(
+  action: Action | undefined,
+  ctx: RequestContext,
+  user: User,
+): Promise<void> {
+  const permissionId = action?.permissionId;
   if (!permissionId) throw new HTTPResult(503, "Service desk not ready");
   const tenantId = getRequestTenantId(ctx);
   const member = await GetModel(TenantMemberModel, tenantId).getByUser(

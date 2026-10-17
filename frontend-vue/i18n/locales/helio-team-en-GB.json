@@ -68,7 +68,8 @@
 				"on_site_value": "{onSite} / {total}",
 				"on_site_detail": "No site running today | {count} site running today | {count} sites running today",
 				"per_tech": "Open tickets per technician",
-				"per_tech_detail": "Every open ticket is assigned | {count} open ticket unassigned | {count} open tickets unassigned"
+				"per_tech_detail": "Every open ticket is assigned | {count} open ticket unassigned | {count} open tickets unassigned",
+				"on_site_detail_weekend": "Weekend: no site running | Weekend: {count} site running, resumes Monday | Weekend: {count} sites running, resume Monday"
 			},
 			"load": {
 				"tickets_title": "Service load",
@@ -93,7 +94,8 @@
 				"tickets_value": "no open ticket | {count} open | {count} open",
 				"tickets_technicians": "{count} with technicians",
 				"tickets_office": "{count} with the office",
-				"tickets_unassigned": "{count} unassigned"
+				"tickets_unassigned": "{count} unassigned",
+				"on_site_hint_weekend": "weekend | weekend, resumes Monday | weekend, resume Monday"
 			},
 			"table": {
 				"caption": "Team members",
@@ -122,7 +124,8 @@
 				"new_description": "Their role and region decide which sites and tickets they receive.",
 				"edit_title": "Edit team member",
 				"edit_description": "Changes apply to plannings and ticket assignment straight away.",
-				"details_title": "Team member"
+				"details_title": "Team member",
+				"online_label": "Reachable now"
 			},
 			"delete": {
 				"title": "Remove {name} from the team?",

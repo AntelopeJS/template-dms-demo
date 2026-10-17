@@ -80,13 +80,6 @@ export const ticketViews: TableViewViewsOptions = {
   ],
 };
 
-// The new and open tickets count on the menu entry, in the tone of the new
-// ones: they still wait for someone to look at them.
-const NAV_BADGES: Record<string, TableViewTab["navBadge"]> = {
-  new: { tone: "warning" },
-  open: { tone: "info" },
-};
-
 // One tab per status.
 export const ticketTabs: TableViewTab[] = TICKET_STATUSES.map((status) => ({
   id: status.value,
@@ -95,7 +88,6 @@ export const ticketTabs: TableViewTab[] = TICKET_STATUSES.map((status) => ({
   iconColor: status.iconColor,
   textColor: status.textColor,
   filter: { accessorKey: "status", value: status.value, mode: "is" },
-  navBadge: NAV_BADGES[status.value],
 }));
 
 export const ticketFooter: TableViewFooterOptions = {
@@ -179,6 +171,27 @@ const resolveAction: CustomRowAction = {
   },
 };
 
+const reopenAction: CustomRowAction = {
+  label: "$helio.service.actions.reopen",
+  icon: "i-ph-arrow-counter-clockwise",
+  permission: "edit",
+  bulk: { allMatching: true },
+  rule: { field: "status", in: ["resolved", "closed"] },
+  confirm: {
+    title: "$helio.service.bulk.reopen.title",
+    description: "$helio.service.bulk.reopen.description",
+    icon: "i-ph-arrow-counter-clockwise",
+    color: "warning",
+    confirmLabel: "$helio.service.bulk.reopen.confirm",
+  },
+  target: {
+    type: "api",
+    url: `${TICKETS_API}/bulk/reopen${BULK_ROW_IDS}`,
+    method: "POST",
+    successMessage: "$helio.service.bulk.reopen.done",
+  },
+};
+
 // `?record=<ticket id>` (the dashboard's activity feed) opens the ticket
 // read-only in a right drawer. Its form reads the row from the URL, so the
 // drawer is only opened from it: a rule no row meets keeps it out of the
@@ -211,7 +224,20 @@ export const ticketRowActions: TableViewRowActionOptions = {
   edit: true,
   details: true,
   duplicate: false,
-  delete: false,
+  // A ticket still open is worked on, not deleted: once resolved or closed
+  // it can go (a test ticket, a duplicate call), from its menu or the
+  // selection bar.
+  delete: {
+    isEnabled: true,
+    rule: { field: "status", in: ["resolved", "closed"] },
+    confirm: {
+      title: "$helio.service.delete.title",
+      description: "$helio.service.delete.description",
+      icon: "i-ph-trash",
+      color: "error",
+      confirmLabel: "$helio.service.delete.confirm",
+    },
+  },
   hasSelection: true,
-  custom: [quickViewAction, assignAction, resolveAction],
+  custom: [quickViewAction, assignAction, resolveAction, reopenAction],
 };

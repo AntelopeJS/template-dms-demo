@@ -15,8 +15,8 @@ import {
 import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { helioOperationsCategory } from "../category";
 import { helioQuickActions } from "../shared/quick-actions";
-import { setTicketWriteAction } from "./access";
-import { logTicketResolved } from "./activity";
+import { assertCanRun, setTicketWriteAction } from "./access";
+import { logTicketReopened, logTicketResolved } from "./activity";
 import { ticketController } from "./controller";
 import { TicketModel } from "./database";
 import { SERVICE_DESK_PATH, SERVICE_TOPIC } from "./options";
@@ -127,8 +127,8 @@ export class PageHelioService extends PageController(
       },
     },
     rowActions: ticketRowActions,
-    // A ticket resolved or closed from its form reaches the activity feed,
-    // as the "Resolve" bulk action does.
+    // A ticket resolved, closed or reopened from its form reaches the
+    // activity feed, as the "Resolve" and "Reopen" actions do.
     // Every write first reads the service levels of the Settings page, which
     // the priority sets the SLA from.
     guards: {
@@ -137,9 +137,12 @@ export class PageHelioService extends PageController(
       },
       edit: async (_ctx, { id, body, current }) => {
         await refreshSlaHours();
-        return isClosing(body.status) && !isClosing(current.status)
-          ? () => logTicketResolved(id)
-          : undefined;
+        if (body.status === undefined) return undefined;
+        if (isClosing(body.status) && !isClosing(current.status))
+          return () => logTicketResolved(id);
+        if (!isClosing(body.status) && isClosing(current.status))
+          return () => logTicketReopened(id);
+        return undefined;
       },
     },
   });
@@ -169,6 +172,24 @@ export class PageHelioService extends PageController(
 
 // The bulk routes check the table's own edit permission (see access.ts).
 setTicketWriteAction(PageHelioService.table.getAction("edit"));
+
+// The menu badge counts every ticket still open — new, open or waiting for
+// the customer: nobody resolved it yet — the same set as the "Open tickets"
+// figure above the desk, the "Open" view and the team page. One count rather
+// than one badge per status tab, whose counts the menu adds up: read side by
+// side they could disagree. Drawn in warning while new tickets wait for
+// someone to look at them.
+const listTickets = PageHelioService.table.getAction("list");
+PageHelioService.table.navBadge({
+  count: async (ctx, user) => {
+    await assertCanRun(listTickets, ctx, user);
+    const open = (await GetModel(TicketModel).getAll()).filter(
+      (ticket) => !ticket.resolvedAt,
+    );
+    const fresh = open.some((ticket) => ticket.status === "new");
+    return { count: open.length, tone: fresh ? "warning" : "info" };
+  },
+});
 
 QuickAction("helio-new-ticket", {
   category: helioQuickActions,

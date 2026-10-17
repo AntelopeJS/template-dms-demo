@@ -38,9 +38,9 @@ import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import { customerController } from "../crm/controller";
 import { mailTicketsResolved } from "../platform/mailing/send";
 import { siteController } from "../monitoring/controller";
-import { teamController } from "../team/controller";
 import { assertCanWriteTickets } from "./access";
-import { logTicketsResolved } from "./activity";
+import { logTicketsReopened, logTicketsResolved } from "./activity";
+import { ticketAssigneeController } from "./assignees";
 import {
   Ticket,
   TicketModel,
@@ -99,7 +99,7 @@ class ticketDataAPI extends DataController(
     }),
     filterable: true,
     display: new DefaultDisplays.MonoDisplay(),
-    size: 100,
+    size: 90,
   })
   // Left empty on a new ticket, it takes the next number (see numbering.ts).
   @Mandatory("edit")
@@ -118,7 +118,7 @@ class ticketDataAPI extends DataController(
       maxLength: 160,
     }),
     filterable: true,
-    size: 300,
+    size: 205,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -134,7 +134,7 @@ class ticketDataAPI extends DataController(
       placeholder: "$helio.service.tickets.placeholders.customer",
     }),
     filterable: true,
-    size: 200,
+    size: 160,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -163,6 +163,9 @@ class ticketDataAPI extends DataController(
     type: new DefaultDataTypes.SelectType({ items: [...TICKET_CATEGORIES] }),
     filterable: true,
     defaultValue: "other",
+    // Hidden by default so the desk fits a 1440 px screen; the quick filter
+    // and the column picker still offer it.
+    isVisible: false,
     size: 170,
   })
   @Mandatory("new", "edit")
@@ -188,7 +191,7 @@ class ticketDataAPI extends DataController(
       },
       liveValues: ["urgent"],
     }),
-    size: 120,
+    size: 125,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -225,7 +228,7 @@ class ticketDataAPI extends DataController(
       subTone: "muted",
       liveValues: ["new"],
     }),
-    size: 170,
+    size: 150,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -255,22 +258,27 @@ class ticketDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.service.tickets.columns.assignee",
+    // Picked among the technicians and the office (see assignees.ts), in
+    // the form and in the desk's quick filter alike.
     type: new DefaultDataTypes.RelationType({
-      dataApiController: teamController,
+      dataApiController: ticketAssigneeController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
       placeholder: "$helio.service.tickets.placeholders.assignee",
       deselectable: true,
     }),
     filterable: true,
-    size: 180,
+    size: 150,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
   declare assignee: string;
 
-  @Listable()
+  // The promised resolution time only matters while the ticket is open: a
+  // resolved or closed one shows a dash instead of a countdown ("In 3 days").
+  // Filters and sorting still read the stored date.
+  @Listable(["slaDueAt", "status"])
   @Sortable()
-  @Exported()
+  @Exported(["slaDueAt", "status"])
   @Column({
     name: "$helio.service.tickets.columns.slaDueAt",
     type: new DefaultDataTypes.DateType(),
@@ -278,11 +286,15 @@ class ticketDataAPI extends DataController(
     display: new DefaultDisplays.RelativeDateDisplay({
       soonWithinMs: 4 * HOUR_MS,
       soonTone: "warning",
+      emptyLabel: "—",
+      emptyTone: "dimmed",
     }),
-    size: 130,
+    size: 115,
   })
   @Access(AccessMode.ReadOnly)
-  declare slaDueAt: Date;
+  get slaDueAt(): Date | null {
+    return CLOSED.includes(this.table.status) ? null : this.table.slaDueAt;
+  }
 
   @Listable()
   @Sortable()
@@ -295,7 +307,10 @@ class ticketDataAPI extends DataController(
       nowWithinMs: 10 * 60 * 1000,
       nowLabel: "$helio.service.tickets.justNow",
     }),
-    size: 130,
+    // Hidden by default so the desk fits a 1440 px screen: the list is
+    // sorted newest first, and the column picker brings it back.
+    isVisible: false,
+    size: 115,
   })
   @Access(AccessMode.ReadOnly)
   declare createdAt: Date;
@@ -419,6 +434,32 @@ class ticketDataAPI extends DataController(
     void mailTicketsResolved(open.map(({ _id }) => _id));
     await logTicketsResolved(open);
     return this.published(open.map(({ _id }) => _id));
+  }
+
+  // "Reopen" on a resolved or closed ticket: it is open again, its
+  // resolution date cleared, and the activity feed says so. Tickets still
+  // open are left as they are.
+  @Post("bulk/reopen")
+  async bulkReopen(
+    @Context() ctx: RequestContext,
+    @AuthUser() user: User,
+  ): Promise<{ count: number }> {
+    await assertCanWriteTickets(ctx, user);
+    const ids = await resolveBulkRowIds(this, ctx, user);
+    const closed = (await this.loadTickets(ids)).filter(({ status }) =>
+      CLOSED.includes(status),
+    );
+    await Promise.all(
+      closed.map(({ _id }) =>
+        // null clears the stored date (undefined would leave it in place).
+        this.model.update(_id, {
+          status: "open",
+          resolvedAt: null as unknown as undefined,
+        }),
+      ),
+    );
+    await logTicketsReopened(closed);
+    return this.published(closed.map(({ _id }) => _id));
   }
 
   // A selection-bar run also sends the row token of the actions, unresolved

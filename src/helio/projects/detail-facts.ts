@@ -120,13 +120,16 @@ export function projectFacts(bundle: ProjectBundle): KeyValueListItem[] {
       to: directionsUrl(address),
       copyValue: address,
     },
+    // A battery or a charger has no peak power: a dash, not "0 kWp".
     {
       id: "capacity",
       label: "$helio.projects.columns.capacityKwp",
-      value: {
-        key: "$helio.projects.detail.facts.capacity",
-        params: { kwp: { type: "number", value: project.capacityKwp ?? 0 } },
-      },
+      value: project.capacityKwp
+        ? {
+            key: "$helio.projects.detail.facts.capacity",
+            params: { kwp: { type: "number", value: project.capacityKwp } },
+          }
+        : null,
     },
     {
       id: "budget",
@@ -237,10 +240,14 @@ export function projectStats(bundle: ProjectBundle): StatGroupItem[] {
         params: { done: count(counts.done), total: count(counts.total) },
         plural: "total",
       },
-      detail: {
-        key: "$helio.projects.detail.stats.tasksOpen",
-        params: { count: count(counts.todo + counts.doing) },
-      },
+      // "Nothing left to do" only once there were tasks to do.
+      detail:
+        counts.total === 0
+          ? "$helio.projects.detail.stats.noTasks"
+          : {
+              key: "$helio.projects.detail.stats.tasksOpen",
+              params: { count: count(counts.todo + counts.doing) },
+            },
       to: `${projectPageUrl(project._id)}?section=tasks`,
     },
     {
@@ -253,12 +260,14 @@ export function projectStats(bundle: ProjectBundle): StatGroupItem[] {
         params: { amount: money(totals.invoiced) },
       },
       detail:
-        totals.due > 0
-          ? {
-              key: "$helio.projects.detail.stats.due",
-              params: { amount: money(totals.due) },
-            }
-          : "$helio.projects.detail.stats.settled",
+        invoices.length === 0
+          ? "$helio.projects.detail.stats.noInvoices"
+          : totals.due > 0
+            ? {
+                key: "$helio.projects.detail.stats.due",
+                params: { amount: money(totals.due) },
+              }
+            : "$helio.projects.detail.stats.settled",
       detailTone: totals.overdue > 0 ? "error" : "neutral",
       to: `${projectPageUrl(project._id)}?section=invoices`,
     },

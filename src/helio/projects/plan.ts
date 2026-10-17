@@ -79,6 +79,20 @@ function statusOf(index: number): ProjectStatus {
   return "on_hold";
 }
 
+// The first two booked projects that are direct orders (even indexes: no
+// deal pushes their start back) start within the coming working week, so
+// the planning and the "This week" view always open on a site to prepare.
+const SOON_STARTS = 2;
+const SOON_WORKDAYS = 4;
+
+function startsSoon(index: number): boolean {
+  if (statusOf(index) !== "scheduled" || index % 2 === 1) return false;
+  let first = 1;
+  while (statusOf(first) !== "scheduled") first += 1;
+  const evenFirst = first % 2 === 0 ? first : first + 1;
+  return index < evenFirst + SOON_STARTS * 2;
+}
+
 // Half of the projects come from the 40 won deals (odd indexes); the others
 // are direct orders from existing customers (a battery, a charger, a roof).
 function customerOf(
@@ -152,7 +166,15 @@ function nextWorkingDay(): Date {
 }
 
 // The dates of a project that is not one of the finished ones, by status.
-function currentDates(rng: Rng, status: ProjectStatus, days: number): Dates {
+function currentDates(
+  rng: Rng,
+  status: ProjectStatus,
+  days: number,
+  soon: boolean,
+): Dates {
+  if (soon) {
+    return span(addWorkdays(nextWorkingDay(), rng.int(0, SOON_WORKDAYS)), days);
+  }
   switch (status) {
     case "inspection": {
       const end = previousWorkday(dayAt(-rng.int(2, 9)));
@@ -202,7 +224,7 @@ function draftProject(rng: Rng, index: number, doneStart?: Date): Draft {
   const days = workdays(rng, type, business);
   const planned = doneStart
     ? span(doneStart, days)
-    : currentDates(rng, status, days);
+    : currentDates(rng, status, days, startsSoon(index));
   const earliest = earliestStart(deal);
   const dates =
     earliest && planned.start < earliest ? span(earliest, days) : planned;

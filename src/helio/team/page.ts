@@ -159,10 +159,9 @@ export class PageHelioTeam extends PageController(
     grouped: { groupByField: "role", collapsible: true, count: true },
     card: { fields: ["role", "region", "online", "skills"] },
     defaultSort: { field: "name" },
-    quickFilters: [
-      { field: "region", label: "$helio.team.columns.region" },
-      { field: "online", label: "$helio.team.columns.online" },
-    ],
+    // Availability is the "Available" view rather than a quick filter: a
+    // quick filter on a status column reads "Yes / No", not its labels.
+    quickFilters: [{ field: "region", label: "$helio.team.columns.region" }],
     expandable: {
       fields: [
         "skills",

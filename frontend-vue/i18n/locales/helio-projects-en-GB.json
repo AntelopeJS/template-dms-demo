@@ -19,7 +19,7 @@
 				"notes": "Notes"
 			},
 			"placeholders": {
-				"code": "CH-0181",
+				"code": "Leave empty for the next code",
 				"name": "Solar installation 6.2 kWp — Dupont family",
 				"customer": "Choose a customer",
 				"quote": "Link the signed quote",
@@ -95,7 +95,10 @@
 					"description": "The project and its planning will be removed for the whole team.",
 					"confirm": "Delete the project"
 				},
-				"add": "New project"
+				"add": "New project",
+				"filters": {
+					"customer": "Customer"
+				}
 			},
 			"views": {
 				"planning": "Planning",
@@ -166,7 +169,9 @@
 					"invoiced": "Invoiced incl. VAT",
 					"money": "{amount}",
 					"due": "{amount} still due",
-					"settled": "Nothing left to pay"
+					"settled": "Nothing left to pay",
+					"noTasks": "No tasks",
+					"noInvoices": "No invoices"
 				},
 				"banner": {
 					"onHoldTitle": "This project is on hold",
@@ -266,6 +271,10 @@
 			"quickActions": {
 				"newProject": "New installation project",
 				"planning": "Installation planning"
+			},
+			"rules": {
+				"codeTaken": "Another project already uses this code. Leave it empty to take the next one.",
+				"endBeforeStart": "The planned end cannot come before the start."
 			}
 		}
 	}

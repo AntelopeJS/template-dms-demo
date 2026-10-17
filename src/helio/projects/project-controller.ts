@@ -28,6 +28,7 @@ import { quoteController } from "../sales/controller";
 import { DAY_MS } from "../shared/seed";
 import { teamController } from "../team/controller";
 import { Project, ProjectModel } from "./database";
+import { withoutCodeOnDuplicate, withProjectCode } from "./project-rules";
 import { projectTaskCounts } from "./task-counts";
 
 // What Helio installs. Exported for the tabs, filters and charts.
@@ -113,7 +114,11 @@ export const PROJECT_STATUSES = [
 @RegisterDataController()
 class projectDataAPI extends DataController(
   Project,
-  TableViewRoutes.All,
+  {
+    ...TableViewRoutes.All,
+    new: withProjectCode(TableViewRoutes.New),
+    get: withoutCodeOnDuplicate(TableViewRoutes.Get),
+  },
   Controller("/api/helio/projects"),
 ) {
   @ModelReference()
@@ -141,7 +146,9 @@ class projectDataAPI extends DataController(
     display: new DefaultDisplays.MonoDisplay({ copy: true }),
     size: 110,
   })
-  @Mandatory("new", "edit")
+  // Left empty on a new project, it takes the next code; the list page's
+  // guards refuse a code already used (see project-rules.ts).
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare code: string;
 
@@ -366,7 +373,7 @@ class projectDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.projects.columns.budget",
-    type: new DefaultDataTypes.PriceType({ step: 100 }),
+    type: new DefaultDataTypes.PriceType(),
     filterable: true,
     size: 130,
   })

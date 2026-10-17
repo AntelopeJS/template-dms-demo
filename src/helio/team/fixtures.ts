@@ -156,6 +156,11 @@ const DETAILS: Record<string, TeamDetail> = {
   },
 };
 
+/** Every skill a seeded member has, once each, for the form's suggestions. */
+export const SEEDED_SKILLS: readonly string[] = [
+  ...new Set(Object.values(DETAILS).flatMap((detail) => detail.skills)),
+];
+
 export function buildTeamMembers(): TeamMemberSeed[] {
   return TEAM_ROSTER.map((member) => {
     const detail = DETAILS[member.id];

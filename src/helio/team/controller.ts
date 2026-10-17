@@ -25,6 +25,7 @@ import {
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
 import { TeamMember, TeamMemberModel } from "./database";
+import { SEEDED_SKILLS } from "./fixtures";
 
 // Option lists exported for the pages (tabs, views, quick filters) so the
 // values, labels and colours stay the same everywhere.
@@ -79,23 +80,35 @@ export const TEAM_REGIONS = [
   },
 ] as const;
 
-// Suggested while typing; skills stay free text (one word per tag, since a
-// space ends a tag).
+// Suggested while typing: the skills the team already has, plus a few
+// common ones. Skills stay free text (one word per tag, since a space ends a
+// tag).
 const SKILL_SUGGESTIONS = [
-  "Pose-PV",
-  "Toiture",
-  "Onduleurs",
-  "Batteries",
-  "Bornes-VE",
-  "RGIE",
-  "Monitoring",
-  "Entretien",
-  "Résidentiel",
-  "Entreprises",
-  "Primes",
-  "Planification",
-  "Facturation",
-];
+  ...new Set([
+    ...SEEDED_SKILLS,
+    "Pose-PV",
+    "Toiture",
+    "Onduleurs",
+    "Batteries",
+    "Bornes-VE",
+    "RGIE",
+    "Monitoring",
+    "Entretien",
+  ]),
+].sort((a, b) => a.localeCompare(b, "fr"));
+
+// The availability's labels and colours, and the text beside its box in the
+// forms (`label`, which the checkbox control reads from the same options).
+const ONLINE_STATUS = {
+  onlineLabel: "$helio.team.status.online",
+  offlineLabel: "$helio.team.status.offline",
+  onlineColor: "success",
+  offlineColor: "neutral",
+  label: "$helio.team.form.online_label",
+};
+
+/** Planning colour of a new member until someone picks one. */
+const DEFAULT_COLOR = "#0284c7";
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
@@ -232,13 +245,9 @@ class teamDataAPI extends DataController(
   @Column({
     name: "$helio.team.columns.online",
     group: "availability",
-    type: new StatusType({
-      onlineLabel: "$helio.team.status.online",
-      offlineLabel: "$helio.team.status.offline",
-      onlineColor: "success",
-      offlineColor: "neutral",
-    }),
+    type: new StatusType(ONLINE_STATUS),
     filterable: true,
+    defaultValue: true,
   })
   @Access(AccessMode.ReadWrite)
   declare online: boolean;
@@ -280,6 +289,7 @@ class teamDataAPI extends DataController(
     name: "$helio.team.columns.color",
     group: "availability",
     type: new DefaultDataTypes.ColorType(),
+    defaultValue: DEFAULT_COLOR,
     isVisible: false,
   })
   @Optional()

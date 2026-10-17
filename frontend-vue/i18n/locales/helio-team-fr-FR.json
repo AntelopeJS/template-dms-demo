@@ -68,7 +68,8 @@
 				"on_site_value": "{onSite} / {total}",
 				"on_site_detail": "Aucun chantier en cours aujourd'hui | {count} chantier en cours aujourd'hui | {count} chantiers en cours aujourd'hui",
 				"per_tech": "Tickets ouverts par technicien",
-				"per_tech_detail": "Tous les tickets ouverts sont attribués | {count} ticket ouvert non attribué | {count} tickets ouverts non attribués"
+				"per_tech_detail": "Tous les tickets ouverts sont attribués | {count} ticket ouvert non attribué | {count} tickets ouverts non attribués",
+				"on_site_detail_weekend": "Week-end : aucun chantier en cours | Week-end : {count} chantier en cours, reprise lundi | Week-end : {count} chantiers en cours, reprise lundi"
 			},
 			"load": {
 				"tickets_title": "Charge SAV",
@@ -93,7 +94,8 @@
 				"tickets_value": "aucun ticket ouvert | {count} ouvert | {count} ouverts",
 				"tickets_technicians": "{count} chez les techniciens",
 				"tickets_office": "{count} à l'administration",
-				"tickets_unassigned": "{count} non attribués"
+				"tickets_unassigned": "{count} non attribués",
+				"on_site_hint_weekend": "week-end | week-end, reprise lundi | week-end, reprise lundi"
 			},
 			"table": {
 				"caption": "Membres de l'équipe",
@@ -122,7 +124,8 @@
 				"new_description": "Sa fonction et sa région déterminent les chantiers et les tickets qui lui sont confiés.",
 				"edit_title": "Modifier le membre",
 				"edit_description": "Les modifications s'appliquent immédiatement aux plannings et à l'attribution des tickets.",
-				"details_title": "Membre de l'équipe"
+				"details_title": "Membre de l'équipe",
+				"online_label": "Joignable maintenant"
 			},
 			"delete": {
 				"title": "Retirer {name} de l'équipe ?",

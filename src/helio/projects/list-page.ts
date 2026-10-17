@@ -8,6 +8,7 @@ import { helioOperationsCategory } from "../category";
 import { afterProjectEdit } from "./activity-log";
 import { PROJECT_PAGE_URL } from "./links";
 import { projectController } from "./project-controller";
+import { assertEndAfterStart, assertUniqueCode } from "./project-rules";
 
 // The project states still ahead of the crew: the planning leaves out what
 // is finished.
@@ -127,6 +128,16 @@ export class PageHelioProjects extends PageController(
     // one, and the planning reads from this week onwards.
     defaultSort: { field: "plannedStart", desc: false },
     views: { items: PROJECT_VIEWS, defaultView: "planning", userViews: true },
+    // `?customer=<id>` (a customer's "See projects") lists that customer's
+    // projects, shown as a removable chip.
+    queryParamFilters: {
+      customer: {
+        field: "customer",
+        mode: "is",
+        visible: true,
+        label: "$helio.projects.table.filters.customer",
+      },
+    },
     quickFilters: [
       { field: "type", label: "$helio.projects.table.quickFilters.type" },
       {
@@ -202,10 +213,22 @@ export class PageHelioProjects extends PageController(
         },
       ],
     },
-    // A project moved on site or to done reaches the activity feed.
+    // Every write keeps one project per code and an end on or after the
+    // start (an edit may send only one of the dates). A project moved on site
+    // or to done reaches the activity feed.
     guards: {
-      edit: (_ctx, { id, body, current }) =>
-        afterProjectEdit(id, body.status, current.status),
+      new: async (_ctx, { body }) => {
+        assertEndAfterStart(body.plannedStart, body.plannedEnd);
+        await assertUniqueCode(body.code);
+      },
+      edit: async (_ctx, { id, body, current }) => {
+        assertEndAfterStart(
+          body.plannedStart ?? current.plannedStart,
+          body.plannedEnd ?? current.plannedEnd,
+        );
+        if (body.code !== undefined) await assertUniqueCode(body.code, id);
+        return afterProjectEdit(id, body.status, current.status);
+      },
     },
   });
 }

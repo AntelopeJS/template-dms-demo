@@ -32,8 +32,8 @@ import {
 } from "./detail-facts";
 import { PageHelioProject } from "./detail-page";
 import { quoteFacts, quoteLines } from "./detail-quote";
-import { ProjectModel, ProjectTaskModel } from "./database";
-import { directionsUrl, PROJECT_DETAIL_API } from "./links";
+import { type Project, ProjectModel, ProjectTaskModel } from "./database";
+import { directionsUrl, PROJECT_DETAIL_API, PROJECTS_PAGE_URL } from "./links";
 import { PageHelioProjects } from "./list-page";
 import { PROJECTS_LOCATION, TASKS_LOCATION } from "./topics";
 
@@ -128,7 +128,7 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     return invoicingMeter(await loadBundle(id));
   }
 
-  // The tab counters: tasks, history entries and invoices.
+  // The tab counters: tasks, history entries, invoices and the quote.
   @Get(":id/badges")
   async badges(
     @AuthUserWithPermission(PageHelioProject) _user: User,
@@ -140,7 +140,8 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
       tasks: bundle.tasks.length,
       activity: activity.count,
       invoices: bundle.invoices.length,
-      quote: bundle.quote ? bundle.quote.lines.length : 0,
+      // The signed quote: one, or none yet (not its line count).
+      quote: bundle.quote ? 1 : 0,
     };
   }
 
@@ -180,10 +181,15 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     @AuthUserWithPermission(PageHelioProject) _user: User,
     @Parameter("id", "param") id: string,
   ) {
-    const project = await loadProject(id);
+    // The header buttons stay on a page whose project is gone (the layout
+    // cannot know the path's id): back to the projects list then.
+    const project = await GetModel(ProjectModel).get(id);
+    const target = project
+      ? directionsUrl(addressLine(project))
+      : PROJECTS_PAGE_URL;
     return new HTTPResult(
       200,
-      redirectPage(directionsUrl(addressLine(project))),
+      redirectPage(target),
       "text/html; charset=utf-8",
     );
   }
@@ -195,7 +201,17 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     @AuthUserWithPermission(editProjects) _user: User,
     @Parameter("id", "param") id: string,
   ): Promise<ConfirmDialog> {
-    const project = await loadProject(id);
+    // The header buttons stay on a page whose project is gone: the dialog
+    // says so instead of failing on a 404.
+    const project = await GetModel(ProjectModel).get(id);
+    if (!project) {
+      return {
+        title: "$helio.projects.detail.notFoundTitle",
+        description: "$helio.projects.detail.notFoundDescription",
+        icon: "i-ph-solar-panel",
+        blocked: true,
+      };
+    }
     const params = { code: project.code, name: project.name };
     if (project.status === "done") {
       return {
@@ -246,7 +262,9 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
   }
 
   // Closes the project: its open tasks are done and its end date becomes
-  // today, the day the installation was handed over.
+  // today, the day the installation was handed over. A start still ahead
+  // (a project put on site early) moves to today too, so the project never
+  // ends before it starts.
   @Post(":id/done")
   async markDone(
     @AuthUserWithPermission(editProjects) _user: User,
@@ -263,10 +281,13 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     await Promise.all(
       open.map((task) => tasks.update(task._id, { status: "done" })),
     );
-    await GetModel(ProjectModel).update(id, {
-      status: "done",
-      plannedEnd: new Date(),
-    });
+    const now = new Date();
+    const changes: Partial<Project> = { status: "done", plannedEnd: now };
+    // A project finished before its planned start started today.
+    if (new Date(project.plannedStart).getTime() > now.getTime()) {
+      changes.plannedStart = now;
+    }
+    await GetModel(ProjectModel).update(id, changes);
     await announceChanges(
       id,
       open.map((task) => task._id),

@@ -7,6 +7,7 @@ import {
   BlockFunctions,
   Card,
   FormEvents,
+  FormFunctions,
   Grid,
   GridRow,
   KeyValueList,
@@ -78,6 +79,18 @@ export function overviewPanel() {
   );
 }
 
+// Fields of a task its forms leave out on the project page: its position,
+// which the drag handle sets, and its project, the page's own (filled from
+// the URL on creation). FIELD_CHANGE fires for every field once the form
+// has loaded, so a watch keyed on the status (which always holds a value,
+// "todo" on a new task) hides them from the start.
+const TASK_FORM_HIDDEN = ["position", "project"].map((field) => ({
+  event: FormEvents.FIELD_CHANGE,
+  functionId: FormFunctions.SET_FIELD_HIDDEN,
+  params: { targetField: field, setHidden: true },
+  onParam: [{ key: "fieldId", value: "status" }],
+}));
+
 /**
  * The project's tasks, in the order the crew works through them. The table
  * lists only this project's tasks (`routeParamFilters`), and a task added
@@ -125,6 +138,7 @@ export function tasksPanel() {
         edit: { displayName: "$helio.projects.detail.tasks.editTitle" },
       },
     },
+    formWatches: { new: TASK_FORM_HIDDEN, edit: TASK_FORM_HIDDEN },
     guards: { new: newProjectTaskGuard },
     rowActions: {
       add: { isEnabled: true, label: "$helio.projects.detail.tasks.add" },

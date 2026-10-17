@@ -47,13 +47,8 @@ function projectPeople(project: Project): Set<string> {
 const isWeekend = (date: Date): boolean =>
   date.getDay() === 0 || date.getDay() === 6;
 
-/**
- * Projects whose crew is on site today: started, not yet over. Crews do not
- * work at weekends, so a site spanning one stands still on Saturday and
- * Sunday.
- */
-function sitesToday(rows: WorkloadRows): Project[] {
-  if (isWeekend(rows.now)) return [];
+/** Projects running now: on site, started, not yet over. */
+function runningSites(rows: WorkloadRows): Project[] {
   const now = rows.now.getTime();
   return rows.projects.filter(
     (project) =>
@@ -61,6 +56,29 @@ function sitesToday(rows: WorkloadRows): Project[] {
       new Date(project.plannedStart).getTime() <= now &&
       new Date(project.plannedEnd).getTime() >= now,
   );
+}
+
+/**
+ * Projects whose crew is on site today. Crews do not work at weekends, so a
+ * site spanning one stands still on Saturday and Sunday.
+ */
+function sitesToday(rows: WorkloadRows): Project[] {
+  return isWeekend(rows.now) ? [] : runningSites(rows);
+}
+
+/**
+ * What the "on site" figures say under the count: the sites worked on today,
+ * or at a weekend the running ones that resume on Monday (nobody is on site,
+ * but the projects are not over).
+ */
+function onSiteDetail(rows: WorkloadRows, key: string): ComposedText {
+  if (isWeekend(rows.now)) {
+    return {
+      key: `${key}_weekend`,
+      params: { count: count(runningSites(rows).length) },
+    };
+  }
+  return { key, params: { count: count(sitesToday(rows).length) } };
 }
 
 function peopleOnSite(rows: WorkloadRows): Set<string> {
@@ -124,10 +142,7 @@ export function teamStats(rows: WorkloadRows): StatGroupItem[] {
         key: "$helio.team.stats.on_site_value",
         params: { onSite: onSite.length, total: technicians.length },
       },
-      detail: {
-        key: "$helio.team.stats.on_site_detail",
-        params: { count: count(sitesToday(rows).length) },
-      },
+      detail: onSiteDetail(rows, "$helio.team.stats.on_site_detail"),
       to: PROJECTS_URL,
     },
     {
@@ -228,10 +243,7 @@ export function onSiteMeter(rows: WorkloadRows): MeterProps {
   return {
     value: onSite.length,
     max: techIds.size,
-    hint: {
-      key: "$helio.team.capacity.on_site_hint",
-      params: { count: count(sitesToday(rows).length) },
-    },
+    hint: onSiteDetail(rows, "$helio.team.capacity.on_site_hint"),
   };
 }
 
