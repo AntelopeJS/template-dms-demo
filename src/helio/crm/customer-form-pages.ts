@@ -77,14 +77,15 @@ export class PageHelioCustomerNew extends PageController(
   },
   FormPageLayout(),
 ) {
-  // Saved, the list opens on the new customer's quick view.
+  // Saved, the list opens on the new customer's quick view: the data API's
+  // `new` route answers the ids it inserted (`["<id>"]`), hence the token
+  // `response.0`. The page heading already names the form: the card carries
+  // no title of its own.
   static form = withBusinessFields(
     ResourceForm(customerController, {
       mode: "new",
-      title: "$helio.crm.customers.form.newTitle",
-      description: "$helio.crm.customers.form.newDescription",
       submitLabel: "$helio.crm.customers.form.create",
-      redirectOnSuccess: `${CUSTOMERS_URL}?record={{response._id}}`,
+      redirectOnSuccess: `${CUSTOMERS_URL}?record={{response.0}}`,
     }),
   );
 }
@@ -106,7 +107,6 @@ export class PageHelioCustomerEdit extends PageController(
   static form = withBusinessFields(
     ResourceForm(customerController, {
       mode: "edit",
-      title: "$helio.crm.customers.form.editTitle",
       rowId: ROUTE_PARAM_ROW_ID,
       labelKey: "name",
     }),

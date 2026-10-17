@@ -178,7 +178,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-02",
     sku: "PV-MONO-430",
-    name: "Helio Mono 430 W Black",
+    name: "Helio Mono 430 W noir intégral",
     category: "cat-panels-mono",
     price: 219,
     power: 430,
@@ -214,7 +214,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-06",
     sku: "INV-STR-5K",
-    name: "String inverter 5 kW",
+    name: "Onduleur string 5 kW",
     category: "cat-inverters-string",
     price: 1290,
     power: 5000,
@@ -223,7 +223,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-07",
     sku: "INV-STR-10K",
-    name: "String inverter 10 kW",
+    name: "Onduleur string 10 kW",
     category: "cat-inverters-string",
     price: 1890,
     power: 10000,
@@ -232,7 +232,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-08",
     sku: "INV-STR-30K",
-    name: "Three-phase inverter 30 kW",
+    name: "Onduleur triphasé 30 kW",
     category: "cat-inverters-string",
     price: 3990,
     power: 30000,
@@ -241,7 +241,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-09",
     sku: "INV-HYB-6K",
-    name: "Hybrid inverter 6 kW",
+    name: "Onduleur hybride 6 kW",
     category: "cat-inverters-hybrid",
     price: 2190,
     power: 6000,
@@ -250,7 +250,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-10",
     sku: "INV-HYB-10K",
-    name: "Hybrid inverter 10 kW",
+    name: "Onduleur hybride 10 kW",
     category: "cat-inverters-hybrid",
     price: 2890,
     power: 10000,
@@ -259,7 +259,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-11",
     sku: "INV-MIC-800",
-    name: "Micro-inverter 800 W",
+    name: "Micro-onduleur 800 W",
     category: "cat-inverters-micro",
     price: 179,
     power: 800,
@@ -268,7 +268,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-12",
     sku: "BAT-5",
-    name: "Home battery 5 kWh",
+    name: "Batterie domestique 5 kWh",
     category: "cat-storage-battery",
     price: 2490,
     power: 5000,
@@ -277,7 +277,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-13",
     sku: "BAT-10",
-    name: "Home battery 10 kWh",
+    name: "Batterie domestique 10 kWh",
     category: "cat-storage-battery",
     price: 4290,
     power: 10000,
@@ -286,7 +286,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-14",
     sku: "BAT-15",
-    name: "Home battery 15 kWh",
+    name: "Batterie domestique 15 kWh",
     category: "cat-storage-battery",
     price: 5990,
     power: 15000,
@@ -295,7 +295,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-15",
     sku: "EV-WB-7",
-    name: "Wallbox 7.4 kW",
+    name: "Borne murale 7,4 kW",
     category: "cat-ev-wallbox",
     price: 890,
     power: 7400,
@@ -304,7 +304,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-16",
     sku: "EV-WB-11",
-    name: "Wallbox 11 kW smart",
+    name: "Borne murale 11 kW connectée",
     category: "cat-ev-wallbox",
     price: 1190,
     power: 11000,
@@ -313,7 +313,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-17",
     sku: "EV-WB-22",
-    name: "Wallbox 22 kW business",
+    name: "Borne murale 22 kW professionnelle",
     category: "cat-ev-wallbox",
     price: 1690,
     power: 22000,
@@ -322,7 +322,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-18",
     sku: "SRV-INST-RES",
-    name: "Residential installation",
+    name: "Installation résidentielle",
     category: "cat-services-install",
     price: 1450,
     power: 0,
@@ -331,7 +331,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-19",
     sku: "SRV-INST-COM",
-    name: "Commercial installation (per kWp)",
+    name: "Installation professionnelle (par kWc)",
     category: "cat-services-install",
     price: 180,
     power: 0,
@@ -340,7 +340,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-20",
     sku: "SRV-ROOF",
-    name: "Roof survey and structural check",
+    name: "Étude de toiture et contrôle de structure",
     category: "cat-services-install",
     price: 290,
     power: 0,
@@ -349,7 +349,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-21",
     sku: "SRV-HOUR",
-    name: "Technician hour",
+    name: "Heure de technicien",
     category: "cat-services-maintenance",
     price: 75,
     power: 0,
@@ -358,7 +358,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-22",
     sku: "SRV-MAINT-1Y",
-    name: "Maintenance contract (yearly)",
+    name: "Contrat d'entretien (annuel)",
     category: "cat-services-maintenance",
     price: 149,
     power: 0,
@@ -367,7 +367,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-23",
     sku: "SRV-MON-1Y",
-    name: "Monitoring subscription (yearly)",
+    name: "Abonnement monitoring (annuel)",
     category: "cat-services-maintenance",
     price: 59,
     power: 0,
@@ -376,7 +376,7 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-24",
     sku: "SRV-CLEAN",
-    name: "Panel cleaning",
+    name: "Nettoyage des panneaux",
     category: "cat-services-maintenance",
     price: 4,
     power: 0,

@@ -52,14 +52,15 @@ const HIDDEN_ON_NEW = { new: ReadonlyBehaviorType.hidden };
 
 // A line slot of the expanded row: hidden from the grid and the forms, read
 // for the band only.
-const lineSlot = (name: string) => ({
+const lineSlot = (name: string, subField?: string) => ({
   name,
   type: new DefaultDataTypes.StringType(),
   isVisible: false,
   validate: false,
   readonlyBehavior: ReadonlyBehaviorType.hidden,
-  // Writes the line's composed text ("12 × … · €2,268.00").
-  display: new DefaultDisplays.TwoLineDisplay({}),
+  // Writes the line's composed text ("12 × … · €2,268.00"), and the next
+  // line under it when `subField` names it.
+  display: new DefaultDisplays.TwoLineDisplay({ subField }),
 });
 
 // Not exported on purpose: emitting a .d.ts for this class would require
@@ -117,6 +118,20 @@ class quoteDataAPI extends DataController(
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
   declare customer: string;
+
+  // The customer's name, stored with the quote (customer-names.ts keeps it
+  // in step) so the search box finds a quote by its customer: a search reads
+  // the stored fields, not the joined customer.
+  @Searchable()
+  @Column({
+    name: "$helio.sales.quotes.columns.customerName",
+    type: new DefaultDataTypes.StringType(),
+    validate: false,
+    isVisible: false,
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
+  })
+  @Access(AccessMode.ReadOnly)
+  declare customerName: string;
 
   @Listable()
   @Column({
@@ -344,31 +359,25 @@ class quoteDataAPI extends DataController(
     );
   }
 
+  // The expanded row's lines, in two slots that always have something to
+  // say: the first line with the second under it, then the rest.
   @Listable(["lines"])
-  @Column(lineSlot("$helio.sales.quotes.columns.line1"))
+  @Column(lineSlot("$helio.sales.quotes.columns.firstLines", "secondLine"))
   @Access(AccessMode.ReadOnly)
-  get line1(): ComposedText | null {
+  get firstLine(): ComposedText | null {
     return lineText(this.table.lines, 0);
   }
 
   @Listable(["lines"])
-  @Column(lineSlot("$helio.sales.quotes.columns.line2"))
   @Access(AccessMode.ReadOnly)
-  get line2(): ComposedText | null {
+  get secondLine(): ComposedText | null {
     return lineText(this.table.lines, 1);
-  }
-
-  @Listable(["lines"])
-  @Column(lineSlot("$helio.sales.quotes.columns.line3"))
-  @Access(AccessMode.ReadOnly)
-  get line3(): ComposedText | null {
-    return lineText(this.table.lines, 2);
   }
 
   @Listable(["lines"])
   @Column(lineSlot("$helio.sales.quotes.columns.otherLines"))
   @Access(AccessMode.ReadOnly)
-  get otherLines(): ComposedText | null {
+  get otherLines(): ComposedText {
     return otherLinesText(this.table.lines);
   }
 

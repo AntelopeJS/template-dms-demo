@@ -24,9 +24,9 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
-import { teamController } from "../team/controller";
 import { customerController, LEAD_SOURCES } from "./customer-controller";
 import { Deal, type DealStage, DealModel } from "./database";
+import { salesRepController } from "./sales-rep-controller";
 
 // The pipeline, in order. Exported for the kanban columns, tabs and views.
 export const DEAL_STAGES = [
@@ -194,6 +194,20 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare customer: string;
 
+  // The customer's name, stored with the deal (deal-derived.ts keeps it in
+  // step) so the search box finds a deal by its customer: a search reads the
+  // stored fields, not the joined customer.
+  @Searchable()
+  @Column({
+    name: "$helio.crm.deals.columns.customerName",
+    type: new DefaultDataTypes.StringType(),
+    validate: false,
+    isVisible: false,
+    readonlyBehavior: ReadonlyBehaviorType.hidden,
+  })
+  @Access(AccessMode.ReadOnly)
+  declare customerName: string;
+
   @Listable()
   @Sortable()
   @Exported()
@@ -226,7 +240,7 @@ class dealDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.crm.deals.columns.amount",
-    type: new DefaultDataTypes.PriceType({ step: 100 }),
+    type: new DefaultDataTypes.PriceType(),
     filterable: true,
     size: 130,
   })
@@ -285,7 +299,8 @@ class dealDataAPI extends DataController(
   @Column({
     name: "$helio.crm.deals.columns.owner",
     type: new DefaultDataTypes.RelationType({
-      dataApiController: teamController,
+      // Only the sales reps can own a deal.
+      dataApiController: salesRepController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
       placeholder: "$helio.crm.deals.placeholders.owner",
     }),

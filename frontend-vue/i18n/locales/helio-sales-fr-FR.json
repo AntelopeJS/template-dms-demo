@@ -8,7 +8,7 @@
 				},
 				"table": {
 					"caption": "Devis",
-					"search": "Rechercher un numéro de devis",
+					"search": "Rechercher un numéro de devis ou un client",
 					"count": "{count} devis | {count} devis"
 				},
 				"columns": {
@@ -26,10 +26,9 @@
 					"sentAt": "Envoyé le",
 					"signedAt": "Signé le",
 					"notes": "Notes internes",
-					"line1": "Ligne 1",
-					"line2": "Ligne 2",
-					"line3": "Ligne 3",
-					"otherLines": "Autres lignes"
+					"otherLines": "Autres lignes",
+					"customerName": "Nom du client",
+					"firstLines": "Lignes"
 				},
 				"placeholders": {
 					"customer": "Choisir un client",
@@ -37,7 +36,7 @@
 					"notes": "Accès, type de toiture, modalités de paiement…"
 				},
 				"hints": {
-					"vatRate": "6 % pour une habitation de plus de 10 ans, 21 % pour une entreprise."
+					"vatRate": "6 % pour une habitation privée de plus de 10 ans, 21 % pour une entreprise ou une habitation récente."
 				},
 				"addCustomer": {
 					"title": "Nouveau client",
@@ -78,7 +77,8 @@
 				"expand": {
 					"label": "Lignes et montants",
 					"line": "{qty} × {label} · {amount}",
-					"more": "{count} autre ligne · {amount} | {count} autres lignes · {amount}"
+					"more": "{count} autre ligne · {amount} | {count} autres lignes · {amount}",
+					"none": "Aucune autre ligne"
 				},
 				"footer": {
 					"total": "Total TVAC",
@@ -148,7 +148,8 @@
 					"notFound": "Ce devis n'existe plus.",
 					"notDraft": "Ce devis n'est plus un brouillon.",
 					"notSent": "Ce devis n'est pas en attente de signature.",
-					"noPortalLink": "Un brouillon n'a pas encore de lien de portail : envoyez-le d'abord."
+					"noPortalLink": "Un brouillon n'a pas encore de lien de portail : envoyez-le d'abord.",
+					"businessVat": "Un client entreprise est facturé à 21 % : le taux de 6 % ne vaut que pour une habitation privée de plus de 10 ans."
 				},
 				"quickAction": "Nouveau devis"
 			}

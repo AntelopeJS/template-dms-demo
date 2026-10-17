@@ -48,6 +48,8 @@ export interface DealSeed {
   _id: string;
   title: string;
   customer: string;
+  /** The customer's name, stored so the pipeline search finds it. */
+  customerName: string;
   owner: string;
   stage: DealStage;
   amount: number;
@@ -163,7 +165,13 @@ function address(rng: Rng, locality: Locality): DefaultDataTypes.Address {
     countrySubdivision: locality.province,
     countryCode: "BE",
   };
-  if (rng.chance(0.15)) result.boxNumber = String(rng.int(1, 12));
+  if (rng.chance(0.15)) {
+    // A box never repeats the house number ("10 bte 10" reads as a typo).
+    const box = rng.int(1, 12);
+    result.boxNumber = String(
+      String(box) === result.houseNumber ? (box % 12) + 1 : box,
+    );
+  }
   return result;
 }
 
@@ -342,6 +350,7 @@ function baseDeal({ index, customer, stage, rng }: DealDraft): DealSeed {
     _id: dealId(index),
     title: dealTitle(rng, customer, amount),
     customer: customer._id,
+    customerName: customer.name,
     owner: customer.owner,
     stage,
     amount,

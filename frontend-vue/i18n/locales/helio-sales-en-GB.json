@@ -8,7 +8,7 @@
 				},
 				"table": {
 					"caption": "Quotes",
-					"search": "Search a quote number",
+					"search": "Search a quote number or a customer",
 					"count": "{count} quote | {count} quotes"
 				},
 				"columns": {
@@ -26,10 +26,9 @@
 					"sentAt": "Sent",
 					"signedAt": "Signed",
 					"notes": "Internal notes",
-					"line1": "Line 1",
-					"line2": "Line 2",
-					"line3": "Line 3",
-					"otherLines": "Other lines"
+					"otherLines": "Other lines",
+					"customerName": "Customer name",
+					"firstLines": "Lines"
 				},
 				"placeholders": {
 					"customer": "Choose a customer",
@@ -37,7 +36,7 @@
 					"notes": "Access, roof type, payment terms…"
 				},
 				"hints": {
-					"vatRate": "6% for homes over 10 years old, 21% for businesses."
+					"vatRate": "6% for a private home over 10 years old, 21% for a business or a recent home."
 				},
 				"addCustomer": {
 					"title": "New customer",
@@ -78,7 +77,8 @@
 				"expand": {
 					"label": "Lines and amounts",
 					"line": "{qty} × {label} · {amount}",
-					"more": "{count} more line · {amount} | {count} more lines · {amount}"
+					"more": "{count} more line · {amount} | {count} more lines · {amount}",
+					"none": "No other line"
 				},
 				"footer": {
 					"total": "Total incl. VAT",
@@ -148,7 +148,8 @@
 					"notFound": "This quote no longer exists.",
 					"notDraft": "This quote is no longer a draft.",
 					"notSent": "This quote is not awaiting a signature.",
-					"noPortalLink": "A draft has no portal link yet: send it first."
+					"noPortalLink": "A draft has no portal link yet: send it first.",
+					"businessVat": "A business customer pays 21% VAT: the 6% rate only covers a private home over 10 years old."
 				},
 				"quickAction": "New quote"
 			}

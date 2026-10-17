@@ -83,6 +83,8 @@ export class Deal extends Table {
   @Field("string")
   @Relation({ to: () => Customer })
   declare customer: string;
+  /** The customer's name, kept in step for the search (deal-derived.ts). */
+  @Field("string") declare customerName: string;
   @Index()
   @Field("string")
   @Relation({ to: () => TeamMember })

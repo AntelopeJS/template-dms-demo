@@ -11,6 +11,7 @@ import {
   documentTexts,
   type DocumentLanguage,
 } from "./document-texts";
+import { VAT_BUSINESS } from "./lines";
 import {
   fitText,
   PAGE_HEIGHT,
@@ -294,15 +295,14 @@ function drawTermsAndSignature(
   const { quote } = input;
   const y = top + 96;
   page.text(LEFT, y, f.texts.terms, { size: 9, font: "bold", color: INK });
-  const residential = input.customer?.kind !== "business";
-  f.texts
-    .termLines(f.date(quote.validUntil), residential)
-    .forEach((line, i) => {
-      page.text(LEFT, y + 15 + i * 11.5, fitText(line, 270, 7.5, "regular"), {
-        size: 7.5,
-        color: MUTED,
-      });
+  // The VAT mention follows the rate the quote applies, not the customer.
+  const reducedVat = quote.vatRate < VAT_BUSINESS;
+  f.texts.termLines(f.date(quote.validUntil), reducedVat).forEach((line, i) => {
+    page.text(LEFT, y + 15 + i * 11.5, fitText(line, 270, 7.5, "regular"), {
+      size: 7.5,
+      color: MUTED,
     });
+  });
   const boxX = 340;
   page.rect(boxX, y - 12, RIGHT - boxX, 78, PANEL);
   page.text(boxX + 12, y + 3, f.texts.approval, {

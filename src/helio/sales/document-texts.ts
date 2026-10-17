@@ -25,7 +25,8 @@ export interface DocumentTexts {
   vatLine: (rate: string) => string;
   grandTotal: string;
   terms: string;
-  termLines: (validUntil: string, residential: boolean) => string[];
+  /** `reducedVat`: the quote applies the 6 % rate, not the standard 21 %. */
+  termLines: (validUntil: string, reducedVat: boolean) => string[];
   approval: string;
   approvalHint: string;
   signedOn: (date: string) => string;
@@ -54,12 +55,12 @@ const FR: DocumentTexts = {
   vatLine: (rate) => `TVA ${rate}`,
   grandTotal: "Total TVAC",
   terms: "Conditions",
-  termLines: (validUntil, residential) => [
+  termLines: (validUntil, reducedVat) => [
     `Offre valable jusqu'au ${validUntil}, prix en euros.`,
     "Acompte de 30 % à la commande, solde à la réception de l'installation.",
-    residential
-      ? "TVA à 6 % : habitation de plus de 10 ans, attestation à signer par le client."
-      : "Autoliquidation non applicable : TVA à 21 % facturée.",
+    reducedVat
+      ? "TVA à 6 % : habitation privée de plus de 10 ans, attestation à signer par le client."
+      : "TVA au taux normal de 21 %.",
     "Garantie de pose de 10 ans, garanties fabricant selon les fiches produits.",
   ],
   approval: "Bon pour accord",
@@ -90,12 +91,12 @@ const EN: DocumentTexts = {
   vatLine: (rate) => `VAT ${rate}`,
   grandTotal: "Total incl. VAT",
   terms: "Terms",
-  termLines: (validUntil, residential) => [
+  termLines: (validUntil, reducedVat) => [
     `Offer valid until ${validUntil}, prices in euros.`,
     "30% deposit on order, balance on acceptance of the installation.",
-    residential
-      ? "6% VAT: home over 10 years old, certificate to be signed by the customer."
-      : "No reverse charge: 21% VAT invoiced.",
+    reducedVat
+      ? "6% VAT: private home over 10 years old, certificate to be signed by the customer."
+      : "Standard 21% VAT.",
     "10-year installation warranty, manufacturer warranties as per product sheets.",
   ],
   approval: "Approved",

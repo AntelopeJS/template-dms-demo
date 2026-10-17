@@ -11,22 +11,34 @@ import { helioSalesCategory } from "../category";
 import { helioQuickActions } from "../shared/quick-actions";
 import { CUSTOMER_KINDS, customerController } from "./customer-controller";
 import { countCustomerDeals } from "./customer-deals";
+import { afterCustomerEdit } from "./customer-names";
+import { isValidVatNumber } from "./vat-number";
 import {
   CUSTOMER_DELETE_CONFIRM_URL,
   CUSTOMER_RECORD_URL,
+  INVOICES_URL,
   PIPELINE_URL,
+  PROJECTS_URL,
+  QUOTES_URL,
 } from "./links";
 
 // A business is invoiced with VAT: the form asks for the number (see the
 // watches of customer-form-pages.ts), and the write routes refuse a business
-// without one, whichever client sent it.
+// without a valid one, whichever client sent it.
 function assertBusinessVat(kind: unknown, vatNumber: unknown): void {
   if (kind !== "business") return;
-  if (typeof vatNumber === "string" && vatNumber.trim() !== "") return;
-  throw new HTTPResult(400, {
-    message: "$helio.crm.customers.errors.vatRequired",
-    field: "vatNumber",
-  });
+  if (typeof vatNumber !== "string" || vatNumber.trim() === "") {
+    throw new HTTPResult(400, {
+      message: "$helio.crm.customers.errors.vatRequired",
+      field: "vatNumber",
+    });
+  }
+  if (!isValidVatNumber(vatNumber)) {
+    throw new HTTPResult(400, {
+      message: "$helio.crm.customers.errors.vatFormat",
+      field: "vatNumber",
+    });
+  }
 }
 
 @RegisterPage()
@@ -178,6 +190,27 @@ export class PageHelioCustomers extends PageController(
           target: { type: "page", url: `${PIPELINE_URL}?customer={{row._id}}` },
         },
         {
+          id: "quotes",
+          label: "$helio.crm.customers.actions.quotes",
+          icon: "i-ph-file-text",
+          target: { type: "page", url: `${QUOTES_URL}?customer={{row._id}}` },
+        },
+        {
+          id: "projects",
+          label: "$helio.crm.customers.actions.projects",
+          icon: "i-ph-hard-hat",
+          target: {
+            type: "page",
+            url: `${PROJECTS_URL}?customer={{row._id}}&table.view=all`,
+          },
+        },
+        {
+          id: "invoices",
+          label: "$helio.crm.customers.actions.invoices",
+          icon: "i-ph-receipt",
+          target: { type: "page", url: `${INVOICES_URL}?customer={{row._id}}` },
+        },
+        {
           id: "email",
           label: "$helio.crm.customers.actions.email",
           icon: "i-ph-envelope-simple",
@@ -190,9 +223,14 @@ export class PageHelioCustomers extends PageController(
         assertBusinessVat(body.kind, body.vatNumber);
       },
       // An edit only sends what changed: the stored row fills the rest.
+      // A new name reaches the deals and quotes that carry it for the search.
       edit: (_ctx, { body, current }) => {
         const row = { ...current, ...body };
         assertBusinessVat(row.kind, row.vatNumber);
+        if (body.name !== undefined && body.name !== current.name) {
+          return afterCustomerEdit;
+        }
+        return undefined;
       },
       // A customer with deals still in play is not deleted: the dialog says
       // so (blocked), and a bare API call is refused the same way.

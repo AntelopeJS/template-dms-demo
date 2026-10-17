@@ -1,18 +1,59 @@
+import { HTTPResult } from "@antelopejs/interface-api";
+import { FormEvents, FormFunctions } from "@antelopejs/interface-dms/base/form";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import {
   ResourceForm,
   TableView,
+  type TableViewFormWatch,
 } from "@antelopejs/interface-dms/base/table-view";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
-import { dealController } from "./deal-controller";
-import { afterDealEdit, afterDealWrite } from "./deal-derived";
+import { DEAL_STAGES, dealController } from "./deal-controller";
+import { afterDealEdit, afterDealNew } from "./deal-derived";
 import { CUSTOMER_QUICK_VIEW_URL } from "./links";
 import { PIPELINE_VIEWS } from "./pipeline-views";
 
 // Deals still in play, for the footer figures: a summary rule reads stored
 // fields, so it names the closed stages rather than the computed isOpen.
 const OPEN_DEAL = { field: "stage", notIn: ["won", "lost"] };
+
+// The loss reason belongs to a lost deal only: shown, and required, once the
+// stage is "lost", hidden before. FIELD_CHANGE also fires once with the value
+// the form starts from, so an opened form is right before any change.
+const LOST_REASON_WATCHES: TableViewFormWatch[] = DEAL_STAGES.flatMap(
+  ({ value }) => {
+    const onStage = [
+      { key: "fieldId", value: "stage" },
+      { key: "value", value },
+    ];
+    const lost = value === "lost";
+    return [
+      {
+        event: FormEvents.FIELD_CHANGE,
+        functionId: FormFunctions.SET_FIELD_HIDDEN,
+        params: { targetField: "lostReason", setHidden: !lost },
+        onParam: onStage,
+      },
+      {
+        event: FormEvents.FIELD_CHANGE,
+        functionId: FormFunctions.SET_FIELD_REQUIRED,
+        params: { targetField: "lostReason", setRequired: lost },
+        onParam: onStage,
+      },
+    ];
+  },
+);
+
+// The write routes refuse a lost deal without its reason, whichever client
+// sent it (a card dropped on "Lost" included: the deal is opened to say why).
+function assertLostReason(stage: unknown, lostReason: unknown): void {
+  if (stage !== "lost") return;
+  if (typeof lostReason === "string" && lostReason !== "") return;
+  throw new HTTPResult(400, {
+    message: "$helio.crm.deals.errors.lostReasonRequired",
+    field: "lostReason",
+  });
+}
 
 @RegisterPage()
 export class PageHelioPipeline extends PageController(
@@ -42,12 +83,18 @@ export class PageHelioPipeline extends PageController(
       { field: "owner", label: "$helio.crm.pipeline.quickFilters.owner" },
       { field: "source", label: "$helio.crm.pipeline.quickFilters.source" },
     ],
-    // "Deals" of a customer (customers page): ?customer=<id>, as a chip.
+    // "Deals" of a customer (customers page): ?customer=<id>, and the deals
+    // of a sales rep (dashboard leaderboard): ?owner=<id>, as chips.
     queryParamFilters: {
       customer: {
         field: "customer",
         visible: true,
         label: "$helio.crm.pipeline.customerChip",
+      },
+      owner: {
+        field: "owner",
+        visible: true,
+        label: "$helio.crm.pipeline.ownerChip",
       },
     },
     views: PIPELINE_VIEWS,
@@ -149,11 +196,24 @@ export class PageHelioPipeline extends PageController(
         },
       ],
     },
-    // The stored derived fields follow each write (see deal-derived.ts).
+    formWatches: {
+      new: LOST_REASON_WATCHES,
+      edit: LOST_REASON_WATCHES,
+      view: LOST_REASON_WATCHES,
+    },
+    // A lost deal says why; the stored derived fields follow each write (see
+    // deal-derived.ts). An edit only sends what changed: the stored row
+    // fills the rest.
     guards: {
-      new: afterDealWrite,
-      edit: (_ctx, { id, body, current }) =>
-        afterDealEdit(id, body.stage, current.stage),
+      new: (_ctx, { body }) => {
+        assertLostReason(body.stage, body.lostReason);
+        return afterDealNew(body);
+      },
+      edit: (_ctx, { id, body, current }) => {
+        const row = { ...current, ...body };
+        assertLostReason(row.stage, row.lostReason);
+        return afterDealEdit(id, body, current);
+      },
     },
   });
 }

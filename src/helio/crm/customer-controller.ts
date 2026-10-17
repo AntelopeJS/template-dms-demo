@@ -25,8 +25,8 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
-import { teamController } from "../team/controller";
 import { Customer, type CustomerKind, CustomerModel } from "./database";
+import { salesRepController } from "./sales-rep-controller";
 
 // Option lists exported for the pages (tabs, views, quick filters).
 export const CUSTOMER_KINDS = [
@@ -192,7 +192,7 @@ class customerDataAPI extends DataController(
     display: new DefaultDisplays.StatusPillDisplay({
       tones: { residential: "info", business: "primary" },
     }),
-    size: 140,
+    size: 160,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -205,7 +205,7 @@ class customerDataAPI extends DataController(
     name: "$helio.crm.customers.columns.vatNumber",
     group: "identity",
     type: new DefaultDataTypes.StringType({
-      placeholder: "BE0123.456.789",
+      placeholder: "BE0123.456.749",
       maxLength: 20,
     }),
     filterable: true,
@@ -282,6 +282,8 @@ class customerDataAPI extends DataController(
       placeholder: "$helio.crm.customers.placeholders.segments",
     }),
     filterable: true,
+    // Room for two or three chips side by side.
+    size: 260,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
@@ -329,7 +331,8 @@ class customerDataAPI extends DataController(
     name: "$helio.crm.customers.columns.owner",
     group: "relationship",
     type: new DefaultDataTypes.RelationType({
-      dataApiController: teamController,
+      // An account is followed by a sales rep.
+      dataApiController: salesRepController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
       deselectable: true,
       placeholder: "$helio.crm.customers.placeholders.owner",

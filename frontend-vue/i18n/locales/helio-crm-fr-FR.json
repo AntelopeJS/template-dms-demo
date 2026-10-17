@@ -100,7 +100,10 @@
 				},
 				"actions": {
 					"deals": "Voir les affaires",
-					"email": "Envoyer un e-mail"
+					"email": "Envoyer un e-mail",
+					"quotes": "Voir les devis",
+					"projects": "Voir les chantiers",
+					"invoices": "Voir les factures"
 				},
 				"empty": {
 					"firstRunTitle": "Aucun client pour l'instant",
@@ -119,7 +122,8 @@
 				"errors": {
 					"vatRequired": "Un client entreprise doit avoir un numéro de TVA.",
 					"openDeals": "Ce client a encore des affaires en cours.",
-					"notFound": "Ce client n'existe plus."
+					"notFound": "Ce client n'existe plus.",
+					"vatFormat": "Numéro de TVA invalide : BE suivi de 10 chiffres (ex. BE0123.456.749), ou le numéro d'un autre pays de l'UE."
 				},
 				"newCustomer": "Nouveau client"
 			},
@@ -137,7 +141,8 @@
 					"lastActivityAt": "Dernière activité",
 					"nextStep": "Prochaine étape",
 					"lostReason": "Motif de perte",
-					"isOpen": "Affaire en cours"
+					"isOpen": "Affaire en cours",
+					"customerName": "Nom du client"
 				},
 				"placeholders": {
 					"title": "p. ex. Installation 6,4 kWc + batterie 10 kWh",
@@ -149,13 +154,16 @@
 					"title": "Nouveau client",
 					"description": "Créez le client sans quitter l'opportunité."
 				},
-				"activeNow": "À l'instant"
+				"activeNow": "À l'instant",
+				"errors": {
+					"lostReasonRequired": "Indiquez le motif de perte : ouvrez l'affaire pour la passer en Perdue."
+				}
 			},
 			"pipeline": {
 				"nav": "Pipeline",
 				"description": "Toutes les opportunités commerciales, du premier appel au bon de commande signé.",
 				"caption": "Affaires",
-				"search": "Rechercher une affaire ou une prochaine étape",
+				"search": "Rechercher une affaire, un client ou une prochaine étape",
 				"count": "{count} affaire | {count} affaires",
 				"menuLabel": "Actions pour {title}",
 				"customerChip": "Client",
@@ -202,7 +210,8 @@
 					"action": "Ouvrir",
 					"title": "Affaire",
 					"description": "Étape, montant, responsable et prochaine action de l'affaire."
-				}
+				},
+				"ownerChip": "Commercial"
 			}
 		}
 	}

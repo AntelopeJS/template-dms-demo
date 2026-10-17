@@ -5,6 +5,8 @@ import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { helioSalesCategory } from "../category";
 import { helioQuickActions } from "../shared/quick-actions";
 import { quoteRowActions } from "./actions";
+import { afterQuoteWrite } from "./customer-names";
+import { assertVatRate } from "./vat-rate";
 import { QUOTE_STATUSES, quoteController } from "./controller";
 import { loadQuoteNumbers } from "./numbering";
 import { quoteViews } from "./views";
@@ -62,14 +64,12 @@ export class PageHelioQuotes extends PageController(
     expandable: {
       fieldsLabel: "$helio.sales.quotes.expand.label",
       fields: [
-        "line1",
+        "firstLine",
         "subtotal",
-        "line2",
-        "vatAmount",
-        "line3",
-        "total",
         "otherLines",
+        "vatAmount",
         "deal",
+        "total",
       ],
     },
     footer: {
@@ -124,9 +124,18 @@ export class PageHelioQuotes extends PageController(
     rowActions: quoteRowActions,
     guards: {
       // The number a new quote takes follows the last one of its year: read
-      // them before the write, which cannot wait for the database.
-      new: async () => {
+      // them before the write, which cannot wait for the database. A
+      // business pays the standard rate; the stored customer name follows.
+      new: async (_ctx, { body }) => {
+        await assertVatRate(body.customer, body.vatRate);
         await loadQuoteNumbers();
+        return afterQuoteWrite;
+      },
+      // An edit only sends what changed: the stored row fills the rest.
+      edit: async (_ctx, { body, current }) => {
+        const row = { ...current, ...body };
+        await assertVatRate(row.customer, row.vatRate);
+        return afterQuoteWrite;
       },
     },
   });

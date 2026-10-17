@@ -35,6 +35,8 @@ export class Quote extends Table {
 
   @Index() @Field("string") declare number: string;
   @Index() @Field("string") declare customer: string;
+  /** The customer's name, kept in step for the search (customer-names.ts). */
+  @Field("string") declare customerName: string;
   @Index() @Field("string") declare deal?: string;
   @Index() @Field("string") declare status: QuoteStatus;
   // Stored as a list of objects (an ArrayType column), so a quote reads and

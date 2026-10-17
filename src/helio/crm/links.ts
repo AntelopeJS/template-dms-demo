@@ -4,6 +4,12 @@
 export const PIPELINE_URL = "/helio/sales/pipeline";
 export const CUSTOMERS_URL = "/helio/sales/customers";
 
+// Pages of the other domains a customer links to, each narrowed to that
+// customer by its `?customer=<id>` filter.
+export const QUOTES_URL = "/helio/sales/quotes";
+export const PROJECTS_URL = "/helio/operations/projects";
+export const INVOICES_URL = "/helio/invoices";
+
 // The customers page opens a customer's quick view from `?record=<id>`.
 export const CUSTOMER_QUICK_VIEW_URL = `${CUSTOMERS_URL}?record={{row.customer._id}}`;
 

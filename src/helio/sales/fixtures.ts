@@ -27,6 +27,7 @@ export type QuoteSeed = Pick<
   | "_id"
   | "number"
   | "customer"
+  | "customerName"
   | "deal"
   | "status"
   | "lines"
@@ -79,6 +80,7 @@ function toSeed(rng: Rng, draft: QuoteDraft): QuoteSeed {
     _id: draft._id,
     number: "",
     customer: draft.customer._id,
+    customerName: draft.customer.name,
     deal: draft.deal,
     status: draft.status,
     lines: draft.lines,

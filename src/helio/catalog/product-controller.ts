@@ -223,7 +223,7 @@ class productDataAPI extends DataController(
     name: "$helio.catalog.products.columns.power",
     type: new DefaultDataTypes.NumberType({
       min: 0,
-      step: 10,
+      step: 1,
       suffix: "$helio.catalog.products.powerSuffix",
     }),
     filterable: true,

@@ -100,7 +100,10 @@
 				},
 				"actions": {
 					"deals": "See the deals",
-					"email": "Send an e-mail"
+					"email": "Send an e-mail",
+					"quotes": "View quotes",
+					"projects": "View projects",
+					"invoices": "View invoices"
 				},
 				"empty": {
 					"firstRunTitle": "No customer yet",
@@ -119,7 +122,8 @@
 				"errors": {
 					"vatRequired": "A business customer needs a VAT number.",
 					"openDeals": "This customer still has deals in progress.",
-					"notFound": "This customer no longer exists."
+					"notFound": "This customer no longer exists.",
+					"vatFormat": "Invalid VAT number: BE followed by 10 digits (e.g. BE0123.456.749), or the number of another EU country."
 				},
 				"newCustomer": "New customer"
 			},
@@ -137,7 +141,8 @@
 					"lastActivityAt": "Last activity",
 					"nextStep": "Next step",
 					"lostReason": "Reason lost",
-					"isOpen": "Open deal"
+					"isOpen": "Open deal",
+					"customerName": "Customer name"
 				},
 				"placeholders": {
 					"title": "e.g. 6.4 kWp installation + 10 kWh battery",
@@ -149,13 +154,16 @@
 					"title": "New customer",
 					"description": "Create the customer without leaving the deal."
 				},
-				"activeNow": "Just now"
+				"activeNow": "Just now",
+				"errors": {
+					"lostReasonRequired": "Give the loss reason: open the deal to mark it as lost."
+				}
 			},
 			"pipeline": {
 				"nav": "Pipeline",
 				"description": "Every sales opportunity, from the first call to the signed order.",
 				"caption": "Deals",
-				"search": "Search a deal or a next step",
+				"search": "Search a deal, a customer or a next step",
 				"count": "{count} deal | {count} deals",
 				"menuLabel": "Actions for {title}",
 				"customerChip": "Customer",
@@ -202,7 +210,8 @@
 					"action": "Open",
 					"title": "Deal",
 					"description": "Stage, amount, owner and next step of the deal."
-				}
+				},
+				"ownerChip": "Sales rep"
 			}
 		}
 	}
