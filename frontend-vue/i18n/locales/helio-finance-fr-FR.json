@@ -1,0 +1,139 @@
+{
+	"helio": {
+		"finance": {
+			"statuses": {
+				"draft": "Brouillon",
+				"sent": "Envoyée",
+				"overdue": "En retard",
+				"paid": "Payée",
+				"cancelled": "Annulée"
+			},
+			"paymentMethods": {
+				"transfer": "Virement",
+				"directDebit": "Domiciliation",
+				"card": "Carte"
+			},
+			"invoices": {
+				"columns": {
+					"number": "Numéro",
+					"customer": "Client",
+					"project": "Chantier",
+					"quote": "Devis",
+					"status": "Statut",
+					"issuedAt": "Émise le",
+					"dueAt": "Échéance",
+					"paidAt": "Payée le",
+					"amountExcl": "Montant HTVA",
+					"vatRate": "Taux de TVA",
+					"vatAmount": "TVA",
+					"total": "Total TVAC",
+					"amountDue": "Reste dû",
+					"paymentMethod": "Mode de paiement",
+					"remindedAt": "Dernier rappel"
+				},
+				"placeholders": {
+					"number": "Attribué automatiquement (F-2026-…)",
+					"customer": "Choisir un client",
+					"project": "Lier un chantier (facultatif)",
+					"quote": "Lier un devis (facultatif)"
+				},
+				"detail": {
+					"paid": "Payée le {date}",
+					"late": "{count} jour de retard | {count} jours de retard",
+					"due": "Échéance le {date}",
+					"lateReminded": "{count} jour de retard · rappel le {date} | {count} jours de retard · rappel le {date}"
+				},
+				"caption": "Factures",
+				"search": "Rechercher un numéro de facture",
+				"download": "Télécharger la facture",
+				"deleted": "Facture supprimée | {count} factures supprimées",
+				"views": {
+					"dueThisWeek": "Échéance cette semaine",
+					"overdue30": "Retard > 30 jours",
+					"paidRecently": "Payées ces 30 derniers jours"
+				},
+				"form": {
+					"new": "Nouvelle facture",
+					"newDescription": "Laissez le numéro vide : le suivant de l'année est attribué à l'enregistrement.",
+					"edit": "Modifier la facture",
+					"details": "Détail de la facture"
+				},
+				"footer": {
+					"count": "{count} facture | {count} factures",
+					"invoiced": "Facturé",
+					"due": "Reste dû",
+					"overdue": "En retard"
+				},
+				"empty": {
+					"title": "Aucune facture pour l'instant",
+					"description": "Les factures d'acompte, de solde et d'intervention apparaîtront ici.",
+					"filteredTitle": "Aucune facture ne correspond",
+					"filteredDescription": "Essayez un autre statut, une autre vue ou une autre recherche."
+				},
+				"markPaid": {
+					"action": "Marquer comme payée",
+					"title": "Enregistrer le paiement",
+					"description": "La facture est marquée payée et plus rien n'est dû. Le client sort du cycle de rappels.",
+					"confirm": "Enregistrer le paiement",
+					"paidAt": "Date du paiement",
+					"paidAtHint": "Laissez vide pour aujourd'hui.",
+					"success": "Paiement enregistré",
+					"futureDate": "Un paiement ne peut pas être daté dans le futur.",
+					"methodRequired": "Indiquez le mode de paiement du client.",
+					"nothing": "Aucune de ces factures n'attend de paiement."
+				},
+				"remind": {
+					"action": "Envoyer un rappel",
+					"title": "Envoyer un rappel de paiement",
+					"description": "Le client reçoit un rappel avec la facture et les informations de paiement.",
+					"confirm": "Envoyer le rappel",
+					"impactEmail": "Envoyé à l'adresse e-mail de facturation du client",
+					"impactStamp": "La date du rappel est enregistrée sur la facture",
+					"success": "Rappel envoyé",
+					"nothing": "Seules les factures en retard peuvent faire l'objet d'un rappel."
+				},
+				"quickView": {
+					"action": "Ouvrir",
+					"title": "Facture",
+					"description": "Montants, échéance et paiement de la facture."
+				}
+			},
+			"nav": {
+				"invoices": "Factures"
+			},
+			"page": {
+				"description": "Factures émises, paiements reçus et recouvrement des montants en retard."
+			},
+			"quickActions": {
+				"newInvoice": "Nouvelle facture",
+				"overdue": "Factures en retard"
+			},
+			"banner": {
+				"overdue": "{count} facture en retard · {amount} à encaisser | {count} factures en retard · {amount} à encaisser",
+				"action": "Voir les factures en retard"
+			},
+			"kpis": {
+				"label": "Créances en un coup d'œil",
+				"amount": "{amount}",
+				"outstanding": {
+					"label": "Encours clients",
+					"detail": "Aucune facture en attente de paiement | {count} facture en attente de paiement | {count} factures en attente de paiement"
+				},
+				"overdue": {
+					"label": "En retard",
+					"detail": "{count} facture · la plus ancienne à {days} jours de retard | {count} factures · la plus ancienne à {days} jours de retard",
+					"none": "Aucun retard"
+				},
+				"collected": {
+					"label": "Encaissé ce mois-ci",
+					"detail": "Aucun paiement pour l'instant | {count} paiement reçu | {count} paiements reçus"
+				},
+				"dso": {
+					"label": "DSO",
+					"value": "{count} jour | {count} jours",
+					"detail": "Vos clients paient en moyenne {days} jours après la facture"
+				}
+			}
+		}
+	}
+}

@@ -78,20 +78,20 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: ">=0.4.1 <1.0.0",
+        version: ">=0.5.0 <1.0.0",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.6.1 <1.0.0",
+        version: ">=0.7.0 <1.0.0",
       },
       config: {
         stripe: {
-          secretKey: "sk_test_replace_me",
-          publishableKey: "pk_test_replace_me",
-          webhookSecret: "whsec_replace_me",
+          secretKey: "sk_test_placeholder",
+          publishableKey: "pk_test_placeholder",
+          webhookSecret: "whsec_placeholder",
         },
         allowedRedirectHosts: CLIENT_ORIGINS.map(
           (origin) => new URL(origin).host,
@@ -113,7 +113,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: ">=0.2.1 <1.0.0",
+        version: ">=0.3.0 <1.0.0",
       },
       config: {
         editable: true,
@@ -137,14 +137,25 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.5.1 <1.0.0",
+        version: ">=0.6.0 <1.0.0",
+      },
+      config: {
+        // Track the dashboard itself, so Marketing shows how the demo is used.
+        dashboardTracking: {
+          enabled: true,
+          websiteName: "Helio dashboard",
+          // Draw the click heatmaps over snapshots of the dashboard pages.
+          snapshots: true,
+        },
+        // Every visit records its clicks and scrolls, so the demo heatmaps fill quickly.
+        heatmapSampleRate: 1,
       },
     },
     "dms-mailing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.5.1 <1.0.0",
+        version: ">=0.6.0 <1.0.0",
       },
     },
 

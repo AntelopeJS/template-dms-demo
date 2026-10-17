@@ -1,0 +1,262 @@
+// Helio actions about the service desk: open a ticket from a monitoring alert
+// (the webhook procedure), hand an urgent ticket to the technician on call,
+// and find who manages the instance (the people automation notifies).
+
+import type { ActionType } from "@antelopejs/interface-dms-automation";
+import { GetModel } from "@antelopejs/interface-database-decorators";
+import { UserModel } from "@antelopejs/interface-dms/auth/db";
+import { PublishMessage } from "@antelopejs/interface-dms/realtime";
+import { CustomerModel } from "../../crm/database";
+import { type Site, SiteModel } from "../../monitoring/database";
+import {
+  type Ticket,
+  type TicketCategory,
+  TicketModel,
+  type TicketPriority,
+} from "../../service/database";
+import type { TicketSeed } from "../../service/fixtures";
+import { notifyUrgentTicket } from "../../service/notifications";
+import { nextTicketNumber } from "../../service/numbering";
+import {
+  SERVICE_DESK_PATH,
+  SERVICE_TOPIC,
+  SLA_HOURS,
+} from "../../service/options";
+import { teamIdsByRole, TEAM_ROSTER } from "../../shared/roster";
+import { fireTicketOpened } from "./events";
+
+const HOUR_MS = 60 * 60 * 1000;
+const CLOSED = new Set(["resolved", "closed"]);
+
+/** What a monitoring platform posts (also accepted under `payload`). */
+interface AlertInput {
+  payload?: AlertInput;
+  siteId?: string;
+  alert?: string;
+  severity?: string;
+  message?: string;
+}
+
+interface AlertKind {
+  category: TicketCategory;
+  subject: string;
+}
+
+const ALERT_KINDS: Record<string, AlertKind> = {
+  inverter_offline: {
+    category: "inverter_error",
+    subject: "onduleur hors ligne",
+  },
+  string_fault: {
+    category: "inverter_error",
+    subject: "défaut sur une chaîne de panneaux",
+  },
+  low_production: {
+    category: "no_production",
+    subject: "production anormalement basse",
+  },
+  communication_lost: {
+    category: "monitoring",
+    subject: "perte de communication",
+  },
+};
+const DEFAULT_ALERT: AlertKind = {
+  category: "monitoring",
+  subject: "anomalie détectée",
+};
+
+const PRIORITY_BY_SEVERITY: Record<string, TicketPriority> = {
+  critical: "urgent",
+  warning: "high",
+  info: "normal",
+};
+
+const deskLink = (number: string) =>
+  `${SERVICE_DESK_PATH}?ticket=${encodeURIComponent(number)}`;
+
+async function findSite(siteId: string | undefined): Promise<Site> {
+  const site = siteId ? await GetModel(SiteModel).get(siteId) : undefined;
+  if (!site) throw new Error(`unknown monitored site "${siteId ?? ""}"`);
+  return site;
+}
+
+// One open alert ticket per site and problem: a monitoring platform repeats
+// its alert until the problem is fixed.
+async function openAlertTicket(
+  site: Site,
+  category: TicketCategory,
+): Promise<Ticket | undefined> {
+  const tickets = await GetModel(TicketModel).getBy("site", site._id);
+  return tickets.find(
+    (ticket) =>
+      ticket.channel === "monitoring_alert" &&
+      ticket.category === category &&
+      !CLOSED.has(ticket.status),
+  );
+}
+
+async function insertAlertTicket(
+  site: Site,
+  kind: AlertKind,
+  priority: TicketPriority,
+  message: string | undefined,
+): Promise<TicketSeed> {
+  const createdAt = new Date();
+  const ticket: TicketSeed = {
+    _id: `ticket-alert-${createdAt.getTime().toString(36)}`,
+    number: await nextTicketNumber(),
+    subject: `Alerte monitoring — ${kind.subject} (${site.name})`,
+    customer: site.customer,
+    site: site._id,
+    category: kind.category,
+    priority,
+    status: "new",
+    channel: "monitoring_alert",
+    slaDueAt: new Date(createdAt.getTime() + SLA_HOURS[priority] * HOUR_MS),
+    createdAt,
+    resolvedAt: undefined,
+    assignee: undefined,
+    description:
+      message ||
+      `Alerte reçue de la plateforme de monitoring pour ${site.name} (${site.city}).`,
+    pinned: false,
+  };
+  await GetModel(TicketModel).insert(ticket);
+  return ticket;
+}
+
+const createTicket: ActionType<AlertInput, Record<string, unknown>> = {
+  id: "helio.create-ticket",
+  name: "$helio.platform.automation.actions.createTicket.name",
+  description: "$helio.platform.automation.actions.createTicket.description",
+  icon: "i-ph-lifebuoy",
+  inputSchema: {
+    type: "object",
+    properties: {
+      payload: {
+        type: "object",
+        title: "$helio.platform.automation.actions.createTicket.payload",
+      },
+    },
+  },
+  outputSchema: {
+    type: "object",
+    properties: {
+      created: { type: "boolean" },
+      ticketId: { type: "string" },
+      number: { type: "string" },
+      priority: { type: "string" },
+      summary: { type: "string" },
+    },
+  },
+  async execute(input, ctx) {
+    const alert = { ...input.payload, ...input, payload: undefined };
+    const site = await findSite(alert.siteId);
+    const kind = ALERT_KINDS[alert.alert ?? ""] ?? DEFAULT_ALERT;
+    const existing = await openAlertTicket(site, kind.category);
+    if (existing) {
+      ctx.log("info", `alert already tracked by ${existing.number}`);
+      return {
+        created: false,
+        ticketId: existing._id,
+        number: existing.number,
+        priority: existing.priority,
+        summary: `${existing.number} · ${site.name} (already open)`,
+      };
+    }
+    const priority = PRIORITY_BY_SEVERITY[alert.severity ?? ""] ?? "normal";
+    const ticket = await insertAlertTicket(site, kind, priority, alert.message);
+    await PublishMessage(SERVICE_TOPIC, "tickets.created", {
+      payload: { ids: [ticket._id] },
+    });
+    if (priority === "urgent") await notifyUrgentTicket(ticket);
+    fireTicketOpened(ticket);
+    ctx.log("info", `ticket ${ticket.number} opened`, { site: site.name });
+    return {
+      created: true,
+      ticketId: ticket._id,
+      number: ticket.number,
+      priority,
+      summary: `${ticket.number} · ${ticket.subject}`,
+    };
+  },
+};
+
+// The technician with the fewest open tickets takes the urgent one.
+async function onCallTechnician(): Promise<string> {
+  const technicians = teamIdsByRole("technician");
+  const open = (await GetModel(TicketModel).getAll()).filter(
+    (ticket) => ticket.assignee && !CLOSED.has(ticket.status),
+  );
+  const load = (id: string) =>
+    open.filter((ticket) => ticket.assignee === id).length;
+  return technicians.reduce((best, id) => (load(id) < load(best) ? id : best));
+}
+
+const memberName = (id: string | undefined) =>
+  TEAM_ROSTER.find((member) => member.id === id)?.name ?? "—";
+
+const assignOnCall: ActionType<
+  { ticketId?: string },
+  Record<string, unknown>
+> = {
+  id: "helio.assign-on-call",
+  name: "$helio.platform.automation.actions.assignOnCall.name",
+  description: "$helio.platform.automation.actions.assignOnCall.description",
+  icon: "i-ph-user-switch",
+  inputSchema: {
+    type: "object",
+    properties: { ticketId: { type: "string" } },
+    required: ["ticketId"],
+  },
+  outputSchema: {
+    type: "object",
+    properties: {
+      assignee: { type: "string" },
+      number: { type: "string" },
+      summary: { type: "string" },
+      link: { type: "string" },
+    },
+  },
+  async execute(input, ctx) {
+    const model = GetModel(TicketModel);
+    const ticket = input.ticketId ? await model.get(input.ticketId) : undefined;
+    if (!ticket) throw new Error(`unknown ticket "${input.ticketId ?? ""}"`);
+    const assignee = ticket.assignee ?? (await onCallTechnician());
+    if (!ticket.assignee) {
+      await model.update(ticket._id, {
+        assignee,
+        status: ticket.status === "new" ? "open" : ticket.status,
+      });
+      await PublishMessage(SERVICE_TOPIC, "tickets.updated", {
+        payload: { ids: [ticket._id] },
+      });
+    }
+    const customer = await GetModel(CustomerModel).get(ticket.customer);
+    ctx.log("info", `${ticket.number} handled by ${memberName(assignee)}`);
+    return {
+      assignee: memberName(assignee),
+      number: ticket.number,
+      summary: `${ticket.number} · ${memberName(assignee)} · ${ticket.subject} — ${customer?.name ?? ""}`,
+      link: deskLink(ticket.number),
+    };
+  },
+};
+
+const findManagers: ActionType<Record<string, never>, { userIds: string[] }> = {
+  id: "helio.find-managers",
+  name: "$helio.platform.automation.actions.findManagers.name",
+  description: "$helio.platform.automation.actions.findManagers.description",
+  icon: "i-ph-users-three",
+  inputSchema: { type: "object", properties: {} },
+  outputSchema: {
+    type: "object",
+    properties: { userIds: { type: "array", items: { type: "string" } } },
+  },
+  async execute() {
+    const owners = await GetModel(UserModel).getOwners();
+    return { userIds: owners.map((owner) => owner._id) };
+  },
+};
+
+export const serviceActionTypes = [createTicket, assignOnCall, findManagers];

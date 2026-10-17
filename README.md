@@ -6,14 +6,16 @@
 </div>
 
 A ready-to-run [AntelopeJS DMS](https://dms.antelopejs.com) project: every DMS
-feature module, a catalog of the built-in components, and a small demo app,
-translated in English and French.
+feature module, a catalog of the built-in components, and Helio, a complete
+demo business app, translated in English and French.
 
-- **Home**: an in-dashboard readme of what the template contains.
+- **Home**: what the template demonstrates, built from DMS blocks.
+- **Helio**: the back-office of a fictional solar installer (sales pipeline,
+  quotes, customers, catalog, projects, live service desk, team, invoices, live
+  fleet monitoring, settings and dashboard), made only of generic DMS blocks
+  declared on the backend: zero lines of Vue.
 - **Components**: one page per built-in DMS component, each with its most
   complete example.
-- **Demo app**: users, projects and tasks with relations, seeded through
-  fixtures, and a kanban board for tasks.
 - Every `dms-*` feature module installed from npm and configured in
   `antelope.config.ts`, ready to remove one by one.
 
@@ -48,14 +50,22 @@ The local module lives in [`src/`](./src):
 
 - `src/index.ts` — module lifecycle entry point; also registers the local
   frontend module via `AddFrontendModule`.
-- `src/home.ts` — the `home` page: a custom `DemoReadme` Vue component
-  (shipped by the frontend module) presenting what this template contains.
-- `src/demo-app/` — a **Demo app** sidebar category with three related
-  TableViews backed by Mongo collections seeded through fixtures:
-  **Users** (roles, avatars), **Projects** (status, budget, progress) and
-  **Tasks** (status, priority, relations to a project and an assignee).
-  Tasks open as a **kanban board** grouped by status (drag cards between
-  columns; the toolbar switches back to the table).
+- `src/home.ts` — the `home` page, made of DMS blocks only: a `Banner`
+  introducing the demo, a `StatGroup` of figures about Helio, a `NavCardGrid`
+  with one card per Helio page (read from the Helio category), what AntelopeJS
+  brought (with links to the docs), the installed modules, a getting-started
+  list and a `CodeBlock` quoting a real Helio declaration
+  (`src/home-excerpt.ts`).
+- `src/helio/` — **Helio**, its own sidebar section: one folder per domain
+  (`crm`, `sales`, `catalog`, `projects`, `service`, `team`, `finance`,
+  `monitoring`, `settings`, `dashboard`), each holding its Mongo tables and
+  fixtures, its data controllers under `/api/helio/*` and its pages. Every
+  page is a `PageController` of generic blocks (`TableView` with kanban,
+  cards and grouped displays, `Form`, `Tab`, `KpiCard`, `ChartCard`,
+  `StatGroup`, `NavCardGrid`, `Meter`, …); the fixtures generate coherent data
+  relative to the current date. The service desk and fleet monitoring are live
+  pages fed by small simulators; set `HELIO_SIMULATORS=off` in the
+  environment (or `.env`) before `pnpm dev` to stop them.
 - `src/components/` — a **Components** sidebar category with one page per
   built-in DMS component, each showing its most complete example:
 
@@ -242,7 +252,6 @@ serves it.
 "demo-callout")` in `src/components/custom.ts` resolves to `DemoCallout`. The
 module ships:
 
-- `app/components/Readme.vue` → `DemoReadme`, the Home page.
 - `app/components/Callout.vue` → `DemoCallout`, the CustomComponent demo.
 - `i18n/locales/demo-*.json`, merged into the dashboard's catalogs.
 
@@ -285,8 +294,10 @@ Every backend-declared text (page names, descriptions, form labels, card
 titles, column headers, select items…) uses the `$key` convention: a string
 starting with `$` is resolved against the i18n catalogs by the frontend
 (`processI18n`). Add or edit keys in
-`frontend-vue/i18n/locales/demo-en-GB.json` and `demo-fr-FR.json`; the test
-suite checks that both catalogs cover every key the backend emits. Known
+`frontend-vue/i18n/locales/demo-en-GB.json` and `demo-fr-FR.json` (Home and
+Components), or in the `helio-*-en-GB.json` / `helio-*-fr-FR.json` pairs (one
+per Helio domain, merged by the loader); the test suite checks that both
+catalogs cover every key the backend emits. Known
 limitation: TableView **tab labels** are not translated by the frontend, so
 they stay in plain English.
 
