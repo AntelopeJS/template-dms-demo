@@ -7,7 +7,6 @@ export default antelopeKnipConfig({
   // class itself, so without this every one of them reads as a dead export.
   entry: [
     "antelope.config.ts",
-    "src/demo-app/pages.ts",
     "src/home.ts",
   ],
 });

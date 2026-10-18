@@ -2,6 +2,11 @@
 // French solar / EV-charger installers of every size, spread over the plans
 // and the billing states an operator meets in real life (paying, trialing,
 // a failed payment, a recent churn, a free independent).
+//
+// They carry no people: no fictitious account is ever created. Each one is
+// owned by the platform owner, the person who completes the onboarding, linked
+// once that account exists (see `owner.ts`). The billing e-mails below are
+// invoice contacts, not accounts.
 
 import type {
   TenantBillingAddress,
@@ -9,14 +14,6 @@ import type {
   TenantSubscriptionStatus,
 } from "@antelopejs/interface-dms-saas/db";
 import { PLAN_IDS } from "./plans";
-
-export interface SeedPerson {
-  /** Unique per workspace; the user id is derived from the workspace's. */
-  key: string;
-  name: string;
-  email: string;
-  language: "en" | "fr";
-}
 
 export interface SeedBillingProfile {
   customerType: TenantCustomerType;
@@ -42,8 +39,6 @@ export interface SeedWorkspace {
   trialDaysLeft?: number;
   /** A churned workspace was billed this many periods before it left. */
   billedPeriods?: number;
-  owner: SeedPerson;
-  members: SeedPerson[];
   billing: SeedBillingProfile;
 }
 
@@ -59,15 +54,6 @@ function address(
   return { line1, line2: null, postalCode, city, state: null, country };
 }
 
-function person(
-  key: string,
-  name: string,
-  email: string,
-  language: "en" | "fr" = "fr",
-): SeedPerson {
-  return { key, name, email, language };
-}
-
 export const WORKSPACES: SeedWorkspace[] = [
   {
     id: "helio-ws-soleil-mosan",
@@ -78,13 +64,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.business,
     status: "active",
     taxRate: BE_VAT,
-    owner: person("owner", "Julie Renard", "julie.renard@soleil-mosan.be"),
-    members: [
-      person("sales", "Thomas Gilson", "thomas.gilson@soleil-mosan.be"),
-      person("office", "Nadia Cherif", "nadia.cherif@soleil-mosan.be"),
-      person("tech1", "Kevin Lambotte", "kevin.lambotte@soleil-mosan.be"),
-      person("tech2", "Arnaud Delhez", "arnaud.delhez@soleil-mosan.be"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Soleil Mosan SRL",
@@ -102,18 +81,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.enterprise,
     status: "active",
     taxRate: BE_VAT,
-    owner: person(
-      "owner",
-      "Marc Schroeder",
-      "marc.schroeder@enerlux-services.be",
-    ),
-    members: [
-      person("ops", "Sophie Thill", "sophie.thill@enerlux-services.be"),
-      person("sales", "Laurent Kieffer", "laurent.kieffer@enerlux-services.be"),
-      person("office", "Anne Reuter", "anne.reuter@enerlux-services.be"),
-      person("tech1", "Yannick Mathieu", "yannick.mathieu@enerlux-services.be"),
-      person("tech2", "Pierre Hansen", "pierre.hansen@enerlux-services.be"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Enerlux Services SA",
@@ -131,15 +98,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.business,
     status: "active",
     taxRate: BE_VAT,
-    owner: person("owner", "Samir El Amrani", "samir@toitsverts.brussels"),
-    members: [
-      person(
-        "sales",
-        "Charlotte Van den Berghe",
-        "charlotte@toitsverts.brussels",
-      ),
-      person("tech1", "Bram Peeters", "bram@toitsverts.brussels", "en"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Toits Verts Bruxelles SRL",
@@ -157,11 +115,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.pro,
     status: "active",
     taxRate: BE_VAT,
-    owner: person("owner", "François Collard", "f.collard@ardenne-energies.be"),
-    members: [
-      person("office", "Céline Jacquemin", "c.jacquemin@ardenne-energies.be"),
-      person("tech1", "Damien Pirard", "d.pirard@ardenne-energies.be"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Ardenne Énergies SRL",
@@ -179,11 +132,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.pro,
     status: "active",
     taxRate: BE_VAT,
-    owner: person("owner", "Pieter De Smet", "pieter@zonnewerk.gent", "en"),
-    members: [
-      person("tech1", "Lotte Claes", "lotte@zonnewerk.gent", "en"),
-      person("tech2", "Jens Verhaeghe", "jens@zonnewerk.gent", "en"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Zonnewerk Gent BV",
@@ -201,14 +149,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.pro,
     status: "past_due",
     taxRate: BE_VAT,
-    owner: person(
-      "owner",
-      "Grégory Dupont",
-      "gregory.dupont@solaris-hainaut.be",
-    ),
-    members: [
-      person("tech1", "Logan Mertens", "logan.mertens@solaris-hainaut.be"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Solaris Hainaut SRL",
@@ -227,15 +167,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     status: "trialing",
     taxRate: REVERSE_CHARGE,
     trialDaysLeft: 9,
-    owner: person(
-      "owner",
-      "Camille Lefebvre",
-      "camille.lefebvre@wattelec-hdf.fr",
-    ),
-    members: [
-      person("sales", "Hugo Delattre", "hugo.delattre@wattelec-hdf.fr"),
-      person("tech1", "Maxence Caron", "maxence.caron@wattelec-hdf.fr"),
-    ],
     billing: {
       customerType: "business",
       companyName: "Watt'Elec Hauts-de-France SAS",
@@ -254,8 +185,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     status: "trialing",
     taxRate: REVERSE_CHARGE,
     trialDaysLeft: 3,
-    owner: person("owner", "Élodie Muller", "elodie@borne-et-vous.fr"),
-    members: [],
     billing: {
       customerType: "business",
       companyName: "Borne & Vous SAS",
@@ -273,8 +202,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     planId: PLAN_IDS.starter,
     status: "active",
     taxRate: BE_VAT,
-    owner: person("owner", "Olivier Lambert", "olivier@electricite-lambert.be"),
-    members: [],
     billing: {
       customerType: "individual",
       companyName: null,
@@ -293,18 +220,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     status: "cancelled",
     taxRate: BE_VAT,
     billedPeriods: 10,
-    owner: person(
-      "owner",
-      "Nathalie Wouters",
-      "nathalie.wouters@brabant-solar.be",
-    ),
-    members: [
-      person(
-        "tech1",
-        "Quentin Hendrickx",
-        "quentin.hendrickx@brabant-solar.be",
-      ),
-    ],
     billing: {
       customerType: "business",
       companyName: "Brabant Solar Services SRL",
@@ -314,11 +229,6 @@ export const WORKSPACES: SeedWorkspace[] = [
     },
   },
 ];
-
-/** The user id of a person of a workspace. */
-export function userIdOf(workspace: SeedWorkspace, member: SeedPerson): string {
-  return `${workspace.id}-${member.key}`;
-}
 
 /** The fake Stripe subscription id of a billed workspace. */
 export function stripeSubscriptionIdOf(workspace: SeedWorkspace): string {

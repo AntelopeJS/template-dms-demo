@@ -1,20 +1,17 @@
-// Creates each installer workspace once: its people, tenant instance, billing
-// identity, membership and subscription. Rows go straight to the tables, as
-// the dms-saas playground does: the membership hooks would try to sync seat
-// counts with Stripe, which this demo does not reach. The tenant row is
-// written last, so the default-plan backfill dms-saas runs every 15 minutes
-// never sees a workspace without its subscription.
+// Creates each installer workspace once: its tenant instance, member role,
+// billing identity and subscription. Rows go straight to the tables, as the
+// dms-saas playground does: dms-saas has no API to create a workspace without
+// Stripe. No account and no membership is written here: the workspace is
+// owned by the platform owner, linked through the DMS membership API once the
+// onboarding created that account (owner.ts). The tenant row is written last,
+// so the default-plan backfill dms-saas runs every 15 minutes never sees a
+// workspace without its subscription.
 
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { Schema } from "@antelopejs/interface-database";
 import { GetModel } from "@antelopejs/interface-database-decorators";
-import { UserModel } from "@antelopejs/interface-dms/auth/db";
 import { TENANT_SCHEMA_NAME } from "@antelopejs/interface-dms/constants";
-import {
-  RoleModel,
-  TenantMemberModel,
-  TenantModel,
-} from "@antelopejs/interface-dms/db";
+import { RoleModel, TenantModel } from "@antelopejs/interface-dms/db";
 import {
   type PaidUsagePeriod,
   TenantBillingInfoModel,
@@ -24,15 +21,8 @@ import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/bill
 import { addDays, addMonths, insertMissing, type SeedRow } from "./rows";
 import { findPlan } from "./plans";
 import { dunningSince, nextRenewal } from "./schedule";
-import {
-  type SeedPerson,
-  type SeedWorkspace,
-  stripeSubscriptionIdOf,
-  userIdOf,
-} from "./workspaces";
+import { type SeedWorkspace, stripeSubscriptionIdOf } from "./workspaces";
 
-/** Bytes behind a 64-character auth key, the length the DMS mints. */
-const AUTH_KEY_BYTES = 48;
 const MEMBER_ROLE_SUFFIX = "member";
 const VAT_VERIFIED = "verified";
 /** Billing states Stripe would hold a subscription for. */
@@ -48,46 +38,11 @@ export function workspaceCreatedAt(workspace: SeedWorkspace, now: Date): Date {
   return addDays(addMonths(now, -workspace.ageMonths), -workspace.ageDays);
 }
 
-// No password: these accounts show who runs each workspace, nobody signs in
-// with them (an account without a password hash never passes the login).
-function toUserRow(
-  workspace: SeedWorkspace,
-  member: SeedPerson,
-  createdAt: Date,
-): SeedRow {
-  return {
-    _id: userIdOf(workspace, member),
-    name: member.name,
-    email: member.email,
-    passwordChangedAt: null,
-    avatar: null,
-    language: member.language,
-    authKey: randomBytes(AUTH_KEY_BYTES).toString("base64url"),
-    isValidated: true,
-    validationToken: null,
-    validationRequestedAt: null,
-    forgotPasswordToken: null,
-    forgotPasswordRequestedAt: null,
-    owner: false,
-    lastActiveAt: null,
-    twoFactorMethods: [],
-    twoFactorSecret: null,
-    twoFactorPendingSecret: null,
-    twoFactorBackupCodes: [],
-    twoFactorBackupCodesGeneratedAt: null,
-    twoFactorBackupCodesSavedAt: null,
-    twoFactorEmailCode: null,
-    twoFactorEmailCodeRequestedAt: null,
-    createdAt,
-    updatedAt: createdAt,
-  };
-}
-
 function memberRoleId(tenantId: string): string {
   return `${tenantId}:${MEMBER_ROLE_SUFFIX}`;
 }
 
-// Members hold every grantable id: the plan caps what they really get.
+// Invited members hold every grantable id: the plan caps what they really get.
 function memberRole(
   tenantId: string,
   permissions: string[],
@@ -100,23 +55,6 @@ function memberRole(
     permissions,
     createdAt: at,
     updatedAt: at,
-  };
-}
-
-function toMemberRow(
-  workspace: SeedWorkspace,
-  member: SeedPerson,
-  isTenantOwner: boolean,
-  joinedAt: Date,
-): SeedRow {
-  const userId = userIdOf(workspace, member);
-  return {
-    _id: `${workspace.id}:${userId}`,
-    userId,
-    roleIds: isTenantOwner ? [] : [memberRoleId(workspace.id)],
-    isTenantOwner,
-    joinedAt,
-    invitedBy: isTenantOwner ? null : userIdOf(workspace, workspace.owner),
   };
 }
 
@@ -190,7 +128,8 @@ function toSubscriptionRow(
     isComplimentary: false,
     paidUsageStartedAt: isPaid ? createdAt : null,
     paidUsagePeriods: isPaid ? paidUsagePeriods(workspace, createdAt) : [],
-    createdBy: userIdOf(workspace, workspace.owner),
+    // Set to the platform owner once linked (owner.ts): nobody exists yet.
+    createdBy: null,
     createdAt,
     updatedAt: now,
   };
@@ -202,30 +141,6 @@ function toBillingInfoRow(workspace: SeedWorkspace): SeedRow {
     _id: workspace.id,
     vatVerificationStatus: workspace.billing.vatNumber ? VAT_VERIFIED : null,
   };
-}
-
-async function writePeople(
-  workspace: SeedWorkspace,
-  createdAt: Date,
-  permissions: string[],
-): Promise<void> {
-  const { id } = workspace;
-  const people = [workspace.owner, ...workspace.members];
-  await insertMissing(
-    UserModel,
-    people.map((member) => toUserRow(workspace, member, createdAt)),
-  );
-  await insertMissing(RoleModel, [memberRole(id, permissions, createdAt)], id);
-  await insertMissing(
-    TenantMemberModel,
-    [
-      toMemberRow(workspace, workspace.owner, true, createdAt),
-      ...workspace.members.map((member, index) =>
-        toMemberRow(workspace, member, false, addDays(createdAt, index + 1)),
-      ),
-    ],
-    id,
-  );
 }
 
 async function cancelAfterPublishing(workspace: SeedWorkspace): Promise<void> {
@@ -250,7 +165,8 @@ export async function writeWorkspace(
   if (await GetModel(TenantSubscriptionModel, id).table.get(id)) return false;
   const createdAt = workspaceCreatedAt(workspace, now);
   await Schema.get(TENANT_SCHEMA_NAME)?.createInstance(id);
-  await writePeople(workspace, createdAt, permissions);
+  // The role a colleague the owner invites gets.
+  await insertMissing(RoleModel, [memberRole(id, permissions, createdAt)], id);
   await insertMissing(
     TenantBillingInfoModel,
     [toBillingInfoRow(workspace)],
