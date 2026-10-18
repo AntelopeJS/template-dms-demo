@@ -143,7 +143,6 @@ export default defineConfig({
         // Track the dashboard itself, so Marketing shows how the demo is used.
         dashboardTracking: {
           enabled: true,
-          websiteName: "Helio dashboard",
           // Draw the click heatmaps over snapshots of the dashboard pages.
           snapshots: true,
         },
