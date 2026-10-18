@@ -108,9 +108,9 @@
 					"detailsTitle": "Product sheet"
 				},
 				"delete": {
-					"title": "Delete this product?",
-					"description": "Quotes that already list it keep their line. To stop offering it, mark it as discontinued instead.",
-					"confirm": "Delete product"
+					"title": "Delete this product? | Delete these {count} products?",
+					"description": "Quotes that already list it keep their line. To stop offering it, mark it as discontinued instead. | Quotes that already list them keep their lines. To stop offering them, mark them as discontinued instead.",
+					"confirm": "Delete product | Delete {count} products"
 				},
 				"stockLevels": {
 					"inStock": "In stock",

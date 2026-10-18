@@ -140,6 +140,8 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare customer: string;
 
+  // The picker lists the chosen customer's sites only; site-rule.ts still
+  // refuses another customer's site on save.
   @Listable()
   @Column({
     name: "$helio.service.tickets.columns.site",
@@ -148,6 +150,7 @@ class ticketDataAPI extends DataController(
       keyMapping: { label: "name", value: "_id" },
       placeholder: "$helio.service.tickets.placeholders.site",
       deselectable: true,
+      filterBy: { field: "customer", from: "customer" },
     }),
     filterable: true,
     isVisible: false,

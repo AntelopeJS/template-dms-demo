@@ -35,6 +35,7 @@ import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import type { CellSubline } from "@antelopejs/interface-dms/base/table-view/column-display";
 import { productCategoryController } from "./category-controller";
 import { CATEGORIES_TABLE, Product, ProductModel } from "./database";
+import { withStoredCategory } from "./product-read";
 import {
   FORMS_ONLY_VIEW,
   LOW_STOCK_MARGIN,
@@ -50,7 +51,11 @@ import {
 @RegisterDataController()
 class productDataAPI extends DataController(
   Product,
-  TableViewRoutes.All,
+  // The range id put back on a single-row read (product-read.ts).
+  {
+    ...TableViewRoutes.All,
+    get: withStoredCategory(TableViewRoutes.Get),
+  },
   Controller("/api/helio/products"),
 ) {
   @ModelReference()

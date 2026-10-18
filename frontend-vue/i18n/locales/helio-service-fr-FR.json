@@ -122,25 +122,25 @@
 			},
 			"bulk": {
 				"assign": {
-					"title": "Attribuer les tickets",
-					"description": "Choisissez qui les prend en charge. Les nouveaux tickets passent au statut « Ouvert ».",
+					"title": "Attribuer le ticket | Attribuer {count} tickets",
+					"description": "Choisissez qui le prend en charge. Un nouveau ticket passe au statut « Ouvert ». | Choisissez qui les prend en charge. Les nouveaux tickets passent au statut « Ouvert ».",
 					"field": "Attribuer à",
 					"placeholder": "Choisir un technicien",
 					"confirm": "Attribuer",
-					"done": "Tickets attribués",
+					"done": "Ticket attribué | {count} tickets attribués",
 					"invalid": "Choisissez une personne de l'équipe SAV"
 				},
 				"resolve": {
-					"title": "Résoudre ces tickets ?",
-					"description": "Les tickets ouverts sont marqués résolus maintenant ; les tickets résolus ou clôturés restent inchangés.",
+					"title": "Résoudre ce ticket ? | Résoudre ces {count} tickets ?",
+					"description": "Le ticket est marqué résolu maintenant. | Les tickets ouverts sont marqués résolus maintenant ; les tickets résolus ou clôturés restent inchangés.",
 					"confirm": "Résoudre",
-					"done": "Tickets résolus"
+					"done": "Ticket résolu | {count} tickets résolus"
 				},
 				"reopen": {
-					"title": "Rouvrir les tickets ?",
-					"description": "Les tickets résolus ou clôturés repassent au statut « Ouvert » et leur délai de résolution compte à nouveau ; les tickets encore ouverts restent inchangés.",
+					"title": "Rouvrir ce ticket ? | Rouvrir ces {count} tickets ?",
+					"description": "Le ticket repasse au statut « Ouvert » et son délai de résolution compte à nouveau. | Les tickets résolus ou clôturés repassent au statut « Ouvert » et leur délai de résolution compte à nouveau ; les tickets encore ouverts restent inchangés.",
 					"confirm": "Rouvrir",
-					"done": "Tickets rouverts"
+					"done": "Ticket rouvert | {count} tickets rouverts"
 				}
 			},
 			"quickActions": {
@@ -162,8 +162,8 @@
 				"description": "La demande du client, son SLA et qui la traite."
 			},
 			"delete": {
-				"title": "Supprimer les tickets ?",
-				"description": "Seuls les tickets résolus ou clôturés peuvent être supprimés. Cette action est définitive.",
+				"title": "Supprimer ce ticket ? | Supprimer ces {count} tickets ?",
+				"description": "Seul un ticket résolu ou clôturé peut être supprimé. Cette action est définitive. | Seuls les tickets résolus ou clôturés peuvent être supprimés. Cette action est définitive.",
 				"confirm": "Supprimer"
 			},
 			"rules": {

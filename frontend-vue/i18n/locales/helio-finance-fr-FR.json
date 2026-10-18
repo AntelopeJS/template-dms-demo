@@ -73,24 +73,24 @@
 				},
 				"markPaid": {
 					"action": "Marquer comme payée",
-					"title": "Enregistrer le paiement",
-					"description": "La facture est marquée payée et plus rien n'est dû. Le client sort du cycle de rappels.",
-					"confirm": "Enregistrer le paiement",
+					"title": "Enregistrer le paiement | Enregistrer {count} paiements",
+					"description": "La facture est marquée payée et plus rien n'est dû. Le client sort du cycle de rappels. | Les factures sont marquées payées et plus rien n'est dû. Leurs clients sortent du cycle de rappels.",
+					"confirm": "Enregistrer le paiement | Enregistrer {count} paiements",
 					"paidAt": "Date du paiement",
 					"paidAtHint": "Aujourd'hui par défaut : indiquez le jour où l'argent est arrivé.",
-					"success": "Paiement enregistré",
+					"success": "Paiement enregistré | {count} paiements enregistrés",
 					"futureDate": "Un paiement ne peut pas être daté dans le futur.",
 					"methodRequired": "Indiquez le mode de paiement du client.",
 					"nothing": "Aucune de ces factures n'attend de paiement."
 				},
 				"remind": {
 					"action": "Envoyer un rappel",
-					"title": "Envoyer un rappel de paiement",
-					"description": "Le client reçoit un rappel avec la facture et les informations de paiement.",
-					"confirm": "Envoyer le rappel",
+					"title": "Envoyer un rappel de paiement | Envoyer {count} rappels de paiement",
+					"description": "Le client reçoit un rappel avec la facture et les informations de paiement. | Chaque client reçoit un rappel avec la facture et les informations de paiement.",
+					"confirm": "Envoyer le rappel | Envoyer {count} rappels",
 					"impactEmail": "Envoyé à l'adresse e-mail de facturation du client",
 					"impactStamp": "La date du rappel est enregistrée sur la facture",
-					"success": "Rappel envoyé",
+					"success": "Rappel envoyé | {count} rappels envoyés",
 					"nothing": "Seules les factures en retard peuvent faire l'objet d'un rappel."
 				},
 				"quickView": {

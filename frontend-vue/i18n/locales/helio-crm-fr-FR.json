@@ -68,8 +68,8 @@
 				"menuLabel": "Actions pour {name}",
 				"segmentChip": "Segment",
 				"quickAction": "Nouveau client",
-				"archived": "Client archivé",
-				"restored": "Client restauré",
+				"archived": "Client archivé | {count} clients archivés",
+				"restored": "Client restauré | {count} clients restaurés",
 				"quickFilters": {
 					"owner": "Gestionnaire",
 					"source": "Origine"
@@ -167,7 +167,7 @@
 				"count": "{count} affaire | {count} affaires",
 				"menuLabel": "Actions pour {title}",
 				"customerChip": "Client",
-				"deleted": "Affaire supprimée",
+				"deleted": "Affaire supprimée | {count} affaires supprimées",
 				"quickFilters": {
 					"owner": "Commercial",
 					"source": "Origine"
@@ -201,9 +201,9 @@
 					"filteredDescription": "Essayez un autre commercial, une autre origine ou une autre recherche."
 				},
 				"deleteConfirm": {
-					"title": "Supprimer l'affaire {title} ?",
-					"description": "Son montant et son historique quittent le pipeline. Marquez-la plutôt comme perdue pour en garder la trace.",
-					"confirm": "Supprimer l'affaire"
+					"title": "Supprimer l'affaire {title} ? | Supprimer ces {count} affaires ?",
+					"description": "Son montant et son historique quittent le pipeline. Marquez-la plutôt comme perdue pour en garder la trace. | Leurs montants et leur historique quittent le pipeline. Marquez-les plutôt comme perdues pour en garder la trace.",
+					"confirm": "Supprimer l'affaire | Supprimer {count} affaires"
 				},
 				"newDeal": "Nouvelle affaire",
 				"quickView": {

@@ -118,13 +118,20 @@ export class PageHelioInvoices extends PageController(
   }
 
   // Noon of today: a date-only field reads the same day in every time zone.
+  // Worded for one invoice or for the selection (`?ids=`: the row's own id
+  // from its menu; on the selection bar, the ids besides the row token, left
+  // empty or unresolved there).
   @Get("mark-paid-confirm")
   markPaidConfirm(
+    @MultiParameter("ids") ids: string[],
     @AuthUserWithPermission(invoiceEditAction) _user: User,
   ): ConfirmDialogSerialized {
     const today = new Date();
     today.setHours(12, 0, 0, 0);
+    const invoiceIds = (ids ?? []).filter((id) => id && !id.includes("{{"));
+    const count = Math.max(invoiceIds.length, 1);
     return serializeConfirmDialog({
+      params: { count },
       title: "$helio.finance.invoices.markPaid.title",
       description: "$helio.finance.invoices.markPaid.description",
       icon: "i-ph-hand-coins",

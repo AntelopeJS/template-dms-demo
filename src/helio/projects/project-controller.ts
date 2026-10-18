@@ -194,6 +194,9 @@ class projectDataAPI extends DataController(
       keyMapping: { label: "number", value: "_id" },
       placeholder: "$helio.projects.placeholders.quote",
       deselectable: true,
+      // The chosen customer's quotes only; the write routes still refuse
+      // another customer's quote (assertQuoteOfCustomer).
+      filterBy: { field: "customer", from: "customer" },
     }),
     filterable: true,
     isVisible: false,

@@ -8,7 +8,11 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
-import { DEAL_STAGES, dealController } from "./deal-controller";
+import {
+  DEAL_STAGES,
+  dealController,
+  STAGE_PROBABILITY,
+} from "./deal-controller";
 import { afterDealEdit, afterDealNew } from "./deal-derived";
 import { CUSTOMER_QUICK_VIEW_URL } from "./links";
 import { PIPELINE_VIEWS } from "./pipeline-views";
@@ -44,24 +48,34 @@ const LOST_REASON_WATCHES: TableViewFormWatch[] = DEAL_STAGES.flatMap(
   },
 );
 
-// A won or lost deal's probability is implied (the write routes store 100 %
-// or 0 %, see deal-derived.ts), and a form watch can hide a field but not
-// set its value: the field leaves the edit forms on those stages rather than
-// show a figure the save will overwrite.
-const PROBABILITY_WATCHES: TableViewFormWatch[] = DEAL_STAGES.map(
-  ({ value }) => ({
+// The probability follows the stage as it is picked, before the save: each
+// stage's usual figure (100 % won, 0 % lost), which the owner may still
+// adjust on an open deal. A won or lost deal's figure is implied (the write
+// routes store 100 % or 0 % whatever is sent, see deal-derived.ts), so the
+// field is locked on those stages. Only a change writes the value: a form
+// opens with the probability the deal stored.
+const PROBABILITY_BY_STAGE: Record<string, number> = { ...STAGE_PROBABILITY };
+
+const PROBABILITY_WATCHES: TableViewFormWatch[] = [
+  {
     event: FormEvents.FIELD_CHANGE,
-    functionId: FormFunctions.SET_FIELD_HIDDEN,
+    functionId: FormFunctions.SET_FIELD_VALUE,
+    params: { targetField: "probability", valueMap: PROBABILITY_BY_STAGE },
+    onParam: { key: "fieldId", value: "stage" },
+  },
+  ...DEAL_STAGES.map(({ value }) => ({
+    event: FormEvents.FIELD_CHANGE,
+    functionId: FormFunctions.SET_FIELD_DISABLED,
     params: {
       targetField: "probability",
-      setHidden: value === "won" || value === "lost",
+      setDisabled: value === "won" || value === "lost",
     },
     onParam: [
       { key: "fieldId", value: "stage" },
       { key: "value", value },
     ],
-  }),
-);
+  })),
+];
 
 const EDIT_FORM_WATCHES = [...LOST_REASON_WATCHES, ...PROBABILITY_WATCHES];
 

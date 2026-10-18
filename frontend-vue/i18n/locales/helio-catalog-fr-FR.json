@@ -108,9 +108,9 @@
 					"detailsTitle": "Fiche produit"
 				},
 				"delete": {
-					"title": "Supprimer ce produit ?",
-					"description": "Les offres qui le reprennent gardent leur ligne. Pour ne plus le proposer, marquez-le plutôt comme plus commercialisé.",
-					"confirm": "Supprimer le produit"
+					"title": "Supprimer ce produit ? | Supprimer ces {count} produits ?",
+					"description": "Les offres qui le reprennent gardent leur ligne. Pour ne plus le proposer, marquez-le plutôt comme plus commercialisé. | Les offres qui les reprennent gardent leur ligne. Pour ne plus les proposer, marquez-les plutôt comme plus commercialisés.",
+					"confirm": "Supprimer le produit | Supprimer {count} produits"
 				},
 				"stockLevels": {
 					"inStock": "En stock",

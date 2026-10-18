@@ -74,7 +74,8 @@ const HEADER_ACTIONS = [
 ];
 
 // Hidden from the menu: a project is opened from the projects list, the
-// dashboard or a link, its `_id` in the URL.
+// dashboard or a link, its `_id` in the URL. The breadcrumb leads back to
+// that list (Operations / Projects / <project>).
 @RegisterPage()
 export class PageHelioProject extends PageController(
   "project",
@@ -83,6 +84,7 @@ export class PageHelioProject extends PageController(
     description: "$helio.projects.detail.page.description",
     icon: "i-ph-solar-panel",
     category: helioOperationsCategory,
+    parent: PageHelioProjects,
     urlSlug: "project/:id",
     hidden: true,
   },

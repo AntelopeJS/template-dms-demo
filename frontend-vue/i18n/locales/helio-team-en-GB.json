@@ -128,9 +128,9 @@
 				"online_label": "Reachable now"
 			},
 			"delete": {
-				"title": "Remove {name} from the team?",
+				"title": "Remove {name} from the team? | Remove these {count} members from the team?",
 				"description": "Their tickets and sites keep the history but will need a new owner.",
-				"confirm": "Remove member"
+				"confirm": "Remove member | Remove {count} members"
 			},
 			"quick": {
 				"add": "New team member"

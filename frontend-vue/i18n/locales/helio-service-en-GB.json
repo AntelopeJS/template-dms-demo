@@ -122,25 +122,25 @@
 			},
 			"bulk": {
 				"assign": {
-					"title": "Assign tickets",
-					"description": "Pick who takes them over. New tickets become open.",
+					"title": "Assign the ticket | Assign {count} tickets",
+					"description": "Pick who takes it over. A new ticket becomes open. | Pick who takes them over. New tickets become open.",
 					"field": "Assign to",
 					"placeholder": "Choose a technician",
 					"confirm": "Assign",
-					"done": "Tickets assigned",
+					"done": "Ticket assigned | {count} tickets assigned",
 					"invalid": "Choose someone from the service team"
 				},
 				"resolve": {
-					"title": "Resolve these tickets?",
-					"description": "Open tickets are marked resolved now; resolved and closed ones stay as they are.",
+					"title": "Resolve this ticket? | Resolve these {count} tickets?",
+					"description": "The ticket is marked resolved now. | Open tickets are marked resolved now; resolved and closed ones stay as they are.",
 					"confirm": "Resolve",
-					"done": "Tickets resolved"
+					"done": "Ticket resolved | {count} tickets resolved"
 				},
 				"reopen": {
-					"title": "Reopen these tickets?",
-					"description": "Resolved or closed tickets go back to \"Open\" and their resolution time counts again; tickets still open are left as they are.",
+					"title": "Reopen this ticket? | Reopen these {count} tickets?",
+					"description": "The ticket goes back to \"Open\" and its resolution time counts again. | Resolved or closed tickets go back to \"Open\" and their resolution time counts again; tickets still open are left as they are.",
 					"confirm": "Reopen",
-					"done": "Tickets reopened"
+					"done": "Ticket reopened | {count} tickets reopened"
 				}
 			},
 			"quickActions": {
@@ -162,8 +162,8 @@
 				"description": "The customer's request, its SLA and who handles it."
 			},
 			"delete": {
-				"title": "Delete these tickets?",
-				"description": "Only resolved or closed tickets can be deleted. This cannot be undone.",
+				"title": "Delete this ticket? | Delete these {count} tickets?",
+				"description": "Only a resolved or closed ticket can be deleted. This cannot be undone. | Only resolved or closed tickets can be deleted. This cannot be undone.",
 				"confirm": "Delete"
 			},
 			"rules": {

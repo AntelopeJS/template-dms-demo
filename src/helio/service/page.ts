@@ -74,6 +74,21 @@ export class PageHelioService extends PageController(
     rowClick: "single",
     pageSize: 25,
     density: "compact",
+    // A phone opens the desk on a card per ticket (its number, subject,
+    // customer, state, priority, technician and deadline) rather than a grid
+    // cut after its first columns; wide screens keep the grid.
+    displays: [{ id: "table" }, { id: "cards" }],
+    mobileDisplay: "cards",
+    card: {
+      fields: [
+        "subject",
+        "customer",
+        "status",
+        "priority",
+        "assignee",
+        "slaDueAt",
+      ],
+    },
     defaultSort: { field: "createdAt", desc: true },
     pinnedRows: { field: "pinned", equals: true },
     realtimeTopic: SERVICE_TOPIC,

@@ -7,8 +7,8 @@
 // - a code names one project only;
 // - a project never ends before it starts;
 // - the quote a project carries out is one of its customer's (the form's
-//   quote picker lists every quote: the DMS cannot narrow a relation picker
-//   to the customer chosen in the same form).
+//   quote picker lists the chosen customer's quotes only, but a write that
+//   does not come from it must hold too).
 
 import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";

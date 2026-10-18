@@ -91,9 +91,9 @@
 					"filteredDescription": "No installation fits these filters. Widen the dates or clear the filters."
 				},
 				"deleteConfirm": {
-					"title": "Delete {name}?",
-					"description": "The project and its planning will be removed for the whole team.",
-					"confirm": "Delete the project"
+					"title": "Delete {name}? | Delete these {count} projects?",
+					"description": "The project and its planning will be removed for the whole team. | These projects and their planning will be removed for the whole team.",
+					"confirm": "Delete the project | Delete {count} projects"
 				},
 				"add": "New project",
 				"filters": {

@@ -68,8 +68,8 @@
 				"menuLabel": "Actions for {name}",
 				"segmentChip": "Segment",
 				"quickAction": "New customer",
-				"archived": "Customer archived",
-				"restored": "Customer restored",
+				"archived": "Customer archived | {count} customers archived",
+				"restored": "Customer restored | {count} customers restored",
 				"quickFilters": {
 					"owner": "Account manager",
 					"source": "Source"
@@ -167,7 +167,7 @@
 				"count": "{count} deal | {count} deals",
 				"menuLabel": "Actions for {title}",
 				"customerChip": "Customer",
-				"deleted": "Deal deleted",
+				"deleted": "Deal deleted | {count} deals deleted",
 				"quickFilters": {
 					"owner": "Sales rep",
 					"source": "Source"
@@ -201,9 +201,9 @@
 					"filteredDescription": "Try another sales rep, source or search."
 				},
 				"deleteConfirm": {
-					"title": "Delete the deal {title}?",
-					"description": "Its amount and history leave the pipeline. Mark it as lost instead to keep track of it.",
-					"confirm": "Delete the deal"
+					"title": "Delete the deal {title}? | Delete these {count} deals?",
+					"description": "Its amount and history leave the pipeline. Mark it as lost instead to keep track of it. | Their amounts and history leave the pipeline. Mark them as lost instead to keep track of them.",
+					"confirm": "Delete the deal | Delete {count} deals"
 				},
 				"newDeal": "New deal",
 				"quickView": {

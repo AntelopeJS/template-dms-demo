@@ -91,9 +91,9 @@
 					"filteredDescription": "Aucune installation ne répond à ces filtres. Élargissez les dates ou effacez les filtres."
 				},
 				"deleteConfirm": {
-					"title": "Supprimer {name} ?",
-					"description": "Le chantier et son planning seront supprimés pour toute l'équipe.",
-					"confirm": "Supprimer le chantier"
+					"title": "Supprimer {name} ? | Supprimer ces {count} chantiers ?",
+					"description": "Le chantier et son planning seront supprimés pour toute l'équipe. | Ces chantiers et leur planning seront supprimés pour toute l'équipe.",
+					"confirm": "Supprimer le chantier | Supprimer {count} chantiers"
 				},
 				"add": "Nouveau chantier",
 				"filters": {
