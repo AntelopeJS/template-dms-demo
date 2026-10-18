@@ -5,9 +5,9 @@ interface VueModule {
 	default: Component
 }
 
-// Every .vue file under app/components is registered globally as `Demo<Name>`.
-// The backend references them by name -- `CustomComponent("demo-callout")` in
-// src/components/custom.ts resolves to `DemoCallout`.
+// Every .vue file under app/components is registered globally as `Demo<Name>`,
+// the name a backend `CustomComponent("demo-<name>")` resolves to. The demo
+// ships none: every screen is made of DMS blocks.
 const components = import.meta.glob<VueModule>('./app/components/**/*.vue')
 
 const frontendModule: DmsFrontendModule = {

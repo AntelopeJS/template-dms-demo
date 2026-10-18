@@ -110,8 +110,7 @@ const pair = (left: Section, right: Section) =>
 const full = (id: Section) => GridRow().child(id, section(id), { colSpan: 2 });
 
 // The home page tells what the demo is for and how to build the same thing:
-// a hero, the figures counted live, then the story in long-form text. No
-// component showcase here: those live under Components.
+// a hero, the figures counted live, then the story in long-form text.
 @RegisterPage()
 export class PageHome extends PageController(
   "home",

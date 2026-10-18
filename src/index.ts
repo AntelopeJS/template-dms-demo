@@ -11,7 +11,6 @@ import { registerSaasShowcase } from "./helio/platform/saas";
 import { stopServiceSimulator } from "./helio/service";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
-import "./components";
 import "./helio";
 
 export async function construct(): Promise<void> {
