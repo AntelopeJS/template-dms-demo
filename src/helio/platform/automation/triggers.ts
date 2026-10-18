@@ -51,14 +51,39 @@ const ticketOpened: TriggerType<TicketOpenedConfig, TicketOpenedEvent> = {
   outputSchema: {
     type: "object",
     properties: {
-      ticketId: { type: "string" },
-      number: { type: "string" },
-      subject: { type: "string" },
-      priority: { type: "string" },
-      category: { type: "string" },
-      channel: { type: "string" },
-      customerId: { type: "string" },
-      at: { type: "string", format: "date-time" },
+      ticketId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.ticketId",
+      },
+      number: {
+        type: "string",
+        title: "$helio.platform.automation.fields.number",
+      },
+      subject: {
+        type: "string",
+        title: "$helio.platform.automation.fields.subject",
+      },
+      priority: {
+        type: "string",
+        title: "$helio.platform.automation.fields.priority",
+      },
+      category: {
+        type: "string",
+        title: "$helio.platform.automation.fields.category",
+      },
+      channel: {
+        type: "string",
+        title: "$helio.platform.automation.fields.channel",
+      },
+      customerId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.customerId",
+      },
+      at: {
+        type: "string",
+        title: "$helio.platform.automation.fields.at",
+        format: "date-time",
+      },
     },
   },
   activate(config, emit) {
@@ -82,12 +107,31 @@ const quoteAccepted: TriggerType<Record<string, never>, QuoteAcceptedEvent> = {
   outputSchema: {
     type: "object",
     properties: {
-      quoteId: { type: "string" },
-      number: { type: "string" },
-      customerId: { type: "string" },
-      dealId: { type: "string" },
-      total: { type: "number" },
-      at: { type: "string", format: "date-time" },
+      quoteId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.quoteId",
+      },
+      number: {
+        type: "string",
+        title: "$helio.platform.automation.fields.number",
+      },
+      customerId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.customerId",
+      },
+      dealId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.dealId",
+      },
+      total: {
+        type: "number",
+        title: "$helio.platform.automation.fields.total",
+      },
+      at: {
+        type: "string",
+        title: "$helio.platform.automation.fields.at",
+        format: "date-time",
+      },
     },
   },
   activate(_config, emit) {

@@ -89,9 +89,18 @@ const remindOverdueInvoices: ActionType<
   outputSchema: {
     type: "object",
     properties: {
-      reminded: { type: "number" },
-      amountDue: { type: "number" },
-      summary: { type: "string" },
+      reminded: {
+        type: "number",
+        title: "$helio.platform.automation.fields.reminded",
+      },
+      amountDue: {
+        type: "number",
+        title: "$helio.platform.automation.fields.amountDue",
+      },
+      summary: {
+        type: "string",
+        title: "$helio.platform.automation.fields.summary",
+      },
     },
   },
   async execute(input, ctx) {
@@ -148,15 +157,27 @@ const planKickoff: ActionType<{ quoteId?: string }, Record<string, unknown>> = {
   icon: "i-ph-flag-banner",
   inputSchema: {
     type: "object",
-    properties: { quoteId: { type: "string" } },
+    properties: {
+      quoteId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.quoteId",
+      },
+    },
     required: ["quoteId"],
   },
   outputSchema: {
     type: "object",
     properties: {
-      target: { type: "string", enum: ["project", "deal"] },
-      summary: { type: "string" },
-      link: { type: "string" },
+      target: {
+        type: "string",
+        title: "$helio.platform.automation.fields.target",
+        enum: ["project", "deal"],
+      },
+      summary: {
+        type: "string",
+        title: "$helio.platform.automation.fields.summary",
+      },
+      link: { type: "string", title: "$helio.platform.automation.fields.link" },
     },
   },
   async execute(input, ctx) {
@@ -229,8 +250,14 @@ const confirmInstallations: ActionType<
   outputSchema: {
     type: "object",
     properties: {
-      confirmed: { type: "number" },
-      summary: { type: "string" },
+      confirmed: {
+        type: "number",
+        title: "$helio.platform.automation.fields.confirmed",
+      },
+      summary: {
+        type: "string",
+        title: "$helio.platform.automation.fields.summary",
+      },
     },
   },
   async execute(input, ctx) {

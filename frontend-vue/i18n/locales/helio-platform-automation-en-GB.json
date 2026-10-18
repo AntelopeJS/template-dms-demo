@@ -43,6 +43,28 @@
 						"daysAhead": "Projects starting within (days)"
 					}
 				},
+				"fields": {
+					"amountDue": "Amount due",
+					"assignee": "Technician",
+					"at": "Date",
+					"category": "Category",
+					"channel": "Channel",
+					"confirmed": "Confirmations",
+					"created": "Created",
+					"customerId": "Customer",
+					"dealId": "Deal",
+					"link": "Link",
+					"number": "Number",
+					"priority": "Priority",
+					"quoteId": "Quote",
+					"reminded": "Reminders",
+					"subject": "Subject",
+					"summary": "Summary",
+					"target": "Target",
+					"ticketId": "Ticket",
+					"total": "Total",
+					"userIds": "Users"
+				},
 				"notifications": {
 					"dispatched": "Urgent ticket dispatched",
 					"reminders": "Payment reminders sent",

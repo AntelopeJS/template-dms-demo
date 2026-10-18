@@ -142,11 +142,26 @@ const createTicket: ActionType<AlertInput, Record<string, unknown>> = {
   outputSchema: {
     type: "object",
     properties: {
-      created: { type: "boolean" },
-      ticketId: { type: "string" },
-      number: { type: "string" },
-      priority: { type: "string" },
-      summary: { type: "string" },
+      created: {
+        type: "boolean",
+        title: "$helio.platform.automation.fields.created",
+      },
+      ticketId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.ticketId",
+      },
+      number: {
+        type: "string",
+        title: "$helio.platform.automation.fields.number",
+      },
+      priority: {
+        type: "string",
+        title: "$helio.platform.automation.fields.priority",
+      },
+      summary: {
+        type: "string",
+        title: "$helio.platform.automation.fields.summary",
+      },
     },
   },
   async execute(input, ctx) {
@@ -206,16 +221,30 @@ const assignOnCall: ActionType<
   icon: "i-ph-user-switch",
   inputSchema: {
     type: "object",
-    properties: { ticketId: { type: "string" } },
+    properties: {
+      ticketId: {
+        type: "string",
+        title: "$helio.platform.automation.fields.ticketId",
+      },
+    },
     required: ["ticketId"],
   },
   outputSchema: {
     type: "object",
     properties: {
-      assignee: { type: "string" },
-      number: { type: "string" },
-      summary: { type: "string" },
-      link: { type: "string" },
+      assignee: {
+        type: "string",
+        title: "$helio.platform.automation.fields.assignee",
+      },
+      number: {
+        type: "string",
+        title: "$helio.platform.automation.fields.number",
+      },
+      summary: {
+        type: "string",
+        title: "$helio.platform.automation.fields.summary",
+      },
+      link: { type: "string", title: "$helio.platform.automation.fields.link" },
     },
   },
   async execute(input, ctx) {
@@ -251,7 +280,13 @@ const findManagers: ActionType<Record<string, never>, { userIds: string[] }> = {
   inputSchema: { type: "object", properties: {} },
   outputSchema: {
     type: "object",
-    properties: { userIds: { type: "array", items: { type: "string" } } },
+    properties: {
+      userIds: {
+        type: "array",
+        title: "$helio.platform.automation.fields.userIds",
+        items: { type: "string" },
+      },
+    },
   },
   async execute() {
     const owners = await GetModel(UserModel).getOwners();

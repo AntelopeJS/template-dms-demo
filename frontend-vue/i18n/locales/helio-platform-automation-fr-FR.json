@@ -43,6 +43,28 @@
 						"daysAhead": "Chantiers commençant dans les (jours)"
 					}
 				},
+				"fields": {
+					"amountDue": "Montant dû",
+					"assignee": "Technicien",
+					"at": "Date",
+					"category": "Catégorie",
+					"channel": "Canal",
+					"confirmed": "Confirmations",
+					"created": "Créé",
+					"customerId": "Client",
+					"dealId": "Affaire",
+					"link": "Lien",
+					"number": "Numéro",
+					"priority": "Priorité",
+					"quoteId": "Devis",
+					"reminded": "Relances",
+					"subject": "Objet",
+					"summary": "Résumé",
+					"target": "Cible",
+					"ticketId": "Ticket",
+					"total": "Total",
+					"userIds": "Utilisateurs"
+				},
 				"notifications": {
 					"dispatched": "Ticket urgent attribué",
 					"reminders": "Rappels de paiement envoyés",
