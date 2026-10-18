@@ -192,21 +192,18 @@ const reopenAction: CustomRowAction = {
   },
 };
 
-// `?record=<ticket id>` (the dashboard's activity feed) opens the ticket
-// read-only in a right drawer. Its form reads the row from the URL, so the
-// drawer is only opened from it: a rule no row meets keeps it out of the
-// menus, and a click still opens the edit form.
+// A click on a ticket (or ?record=<ticket id>, the dashboard's activity feed)
+// opens it read-only in the row side panel, next to the list: J / K walk the
+// tickets, "Modifier" from the row menu opens the edit form.
 const quickViewAction: CustomRowAction = {
   id: "quick-view",
   label: "$helio.service.quickView.action",
   icon: "i-ph-sidebar-simple",
-  deepLink: true,
-  rule: { field: "_id", in: [] },
+  isDefault: true,
   target: {
-    type: "drawer",
-    direction: "right",
+    type: "sidePanel",
     title: "$helio.service.quickView.title",
-    description: "$helio.service.quickView.description",
+    rowTitle: "{number} · {subject}",
     component: ResourceForm(ticketController, {
       mode: "view",
       rowId: "{{query.record}}",
@@ -214,11 +211,6 @@ const quickViewAction: CustomRowAction = {
   },
 };
 
-// A click on a ticket opens its edit form (rowClick "single" on the page).
-// The row side panel was tried first: with a ResourceForm reading
-// `{{query.record}}` it shows the right ticket only when the page is loaded
-// on `?record=`; a click or J / K writes the URL in place, which the form's
-// route values do not follow, so it kept showing the previous ticket.
 export const ticketRowActions: TableViewRowActionOptions = {
   add: true,
   edit: true,
