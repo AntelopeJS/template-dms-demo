@@ -3,8 +3,8 @@
 ```bash
 ajs project init mon-projet --template "DMS Demo" --yes
 cd mon-projet
-pnpm dev            # backend : installe les modules, construit le projet, démarre sur :5010
-pnpm frontend:dev   # tableau de bord sur :3001 (second terminal)
+pnpm dev            # backend sur :5010
+pnpm frontend:dev   # tableau de bord sur :3001
 ```
 
 1. **Partez du modèle** plutôt que d'une page blanche : la structure, les scripts et la configuration sont déjà justes.

@@ -9,6 +9,9 @@ import {
 } from "@antelopejs/interface-dms/page";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import {
+  Card,
+  Grid,
+  GridRow,
   Hero,
   NavCardGrid,
   Prose,
@@ -27,13 +30,14 @@ const HTTP_NOT_FOUND = 404;
 // share `{`, `|` and `@`, so they are not i18n keys.
 const CONTENT_DIR = resolve(__dirname, "..", "content", "home");
 const SECTIONS = [
-  "story",
+  "why",
+  "provides",
   "guide",
-  "modules",
   "cases",
+  "modules",
   "start",
-  "ai",
   "contribute",
+  "ai",
 ] as const;
 type Section = (typeof SECTIONS)[number];
 
@@ -91,11 +95,19 @@ function figureItems(figures: HomeFigures): StatGroupItem[] {
   ];
 }
 
-const section = (id: Section, wide = false) =>
-  Prose({
-    fetchUrl: pageRoutePath(HOME_SLUG, `/sections/${id}`),
-    width: wide ? "wide" : "readable",
-  });
+// Each section is a card filling its grid cell; a row of one spans both
+// columns (the modules table, the AI section).
+const section = (id: Section) =>
+  Card({ padded: true }).child(
+    "text",
+    Prose({
+      fetchUrl: pageRoutePath(HOME_SLUG, `/sections/${id}`),
+      width: "wide",
+    }),
+  );
+const pair = (left: Section, right: Section) =>
+  GridRow().child(left, section(left)).child(right, section(right));
+const full = (id: Section) => GridRow().child(id, section(id), { colSpan: 2 });
 
 // The home page tells what the demo is for and how to build the same thing:
 // a hero, the figures counted live, then the story in long-form text. No
@@ -146,13 +158,12 @@ export class PageHome extends PageController(
     skeletonCount: 5,
   });
 
-  static story = section("story");
-  static guide = section("guide");
-  static modules = section("modules", true);
-  static cases = section("cases");
-  static start = section("start");
-  static ai = section("ai");
-  static contribute = section("contribute");
+  static story = Grid({ gap: "1rem", minColumnWidth: "420px" })
+    .child("intro", pair("why", "provides"))
+    .child("use", pair("guide", "cases"))
+    .child("modules", full("modules"))
+    .child("build", pair("start", "contribute"))
+    .child("ai", full("ai"));
 
   static links = NavCardGrid({
     title: "$demo.home.links.title",

@@ -3,8 +3,8 @@
 ```bash
 ajs project init my-project --template "DMS Demo" --yes
 cd my-project
-pnpm dev            # backend: installs the modules, builds the project, starts on :5010
-pnpm frontend:dev   # dashboard on :3001 (second terminal)
+pnpm dev            # backend on :5010
+pnpm frontend:dev   # dashboard on :3001
 ```
 
 1. **Start from the template** rather than a blank page: structure, scripts and configuration are already right.
