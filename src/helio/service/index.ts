@@ -2,11 +2,8 @@
 import "./database";
 import "./controller";
 import "./page";
-import { startServiceSimulator } from "./simulator";
 
 export { startServiceSimulator, stopServiceSimulator } from "./simulator";
 
-// The ticket simulator runs as soon as the domain loads (HELIO_SIMULATORS=off
-// keeps it off); a reload replaces the previous timer rather than adding one.
-// src/index.ts stops it with the module (stop() and destroy()).
-startServiceSimulator();
+// The ticket simulator is started by src/index.ts once the template schema is
+// registered (HELIO_SIMULATORS=off keeps it off), and stopped with the module.

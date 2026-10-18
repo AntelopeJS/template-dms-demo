@@ -8,7 +8,7 @@ import {
 import { startHelioMarketing } from "./helio/platform/marketing";
 import { startHelioMedia } from "./helio/platform/media";
 import { registerSaasShowcase } from "./helio/platform/saas";
-import { stopServiceSimulator } from "./helio/service";
+import { startServiceSimulator, stopServiceSimulator } from "./helio/service";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./helio";
@@ -35,6 +35,8 @@ export async function start(): Promise<void> {
   // and run their fixtures. Runs after the DMS start(), so the database
   // adapter is already available.
   await RegisterSchema(DEMO_SCHEMA_NAME);
+  // The service desk simulator writes tickets: only once the schema exists.
+  startServiceSimulator();
 
   // Helio's e-mail templates, send history and procedures (they read the
   // Helio collections, so after the schema). In the background, never failing.
@@ -45,8 +47,8 @@ export async function start(): Promise<void> {
   startHelioMarketing();
 }
 
-// The service desk simulator runs on a timer started when its module is
-// imported; stop it with the module so no ticket is created afterwards.
+// The service desk simulator runs on a timer started in start(); stop it with
+// the module so no ticket is created afterwards.
 export function destroy(): void {
   stopServiceSimulator();
 }
