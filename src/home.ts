@@ -1,4 +1,6 @@
-import { Get } from "@antelopejs/interface-api";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { Get, HTTPResult, Parameter } from "@antelopejs/interface-api";
 import {
   PageController,
   pageRoutePath,
@@ -7,20 +9,37 @@ import {
 } from "@antelopejs/interface-dms/page";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import {
-  Banner,
-  Card,
-  CodeBlock,
-  KeyValueList,
+  Hero,
   NavCardGrid,
+  Prose,
   StatGroup,
 } from "@antelopejs/interface-dms/base";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
-import { helioCategory } from "./helio/category";
-import { HOME_EXCERPT } from "./home-excerpt";
 import { type HomeFigures, homeFigures } from "./home-figures";
 
 const DOCS = "https://dms.antelopejs.com/docs";
+const GITHUB = "https://github.com/AntelopeJS";
 const HOME_SLUG = "/home";
+const HTTP_NOT_FOUND = 404;
+
+// The long texts live as Markdown, one file per section and language, in
+// content/home (next to dist/, read on each request): Markdown and vue-i18n
+// share `{`, `|` and `@`, so they are not i18n keys.
+const CONTENT_DIR = resolve(__dirname, "..", "content", "home");
+const SECTIONS = [
+  "story",
+  "guide",
+  "modules",
+  "cases",
+  "start",
+  "ai",
+  "contribute",
+] as const;
+type Section = (typeof SECTIONS)[number];
+
+function contentLocale(language: string | undefined): "fr-FR" | "en-GB" {
+  return language?.toLowerCase().startsWith("fr") ? "fr-FR" : "en-GB";
+}
 
 const count = (value: number) => ({ type: "count", value }) as const;
 
@@ -72,9 +91,15 @@ function figureItems(figures: HomeFigures): StatGroupItem[] {
   ];
 }
 
-// The home page presents the template with DMS blocks only, like Helio
-// itself: what the demo is, what AntelopeJS brought to build it, and where
-// to start.
+const section = (id: Section, wide = false) =>
+  Prose({
+    fetchUrl: pageRoutePath(HOME_SLUG, `/sections/${id}`),
+    width: wide ? "wide" : "readable",
+  });
+
+// The home page tells what the demo is for and how to build the same thing:
+// a hero, the figures counted live, then the story in long-form text. No
+// component showcase here: those live under Components.
 @RegisterPage()
 export class PageHome extends PageController(
   "home",
@@ -87,21 +112,26 @@ export class PageHome extends PageController(
   },
   DefaultLayout({ hideHeader: true }),
 ) {
-  static intro = Banner({
-    tone: "primary",
-    icon: "i-ph-sun",
-    title: "$demo.home.intro.title",
-    description: "$demo.home.intro.description",
+  static hero = Hero({
+    eyebrow: "$demo.home.hero.eyebrow",
+    title: "$demo.home.hero.title",
+    highlight: "$demo.home.hero.highlight",
+    lead: "$demo.home.hero.lead",
+    size: "lg",
+    background: "gradient",
+    icons: ["i-ph-sun", "i-ph-squares-four", "i-ph-lightning"],
     actions: [
       {
-        label: "$demo.home.intro.docs",
-        to: `${DOCS}/getting-started/introduction`,
-        icon: "i-ph-book-open",
-      },
-      {
-        label: "$demo.home.intro.open",
+        label: "$demo.home.hero.open",
         to: "/helio/dashboard",
         icon: "i-ph-arrow-right",
+        variant: "solid",
+      },
+      {
+        label: "$demo.home.hero.docs",
+        to: `${DOCS}/getting-started/introduction`,
+        icon: "i-ph-book-open",
+        variant: "outline",
       },
     ],
   });
@@ -116,196 +146,77 @@ export class PageHome extends PageController(
     skeletonCount: 5,
   });
 
+  static story = section("story");
+  static guide = section("guide");
+  static modules = section("modules", true);
+  static cases = section("cases");
+  static start = section("start");
+  static ai = section("ai");
+  static contribute = section("contribute");
+
+  static links = NavCardGrid({
+    title: "$demo.home.links.title",
+    columns: 3,
+    items: [
+      {
+        id: "helio",
+        icon: "i-ph-sun",
+        title: "$demo.home.links.helio.title",
+        description: "$demo.home.links.helio.description",
+        to: "/helio/dashboard",
+      },
+      {
+        id: "docs",
+        icon: "i-ph-book-open",
+        title: "$demo.home.links.docs.title",
+        description: "$demo.home.links.docs.description",
+        to: `${DOCS}/getting-started/introduction`,
+      },
+      {
+        id: "quickstart",
+        icon: "i-ph-rocket-launch",
+        title: "$demo.home.links.quickstart.title",
+        description: "$demo.home.links.quickstart.description",
+        to: `${DOCS}/getting-started/quickstart`,
+      },
+      {
+        id: "modules",
+        icon: "i-ph-puzzle-piece",
+        title: "$demo.home.links.modules.title",
+        description: "$demo.home.links.modules.description",
+        to: "/modules",
+      },
+      {
+        id: "store",
+        icon: "i-ph-storefront",
+        title: "$demo.home.links.store.title",
+        description: "$demo.home.links.store.description",
+        to: "/modules/store",
+      },
+      {
+        id: "github",
+        icon: "i-ph-github-logo",
+        title: "$demo.home.links.github.title",
+        description: "$demo.home.links.github.description",
+        to: GITHUB,
+      },
+    ],
+  });
+
   @Get("figures")
   async figureValues(): Promise<{ items: StatGroupItem[] }> {
     return { items: figureItems(await homeFigures()) };
   }
 
-  // One card per Helio page, read from the menu: a new page shows up here
-  // on its own, and a viewer only sees the pages their role opens.
-  static helio = NavCardGrid({
-    title: "$demo.home.helio.title",
-    description: "$demo.home.helio.description",
-    category: helioCategory,
-    columns: 3,
-  });
-
-  static antelope = NavCardGrid({
-    title: "$demo.home.antelope.title",
-    description: "$demo.home.antelope.description",
-    columns: 3,
-    items: [
-      {
-        id: "pages",
-        icon: "i-ph-browsers",
-        title: "$demo.home.antelope.pages.title",
-        description: "$demo.home.antelope.pages.description",
-        to: `${DOCS}/building/pages-and-components`,
-      },
-      {
-        id: "data",
-        icon: "i-ph-database",
-        title: "$demo.home.antelope.data.title",
-        description: "$demo.home.antelope.data.description",
-        to: `${DOCS}/components/data-controller`,
-      },
-      {
-        id: "permissions",
-        icon: "i-ph-shield-check",
-        title: "$demo.home.antelope.permissions.title",
-        description: "$demo.home.antelope.permissions.description",
-        to: `${DOCS}/auth-and-tenancy/auth-and-permissions`,
-      },
-      {
-        id: "realtime",
-        icon: "i-ph-broadcast",
-        title: "$demo.home.antelope.realtime.title",
-        description: "$demo.home.antelope.realtime.description",
-        to: `${DOCS}/building/backend-services#realtime`,
-      },
-      {
-        id: "i18n",
-        icon: "i-ph-translate",
-        title: "$demo.home.antelope.i18n.title",
-        description: "$demo.home.antelope.i18n.description",
-        to: `${DOCS}/building/localization`,
-      },
-      {
-        id: "modules",
-        icon: "i-ph-puzzle-piece",
-        title: "$demo.home.antelope.modules.title",
-        description: "$demo.home.antelope.modules.description",
-        to: "/modules",
-      },
-    ],
-  });
-
-  static start = Card({
-    title: "$demo.home.start.title",
-    description: "$demo.home.start.description",
-  }).child("list", startList());
-
-  static modules = Card({
-    title: "$demo.home.modules.title",
-    description: "$demo.home.modules.description",
-  }).child("list", modulesList());
-
-  static code = Card({
-    title: "$demo.home.code.title",
-    description: "$demo.home.code.description",
-    actions: [
-      {
-        label: "$demo.home.code.docs",
-        to: `${DOCS}/building/pages-and-components`,
-        icon: "i-ph-book-open",
-      },
-    ],
-  }).child(
-    "excerpt",
-    CodeBlock({
-      title: HOME_EXCERPT.file,
-      language: "typescript",
-      code: HOME_EXCERPT.code,
-    }),
-  );
-}
-
-// The feature modules of antelope.config.ts, each linking to its pages;
-// the builder has none of its own, it opens over any page with Ctrl+B.
-function modulesList() {
-  const module = (id: string, label: string, page: string) => ({
-    id,
-    label,
-    value: `@antelopejs/dms-${id}`,
-    type: "link" as const,
-    to: `/modules/${page}`,
-  });
-  return KeyValueList({
-    card: false,
-    dense: true,
-    columns: 2,
-    items: [
-      module("api", "$demo.home.modules.items.api", "api/overview"),
-      module(
-        "database",
-        "$demo.home.modules.items.database",
-        "database/overview",
-      ),
-      module(
-        "automation",
-        "$demo.home.modules.items.automation",
-        "automation/overview",
-      ),
-      module(
-        "saas",
-        "$demo.home.modules.items.saas",
-        "saas/overview/dashboard",
-      ),
-      module("ai", "$demo.home.modules.items.ai", "ai/overview"),
-      module("lang", "$demo.home.modules.items.lang", "lang/overview"),
-      module("media", "$demo.home.modules.items.media", "media/overview"),
-      module(
-        "marketing",
-        "$demo.home.modules.items.marketing",
-        "marketing/overview",
-      ),
-      module("mailing", "$demo.home.modules.items.mailing", "mailing/overview"),
-      {
-        id: "builder",
-        label: "$demo.home.modules.items.builder",
-        value: "@antelopejs/dms-builder",
-        type: "mono",
-        detail: "Ctrl+B",
-      },
-    ],
-  });
-}
-
-function startList() {
-  return KeyValueList({
-    card: false,
-    dense: true,
-    columns: 2,
-    items: [
-      {
-        id: "admin",
-        label: "$demo.home.start.admin",
-        value: "/onboarding",
-        type: "mono",
-      },
-      {
-        id: "helio",
-        label: "$demo.home.start.helio",
-        value: "$demo.home.start.helioLink",
-        type: "link",
-        to: "/helio/dashboard",
-      },
-      {
-        id: "search",
-        label: "$demo.home.start.search",
-        value: "Ctrl/Cmd+K",
-        type: "mono",
-      },
-      {
-        id: "builder",
-        label: "$demo.home.start.builder",
-        value: "Ctrl+B",
-        type: "mono",
-      },
-      {
-        id: "components",
-        label: "$demo.home.start.components",
-        value: "$demo.home.start.componentsLink",
-        type: "link",
-        to: "/components/form",
-      },
-      {
-        id: "simulators",
-        label: "$demo.home.start.simulators",
-        value: "HELIO_SIMULATORS=off",
-        type: "mono",
-        copy: true,
-      },
-    ],
-  });
+  @Get("sections/:id")
+  async sectionText(
+    @Parameter("id") id: string,
+    @Parameter("x-content-language", "header") language: string | undefined,
+  ): Promise<{ markdown: string }> {
+    if (!(SECTIONS as readonly string[]).includes(id)) {
+      throw new HTTPResult(HTTP_NOT_FOUND, { error: "Unknown section" });
+    }
+    const file = resolve(CONTENT_DIR, `${id}.${contentLocale(language)}.md`);
+    return { markdown: await readFile(file, "utf8") };
+  }
 }

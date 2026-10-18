@@ -223,11 +223,13 @@
 			}
 		},
 		"home": {
-			"intro": {
-				"title": "Ce tableau de bord est une démonstration du DMS AntelopeJS",
-				"description": "Helio, dans la barre latérale, est un installateur photovoltaïque liégeois fictif. Tout son back-office — pipeline commercial, devis, clients, catalogue, chantiers, service après-vente en direct, équipe, factures, supervision du parc en direct, paramètres et tableau de bord — est construit uniquement avec les blocs génériques du DMS, déclarés en TypeScript côté backend.",
-				"docs": "Lire la documentation",
-				"open": "Ouvrir Helio"
+			"hero": {
+				"eyebrow": "AntelopeJS DMS · Démo Helio",
+				"title": "Une vraie plateforme métier, montée en une journée.",
+				"highlight": "en une journée",
+				"lead": "Helio est un installateur photovoltaïque fictif. Son back-office complet — commercial, devis, chantiers, SAV, factures, supervision du parc, automatisations, marketing et abonnement SaaS — tourne ici, sur le DMS AntelopeJS. Pas de maquette : des données, des droits, des formulaires et des tableaux qui fonctionnent.",
+				"open": "Ouvrir Helio",
+				"docs": "Lire la documentation"
 			},
 			"figures": {
 				"label": "Helio en chiffres, comptés en direct",
@@ -252,70 +254,32 @@
 					"detail": "Modules DMS chargés"
 				}
 			},
-			"helio": {
-				"title": "Helio, page par page",
-				"description": "Une carte par page du menu Helio, lue dans le menu lui-même."
-			},
-			"antelope": {
-				"title": "Ce qu'AntelopeJS a apporté",
-				"description": "Ce que le framework et le DMS ont pris en charge, pour qu'Helio n'ait plus qu'à décrire son métier.",
-				"pages": {
-					"title": "Des pages déclarées côté backend",
-					"description": "Chaque écran est une classe PageController dont les champs statiques sont des blocs : tableaux, formulaires, graphiques, cartes. Le frontend commun les affiche : Helio ne contient aucun fichier Vue."
+			"links": {
+				"title": "Aller plus loin",
+				"helio": {
+					"title": "Ouvrir Helio",
+					"description": "Le back-office complet de l'installateur, prêt à manipuler."
 				},
-				"data": {
-					"title": "Des contrôleurs de données",
-					"description": "Une classe décorée posée sur une table génère les routes de liste, lecture, création, modification, suppression, export et archivage, avec les colonnes, filtres et formulaires correspondants."
+				"docs": {
+					"title": "Documentation",
+					"description": "Le DMS, ses blocs, ses API et ses modules, expliqués."
 				},
-				"permissions": {
-					"title": "Des permissions par bloc et par action",
-					"description": "Chaque page, bloc et action devient une ligne de l'éditeur de rôles, sans code supplémentaire : un rôle voit exactement ce qui lui est accordé."
-				},
-				"realtime": {
-					"title": "Temps réel et pages en direct",
-					"description": "Le service après-vente et la supervision du parc se mettent à jour d'eux-mêmes quand le backend publie des événements sur des canaux temps réel."
-				},
-				"i18n": {
-					"title": "Traductions",
-					"description": "Chaque texte est une clé i18n résolue dans la langue du lecteur : passez de l'anglais au français depuis le menu utilisateur."
+				"quickstart": {
+					"title": "Démarrage rapide",
+					"description": "De la commande d'initialisation au premier écran."
 				},
 				"modules": {
-					"title": "Modules fonctionnels",
-					"description": "Consoles API et base de données, automatisation, facturation SaaS, assistant IA, traductions, éditeur de pages, médiathèque, statistiques marketing et e-mailing : une entrée chacun dans antelope.config.ts."
+					"title": "Modules",
+					"description": "Ce qui est installé ici et ce que chaque module apporte."
+				},
+				"store": {
+					"title": "Store de modules",
+					"description": "Les modules officiels à ajouter à un projet."
+				},
+				"github": {
+					"title": "GitHub",
+					"description": "Le code source du DMS et de ses modules, pour contribuer."
 				}
-			},
-			"modules": {
-				"title": "Modules installés",
-				"description": "Chacun ajoute ses propres pages sous Modules ; retirez son entrée dans antelope.config.ts pour vous en passer.",
-				"items": {
-					"api": "Console API",
-					"database": "Console base de données",
-					"automation": "Automatisation",
-					"saas": "SaaS et facturation",
-					"ai": "Assistant IA",
-					"lang": "Traductions",
-					"media": "Médiathèque",
-					"marketing": "Statistiques marketing",
-					"mailing": "E-mailing",
-					"builder": "Éditeur de pages"
-				}
-			},
-			"start": {
-				"title": "Pour commencer",
-				"description": "D'une instance vierge à vos propres pages.",
-				"admin": "Créer le premier administrateur",
-				"helio": "Explorer Helio",
-				"helioLink": "Tableau de bord Helio",
-				"search": "Rechercher pages et actions",
-				"builder": "Modifier la page courante dans l'éditeur",
-				"components": "Un exemple par bloc",
-				"componentsLink": "Composants",
-				"simulators": "Arrêter les simulateurs en direct"
-			},
-			"code": {
-				"title": "Lire le code",
-				"description": "Un extrait du service après-vente en direct : la page est une classe, chaque champ statique un bloc avec ses options.",
-				"docs": "Pages et composants"
 			}
 		}
 	}

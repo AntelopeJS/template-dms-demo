@@ -223,11 +223,13 @@
 			}
 		},
 		"home": {
-			"intro": {
-				"title": "This dashboard is a demonstration of the AntelopeJS DMS",
-				"description": "Helio, in the sidebar, is a fictional solar installer from Liège. Its whole back-office — sales pipeline, quotes, customers, catalog, projects, live service desk, team, invoices, live fleet monitoring, settings and dashboard — is built only from the DMS's generic blocks, declared in TypeScript on the backend.",
-				"docs": "Read the docs",
-				"open": "Open Helio"
+			"hero": {
+				"eyebrow": "AntelopeJS DMS · Helio demo",
+				"title": "A real business platform, built in a day.",
+				"highlight": "in a day",
+				"lead": "Helio is a fictional solar installer. Its whole back office — sales, quotes, projects, after-sales service, invoices, fleet monitoring, automations, marketing and a SaaS subscription — runs here, on the AntelopeJS DMS. Not a mock-up: real data, permissions, forms and tables that work.",
+				"open": "Open Helio",
+				"docs": "Read the documentation"
 			},
 			"figures": {
 				"label": "Helio in figures, counted live",
@@ -252,70 +254,32 @@
 					"detail": "DMS modules loaded"
 				}
 			},
-			"helio": {
-				"title": "Helio, page by page",
-				"description": "One card per page of the Helio menu, read from the menu itself."
-			},
-			"antelope": {
-				"title": "What AntelopeJS brought",
-				"description": "What the framework and the DMS took care of, so that Helio only had to describe its business.",
-				"pages": {
-					"title": "Pages declared on the backend",
-					"description": "Each screen is a PageController class whose static fields are blocks: tables, forms, charts, cards. The shared frontend renders them, so Helio ships no Vue."
+			"links": {
+				"title": "Go further",
+				"helio": {
+					"title": "Open Helio",
+					"description": "The installer's complete back office, ready to use."
 				},
-				"data": {
-					"title": "Data controllers",
-					"description": "A decorated class over a table generates the list, read, create, edit, delete, export and archive routes, with the matching columns, filters and forms."
+				"docs": {
+					"title": "Documentation",
+					"description": "The DMS, its blocks, APIs and modules, explained."
 				},
-				"permissions": {
-					"title": "Permissions per block and action",
-					"description": "Every page, block and action is a line of the roles editor, with no extra code: a role sees exactly what it is granted."
-				},
-				"realtime": {
-					"title": "Realtime and live pages",
-					"description": "The service desk and fleet monitoring refresh themselves as the backend publishes events on realtime topics."
-				},
-				"i18n": {
-					"title": "Translations",
-					"description": "Every text is an i18n key resolved in the reader's language: switch between English and French from the user menu."
+				"quickstart": {
+					"title": "Quickstart",
+					"description": "From the init command to your first screen."
 				},
 				"modules": {
-					"title": "Feature modules",
-					"description": "API and database consoles, automation, SaaS billing, AI assistant, translations, page builder, media library, marketing analytics and mailing: one entry each in antelope.config.ts."
+					"title": "Modules",
+					"description": "What is installed here and what each module brings."
+				},
+				"store": {
+					"title": "Module store",
+					"description": "The official modules you can add to a project."
+				},
+				"github": {
+					"title": "GitHub",
+					"description": "The source code of the DMS and its modules, to contribute."
 				}
-			},
-			"modules": {
-				"title": "Installed modules",
-				"description": "Each one adds its own pages under Modules; remove its entry in antelope.config.ts to drop it.",
-				"items": {
-					"api": "API console",
-					"database": "Database console",
-					"automation": "Automation",
-					"saas": "SaaS and billing",
-					"ai": "AI assistant",
-					"lang": "Translations",
-					"media": "Media library",
-					"marketing": "Marketing analytics",
-					"mailing": "Mailing",
-					"builder": "Page builder"
-				}
-			},
-			"start": {
-				"title": "Getting started",
-				"description": "From a fresh instance to your own pages.",
-				"admin": "Create the first administrator",
-				"helio": "Explore Helio",
-				"helioLink": "Helio dashboard",
-				"search": "Search pages and actions",
-				"builder": "Edit the current page in the builder",
-				"components": "One example per block",
-				"componentsLink": "Components",
-				"simulators": "Stop the live simulators"
-			},
-			"code": {
-				"title": "Read the code",
-				"description": "An excerpt of the live service desk: the page is a class, each static field a block with its options.",
-				"docs": "Pages and components"
 			}
 		}
 	}
