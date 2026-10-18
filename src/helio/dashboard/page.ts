@@ -62,6 +62,7 @@ export class PageHelioDashboard extends PageController(
 
   // Shown by the server only while installed sites are offline.
   static alerts = Banner({ fetchUrl: `${API}/offline-sites` });
+  static overdue = Banner({ fetchUrl: `${API}/overdue-invoices` });
 
   static now = StatGroup({
     label: "$helio.dashboard.snapshot.label",

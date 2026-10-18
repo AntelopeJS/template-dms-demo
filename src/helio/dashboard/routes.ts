@@ -2,6 +2,7 @@ import { Controller, Get, Parameter } from "@antelopejs/interface-api";
 import { AuthUser } from "@antelopejs/interface-dms/auth";
 import type { User } from "@antelopejs/interface-dms/auth/db";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
+import { overdueInvoicesBanner } from "../finance/banner";
 import { activityFeed, offlineSitesBanner } from "./activity";
 import {
   installations,
@@ -89,6 +90,12 @@ export class HelioDashboardApi extends Controller("/api/helio/dashboard") {
   @Get("offline-sites")
   offlineSites() {
     return offlineSitesBanner();
+  }
+
+  // Same readers as the snapshot, which already counts the overdue invoices.
+  @Get("overdue-invoices")
+  overdueInvoices() {
+    return overdueInvoicesBanner();
   }
 
   @Get("snapshot")

@@ -59,9 +59,8 @@ export function minorUnits(amount: number): number {
 
 /**
  * An alert while installed sites have stopped reporting; nothing otherwise.
- * Overdue invoices already have the layout banner of the Invoices domain, on
- * every page: this one says what only the dashboard puts first, lost
- * production.
+ * Overdue invoices have their own banner (finance/banner.ts): this one says
+ * lost production.
  */
 export async function offlineSitesBanner(): Promise<BannerContent | null> {
   const offline = (await GetModel(SiteModel).getAll())
