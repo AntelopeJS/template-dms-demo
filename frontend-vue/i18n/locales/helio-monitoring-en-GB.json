@@ -67,10 +67,10 @@
 				"description": "Updated with every round of inverter reports."
 			},
 			"meters": {
-				"output": "Output vs installed capacity",
+				"output": "Output",
 				"outputHint": "{power} kW of {capacity} kWp",
-				"attention": "Peak power lost to faults",
-				"attentionHint": "{degraded} kWp on degraded inverters · {offline} kWp offline",
+				"attention": "Peak power lost",
+				"attentionHint": "{degraded} kWp degraded · {offline} kWp offline",
 				"attentionAction": "See offline sites"
 			},
 			"heatmap": {
@@ -88,7 +88,7 @@
 			},
 			"top": {
 				"title": "Top producers",
-				"description": "Sites that produced the most over the period.",
+				"description": "Best producers over the period.",
 				"itemDescription": "{city} · {capacity} kWp",
 				"empty": "No production over this period."
 			},

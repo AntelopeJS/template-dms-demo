@@ -3,7 +3,7 @@
 		"dashboard": {
 			"title": "Tableau de bord",
 			"description": "Ventes, chantiers, service après-vente et trésorerie en un coup d'œil, sur la période de votre choix.",
-			"compareLabel": "vs période de comparaison",
+			"compareLabel": "vs comparaison",
 			"activityTypes": {
 				"dealWon": "Affaire gagnée",
 				"quoteSent": "Devis envoyé",
@@ -57,12 +57,12 @@
 				"series": "Prises de commande"
 			},
 			"installations": {
-				"title": "Installations par mois",
-				"description": "Chiffre : chantiers démarrés sur la période. Graphique : par mois et par type, sur six mois au moins"
+				"title": "Installations de la période",
+				"description": "Chantiers démarrés sur la période, par mois et par type"
 			},
 			"topReps": {
-				"title": "Classement des commerciaux",
-				"description": "Devis signés par chaque commercial",
+				"title": "Commerciaux",
+				"description": "Par devis signés",
 				"signed": "Aucun devis signé | {count} devis signé | {count} devis signés",
 				"empty": "Aucun commercial pour le moment",
 				"action": "Pipeline"

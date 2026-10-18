@@ -67,7 +67,7 @@
 				"on_site": "Technicians on site",
 				"on_site_value": "{onSite} / {total}",
 				"on_site_detail": "No site running today | {count} site running today | {count} sites running today",
-				"per_tech": "Open tickets per technician",
+				"per_tech": "Tickets per tech",
 				"per_tech_detail": "Every open ticket is assigned | {count} open ticket unassigned | {count} open tickets unassigned",
 				"on_site_detail_weekend": "Weekend: no site running | Weekend: {count} site running, resumes Monday | Weekend: {count} sites running, resume Monday"
 			},
@@ -78,7 +78,7 @@
 				"tickets_empty": "No open ticket: the service desk is clear.",
 				"tickets_action": "Service desk",
 				"sites_title": "Site assignments",
-				"sites_description": "Running, in inspection or starting within 14 days",
+				"sites_description": "Active or starting within 14 days",
 				"sites_detail": "Lead on {lead} · crew on {crew}",
 				"sites_empty": "No active project to staff.",
 				"sites_action": "Projects"
@@ -86,7 +86,7 @@
 			"capacity": {
 				"title": "Capacity today",
 				"description": "Field team, availability and ticket coverage",
-				"on_site": "Technicians on site",
+				"on_site": "On site",
 				"on_site_hint": "no site running | {count} site running | {count} sites running",
 				"availability": "Team availability",
 				"availability_hint": "everyone reachable | {count} unavailable | {count} unavailable",

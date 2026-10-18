@@ -91,7 +91,8 @@ function toProject(rng: Rng, plan: ProjectPlan): ProjectSeed {
     leadTechnician: plan.leadTechnician,
     crew: plan.crew,
     address: plan.customer.address,
-    capacityKwp: plan.capacityKwp,
+    // A battery or a charger has no peak power: absent, shown "—", not "0 kWp".
+    capacityKwp: plan.capacityKwp > 0 ? plan.capacityKwp : undefined,
     budget: linesSubtotal(plan.lines),
     notes: notes && rng.chance(0.8) ? rng.pick(notes) : undefined,
   };

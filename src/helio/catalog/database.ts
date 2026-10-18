@@ -64,8 +64,8 @@ export class Product extends Table.with(LocalizationModifier) {
   @Field("number") declare price: number;
   /** Purchase cost excluding VAT, in euros. */
   @Field("number") declare cost: number;
-  /** Peak power (W) for panels and inverters, capacity (Wh) for batteries, 0 for services. */
-  @Field("number") declare power: number;
+  /** Peak power (W) for panels and inverters, capacity (Wh) for batteries, absent for services. */
+  @Field("number") declare power?: number;
   @Field("string") declare unit: ProductUnit;
   /** Units in the warehouse; absent for services. */
   @Field("number") declare stock?: number;

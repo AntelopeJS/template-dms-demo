@@ -20,20 +20,18 @@ import type {
   KpiPayload,
 } from "./sales-metrics";
 
-// A short period still shows a trend: the chart covers at least the six
-// months ending with the period.
-const MIN_MONTHS = 6;
-
+// One column per calendar month the period touches, each clipped to the
+// period: the first and last columns count only the days inside it, so the
+// columns add up to the card's figure (installations over the period).
 function monthsCovering(range: TimeRange): TimeRange[] {
-  const end = new Date(range.to);
-  const cursor = new Date(end.getFullYear(), end.getMonth() - MIN_MONTHS + 1);
-  const start = new Date(range.from);
-  if (start < cursor) cursor.setFullYear(start.getFullYear(), start.getMonth());
+  const cursor = new Date(range.from);
+  cursor.setFullYear(cursor.getFullYear(), cursor.getMonth(), 1);
+  cursor.setHours(0, 0, 0, 0);
   const months: TimeRange[] = [];
   while (cursor.getTime() <= range.to) {
-    const from = cursor.getTime();
+    const from = Math.max(cursor.getTime(), range.from);
     cursor.setMonth(cursor.getMonth() + 1);
-    months.push({ from, to: cursor.getTime() - 1 });
+    months.push({ from, to: Math.min(cursor.getTime() - 1, range.to) });
   }
   return months;
 }
@@ -48,7 +46,7 @@ function countIn(projects: readonly Project[], range: TimeRange): number {
     .length;
 }
 
-/** Installations started per month, stacked by project type. */
+/** Installations started over the period, per month and stacked by type. */
 export async function installations(
   period: Period,
   language: ReaderLanguage,

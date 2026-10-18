@@ -232,24 +232,24 @@
 			"figures": {
 				"label": "Helio in figures, counted live",
 				"pages": {
-					"eyebrow": "Pages in the Helio menu",
+					"eyebrow": "Helio pages",
 					"detail": "No detail or form page | Plus {count} detail or form page | Plus {count} detail and form pages"
 				},
 				"collections": {
-					"eyebrow": "MongoDB collections",
-					"detail": "Registered tables, seeded with coherent demo data"
+					"eyebrow": "Collections",
+					"detail": "MongoDB tables with demo data"
 				},
 				"controllers": {
-					"eyebrow": "Data controllers",
-					"detail": "CRUD, export and permissions generated from decorated classes"
+					"eyebrow": "Controllers",
+					"detail": "CRUD, export, permissions generated"
 				},
 				"vue": {
-					"eyebrow": "Custom Vue blocks in Helio",
-					"detail": "Counted in the compiled Helio code: every screen is made of generic blocks"
+					"eyebrow": "Vue blocks",
+					"detail": "Custom, counted in the build"
 				},
 				"modules": {
-					"eyebrow": "Feature modules",
-					"detail": "DMS modules whose screens this dashboard loaded"
+					"eyebrow": "Modules",
+					"detail": "DMS modules loaded"
 				}
 			},
 			"helio": {

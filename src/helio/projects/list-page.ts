@@ -8,7 +8,11 @@ import { helioOperationsCategory } from "../category";
 import { afterProjectEdit } from "./activity-log";
 import { PROJECT_PAGE_URL } from "./links";
 import { projectController } from "./project-controller";
-import { assertEndAfterStart, assertUniqueCode } from "./project-rules";
+import {
+  assertEndAfterStart,
+  assertQuoteOfCustomer,
+  assertUniqueCode,
+} from "./project-rules";
 
 // The project states still ahead of the crew: the planning leaves out what
 // is finished.
@@ -220,6 +224,7 @@ export class PageHelioProjects extends PageController(
       new: async (_ctx, { body }) => {
         assertEndAfterStart(body.plannedStart, body.plannedEnd);
         await assertUniqueCode(body.code);
+        await assertQuoteOfCustomer(body.customer, body.quote);
       },
       edit: async (_ctx, { id, body, current }) => {
         assertEndAfterStart(
@@ -227,6 +232,12 @@ export class PageHelioProjects extends PageController(
           body.plannedEnd ?? current.plannedEnd,
         );
         if (body.code !== undefined) await assertUniqueCode(body.code, id);
+        if (body.customer !== undefined || body.quote !== undefined) {
+          await assertQuoteOfCustomer(
+            body.customer ?? current.customer,
+            body.quote === undefined ? current.quote : body.quote,
+          );
+        }
         return afterProjectEdit(id, body.status, current.status);
       },
     },

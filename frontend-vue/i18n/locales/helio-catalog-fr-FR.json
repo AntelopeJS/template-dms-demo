@@ -56,7 +56,7 @@
 					"displayOrder": "Position",
 					"family": "Famille",
 					"picture": "Visuel",
-					"stockLevel": "Niveau de stock"
+					"stockLevel": "État du stock"
 				},
 				"placeholders": {
 					"name": "p. ex. Helio Mono 430 W Black",
@@ -147,7 +147,7 @@
 				"toReorder": "À commander",
 				"toReorderDetail": "{names}",
 				"toReorderNone": "Tous les produits sont au-dessus de leur seuil",
-				"margin": "Marge moyenne du matériel",
+				"margin": "Marge moyenne",
 				"marginDetail": "Sur le matériel en vente, hors installation"
 			}
 		}

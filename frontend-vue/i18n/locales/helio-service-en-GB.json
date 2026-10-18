@@ -30,7 +30,7 @@
 			},
 			"tickets": {
 				"columns": {
-					"number": "Ticket",
+					"number": "No.",
 					"subject": "Subject",
 					"customer": "Customer",
 					"site": "Site",
@@ -165,6 +165,9 @@
 				"title": "Delete these tickets?",
 				"description": "Only resolved or closed tickets can be deleted. This cannot be undone.",
 				"confirm": "Delete"
+			},
+			"rules": {
+				"siteOfOtherCustomer": "This installation belongs to another customer. Pick one of this customer's installations or leave the field empty."
 			}
 		}
 	}

@@ -67,10 +67,10 @@
 				"description": "Mis à jour à chaque relevé des onduleurs."
 			},
 			"meters": {
-				"output": "Production / puissance installée",
+				"output": "Production",
 				"outputHint": "{power} kW sur {capacity} kWc",
-				"attention": "Puissance perdue sur incidents",
-				"attentionHint": "{degraded} kWc sur onduleurs dégradés · {offline} kWc hors ligne",
+				"attention": "Puissance perdue",
+				"attentionHint": "{degraded} kWc dégradés · {offline} kWc hors ligne",
 				"attentionAction": "Voir les sites hors ligne"
 			},
 			"heatmap": {
@@ -88,7 +88,7 @@
 			},
 			"top": {
 				"title": "Meilleurs producteurs",
-				"description": "Les sites qui ont le plus produit sur la période.",
+				"description": "Les plus productifs sur la période.",
 				"itemDescription": "{city} · {capacity} kWc",
 				"empty": "Aucune production sur cette période."
 			},

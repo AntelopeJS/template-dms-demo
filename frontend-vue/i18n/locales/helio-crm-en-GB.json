@@ -34,7 +34,7 @@
 					"name": "Customer",
 					"kind": "Type",
 					"vatNumber": "VAT number",
-					"contactName": "Contact person",
+					"contactName": "Contact",
 					"email": "E-mail",
 					"phone": "Phone",
 					"address": "Address",

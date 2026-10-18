@@ -52,7 +52,7 @@ const identitySection: FormSection = {
       id: "address",
       label: "$helio.settings.fields.address",
       description: "$helio.settings.descriptions.address",
-      type: new DefaultDataTypes.AddressType(),
+      type: new DefaultDataTypes.AddressType({ defaultCountry: "BE" }),
       required: true,
     },
     {

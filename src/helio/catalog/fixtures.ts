@@ -28,7 +28,8 @@ export interface ProductSeed {
   category: string;
   price: number;
   cost: number;
-  power: number;
+  /** Absent for a service. */
+  power?: number;
   unit: ProductRosterEntry["unit"];
   stock?: number;
   stockMin?: number;
@@ -318,7 +319,8 @@ export function buildProducts(): ProductSeed[] {
       category: product.category,
       price: product.price,
       cost: Math.round(product.price * detail.costRatio * 100) / 100,
-      power: product.power,
+      // A service has no power: absent, shown "—", not "0 W / Wh".
+      power: product.power > 0 ? product.power : undefined,
       unit: product.unit,
       // Drawn by the backend (visuals.ts): no network, same on every machine.
       image: productVisualUrl(familyOf(product.category), product.sku),

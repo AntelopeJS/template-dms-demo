@@ -67,7 +67,7 @@
 				"on_site": "Techniciens sur chantier",
 				"on_site_value": "{onSite} / {total}",
 				"on_site_detail": "Aucun chantier en cours aujourd'hui | {count} chantier en cours aujourd'hui | {count} chantiers en cours aujourd'hui",
-				"per_tech": "Tickets ouverts par technicien",
+				"per_tech": "Tickets / technicien",
 				"per_tech_detail": "Tous les tickets ouverts sont attribués | {count} ticket ouvert non attribué | {count} tickets ouverts non attribués",
 				"on_site_detail_weekend": "Week-end : aucun chantier en cours | Week-end : {count} chantier en cours, reprise lundi | Week-end : {count} chantiers en cours, reprise lundi"
 			},
@@ -78,7 +78,7 @@
 				"tickets_empty": "Aucun ticket ouvert : le SAV est à jour.",
 				"tickets_action": "Service après-vente",
 				"sites_title": "Affectations chantier",
-				"sites_description": "En cours, en réception ou démarrant dans les 14 jours",
+				"sites_description": "Actifs ou démarrant sous 14 jours",
 				"sites_detail": "Responsable de {lead} · en renfort sur {crew}",
 				"sites_empty": "Aucun chantier actif à pourvoir.",
 				"sites_action": "Chantiers"
@@ -86,7 +86,7 @@
 			"capacity": {
 				"title": "Capacité du jour",
 				"description": "Équipe terrain, disponibilité et répartition des tickets",
-				"on_site": "Techniciens sur chantier",
+				"on_site": "Sur chantier",
 				"on_site_hint": "aucun chantier en cours | {count} chantier en cours | {count} chantiers en cours",
 				"availability": "Disponibilité de l'équipe",
 				"availability_hint": "tout le monde est joignable | {count} indisponible | {count} indisponibles",

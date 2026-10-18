@@ -161,7 +161,7 @@ export function contractProjects(
       code: project.code,
       customerName,
       city: project.address.city,
-      capacityKwp: project.capacityKwp,
+      capacityKwp: project.capacityKwp ?? 0,
       budget: project.budget,
     }));
 }

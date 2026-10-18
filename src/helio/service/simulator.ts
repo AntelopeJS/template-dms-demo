@@ -5,8 +5,11 @@
 // ticket to a technician of the customer's region (the office for a billing
 // question), who resolves it a little later. Resolved simulated tickets are
 // then cleared, so the open, unassigned and weekday/hour counts stay steady
-// however long the instance runs. Every change reaches the open desks
-// through the realtime topic. HELIO_SIMULATORS=off switches it off.
+// however long the instance runs — except the urgent ones: their
+// notification links to them, so they stay on the desk once resolved, like
+// any ticket a user was told about, and arrive three hours apart at most.
+// Every change reaches the open desks through the realtime topic.
+// HELIO_SIMULATORS=off switches it off.
 
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -44,10 +47,17 @@ const ASSIGN_AFTER_MS = 3 * MINUTE_MS;
 const RESOLVE_AFTER_MS = 15 * MINUTE_MS;
 /** …and cleared from the desk this long after it was resolved. */
 const CLEAR_AFTER_MS = 10 * MINUTE_MS;
-/** A safety net: never more simulated tickets than this at once. */
+/** A safety net: never more clearable simulated tickets than this at once. */
 const MAX_SIMULATED = 12;
+/** An urgent simulated ticket follows the previous one this long after. */
+const URGENT_SPACING_MS = 3 * HOUR_MS;
 
 const isOpen = (ticket: Ticket): boolean => !ticket.resolvedAt;
+const isSimulated = (ticket: Ticket): boolean =>
+  ticket._id.startsWith(SIMULATED_PREFIX);
+// An urgent ticket notified the owners (notifications.ts): the notification
+// links to it, so it is never cleared.
+const isNotified = (ticket: Ticket): boolean => ticket.priority === "urgent";
 
 /** Open tickets held, by assignee: the dispatcher evens the load out. */
 function loadOf(tickets: Ticket[]): Map<string, number> {
@@ -66,13 +76,15 @@ function draftTicket(
   rng: Rng,
   site: Site,
   number: string,
-  alertOnly: boolean,
+  options: { alertOnly: boolean; urgentAllowed: boolean },
 ): TicketSeed {
+  const { alertOnly, urgentAllowed } = options;
   const category = alertOnly
     ? rng.pick(["inverter_error", "no_production"] as const)
     : pickCategory(rng);
   const technical = isTechnical(category);
-  const priority = priorityFor(rng, category);
+  const drawn = priorityFor(rng, category);
+  const priority = drawn === "urgent" && !urgentAllowed ? "high" : drawn;
   const channel: TicketChannel = alertOnly
     ? "monitoring_alert"
     : channelFor(rng, category);
@@ -102,9 +114,9 @@ interface Changes {
   deleted: string[];
 }
 
-// Moves the simulated tickets along: assigned, then resolved, then cleared.
-// Tickets a user already handled (assigned or resolved by hand) follow the
-// same clock from where they stand.
+// Moves the simulated tickets along: assigned, then resolved, then cleared
+// (an urgent one stays, resolved). Tickets a user already handled (assigned
+// or resolved by hand) follow the same clock from where they stand.
 async function advanceSimulated(
   rng: Rng,
   model: TicketModel,
@@ -114,14 +126,17 @@ async function advanceSimulated(
   const load = loadOf(tickets);
   const changes: Changes = { updated: [], deleted: [] };
   const simulated = tickets
-    .filter(({ _id }) => _id.startsWith(SIMULATED_PREFIX))
+    .filter(isSimulated)
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  for (const [index, ticket] of simulated.entries()) {
+  let clearable = 0;
+  for (const ticket of simulated) {
     const age = now - ticket.createdAt.getTime();
     const resolvedFor = ticket.resolvedAt
       ? now - ticket.resolvedAt.getTime()
       : 0;
-    if (resolvedFor > CLEAR_AFTER_MS || index >= MAX_SIMULATED) {
+    const kept = isNotified(ticket);
+    if (!kept) clearable++;
+    if (!kept && (resolvedFor > CLEAR_AFTER_MS || clearable > MAX_SIMULATED)) {
       await model.delete(ticket._id);
       changes.deleted.push(ticket._id);
     } else if (!ticket.resolvedAt && age > RESOLVE_AFTER_MS) {
@@ -159,7 +174,8 @@ async function announce(event: string, ids: readonly string[]): Promise<void> {
 export async function simulateTicket(): Promise<void> {
   const rng = createRng(Date.now() >>> 0);
   const model = GetModel(TicketModel);
-  const changes = await advanceSimulated(rng, model, await model.getAll());
+  const tickets = await model.getAll();
+  const changes = await advanceSimulated(rng, model, tickets);
   await announce("tickets.updated", changes.updated);
   await announce("tickets.deleted", changes.deleted);
 
@@ -168,12 +184,16 @@ export async function simulateTicket(): Promise<void> {
   if (!officeHours && !rng.chance(NIGHT_ALERT_CHANCE)) return;
   const sites = await GetModel(SiteModel).getAll();
   if (sites.length === 0) return;
-  const ticket = draftTicket(
-    rng,
-    rng.pick(sites),
-    await nextTicketNumber(),
-    !officeHours,
-  );
+  const lastUrgent = tickets
+    .filter((ticket) => isSimulated(ticket) && isNotified(ticket))
+    .reduce(
+      (latest, ticket) => Math.max(latest, ticket.createdAt.getTime()),
+      0,
+    );
+  const ticket = draftTicket(rng, rng.pick(sites), await nextTicketNumber(), {
+    alertOnly: !officeHours,
+    urgentAllowed: Date.now() - lastUrgent >= URGENT_SPACING_MS,
+  });
   await model.insert(ticket);
   await announce("tickets.created", [ticket._id]);
   if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);

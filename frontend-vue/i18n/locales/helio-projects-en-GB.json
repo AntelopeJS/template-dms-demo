@@ -274,7 +274,8 @@
 			},
 			"rules": {
 				"codeTaken": "Another project already uses this code. Leave it empty to take the next one.",
-				"endBeforeStart": "The planned end cannot come before the start."
+				"endBeforeStart": "The planned end cannot come before the start.",
+				"quoteOfOtherCustomer": "This quote is made out to another customer. Pick one of this customer's quotes or leave the field empty."
 			}
 		}
 	}

@@ -20,6 +20,7 @@ import { logTicketReopened, logTicketResolved } from "./activity";
 import { ticketController } from "./controller";
 import { TicketModel } from "./database";
 import { SERVICE_DESK_PATH, SERVICE_TOPIC } from "./options";
+import { assertSiteOfCustomer } from "./site-rule";
 import { refreshSlaHours, slaHours } from "./sla";
 import { serviceStats } from "./stats";
 import {
@@ -132,11 +133,18 @@ export class PageHelioService extends PageController(
     // Every write first reads the service levels of the Settings page, which
     // the priority sets the SLA from.
     guards: {
-      new: async () => {
+      new: async (_ctx, { body }) => {
         await refreshSlaHours();
+        await assertSiteOfCustomer(body.customer, body.site);
       },
       edit: async (_ctx, { id, body, current }) => {
         await refreshSlaHours();
+        if (body.customer !== undefined || body.site !== undefined) {
+          await assertSiteOfCustomer(
+            body.customer ?? current.customer,
+            body.site === undefined ? current.site : body.site,
+          );
+        }
         if (body.status === undefined) return undefined;
         if (isClosing(body.status) && !isClosing(current.status))
           return () => logTicketResolved(id);

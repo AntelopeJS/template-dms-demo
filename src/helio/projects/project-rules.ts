@@ -5,11 +5,15 @@
 //   new project left without a code takes the next free one, like a ticket's
 //   number; a duplicate starts without the code of the project it copies;
 // - a code names one project only;
-// - a project never ends before it starts.
+// - a project never ends before it starts;
+// - the quote a project carries out is one of its customer's (the form's
+//   quote picker lists every quote: the DMS cannot narrow a relation picker
+//   to the customer chosen in the same form).
 
 import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
+import { QuoteModel } from "../sales/database";
 import { ProjectModel } from "./database";
 
 const PREFIX = "CH-";
@@ -130,6 +134,21 @@ export function assertEndAfterStart(start: unknown, end: unknown): void {
     throw new HTTPResult(400, {
       message: "$helio.projects.rules.endBeforeStart",
       field: "plannedEnd",
+    });
+  }
+}
+
+/** Refuses (400) a quote made out to another customer than the project's. */
+export async function assertQuoteOfCustomer(
+  customer: unknown,
+  quote: unknown,
+): Promise<void> {
+  if (blank(customer) || blank(quote) || typeof quote !== "string") return;
+  const row = await GetModel(QuoteModel).get(quote);
+  if (row && row.customer !== customer) {
+    throw new HTTPResult(400, {
+      message: "$helio.projects.rules.quoteOfOtherCustomer",
+      field: "quote",
     });
   }
 }

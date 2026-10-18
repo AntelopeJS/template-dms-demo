@@ -274,7 +274,8 @@
 			},
 			"rules": {
 				"codeTaken": "Ce code est déjà utilisé par un autre chantier. Laissez-le vide pour prendre le code suivant.",
-				"endBeforeStart": "La fin prévue ne peut pas précéder le début."
+				"endBeforeStart": "La fin prévue ne peut pas précéder le début.",
+				"quoteOfOtherCustomer": "Ce devis est adressé à un autre client. Choisissez un devis de ce client ou laissez le champ vide."
 			}
 		}
 	}

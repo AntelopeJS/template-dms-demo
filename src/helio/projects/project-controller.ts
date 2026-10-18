@@ -344,7 +344,11 @@ class projectDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.projects.columns.address",
-    type: new DefaultDataTypes.AddressType(),
+    // Helio installs in Belgium: the country is filled in (it is required).
+    type: new DefaultDataTypes.AddressType({
+      autocomplete: { enabled: true, lang: "fr" },
+      defaultCountry: "BE",
+    }),
     isVisible: false,
   })
   @Mandatory("new", "edit")
@@ -360,9 +364,11 @@ class projectDataAPI extends DataController(
       min: 0,
       step: 0.1,
       suffix: "$helio.projects.units.kwp",
+      // A battery or a charger has no peak power (left empty): a dash.
+      fallback: "—",
     }),
     filterable: true,
-    size: 120,
+    size: 140,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
@@ -375,7 +381,7 @@ class projectDataAPI extends DataController(
     name: "$helio.projects.columns.budget",
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
-    size: 130,
+    size: 155,
   })
   @Optional()
   @Access(AccessMode.ReadWrite)

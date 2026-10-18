@@ -118,7 +118,7 @@ class ticketDataAPI extends DataController(
       maxLength: 160,
     }),
     filterable: true,
-    size: 205,
+    size: 195,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -191,7 +191,7 @@ class ticketDataAPI extends DataController(
       },
       liveValues: ["urgent"],
     }),
-    size: 125,
+    size: 135,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)

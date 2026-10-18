@@ -225,6 +225,8 @@ class productDataAPI extends DataController(
       min: 0,
       step: 1,
       suffix: "$helio.catalog.products.powerSuffix",
+      // A service has no power (left empty): a dash.
+      fallback: "—",
     }),
     filterable: true,
     isVisible: false,

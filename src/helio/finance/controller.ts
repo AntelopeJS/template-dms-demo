@@ -144,7 +144,7 @@ class invoiceDataAPI extends DataController(
       placeholder: "$helio.finance.invoices.placeholders.customer",
     }),
     filterable: true,
-    size: 220,
+    size: 200,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -225,7 +225,7 @@ class invoiceDataAPI extends DataController(
     type: new DefaultDataTypes.DateType(),
     filterable: true,
     display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
-    size: 130,
+    size: 140,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -243,7 +243,7 @@ class invoiceDataAPI extends DataController(
       soonWithinMs: 7 * DAY_MS,
       soonTone: "warning",
     }),
-    size: 130,
+    size: 140,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -345,7 +345,7 @@ class invoiceDataAPI extends DataController(
     type: new DefaultDataTypes.SelectType({ items: [...PAYMENT_METHODS] }),
     filterable: true,
     defaultValue: "transfer",
-    size: 150,
+    size: 195,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)

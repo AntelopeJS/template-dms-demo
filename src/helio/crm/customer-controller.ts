@@ -18,6 +18,7 @@ import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import {
   ArchiveField,
+  type CellSubline,
   Column,
   ColumnGroup,
   DefaultDisplays,
@@ -160,11 +161,6 @@ class customerDataAPI extends DataController(
       subtitleField: "locationLine",
       badges: [
         {
-          field: "isVip",
-          label: "$helio.crm.customers.badges.vip",
-          tone: "warning",
-        },
-        {
           field: "isArchived",
           label: "$helio.crm.customers.badges.archived",
           tone: "neutral",
@@ -261,8 +257,11 @@ class customerDataAPI extends DataController(
   @Column({
     name: "$helio.crm.customers.columns.address",
     group: "location",
+    // Helio works in Belgium: the country is filled in, foreign addresses
+    // stay possible.
     type: new DefaultDataTypes.AddressType({
       autocomplete: { enabled: true, lang: "fr" },
+      defaultCountry: "BE",
     }),
     filterable: true,
     isVisible: false,
@@ -374,7 +373,7 @@ class customerDataAPI extends DataController(
     type: new DefaultDataTypes.DateType(),
     filterable: true,
     display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
-    size: 140,
+    size: 180,
     // Stamped on creation: nothing to show in the new form.
     readonlyBehavior: { new: ReadonlyBehaviorType.hidden },
   })
@@ -393,11 +392,15 @@ class customerDataAPI extends DataController(
   }
 
   // The identity cell's second line: contact person and city, as written.
-  @Listable(["contactName", "address"])
+  // A VIP account opens it with "VIP", in amber: a badge beside the name
+  // would squeeze the name to a few letters on a phone.
+  @Listable(["contactName", "address", "isVip"])
   @Access(AccessMode.ReadOnly)
-  get locationLine(): string {
+  get locationLine(): CellSubline | string {
     const city = this.table.address?.city;
-    return [this.table.contactName, city].filter(Boolean).join(" · ");
+    const line = [this.table.contactName, city].filter(Boolean).join(" · ");
+    if (!this.table.isVip) return line;
+    return { text: line ? `VIP · ${line}` : "VIP", tone: "warning" };
   }
 }
 

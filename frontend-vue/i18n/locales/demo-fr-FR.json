@@ -232,24 +232,24 @@
 			"figures": {
 				"label": "Helio en chiffres, comptés en direct",
 				"pages": {
-					"eyebrow": "Pages du menu Helio",
+					"eyebrow": "Pages Helio",
 					"detail": "Aucune page de détail ou de formulaire | Plus {count} page de détail ou de formulaire | Plus {count} pages de détail et de formulaire"
 				},
 				"collections": {
-					"eyebrow": "Collections MongoDB",
-					"detail": "Tables déclarées, alimentées par des données de démo cohérentes"
+					"eyebrow": "Collections",
+					"detail": "Tables MongoDB et données de démo"
 				},
 				"controllers": {
-					"eyebrow": "Contrôleurs de données",
-					"detail": "CRUD, export et permissions générés à partir de classes décorées"
+					"eyebrow": "Contrôleurs",
+					"detail": "CRUD, export et droits générés"
 				},
 				"vue": {
-					"eyebrow": "Blocs Vue sur mesure dans Helio",
-					"detail": "Comptés dans le code compilé de Helio : chaque écran est fait de blocs génériques"
+					"eyebrow": "Blocs Vue",
+					"detail": "Sur mesure, comptés dans le code"
 				},
 				"modules": {
-					"eyebrow": "Modules fonctionnels",
-					"detail": "Modules DMS dont ce tableau de bord a chargé les écrans"
+					"eyebrow": "Modules",
+					"detail": "Modules DMS chargés"
 				}
 			},
 			"helio": {

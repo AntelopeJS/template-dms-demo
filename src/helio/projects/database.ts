@@ -47,7 +47,8 @@ export class Project extends Table {
   /** `_id`s of helio_team rows working on the site with the lead. */
   @Field("any") declare crew: string[];
   @Field("object") declare address: DefaultDataTypes.Address;
-  @Field("number") declare capacityKwp: number;
+  /** Peak power in kWp; absent for a battery or a charger (no panels). */
+  @Field("number") declare capacityKwp?: number;
   /** Amount excluding VAT, in euros. */
   @Field("number") declare budget: number;
   @Field("string") declare notes?: string;

@@ -3,7 +3,7 @@
 		"dashboard": {
 			"title": "Dashboard",
 			"description": "Sales, installations, service and cash at a glance, over the period you choose.",
-			"compareLabel": "vs comparison period",
+			"compareLabel": "vs comparison",
 			"activityTypes": {
 				"dealWon": "Deal won",
 				"quoteSent": "Quote sent",
@@ -57,12 +57,12 @@
 				"series": "Order intake"
 			},
 			"installations": {
-				"title": "Installations per month",
-				"description": "Figure: worksites started over the period. Chart: per month and type, over six months at least"
+				"title": "Installations in the period",
+				"description": "Worksites started over the period, per month and type"
 			},
 			"topReps": {
-				"title": "Sales leaderboard",
-				"description": "Quotes signed by each sales rep",
+				"title": "Top sales reps",
+				"description": "By quotes signed",
 				"signed": "No quote signed | {count} quote signed | {count} quotes signed",
 				"empty": "No sales rep yet",
 				"action": "Pipeline"

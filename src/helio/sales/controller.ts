@@ -91,7 +91,7 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.number",
     type: new DefaultDataTypes.StringType({ maxLength: 20 }),
     filterable: true,
-    size: 170,
+    size: 160,
     readonlyBehavior: HIDDEN_ON_NEW,
     display: new DefaultDisplays.TwoLineDisplay({ subField: "linesSummary" }),
   })
@@ -113,7 +113,7 @@ class quoteDataAPI extends DataController(
       },
     }),
     filterable: true,
-    size: 220,
+    size: 190,
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
@@ -227,7 +227,7 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.subtotal",
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
-    size: 130,
+    size: 150,
     readonlyBehavior: HIDDEN_ON_NEW,
   })
   @Access(AccessMode.ReadOnly)
@@ -260,7 +260,7 @@ class quoteDataAPI extends DataController(
     name: "$helio.sales.quotes.columns.total",
     type: new DefaultDataTypes.PriceType(),
     filterable: true,
-    size: 130,
+    size: 150,
     readonlyBehavior: HIDDEN_ON_NEW,
   })
   @Access(AccessMode.ReadOnly)

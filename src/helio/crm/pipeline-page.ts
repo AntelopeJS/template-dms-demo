@@ -44,6 +44,27 @@ const LOST_REASON_WATCHES: TableViewFormWatch[] = DEAL_STAGES.flatMap(
   },
 );
 
+// A won or lost deal's probability is implied (the write routes store 100 %
+// or 0 %, see deal-derived.ts), and a form watch can hide a field but not
+// set its value: the field leaves the edit forms on those stages rather than
+// show a figure the save will overwrite.
+const PROBABILITY_WATCHES: TableViewFormWatch[] = DEAL_STAGES.map(
+  ({ value }) => ({
+    event: FormEvents.FIELD_CHANGE,
+    functionId: FormFunctions.SET_FIELD_HIDDEN,
+    params: {
+      targetField: "probability",
+      setHidden: value === "won" || value === "lost",
+    },
+    onParam: [
+      { key: "fieldId", value: "stage" },
+      { key: "value", value },
+    ],
+  }),
+);
+
+const EDIT_FORM_WATCHES = [...LOST_REASON_WATCHES, ...PROBABILITY_WATCHES];
+
 // The write routes refuse a lost deal without its reason, whichever client
 // sent it (a card dropped on "Lost" included: the deal is opened to say why).
 function assertLostReason(stage: unknown, lostReason: unknown): void {
@@ -197,8 +218,8 @@ export class PageHelioPipeline extends PageController(
       ],
     },
     formWatches: {
-      new: LOST_REASON_WATCHES,
-      edit: LOST_REASON_WATCHES,
+      new: EDIT_FORM_WATCHES,
+      edit: EDIT_FORM_WATCHES,
       view: LOST_REASON_WATCHES,
     },
     // A lost deal says why; the stored derived fields follow each write (see
