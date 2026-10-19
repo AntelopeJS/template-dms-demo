@@ -18,6 +18,7 @@ export default defineConfig({
   envOverrides: {
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
+    DMS_HTML_RENDER_SECRET: "modules.dms.config.htmlRender.serviceSecret",
     // One secret signs and verifies the dashboard's tokens.
     JWT_SECRET: [
       "modules.dms.config.auth.jwtSecret",
@@ -34,11 +35,13 @@ export default defineConfig({
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
   },
   // `ajs project build/start -e production`: no development secret, and the
-  // module refuses to start until JWT_SECRET is set.
+  // module refuses to start until JWT_SECRET and DMS_HTML_RENDER_SECRET are set.
   environments: {
     production: {
       modules: {
-        "template-dms-demo": { config: { requireJwtSecret: true } },
+        "template-dms-demo": {
+          config: { requireJwtSecret: true, requireHtmlRenderSecret: true },
+        },
         dms: { config: { auth: { jwtSecret: "" } } },
         "auth-jwt": { config: { secret: "" } },
         // Ethereal creates an account over the internet at every start;
