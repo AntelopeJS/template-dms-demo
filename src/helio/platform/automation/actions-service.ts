@@ -23,6 +23,7 @@ import {
   SERVICE_TOPIC,
   SLA_HOURS,
 } from "../../service/options";
+import { currentSettings } from "../../settings/current";
 import { TeamMemberModel } from "../../team/database";
 import { fireTicketOpened } from "./events";
 
@@ -243,6 +244,10 @@ const assignOnCall: ActionType<
   outputSchema: {
     type: "object",
     properties: {
+      alertsOn: {
+        type: "boolean",
+        title: "$helio.platform.automation.fields.alertsOn",
+      },
       assignee: {
         type: "string",
         title: "$helio.platform.automation.fields.assignee",
@@ -272,10 +277,16 @@ const assignOnCall: ActionType<
         payload: { ids: [ticket._id] },
       });
     }
-    const customer = await GetModel(CustomerModel).get(ticket.customer);
-    const name = await memberName(assignee);
+    const [customer, name, settings] = await Promise.all([
+      GetModel(CustomerModel).get(ticket.customer),
+      memberName(assignee),
+      currentSettings(),
+    ]);
     ctx.log("info", `${ticket.number} handled by ${name}`);
     return {
+      // The "Urgent tickets" switch of the Settings page: off, the ticket is
+      // still assigned but nobody is told (the dispatch procedure's If).
+      alertsOn: settings.notifyUrgentTickets !== false,
       assignee: name,
       number: ticket.number,
       summary: `${ticket.number} · ${name} · ${ticket.subject} — ${customer?.name ?? ""}`,

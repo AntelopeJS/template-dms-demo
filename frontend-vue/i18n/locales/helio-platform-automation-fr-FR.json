@@ -44,6 +44,7 @@
 					}
 				},
 				"fields": {
+					"alertsOn": "Alertes de tickets urgents",
 					"amountDue": "Montant dû",
 					"assignee": "Technicien",
 					"at": "Date",

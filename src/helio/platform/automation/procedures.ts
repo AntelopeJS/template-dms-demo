@@ -18,7 +18,7 @@ const urgentTicketDispatch: ProcedureDeclaration = {
   id: "helio.urgent-ticket-dispatch",
   name: "Ticket urgent → attribuer au technicien de garde",
   description:
-    "À l'arrivée d'un ticket urgent, le technicien qui a le moins de tickets ouverts le prend en charge et les responsables sont prévenus.",
+    "À l'arrivée d'un ticket urgent, le technicien qui a le moins de tickets ouverts le prend en charge et les responsables sont prévenus, sauf si les paramètres coupent les alertes de tickets urgents.",
   enabled: true,
   graph: graph(
     [
@@ -26,19 +26,22 @@ const urgentTicketDispatch: ProcedureDeclaration = {
         priority: "urgent",
       }),
       node("assign", "action", "helio.assign-on-call", [1, 0]),
-      node("managers", "action", MANAGERS, [2, 0]),
-      node("notify", "action", NOTIFY, [3, 0], {
+      node("if", "if", undefined, [2, 0]),
+      node("managers", "action", MANAGERS, [3, 0]),
+      node("notify", "action", NOTIFY, [4, 0], {
         title: "$helio.platform.automation.notifications.dispatched",
         icon: "i-ph-siren",
       }),
     ],
     [
       next("urgent", "assign"),
-      next("assign", "managers"),
+      next("assign", "if"),
+      next("if", "managers", "then"),
       next("managers", "notify"),
     ],
     [
       wire("urgent", "ticketId", "assign", "ticketId"),
+      wire("assign", "alertsOn", "if", "cond"),
       wire("managers", "userIds", "notify", "userIds"),
       wire("assign", "summary", "notify", "description"),
       wire("assign", "link", "notify", "linkTo"),
