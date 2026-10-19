@@ -6,11 +6,11 @@
 import type { Customer } from "../../crm/database";
 import { structuredReference } from "../../finance/document";
 import type { Invoice } from "../../finance/database";
+import { daysLate } from "../../finance/due";
 import type { Project } from "../../projects/database";
 import type { Quote } from "../../sales/database";
 import { PORTAL_BASE_URL } from "../../sales/links";
 import type { Ticket } from "../../service/database";
-import { DAY_MS } from "../../shared/seed";
 import type { TeamMember } from "../../team/database";
 import {
   customerLocale,
@@ -136,10 +136,8 @@ export function invoiceReminderMail(
   reminderNumber: number,
   at: Date = new Date(),
 ): HelioMail {
-  const daysOverdue = Math.max(
-    1,
-    Math.floor((at.getTime() - invoice.dueAt.getTime()) / DAY_MS),
-  );
+  // Calendar days, as the invoice list counts them (finance/due.ts).
+  const daysOverdue = Math.max(1, daysLate(invoice.dueAt, at.getTime()));
   return mailTo(HELIO_TEMPLATES.invoiceReminder, customer, (locale) => ({
     invoice: {
       number: invoice.number,
