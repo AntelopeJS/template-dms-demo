@@ -201,6 +201,7 @@ The default development workflow does not need one. Two processes read it:
 | `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
+| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. | no |
 | `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend | Stripe webhook signing secret. | no |
