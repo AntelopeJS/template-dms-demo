@@ -151,7 +151,9 @@ function cumulative(values: readonly number[]): number[] {
 
 /**
  * Revenue invoiced as a running total over the period, the comparison period
- * drawn on the same days so the two curves read against each other.
+ * drawn on the same points so the two curves read against each other. The
+ * comparison covers the whole comparison range, so its total is the one
+ * "Revenue invoiced" compares with, even when the two ranges differ in length.
  */
 export async function revenueTrend(period: Period): Promise<ChartCardPayload> {
   const invoices = await billedInvoices();
