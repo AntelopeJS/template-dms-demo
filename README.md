@@ -194,11 +194,11 @@ The default development workflow does not need one. Two processes read it:
 | `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). Ephemeral in dev; explicit for build/start. | no |
 | `DMS_CLIENT_BASE_URL` | backend + loader | The dashboard's origin, such as `https://dashboard.example.com`: the base of e-mail links and redirects, the one origin the API's CORS lets in and the one host OAuth returns to. `http://localhost:3001` (and `127.0.0.1:3001`) in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
-| `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with; the loader receives it in the manifest, so set it on the frontend only to override. `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
-| `DMS_OAUTH_RELAY_SECRET` | loader | Override for the OAuth relay secret the backend ships in the manifest. | no |
+| `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with. `dev` in development, where `ajs dms dev` gets it from the backend; **required** with `-e production`, where the backend refuses to start without it, and on `ajs dms start`, which takes it from its environment only. | production only |
+| `DMS_OAUTH_RELAY_SECRET` | loader | OAuth relay secret, derived from the backend's `JWT_SECRET` (see [Variables](#variables)). `ajs dms dev` gets it from the backend; `ajs dms start` takes it from its environment only. | production only |
 | `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`. | no |
 | `DMS_API_PUBLIC_BASE_URL` | backend | Public origin of the API, base of asset and e-mail links. **Required** for `ajs project start`. | no |
-| `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest. Generated automatically in development; required by `ajs dms build`. | no |
+| `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest. Generated automatically in development; required by `ajs dms snapshot` and by `ajs dms build` from a live backend. | no |
 | `MONGODB_URL` | backend | MongoDB connection string. | no (`mongodb://localhost:27017`) |
 | `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
@@ -224,8 +224,9 @@ Keep this table and `envOverrides` in sync.
   module.
   They are read from `.env` and mapped through `envOverrides`; `.env` is
   git-ignored.
-- **Frontend builds**: `ajs dms build` needs the backend's
-  `dms.config.frontend.bootstrapSecret`, passed as `DMS_BOOTSTRAP_SECRET`. In
+- **Frontend builds**: `ajs dms snapshot`, and `ajs dms build` from a live
+  backend, need the backend's `dms.config.frontend.bootstrapSecret`, passed as
+  `DMS_BOOTSTRAP_SECRET`; `ajs dms build --from <snapshot>` needs neither. In
   development the backend generates an ephemeral one, so `pnpm frontend:dev`
   needs no configuration.
 - **Module frontends**: every DMS feature module ships its own frontend module
@@ -283,6 +284,106 @@ dependency here, in the same range as the backend module in
 
 `frontend-vue/package.json` declares the `@antelopejs/dms-frontend` releases it
 supports under `engines`; the loader refuses a release outside that range.
+
+## Deploy a DMS project on AntelopeJS Cloud
+
+A DMS project runs as **two services** of one Cloud project: the backend (this
+repository's root, an AntelopeJS project) and the dashboard frontend
+([`frontend-service/`](./frontend-service)). Neither needs a Dockerfile: Cloud
+builds the root as an AntelopeJS project and `frontend-service/` as a Node.js
+application (`pnpm run build`, then `npm start`).
+
+```diagram
+ your machine                         AntelopeJS Cloud (one project)
+┌──────────────────────────┐        ┌──────────────────────────────────────────┐
+│ repo root ── deploy ─────┼───────►│ backend   ajs project start -e production │
+│                          │        │   MongoDB (Cloud database), env + secrets │
+│ ajs dms snapshot ◄───────┼────────┤   GET /dms/frontend (bootstrap secret)    │
+│   └─► frontend-service/  │        │              ▲ /api, /dms, renders        │
+│        dms-snapshot/     │        │              │                            │
+│ frontend-service ─ deploy┼───────►│ frontend  ajs dms build --from snapshot   │
+│                          │        │           ajs dms start (read-only)       │
+└──────────────────────────┘        └──────────────────────────────────────────┘
+```
+
+1. **Deploy the backend** from the repository root with its variables (below).
+   The first deployment boots with an empty database; create the administrator
+   from the dashboard as in [First run](#first-run-create-the-administrator).
+2. **Take a snapshot** of the frontend modules the deployed backend serves, and
+   commit it. The snapshot keeps the modules' sources and the manifest without
+   any secret; it is all the frontend build needs, so the build asks no backend
+   and gets no secret:
+
+   ```bash
+   cd frontend-service
+   DMS_BOOTSTRAP_SECRET=<the backend's> pnpm snapshot -b https://<backend host>
+   git add dms-snapshot
+   ```
+
+3. **Deploy the frontend**. The repository root is linked to the project, and
+   `ajs-cloud` follows that link from any subfolder, so create the frontend
+   service once from a copy of `frontend-service/` outside the repository, then
+   map both services in the root's link and deploy by name:
+
+   ```bash
+   cp -r frontend-service /tmp/frontend-first && cd /tmp/frontend-first
+   ajs-cloud deploy frontend --project <project> --port 3000
+   cd - && ajs-cloud link <project> --service web=. --service frontend=frontend-service
+   ajs-cloud deploy frontend        # later deploys
+   ```
+
+   The root's [`.cloudignore`](./.cloudignore) keeps `frontend-service/` out of
+   the backend's upload. Set the frontend's variables, then deploy it again: a
+   service reads its variables when it is deployed.
+4. **After changing backend modules** (adding, removing or upgrading a module,
+   or editing `frontend-vue/`), take the snapshot again and redeploy the
+   frontend. `ajs dms start` warns in the frontend's logs when the backend
+   serves another module set than the build's; a module upgrade that keeps its
+   routes is not detected, so refresh the snapshot after every upgrade.
+
+### Variables
+
+| Service | Variable | Value |
+| --- | --- | --- |
+| backend | `MONGODB_URL`, `MONGODB_DATABASE` | The Cloud database's connection string and a database name. |
+| backend | `DMS_API_PUBLIC_BASE_URL` | The backend's public URL. |
+| backend | `JWT_SECRET` | Secret, `openssl rand -hex 32`. |
+| backend | `DMS_HTML_RENDER_SECRET` | Secret, `openssl rand -hex 32`. Same value on the frontend. |
+| backend | `DMS_BOOTSTRAP_SECRET` | Secret, `openssl rand -hex 32`. Gates the frontend manifest; needed by `pnpm snapshot`. |
+| backend | `FILE_STORAGE_PATH` | `/tmp/dms-file-storage` (see the storage limit below). |
+| backend | `SMTP_HOST` (+ `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`) | Required in production. With no reachable relay (see the egress limit below), set a name that cannot resolve, such as `smtp.invalid`, and know that e-mail does not work on that deployment. |
+| frontend | `DMS_API_BASE_URL` | How the frontend reaches the backend, see the first limit below. Overrides the URL recorded in the snapshot. |
+| frontend | `DMS_SESSION_SECRET` | Secret, `openssl rand -hex 32`, the same across restarts. |
+| frontend | `DMS_HTML_RENDER_SECRET` | The backend's value. |
+| frontend | `DMS_OAUTH_RELAY_SECRET` | Derived from the backend's `JWT_SECRET`: `node -e 'console.log(require("crypto").createHmac("sha256", process.argv[1]).update("oauth-relay").digest("hex"))' "$JWT_SECRET"`. Without it OAuth sign-in is refused. |
+| frontend | `DMS_BOOTSTRAP_SECRET` | Optional: the backend's value, so `start` can say when the snapshot is out of date. |
+| frontend | `DMS_PRIVATE_OPTIONS` | Only when a module publishes other private options: JSON by module id. |
+
+Store every secret as a Cloud secret variable, never in the repository: the
+snapshot and the frontend image hold none. Rotating `JWT_SECRET` changes the
+relay secret too, so update `DMS_OAUTH_RELAY_SECRET` with it.
+
+### Limits on Cloud today
+
+- **Frontend to backend**: the frontend calls the backend for every page, and
+  on Cloud today one application service has no route to another: the
+  backend's public URL is outside the frontend's egress, the console's
+  `<service>.<project>.internal` name does not resolve, and only managed
+  databases publish a value another service can reference. A frontend reaches
+  its backend only through a private HTTP link (`HTTP_PRIVATE_URL`, which also
+  wakes a sleeping backend), granted per pair of services for now; making it
+  available to every project is tracked in
+  [AntelopeJS/cloud#293](https://github.com/AntelopeJS/cloud/issues/293).
+- **Egress**: an application reaches the other services of its project, DNS and
+  the platform's gateways, nothing else. Outbound SMTP (25, 465, 587) and HTTPS
+  to the internet (443) are closed, so e-mail through an external relay, Stripe,
+  AI providers and OAuth providers do not work from the backend. Opening them is
+  a product decision of the platform, not a setting of the project.
+- **Storage**: the container's filesystem is read-only except `/tmp`, a small
+  temporary directory (256 MiB) emptied at every restart. With
+  `FILE_STORAGE_PATH=/tmp/dms-file-storage`, uploaded media are lost on restart
+  and redeploy; use `@antelopejs/file-storage-s3` with an external bucket where
+  they must persist (which needs the egress above).
 
 ## Translations
 

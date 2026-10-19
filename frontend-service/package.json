@@ -1,0 +1,18 @@
+{
+  "name": "template-dms-demo-frontend-service",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The dashboard frontend of template-dms-demo, built from a snapshot of its backend so it deploys on its own",
+  "packageManager": "pnpm@10.2.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "snapshot": "ajs-dms snapshot -o dms-snapshot",
+    "build": "ajs-dms build --from dms-snapshot --workspace .dms-frontend",
+    "start": "ajs-dms start --workspace .dms-frontend"
+  },
+  "dependencies": {
+    "@antelopejs/dms-frontend": "0.7.1"
+  }
+}
