@@ -92,8 +92,10 @@ function stageProbability(
 
 /**
  * The pipeline table's new guard result: a deal created past the first stage
- * with the form's default probability takes its stage's. A guard does not
- * know the new row's id: the row is found by what was sent, then the derived
+ * with the form's default probability takes its stage's, and a deal created
+ * without a last activity starts with its creation (it would otherwise read
+ * as stalled, an empty date being older than any). A guard does not know
+ * the new row's id: the row is found by what was sent, then the derived
  * fields of every deal follow (a few hundred rows at most).
  */
 export function afterDealNew(body: Partial<Deal>): AfterWrite {
@@ -101,18 +103,30 @@ export function afterDealNew(body: Partial<Deal>): AfterWrite {
   const probability = body.stage
     ? stageProbability(body.stage, sent, DEFAULT_PROBABILITY)
     : undefined;
+  const newProbability =
+    probability !== undefined && probability !== sent ? probability : undefined;
   return async () => {
-    if (probability !== undefined && probability !== sent) {
+    if (newProbability !== undefined || !body.lastActivityAt) {
       const model = GetModel(DealModel);
       const created = (await model.getAll()).filter(
         (deal) =>
           deal.title === body.title &&
           deal.customer === body.customer &&
-          deal.stage === body.stage &&
-          deal.probability === sent,
+          deal.stage === body.stage,
       );
+      const now = new Date();
+      const updates = created.map((deal) => {
+        const changes: Partial<Deal> = {};
+        if (newProbability !== undefined && deal.probability === sent) {
+          changes.probability = newProbability;
+        }
+        if (!deal.lastActivityAt) changes.lastActivityAt = now;
+        return { id: deal._id, changes };
+      });
       await Promise.all(
-        created.map((deal) => model.update(deal._id, { probability })),
+        updates
+          .filter(({ changes }) => Object.keys(changes).length > 0)
+          .map(({ id, changes }) => model.update(id, changes)),
       );
     }
     await syncDerivedFields();
