@@ -5,6 +5,10 @@
 // Helio e-mail templates their first runs send.
 
 import { Logging } from "@antelopejs/interface-core/logging";
+import { GetModel } from "@antelopejs/interface-database-decorators";
+import { UserModel } from "@antelopejs/interface-dms/auth/db";
+import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
+import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
 import {
   DeclareProcedure,
   InvokeProcedure,
@@ -15,7 +19,11 @@ import {
 import { startHelioMailing } from "../mailing";
 import { businessActionTypes } from "./actions-business";
 import { serviceActionTypes } from "./actions-service";
-import { FIRST_RUN_PROCEDURES, HELIO_PROCEDURES } from "./procedures";
+import {
+  FIRST_RUN_PROCEDURES,
+  HELIO_PROCEDURES,
+  OWNER_NOTIFYING_PROCEDURES,
+} from "./procedures";
 import { helioTriggerTypes } from "./triggers";
 
 export { fireQuoteAccepted, fireTicketOpened } from "./events";
@@ -37,6 +45,43 @@ async function firstRun(id: string): Promise<void> {
   } catch (error) {
     Logging.Warn(`[helio] first run of ${id} failed: ${String(error)}`);
   }
+}
+
+// First runs held back until the platform has an owner to notify.
+const awaitingOwner = new Set<string>();
+let ownerHookRegistered = false;
+
+async function hasOwner(): Promise<boolean> {
+  return (await GetModel(UserModel).getOwners()).length > 0;
+}
+
+/**
+ * Runs a procedure that notifies the owners once there is one. On a fresh
+ * install the procedures are created at the first start, before the
+ * onboarding: run then, "Find the managers" would answer nobody and the
+ * notification fail. The onboarding adds the account it creates as owner of
+ * the default workspace, which fires `Hook.MEMBER_ADDED`: the held-back runs
+ * go then.
+ */
+async function firstRunWithOwner(id: string): Promise<void> {
+  if (await hasOwner()) {
+    await firstRun(id);
+    return;
+  }
+  awaitingOwner.add(id);
+  Logging.Info(`[helio] first run of ${id} waits for the onboarding`);
+  if (ownerHookRegistered) return;
+  ownerHookRegistered = true;
+  RegisterHook(Hook.MEMBER_ADDED, ({ tenantId, isTenantOwner }) => {
+    if (tenantId !== DEFAULT_TENANT_ID || !isTenantOwner) return undefined;
+    const ids = [...awaitingOwner];
+    awaitingOwner.clear();
+    // Not awaited: the onboarding request waits for its hook handlers.
+    void (async () => {
+      for (const pending of ids) await firstRun(pending);
+    })();
+    return undefined;
+  });
 }
 
 const TYPE_WAIT_MS = 30_000;
@@ -91,7 +136,9 @@ async function declareProcedures(): Promise<void> {
       declared.status === "created" &&
       FIRST_RUN_PROCEDURES.has(declared.id)
     ) {
-      await firstRun(declared.id);
+      await (OWNER_NOTIFYING_PROCEDURES.has(declared.id)
+        ? firstRunWithOwner(declared.id)
+        : firstRun(declared.id));
     }
   }
   Logging.Info(`[helio] procedures: ${outcomes.join(", ")}`);

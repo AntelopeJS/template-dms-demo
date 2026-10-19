@@ -180,3 +180,13 @@ export const FIRST_RUN_PROCEDURES = new Set([
   overdueInvoiceReminders.id,
   installationConfirmations.id,
 ]);
+
+/**
+ * Procedures that notify the platform owners ("Find the managers"): their
+ * first run needs an owner, which only the onboarding creates.
+ */
+export const OWNER_NOTIFYING_PROCEDURES = new Set(
+  HELIO_PROCEDURES.filter(({ graph }) =>
+    graph.nodes.some((node) => node.typeId === MANAGERS),
+  ).map(({ id }) => id),
+);
