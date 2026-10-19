@@ -42,7 +42,8 @@ export async function fillMissingNames(): Promise<void> {
   const updates = categories.flatMap((category) => {
     const names = withEveryLanguage(category.localize("*").name);
     if (!names) return [];
-    const row = { _id: category._id, name: names as unknown as string };
+    // Written with "*": the whole { en, fr } record at once.
+    const row = { _id: category._id, name: names };
     return [ProductCategoryModel.fromPlainData(row).localize("*")];
   });
   await Promise.all(updates.map((row) => model.update(row)));
