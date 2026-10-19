@@ -29,7 +29,7 @@
     "@antelopejs/interface-dms-media": ">=0.2.2 <1.0.0"
   },
   "devDependencies": {
-    "@antelopejs/dms": ">=0.9.4 <1.0.0",
+    "@antelopejs/dms": ">=0.9.8 <1.0.0",
     "@antelopejs/dms-frontend": "0.6.3",
     "@antelopejs/tooling-configs": "^0.0.9",
     "@types/node": "^26.6.5",
