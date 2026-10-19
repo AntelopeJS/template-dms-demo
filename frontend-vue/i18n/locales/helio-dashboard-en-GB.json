@@ -28,7 +28,7 @@
 				"pipeline": "Open pipeline",
 				"pipelineDetail": "{count} open deal, {weighted} weighted | {count} open deals, {weighted} weighted",
 				"worksites": "Worksites in progress",
-				"worksitesDetail": "{count} starting in the next 14 days",
+				"worksitesDetail": "none starting in the next 14 days | {count} starting in the next 14 days | {count} starting in the next 14 days",
 				"fleet": "Sites online",
 				"fleetValue": "{online} / {total}",
 				"fleetDetail": "{offline} offline, {degraded} degraded",

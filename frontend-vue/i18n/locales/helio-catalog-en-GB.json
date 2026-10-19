@@ -141,7 +141,7 @@
 				"amount": "{amount}",
 				"percent": "{value}",
 				"onSale": "On sale",
-				"onSaleDetail": "{hardware} products · {services} services",
+				"onSaleDetail": "Products: {hardware} · services: {services}",
 				"stockValue": "Stock value",
 				"stockValueDetail": "At purchase cost · {units} units in the warehouse",
 				"toReorder": "To reorder",

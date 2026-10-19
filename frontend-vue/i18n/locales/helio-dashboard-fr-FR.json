@@ -28,10 +28,10 @@
 				"pipeline": "Pipeline ouvert",
 				"pipelineDetail": "{count} affaire en cours, {weighted} pondérés | {count} affaires en cours, {weighted} pondérés",
 				"worksites": "Chantiers en cours",
-				"worksitesDetail": "{count} démarrent dans les 14 prochains jours",
+				"worksitesDetail": "aucun ne démarre dans les 14 prochains jours | {count} démarre dans les 14 prochains jours | {count} démarrent dans les 14 prochains jours",
 				"fleet": "Sites en ligne",
 				"fleetValue": "{online} / {total}",
-				"fleetDetail": "{offline} hors ligne, {degraded} dégradés",
+				"fleetDetail": "hors ligne : {offline} · dégradés : {degraded}",
 				"urgent": "Tickets urgents",
 				"urgentDetail": "Aucun SLA menacé dans les 24 h | {count} SLA échu ou à échéance sous 24 h | {count} SLA échus ou à échéance sous 24 h"
 			},
