@@ -18,7 +18,8 @@ import { CRM_API } from "./links";
 /** Routes of the CRM pages that no data controller generates. */
 export class HelioCrmRoutes extends Controller(CRM_API) {
   // The delete dialog of one customer: type its name to confirm, and refused
-  // outright while deals are still in play (the delete guard agrees).
+  // outright while it is active or has deals still in play (the delete guard
+  // agrees).
   @Get("customers/:id/delete-confirm")
   async deleteConfirm(
     @Parameter("id", "param") customerId: string,
@@ -28,6 +29,17 @@ export class HelioCrmRoutes extends Controller(CRM_API) {
     if (!customer) {
       throw new HTTPResult(404, {
         message: "$helio.crm.customers.errors.notFound",
+      });
+    }
+    // Only an archived customer can go (archive mode).
+    if (!customer.isArchived) {
+      return serializeConfirmDialog({
+        title: "$helio.crm.customers.deleteConfirm.activeTitle",
+        description: "$helio.crm.customers.deleteConfirm.activeDescription",
+        params: { name: customer.name },
+        icon: "i-ph-archive",
+        color: "warning",
+        blocked: true,
       });
     }
     const deals = await countCustomerDeals([customerId]);

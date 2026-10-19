@@ -77,6 +77,16 @@ function afterWrites(
   };
 }
 
+async function refuseActiveCustomers(ids: string[]): Promise<void> {
+  const model = GetModel(CustomerModel);
+  const customers = await Promise.all(ids.map((id) => model.get(id)));
+  if (customers.some((customer) => customer && !customer.isArchived)) {
+    throw new HTTPResult(409, {
+      message: "$helio.crm.customers.errors.notArchived",
+    });
+  }
+}
+
 @RegisterPage()
 export class PageHelioCustomers extends PageController(
   "customers",
@@ -182,10 +192,12 @@ export class PageHelioCustomers extends PageController(
         isEnabled: true,
         successMessage: "$helio.crm.customers.restored",
       },
-      // Only archived customers can be deleted (archive mode); the dialog,
-      // worded by the server, asks to type the customer's name.
+      // Only archived customers can be deleted (archive mode): the rule
+      // keeps the action off the active ones, on the selection bar too. The
+      // dialog, worded by the server, asks to type the customer's name.
       delete: {
         isEnabled: true,
+        rule: { field: "isArchived", equals: true },
         confirm: { from: CUSTOMER_DELETE_CONFIRM_URL },
       },
       custom: [
@@ -272,9 +284,11 @@ export class PageHelioCustomers extends PageController(
           renamed ? afterCustomerEdit : undefined,
         );
       },
-      // A customer with deals still in play is not deleted: the dialog says
-      // so (blocked), and a bare API call is refused the same way.
+      // An active customer, or one with deals still in play, is not deleted:
+      // the dialog says so (blocked), and a bare API call is refused the same
+      // way instead of deleting nothing.
       delete: async (_ctx, { ids }) => {
+        await refuseActiveCustomers(ids);
         const { open } = await countCustomerDeals(ids);
         if (open > 0) {
           throw new HTTPResult(409, {

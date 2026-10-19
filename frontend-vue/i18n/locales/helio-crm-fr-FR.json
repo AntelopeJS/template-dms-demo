@@ -117,11 +117,14 @@
 					"confirm": "Supprimer le client",
 					"impactDeals": "Affaires clôturées qui ne seront plus liées à un client",
 					"blockedTitle": "{name} a encore des affaires en cours",
-					"blockedDescription": "Clôturez ou réattribuez d'abord son affaire en cours. | Clôturez ou réattribuez d'abord ses {count} affaires en cours."
+					"blockedDescription": "Clôturez ou réattribuez d'abord son affaire en cours. | Clôturez ou réattribuez d'abord ses {count} affaires en cours.",
+					"activeTitle": "Archivez d'abord {name}",
+					"activeDescription": "Seul un client archivé peut être supprimé : archivez-le, puis supprimez-le depuis les clients archivés."
 				},
 				"errors": {
 					"vatRequired": "Un client entreprise doit avoir un numéro de TVA.",
 					"openDeals": "Ce client a encore des affaires en cours.",
+					"notArchived": "Seuls les clients archivés peuvent être supprimés : archivez-les d'abord.",
 					"notFound": "Ce client n'existe plus.",
 					"vatFormat": "Numéro de TVA invalide : BE suivi de 10 chiffres (ex. BE0123.456.749), ou le numéro d'un autre pays de l'UE."
 				},
