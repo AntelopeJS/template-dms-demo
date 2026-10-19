@@ -14,7 +14,7 @@ import { type DocumentTexts, documentTexts } from "./document-texts";
 interface DocumentParty {
   name: string;
   contactName?: string;
-  vatNumber?: string;
+  vatNumber?: string | null;
   address?: DefaultDataTypes.Address;
   email?: string;
 }

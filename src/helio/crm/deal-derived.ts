@@ -12,7 +12,9 @@ import { STAGE_PROBABILITY } from "./fixtures";
 
 // Some fields of a deal derive from others: its weighted amount (amount ×
 // probability), whether it is still open (neither won nor lost), its
-// customer's name (for the search) and, once closed, its probability. They
+// customer's name (for the search), once closed, its probability, and the
+// loss reason, kept on a lost deal only (the form hides it on the other
+// stages, and a hidden field would otherwise keep the value it held). They
 // are stored, not declared @Computed, for two reasons seen on this DMS
 // version: the data API materializes a @Computed field only while a list
 // sorts or filters on it (the grid and the footer summary would show
@@ -36,6 +38,8 @@ interface DerivedFields {
   weightedAmount: number;
   isOpen: boolean;
   customerName: string;
+  // null clears the stored value, as a field emptied in a form.
+  lostReason: string | null;
 }
 
 function derive(deal: Deal, customerNames: Map<string, string>): DerivedFields {
@@ -45,6 +49,7 @@ function derive(deal: Deal, customerNames: Map<string, string>): DerivedFields {
     weightedAmount: cents((deal.amount ?? 0) * probability),
     isOpen: deal.stage !== "won" && deal.stage !== "lost",
     customerName: customerNames.get(deal.customer) ?? "",
+    lostReason: deal.stage === "lost" ? (deal.lostReason ?? null) : null,
   };
 }
 
@@ -53,7 +58,8 @@ function isStale(deal: Deal, derived: DerivedFields): boolean {
     deal.probability !== derived.probability ||
     deal.weightedAmount !== derived.weightedAmount ||
     deal.isOpen !== derived.isOpen ||
-    deal.customerName !== derived.customerName
+    deal.customerName !== derived.customerName ||
+    (deal.lostReason ?? null) !== derived.lostReason
   );
 }
 
