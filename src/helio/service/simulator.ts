@@ -30,7 +30,7 @@ import type { TicketSeed } from "./fixtures";
 import { notifyUrgentTicket } from "./notifications";
 import { nextTicketNumber } from "./numbering";
 import { SERVICE_TOPIC } from "./options";
-import { refreshSlaHours, slaHours } from "./sla";
+import { refreshSlaHours, slaDueAt } from "./sla";
 import { SUBJECTS } from "./subjects";
 
 const SIMULATED_PREFIX = "ticket-sim-";
@@ -100,7 +100,7 @@ function draftTicket(
     priority,
     status: "new",
     channel,
-    slaDueAt: new Date(createdAt.getTime() + slaHours(priority) * HOUR_MS),
+    slaDueAt: slaDueAt(priority, createdAt),
     createdAt,
     resolvedAt: undefined,
     assignee: undefined,

@@ -48,7 +48,7 @@ import {
   type TicketStatus,
 } from "./database";
 import { withTicketNumber } from "./numbering";
-import { slaHours } from "./sla";
+import { slaDueAt } from "./sla";
 import {
   SERVICE_TOPIC,
   TICKET_ASSIGNEES,
@@ -204,10 +204,7 @@ class ticketDataAPI extends DataController(
   set priority(value: TicketPriority) {
     this.table.priority = value;
     this.table.createdAt ??= new Date();
-    const hours = slaHours(value);
-    this.table.slaDueAt = new Date(
-      new Date(this.table.createdAt).getTime() + hours * HOUR_MS,
-    );
+    this.table.slaDueAt = slaDueAt(value, new Date(this.table.createdAt));
   }
 
   // Resolving or closing a ticket stamps when; reopening it clears it.
