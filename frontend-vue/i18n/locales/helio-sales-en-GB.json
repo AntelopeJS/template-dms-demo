@@ -33,7 +33,8 @@
 				"placeholders": {
 					"customer": "Choose a customer",
 					"deal": "Link a deal (optional)",
-					"notes": "Access, roof type, payment terms…"
+					"notes": "Access, roof type, payment terms…",
+					"product": "Choose a product on sale"
 				},
 				"hints": {
 					"vatRate": "6% for a private home over 10 years old, 21% for a business or a recent home."

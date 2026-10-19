@@ -2,7 +2,6 @@
 // the document. controller.ts re-exports them: it is the import path other
 // domains rely on.
 
-import { PRODUCT_ROSTER } from "../shared/roster";
 import { DAY_MS } from "../shared/seed";
 
 // A quote's life, in order. Exported for the status tabs, views and actions.
@@ -43,13 +42,6 @@ export const QUOTE_STATUSES = [
     textColor: "warning",
   },
 ] as const;
-
-// The products a quote line picks from: the catalog roster, by name (data,
-// not a translation).
-export const QUOTE_PRODUCT_ITEMS = PRODUCT_ROSTER.map((product) => ({
-  value: product.id,
-  label: product.name,
-}));
 
 /** How long a quote holds when its validity is left empty. */
 export const VALIDITY_DAYS = 30;

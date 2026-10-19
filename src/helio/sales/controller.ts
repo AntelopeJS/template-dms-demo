@@ -28,6 +28,7 @@ import {
   type ComposedText,
   ReadonlyBehaviorType,
 } from "@antelopejs/interface-dms/base/types";
+import { onSaleProductController } from "../catalog/controller";
 import { customerController, dealController } from "../crm/controller";
 import { DAY_MS } from "../shared/seed";
 import { Quote, type QuoteLine, QuoteModel } from "./database";
@@ -35,13 +36,12 @@ import { quoteTotals, VAT_RESIDENTIAL } from "./lines";
 import { takeQuoteNumber } from "./numbering";
 import {
   EXPIRING_WITHIN_MS,
-  QUOTE_PRODUCT_ITEMS,
   QUOTE_STATUSES,
   VALIDITY_DAYS,
 } from "./options";
 import { lineText, otherLinesText } from "./summary";
 
-export { QUOTE_PRODUCT_ITEMS, QUOTE_STATUSES } from "./options";
+export { QUOTE_STATUSES } from "./options";
 
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
@@ -184,7 +184,13 @@ class quoteDataAPI extends DataController(
     type: new DefaultDataTypes.ArrayType({
       of: {
         product: {
-          type: new DefaultDataTypes.SelectType({ items: QUOTE_PRODUCT_ITEMS }),
+          // The catalog's products on sale, read live: a new product can be
+          // quoted at once, a discontinued one no longer.
+          type: new DefaultDataTypes.RelationType({
+            dataApiController: onSaleProductController,
+            keyMapping: { label: "name", value: "_id" },
+            placeholder: "$helio.sales.quotes.placeholders.product",
+          }),
           label: "$helio.sales.quotes.lines.product",
           required: true,
         },

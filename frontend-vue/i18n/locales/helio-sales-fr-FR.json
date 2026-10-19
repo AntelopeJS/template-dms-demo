@@ -33,7 +33,8 @@
 				"placeholders": {
 					"customer": "Choisir un client",
 					"deal": "Lier une opportunité (facultatif)",
-					"notes": "Accès, type de toiture, modalités de paiement…"
+					"notes": "Accès, type de toiture, modalités de paiement…",
+					"product": "Choisir un produit en vente"
 				},
 				"hints": {
 					"vatRate": "6 % pour une habitation privée de plus de 10 ans, 21 % pour une entreprise ou une habitation récente."
