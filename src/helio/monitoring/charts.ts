@@ -189,6 +189,8 @@ export interface TopListItem {
   title: string;
   description: ComposedText;
   value: number;
+  /** The value as written, with its unit (the card's valueLabel). */
+  valueLabel: ComposedText;
   delta: number | null;
   sparkline: number[];
   icon: string;
@@ -216,6 +218,12 @@ export function topProducers(
         params: { city: site.city, capacity: site.capacityKwp },
       },
       value,
+      // The energy with its unit, to the kWh: the unit and the space before
+      // it belong to the message, not to a suffix glued to the number.
+      valueLabel: {
+        key: "$helio.monitoring.units.kwhValue",
+        params: { value: { type: "number", value: Math.round(value) } },
+      },
       delta: compare ? (deltaPercent(value, previous) ?? null) : null,
       sparkline: sparkline(site, period, now),
       icon: "i-ph-solar-panel",

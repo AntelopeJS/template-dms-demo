@@ -212,7 +212,6 @@ export class PageHelioMonitoring extends PageController(
           realtimeTopic: TELEMETRY_TOPIC,
           valueFormat: "number",
           valuePrecision: 0,
-          valueSuffix: "$helio.monitoring.units.kwhSuffix",
           showRank: true,
           showDelta: true,
           showSparkline: true,

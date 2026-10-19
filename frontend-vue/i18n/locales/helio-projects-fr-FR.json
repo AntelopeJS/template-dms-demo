@@ -207,7 +207,7 @@
 				"progress": {
 					"label": "Tâches",
 					"value": "{done} / {total}",
-					"done": "{count} terminée | {count} terminée | {count} terminées",
+					"done": "Terminées : {count}",
 					"doing": "{count} en cours",
 					"todo": "{count} à faire"
 				},

@@ -32,7 +32,6 @@
 				"kw": "kW",
 				"kwp": "kWp",
 				"kwh": "kWh",
-				"kwhSuffix": " kWh",
 				"kwValue": "{value} kW",
 				"kwpValue": "{value} kWp",
 				"kwhValue": "{value} kWh"

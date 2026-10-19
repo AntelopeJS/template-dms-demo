@@ -70,7 +70,7 @@
 			"stats": {
 				"label": "Le SAV en un coup d'œil",
 				"open": "Tickets ouverts",
-				"openDetail": "{fresh} nouveau · {unassigned} sans technicien | {fresh} nouveaux · {unassigned} sans technicien",
+				"openDetail": "Nouveaux : {fresh} · sans technicien : {unassigned}",
 				"urgent": "Urgents",
 				"urgentDetail": "Ouverts, résolution promise sous {hours} heure | Ouverts, résolution promise sous {hours} heures",
 				"breaching": "Hors délai",
