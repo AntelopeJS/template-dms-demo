@@ -15,7 +15,7 @@ import { helioSalesCategory } from "../category";
 import { productCategoryController } from "./category-controller";
 import { productController } from "./product-controller";
 import { categoryTableOptions } from "./category-table";
-import { ProductModel } from "./database";
+import { ProductCategoryModel, ProductModel } from "./database";
 import { productTableOptions } from "./product-table";
 import { catalogStats } from "./stats";
 
@@ -54,9 +54,12 @@ export class PageHelioCatalog extends PageController(
   // Read again on every visit: the figures follow the edits made below.
   @Get("/stats")
   async catalogStats() {
-    const products = await GetModel(ProductModel).getAll();
+    const [products, categories] = await Promise.all([
+      GetModel(ProductModel).getAll(),
+      GetModel(ProductCategoryModel).getAll(),
+    ]);
     return {
-      items: catalogStats(products, {
+      items: catalogStats(products, categories, {
         active: tableViewLink(PageHelioCatalog, "table", { view: "active" }),
         toReorder: tableViewLink(PageHelioCatalog, "table", {
           view: "to-reorder",

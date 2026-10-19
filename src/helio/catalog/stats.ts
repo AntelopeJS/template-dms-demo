@@ -1,5 +1,5 @@
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
-import type { Product } from "./database";
+import type { Product, ProductCategory } from "./database";
 import { SERVICES_FAMILY } from "./options";
 
 // The figures above the catalog, computed from the products on every visit so
@@ -25,11 +25,23 @@ const isLow = (product: Product): boolean =>
 const marginOf = ({ price, cost }: Product): number =>
   price ? (price - cost) / price : 0;
 
-function onSaleItem(products: Product[], links: CatalogStatLinks) {
+// A product's family is the parent of its range (a product filed straight
+// under a family belongs to it), the way the catalog views read it.
+function familyOf(
+  product: Product,
+  parents: ReadonlyMap<string, string | undefined>,
+): string {
+  return parents.get(product.category) ?? product.category;
+}
+
+function onSaleItem(
+  products: Product[],
+  parents: ReadonlyMap<string, string | undefined>,
+  links: CatalogStatLinks,
+) {
   const onSale = products.filter((product) => product.isActive);
-  // Service ranges are the children of the services family.
-  const services = onSale.filter((product) =>
-    product.category.startsWith(SERVICES_FAMILY),
+  const services = onSale.filter(
+    (product) => familyOf(product, parents) === SERVICES_FAMILY,
   ).length;
   return {
     id: "on-sale",
@@ -116,10 +128,14 @@ function marginItem(products: Product[]) {
 
 export function catalogStats(
   products: Product[],
+  categories: ProductCategory[],
   links: CatalogStatLinks,
 ): StatGroupItem[] {
+  const parents = new Map(
+    categories.map((category) => [category._id, category.parent]),
+  );
   return [
-    onSaleItem(products, links),
+    onSaleItem(products, parents, links),
     stockValueItem(products),
     toReorderItem(products, links),
     marginItem(products),
