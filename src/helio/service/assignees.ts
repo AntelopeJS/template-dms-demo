@@ -89,12 +89,9 @@ export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
     (ticket) =>
       !ticket.resolvedAt && ticket.assignee && leaving.has(ticket.assignee),
   );
-  await Promise.all(
-    held.map(({ _id }) =>
-      // null clears the stored holder (undefined would leave it in place).
-      model.update(_id, { assignee: null as unknown as undefined }),
-    ),
-  );
+  // null clears the stored holder (undefined would leave it in place).
+  const nobody = Object.fromEntries([["assignee", null]]);
+  await Promise.all(held.map(({ _id }) => model.update(_id, nobody)));
   if (held.length > 0) {
     await PublishMessage(SERVICE_TOPIC, "tickets.updated", {
       payload: { ids: held.map(({ _id }) => _id) },

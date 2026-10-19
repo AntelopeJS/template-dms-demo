@@ -452,14 +452,13 @@ class ticketDataAPI extends DataController(
     const closed = (await this.loadTickets(ids)).filter(({ status }) =>
       CLOSED.includes(status),
     );
+    // null clears the stored date (undefined would leave it in place).
+    const reopened = Object.fromEntries([
+      ["status", "open"],
+      ["resolvedAt", null],
+    ]);
     await Promise.all(
-      closed.map(({ _id }) =>
-        // null clears the stored date (undefined would leave it in place).
-        this.model.update(_id, {
-          status: "open",
-          resolvedAt: null as unknown as undefined,
-        }),
-      ),
+      closed.map(({ _id }) => this.model.update(_id, reopened)),
     );
     await logTicketsReopened(closed);
     return this.published(closed.map(({ _id }) => _id));
