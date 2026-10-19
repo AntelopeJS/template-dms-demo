@@ -1,8 +1,9 @@
 // Who may hold a ticket: the technicians, and the office for the billing
 // questions — never the manager or the sales reps. The ticket's assignee
-// column picks from this controller rather than the whole team, so its form
-// picker and the desk's quick filter offer the same people as the bulk
-// "Assign to…" action.
+// column picks from this controller rather than the whole team, and the bulk
+// "Assign to…" action reads the same team rows (ticketHolders), so the form
+// picker, the desk's quick filter and the action offer the same people,
+// newcomers included.
 
 import {
   Controller,
@@ -22,7 +23,7 @@ import {
   ModelReference,
   Sortable,
 } from "@antelopejs/interface-data-api/metadata";
-import { Model } from "@antelopejs/interface-database-decorators";
+import { GetModel, Model } from "@antelopejs/interface-database-decorators";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   Select,
@@ -36,6 +37,21 @@ export const TICKET_HOLDER_ROLES: ReadonlySet<TeamRole> = new Set([
   "technician",
   "office",
 ]);
+
+/** The team members who may hold a ticket, by name. */
+export async function ticketHolders(): Promise<TeamMember[]> {
+  const members = await GetModel(TeamMemberModel).getAll();
+  return members
+    .filter((member) => TICKET_HOLDER_ROLES.has(member.role))
+    .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+}
+
+/** Whether `id` names a team member who may hold a ticket. */
+export async function isTicketHolder(id: string | undefined): Promise<boolean> {
+  if (!id) return false;
+  const member = await GetModel(TeamMemberModel).get(id);
+  return member !== undefined && TICKET_HOLDER_ROLES.has(member.role);
+}
 
 interface SelectPage {
   results?: Array<Record<string, unknown>>;

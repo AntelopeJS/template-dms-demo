@@ -9,9 +9,12 @@ import {
   type TableViewTab,
   type TableViewViewsOptions,
 } from "@antelopejs/interface-dms/base/table-view";
+import type { ConfirmDialog } from "@antelopejs/interface-dms/base/types/confirm-dialog";
 import type { CustomRowAction } from "@antelopejs/interface-dms/base/types/row-action";
+import { pageRoutePath } from "@antelopejs/interface-dms/page";
+import type { TeamMember } from "../team/database";
 import { ticketController } from "./controller";
-import { TICKET_ASSIGNEES, TICKET_STATUSES } from "./options";
+import { SERVICE_DESK_PATH, TICKET_STATUSES } from "./options";
 
 const TICKETS_API = "/api/helio/tickets";
 
@@ -118,12 +121,13 @@ export const ticketFooter: TableViewFooterOptions = {
 // names no ticket.
 const BULK_ROW_IDS = "?ids={{row._id}}";
 
-const assignAction: CustomRowAction = {
-  label: "$helio.service.actions.assign",
-  icon: "i-ph-user-switch",
-  permission: "edit",
-  bulk: { allMatching: true },
-  confirm: {
+/**
+ * The "Assign to…" confirmation, listing the people who may hold a ticket.
+ * The desk words it per request (its `assign-confirm` route) from the team
+ * rows, so a technician added since the server started is offered too.
+ */
+export function assignDialog(holders: readonly TeamMember[]): ConfirmDialog {
+  return {
     title: "$helio.service.bulk.assign.title",
     description: "$helio.service.bulk.assign.description",
     icon: "i-ph-user-switch",
@@ -134,13 +138,22 @@ const assignAction: CustomRowAction = {
         id: "assignee",
         label: "$helio.service.bulk.assign.field",
         type: new DefaultDataTypes.SelectType({
-          items: TICKET_ASSIGNEES,
+          // Names are people, not translated.
+          items: holders.map(({ _id, name }) => ({ value: _id, label: name })),
           placeholder: "$helio.service.bulk.assign.placeholder",
         }),
         required: true,
       },
     ],
-  },
+  };
+}
+
+const assignAction: CustomRowAction = {
+  label: "$helio.service.actions.assign",
+  icon: "i-ph-user-switch",
+  permission: "edit",
+  bulk: { allMatching: true },
+  confirm: { from: pageRoutePath(SERVICE_DESK_PATH, "/assign-confirm") },
   target: {
     type: "api",
     url: `${TICKETS_API}/bulk/assign${BULK_ROW_IDS}`,

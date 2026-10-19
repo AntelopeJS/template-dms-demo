@@ -40,7 +40,7 @@ import { mailTicketsResolved } from "../platform/mailing/send";
 import { siteController } from "../monitoring/controller";
 import { assertCanWriteTickets } from "./access";
 import { logTicketsReopened, logTicketsResolved } from "./activity";
-import { ticketAssigneeController } from "./assignees";
+import { isTicketHolder, ticketAssigneeController } from "./assignees";
 import {
   Ticket,
   TicketModel,
@@ -51,7 +51,6 @@ import { withTicketNumber } from "./numbering";
 import { slaHours } from "./sla";
 import {
   SERVICE_TOPIC,
-  TICKET_ASSIGNEES,
   TICKET_CATEGORIES,
   TICKET_CHANNELS,
   TICKET_PRIORITIES,
@@ -62,8 +61,6 @@ export * from "./options";
 
 const HOUR_MS = 60 * 60 * 1000;
 const CLOSED: readonly string[] = ["resolved", "closed"];
-
-const ASSIGNABLE = new Set(TICKET_ASSIGNEES.map(({ value }) => value));
 
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
@@ -388,8 +385,9 @@ class ticketDataAPI extends DataController(
   }
 
   // "Assign to…" on the selection bar: the selected tickets, or every ticket
-  // the filters match, go to the person picked in the confirmation. A new
-  // ticket someone took is open from then on.
+  // the filters match, go to the person picked in the confirmation (a
+  // technician or the office, read from the team as the dialog lists them).
+  // A new ticket someone took is open from then on.
   @Post("bulk/assign")
   async bulkAssign(
     @Context() ctx: RequestContext,
@@ -398,7 +396,7 @@ class ticketDataAPI extends DataController(
   ): Promise<{ count: number }> {
     await assertCanWriteTickets(ctx, user);
     const assignee = body?.assignee;
-    if (!assignee || !ASSIGNABLE.has(assignee)) {
+    if (!assignee || !(await isTicketHolder(assignee))) {
       throw new HTTPResult(400, {
         message: "$helio.service.bulk.assign.invalid",
         field: "assignee",
