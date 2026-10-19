@@ -9,6 +9,7 @@ import {
   DealModel,
 } from "./database";
 import { STAGE_PROBABILITY } from "./fixtures";
+import { isKickoffNextStep } from "./kickoff-step";
 
 // Some fields of a deal derive from others: its weighted amount (amount ×
 // probability), whether it is still open (neither won nor lost), its
@@ -159,9 +160,12 @@ export function afterDealEdit(
 ): AfterWrite {
   const { stage } = body;
   const moved = stage !== undefined && stage !== current.stage;
-  // A next step typed over the kick-off a signed quote planned replaces it.
+  // A next step typed over the kick-off a signed quote planned replaces it;
+  // the kick-off sentence sent back unchanged keeps it.
   const retyped =
-    body.nextStep !== undefined && body.nextStep !== current.nextStep;
+    body.nextStep !== undefined &&
+    !!current.kickoffQuote &&
+    !isKickoffNextStep(body.nextStep, current.kickoffQuote);
   const probability = moved
     ? stageProbability(stage, body.probability, current.probability)
     : undefined;

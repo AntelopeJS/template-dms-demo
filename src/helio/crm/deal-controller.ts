@@ -13,6 +13,8 @@ import {
   Sortable,
 } from "@antelopejs/interface-data-api/metadata";
 import { Model } from "@antelopejs/interface-database-decorators";
+import { IfAuthUser } from "@antelopejs/interface-dms/auth";
+import type { User } from "@antelopejs/interface-dms/auth/db";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
@@ -26,6 +28,7 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { customerController, LEAD_SOURCES } from "./customer-controller";
 import { Deal, type DealStage, DealModel } from "./database";
+import { isKickoffNextStep, kickoffNextStep } from "./kickoff-step";
 import { salesRepController } from "./sales-rep-controller";
 
 // The pipeline, in order. Exported for the kanban columns, tabs and views.
@@ -145,6 +148,10 @@ class dealDataAPI extends DataController(
   @ModelReference()
   @Model(DealModel)
   declare model: DealModel;
+
+  // Who reads: the kick-off next step is worded in their profile's language.
+  @IfAuthUser()
+  declare reader?: User;
 
   @Select()
   @Listable()
@@ -358,8 +365,11 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare lastActivityAt: Date;
 
+  // The kick-off call a signed quote planned reads in the reader's language
+  // in the form and the quick view too; a next step typed over it replaces it
+  // (afterDealEdit).
   @Searchable()
-  @Listable()
+  @Listable(["nextStep", "kickoffQuote"])
   @Column({
     name: "$helio.crm.deals.columns.nextStep",
     type: new DefaultDataTypes.StringType({
@@ -370,7 +380,16 @@ class dealDataAPI extends DataController(
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
-  declare nextStep: string;
+  get nextStep(): string | undefined {
+    const { nextStep, kickoffQuote } = this.table;
+    return kickoffQuote
+      ? kickoffNextStep(kickoffQuote, this.reader?.language)
+      : nextStep;
+  }
+  set nextStep(value: string | undefined) {
+    if (isKickoffNextStep(value, this.table.kickoffQuote)) return;
+    this.table.nextStep = value;
+  }
 
   @Listable()
   @Exported()
