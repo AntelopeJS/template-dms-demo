@@ -346,7 +346,7 @@ application (`pnpm run build`, then `npm start`).
 | Service | Variable | Value |
 | --- | --- | --- |
 | backend | `MONGODB_URL`, `MONGODB_DATABASE` | The Cloud database's connection string and a database name. |
-| backend | `DMS_API_PUBLIC_BASE_URL` | The backend's public URL. |
+| backend | `DMS_API_PUBLIC_BASE_URL` | The origin browsers reach the API at: the frontend's public URL when the backend is private (the frontend proxies `/api`, `/dms`, `/media` and `/i18n` to it), else the backend's public URL. |
 | backend | `JWT_SECRET` | Secret, `openssl rand -hex 32`. |
 | backend | `DMS_HTML_RENDER_SECRET` | Secret, `openssl rand -hex 32`. Same value on the frontend. |
 | backend | `DMS_BOOTSTRAP_SECRET` | Secret, `openssl rand -hex 32`. Gates the frontend manifest; needed by `pnpm snapshot`. |
@@ -384,6 +384,12 @@ relay secret too, so update `DMS_OAUTH_RELAY_SECRET` with it.
   `FILE_STORAGE_PATH=/tmp/dms-file-storage`, uploaded media are lost on restart
   and redeploy; use `@antelopejs/file-storage-s3` with an external bucket where
   they must persist (which needs the egress above).
+- **File transfers behind a private backend**: `file-storage-local` gives
+  browsers `/file-storage/files/…` URLs for direct uploads and downloads, and
+  the frontend does not proxy that path. With a private backend, uploading a
+  media file and opening a storage link fail, while `/media/…` links keep
+  working. Tracked in
+  [AntelopeJS/dms-frontend#159](https://github.com/AntelopeJS/dms-frontend/issues/159).
 
 ## Translations
 
