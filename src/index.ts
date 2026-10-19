@@ -6,7 +6,19 @@ import "./home";
 import "./components";
 import "./demo-app";
 
-export async function construct(): Promise<void> {}
+interface TemplateConfig {
+  requireJwtSecret?: boolean;
+}
+
+export async function construct(config?: TemplateConfig): Promise<void> {
+  // Checked at start, not in antelope.config.ts: the production build
+  // evaluates the configuration without the deployment's secrets.
+  if (config?.requireJwtSecret && !process.env.JWT_SECRET) {
+    throw new Error(
+      "JWT_SECRET is required in production: it signs the dashboard's tokens, and the development secret is public.",
+    );
+  }
+}
 
 export async function start(): Promise<void> {
   // Provision this template's own schema (tables tagged with DEMO_SCHEMA_NAME)

@@ -198,6 +198,7 @@ The default development workflow does not need one. Two processes read it:
 | `DMS_API_PUBLIC_BASE_URL` | backend | Public origin of the API, base of asset and e-mail links. **Required** for `ajs project start`. | no |
 | `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest. Generated automatically in development; required by `ajs dms build`. | no |
 | `MONGODB_URL` | backend | MongoDB connection string. | no (`mongodb://localhost:27017`) |
+| `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
 | `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
