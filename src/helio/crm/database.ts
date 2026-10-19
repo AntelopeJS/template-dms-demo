@@ -102,6 +102,12 @@ export class Deal extends Table {
   @Index() @Field("date") declare expectedClose: Date;
   @Index() @Field("date") declare lastActivityAt: Date;
   @Field("string") declare nextStep?: string;
+  /**
+   * The signed quote whose kick-off call is the deal's next step, worded in
+   * the reader's language (deal-controller.ts); null once a next step is
+   * typed again.
+   */
+  @Field("string") declare kickoffQuote?: string | null;
   @Field("string") declare lostReason?: string | null;
 }
 

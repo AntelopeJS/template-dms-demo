@@ -149,8 +149,8 @@ async function logDealWon(id: string): Promise<void> {
 /**
  * The pipeline table's edit guard result: a deal moved to another stage
  * (across the board or from its form) takes that stage's probability unless
- * the same edit set one, the derived fields follow, and a deal just won is
- * logged.
+ * the same edit set one, a next step typed replaces the kick-off a signed
+ * quote planned, the derived fields follow, and a deal just won is logged.
  */
 export function afterDealEdit(
   id: string,
@@ -159,6 +159,9 @@ export function afterDealEdit(
 ): AfterWrite {
   const { stage } = body;
   const moved = stage !== undefined && stage !== current.stage;
+  // A next step typed over the kick-off a signed quote planned replaces it.
+  const retyped =
+    body.nextStep !== undefined && body.nextStep !== current.nextStep;
   const probability = moved
     ? stageProbability(stage, body.probability, current.probability)
     : undefined;
@@ -166,6 +169,7 @@ export function afterDealEdit(
     if (probability !== undefined) {
       await GetModel(DealModel).update(id, { probability });
     }
+    if (retyped) await GetModel(DealModel).update(id, { kickoffQuote: null });
     await syncDerivedFields();
     if (moved && stage === "won") await logDealWon(id);
   };

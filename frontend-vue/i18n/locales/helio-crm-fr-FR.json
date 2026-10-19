@@ -158,6 +158,7 @@
 					"description": "Créez le client sans quitter l'opportunité."
 				},
 				"activeNow": "À l'instant",
+				"kickoffNextStep": "Planifier l'appel de lancement (devis {number} signé)",
 				"errors": {
 					"lostReasonRequired": "Indiquez le motif de perte : ouvrez l'affaire pour la passer en Perdue."
 				}

@@ -158,6 +158,7 @@
 					"description": "Create the customer without leaving the deal."
 				},
 				"activeNow": "Just now",
+				"kickoffNextStep": "Plan the kick-off call (quote {number} signed)",
 				"errors": {
 					"lostReasonRequired": "Give the loss reason: open the deal to mark it as lost."
 				}
