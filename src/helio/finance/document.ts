@@ -4,7 +4,7 @@
 
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
-import { CustomerModel } from "../crm/database";
+import { type CustomerKind, CustomerModel } from "../crm/database";
 import { ProjectModel } from "../projects/database";
 import { QuoteModel } from "../sales/database";
 import type { Invoice, InvoiceStatus } from "./database";
@@ -16,6 +16,8 @@ import { type DocumentTexts, documentTexts } from "./document-texts";
 
 interface DocumentParty {
   name: string;
+  /** A business is charged the late-payment terms, a household is not. */
+  kind?: CustomerKind;
   contactName?: string;
   vatNumber?: string | null;
   address?: DefaultDataTypes.Address;
@@ -256,10 +258,17 @@ function legalLine(data: DocumentData, texts: DocumentTexts): string {
   return texts.legal(interest || undefined, fee || undefined);
 }
 
+// The late-payment terms apply to overdue business invoices only (law of
+// 2 August 2002), as the Settings page says: a household's invoice leaves
+// them out.
 function footerBlock(data: DocumentData, texts: DocumentTexts): string {
   const footer = footerHtml(data.terms.invoiceFooter);
+  const legal =
+    data.customer.kind === "business"
+      ? `<p>${escapeHtml(legalLine(data, texts))}</p>`
+      : "";
   return `<footer>${footer ? `<div class="custom">${footer}</div>` : ""}
-<p>${escapeHtml(legalLine(data, texts))}</p><p>${escapeHtml(texts.demo)}</p></footer>`;
+${legal}<p>${escapeHtml(texts.demo)}</p></footer>`;
 }
 
 /** The invoice as a complete HTML document, in the reader's language. */
