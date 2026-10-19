@@ -18,6 +18,7 @@ import {
 import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { helioOperationsCategory } from "../category";
 import { ProjectModel } from "../projects/database";
+import { releaseOpenTickets } from "../service/assignees";
 import { TicketModel } from "../service/database";
 import { helioQuickActions } from "../shared/quick-actions";
 import { TEAM_ROLES, teamController } from "./controller";
@@ -253,6 +254,14 @@ export class PageHelioTeam extends PageController(
         title: "$helio.team.empty.filtered_title",
         description: "$helio.team.empty.filtered_description",
       },
+    },
+    // A member removed leaves their open tickets unassigned, as the removal
+    // dialog says, so the desk and the counts above find them again.
+    guards: {
+      delete:
+        (_ctx, { ids }) =>
+        () =>
+          releaseOpenTickets(ids),
     },
     formContainer: {
       type: "modal",

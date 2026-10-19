@@ -61,7 +61,7 @@
 			"stats": {
 				"label": "L'équipe en bref",
 				"headcount": "Effectif",
-				"headcount_detail": "{technicians} techniciens · {sales} commerciaux · {office} direction et administration",
+				"headcount_detail": "Techniciens : {technicians} · commerciaux : {sales} · direction et administration : {office}",
 				"available": "Disponibles",
 				"available_detail": "Tout le monde est joignable | {count} membre indisponible | {count} membres indisponibles",
 				"on_site": "Techniciens sur chantier",
@@ -94,7 +94,7 @@
 				"tickets_value": "aucun ticket ouvert | {count} ouvert | {count} ouverts",
 				"tickets_technicians": "{count} chez les techniciens",
 				"tickets_office": "{count} à l'administration",
-				"tickets_unassigned": "{count} non attribués",
+				"tickets_unassigned": "aucun non attribué | {count} non attribué | {count} non attribués",
 				"on_site_hint_weekend": "week-end | week-end, reprise lundi | week-end, reprise lundi"
 			},
 			"table": {
@@ -129,7 +129,7 @@
 			},
 			"delete": {
 				"title": "Retirer {name} de l'équipe ? | Retirer ces {count} membres de l'équipe ?",
-				"description": "Les tickets et chantiers concernés gardent leur historique mais devront être réattribués.",
+				"description": "Les tickets ouverts concernés redeviennent non attribués ; les chantiers gardent leur historique mais devront être réattribués.",
 				"confirm": "Retirer le membre | Retirer {count} membres"
 			},
 			"quick": {

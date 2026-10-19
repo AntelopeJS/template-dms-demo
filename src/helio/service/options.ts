@@ -1,7 +1,6 @@
 // The option lists of a service ticket, exported for the service desk's
 // tabs, views, quick filters and bulk actions.
 
-import { TEAM_ROSTER } from "../shared/roster";
 import type { TicketPriority } from "./database";
 
 /** Where the service desk lives (the page's category chain and id). */
@@ -13,14 +12,6 @@ export const SERVICE_DESK_PATH = "/helio/operations/service";
  * again on it.
  */
 export const SERVICE_TOPIC = "helio:tickets";
-
-/**
- * Who a ticket can be assigned to: the technicians, and the office for the
- * billing questions. Names are people, not translated.
- */
-export const TICKET_ASSIGNEES = TEAM_ROSTER.filter(
-  ({ role }) => role === "technician" || role === "office",
-).map(({ id, name }) => ({ value: id, label: name }));
 
 /**
  * Hours Helio promises to resolve a ticket in, by priority, from its creation.

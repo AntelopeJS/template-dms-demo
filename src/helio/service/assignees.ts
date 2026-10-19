@@ -1,8 +1,9 @@
 // Who may hold a ticket: the technicians, and the office for the billing
 // questions — never the manager or the sales reps. The ticket's assignee
-// column picks from this controller rather than the whole team, so its form
-// picker and the desk's quick filter offer the same people as the bulk
-// "Assign to…" action.
+// column picks from this controller rather than the whole team, and the bulk
+// "Assign to…" action reads the same team rows (ticketHolders), so the form
+// picker, the desk's quick filter and the action offer the same people,
+// newcomers included.
 
 import {
   Controller,
@@ -22,20 +23,81 @@ import {
   ModelReference,
   Sortable,
 } from "@antelopejs/interface-data-api/metadata";
-import { Model } from "@antelopejs/interface-database-decorators";
+import { GetModel, Model } from "@antelopejs/interface-database-decorators";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
+import { HelioSettingsModel } from "../settings/database";
+import { HELIO_SETTINGS_ID } from "../settings/types";
 import type { TeamRole } from "../shared/roster";
 import { TeamMember, TeamMemberModel } from "../team/database";
+import { TicketModel } from "./database";
+import { SERVICE_TOPIC } from "./options";
 
 /** The roles a ticket can be assigned to. */
 export const TICKET_HOLDER_ROLES: ReadonlySet<TeamRole> = new Set([
   "technician",
   "office",
 ]);
+
+/** The team members who may hold a ticket, by name. */
+export async function ticketHolders(): Promise<TeamMember[]> {
+  const members = await GetModel(TeamMemberModel).getAll();
+  return members
+    .filter((member) => TICKET_HOLDER_ROLES.has(member.role))
+    .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+}
+
+/** Whether `id` names a team member who may hold a ticket. */
+export async function isTicketHolder(id: string | undefined): Promise<boolean> {
+  if (!id) return false;
+  const member = await GetModel(TeamMemberModel).get(id);
+  return member !== undefined && TICKET_HOLDER_ROLES.has(member.role);
+}
+
+/**
+ * Who takes a ticket that arrives without a holder (from the desk's form or
+ * a monitoring alert), in this order:
+ * 1. an urgent ticket is left to the "urgent ticket" procedure of the
+ *    automation module, which hands it to the technician holding the fewest
+ *    open tickets (it stays unassigned if that procedure is turned off);
+ * 2. any other one goes to the "Default technician" of the Settings page,
+ *    while the team still has them as a technician or in the office;
+ * 3. else nobody: it waits in the desk's "Unassigned" view.
+ */
+export async function defaultHolderFor(
+  priority: unknown,
+): Promise<string | undefined> {
+  if (priority === "urgent") return undefined;
+  const settings = await GetModel(HelioSettingsModel).get(HELIO_SETTINGS_ID);
+  const id = settings?.defaultTechnician ?? undefined;
+  return (await isTicketHolder(id)) ? id : undefined;
+}
+
+/**
+ * Hands the open tickets of members leaving the team back to nobody: they
+ * show in the desk's "Unassigned" view and every unassigned count, ready
+ * for a new holder. Resolved and closed tickets keep who held them.
+ */
+export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
+  const leaving = new Set(memberIds);
+  const model = GetModel(TicketModel);
+  const held = (await model.getAll()).filter(
+    (ticket) =>
+      !ticket.resolvedAt && ticket.assignee && leaving.has(ticket.assignee),
+  );
+  // null clears the stored holder (undefined would leave it in place).
+  const nobody = Object.fromEntries([["assignee", null]]);
+  await Promise.all(held.map(({ _id }) => model.update(_id, nobody)));
+  if (held.length > 0) {
+    await PublishMessage(SERVICE_TOPIC, "tickets.updated", {
+      payload: { ids: held.map(({ _id }) => _id) },
+    });
+  }
+}
 
 interface SelectPage {
   results?: Array<Record<string, unknown>>;

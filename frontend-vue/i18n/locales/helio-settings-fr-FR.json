@@ -121,7 +121,7 @@
 				"workday": "Les tickets créés pendant la fermeture d'hiver comptent à partir du début de journée, le jour de la réouverture.",
 				"sla": "Temps pour répondre à un ticket avant qu'il soit signalé en retard.",
 				"bridgeDays": "Jours de congé supplémentaires, sans aucune visite planifiée.",
-				"defaultTechnician": "Reçoit les tickets qui arrivent sans responsable.",
+				"defaultTechnician": "Reçoit les tickets qui arrivent sans responsable. Un ticket urgent va au technicien qui a le moins de tickets ouverts, par la procédure des tickets urgents.",
 				"apiKey": "La clé avec laquelle la plateforme de monitoring s'identifie.",
 				"monitoringEndpoint": "Communiquez cette adresse à la plateforme de monitoring des onduleurs.",
 				"webhooks": "Les URL à appeler quand l'événement se produit.",

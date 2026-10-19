@@ -40,7 +40,7 @@ import { mailTicketsResolved } from "../platform/mailing/send";
 import { siteController } from "../monitoring/controller";
 import { assertCanWriteTickets } from "./access";
 import { logTicketsReopened, logTicketsResolved } from "./activity";
-import { ticketAssigneeController } from "./assignees";
+import { isTicketHolder, ticketAssigneeController } from "./assignees";
 import {
   Ticket,
   TicketModel,
@@ -51,7 +51,6 @@ import { withTicketNumber } from "./numbering";
 import { slaDueAt } from "./sla";
 import {
   SERVICE_TOPIC,
-  TICKET_ASSIGNEES,
   TICKET_CATEGORIES,
   TICKET_CHANNELS,
   TICKET_PRIORITIES,
@@ -62,8 +61,6 @@ export * from "./options";
 
 const HOUR_MS = 60 * 60 * 1000;
 const CLOSED: readonly string[] = ["resolved", "closed"];
-
-const ASSIGNABLE = new Set(TICKET_ASSIGNEES.map(({ value }) => value));
 
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
@@ -328,6 +325,8 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare resolvedAt: Date;
 
+  // Listable so the desk's expanded row can show it.
+  @Listable()
   @Column({
     name: "$helio.service.tickets.columns.description",
     type: new DefaultDataTypes.StringType({
@@ -383,8 +382,9 @@ class ticketDataAPI extends DataController(
   }
 
   // "Assign to…" on the selection bar: the selected tickets, or every ticket
-  // the filters match, go to the person picked in the confirmation. A new
-  // ticket someone took is open from then on.
+  // the filters match, go to the person picked in the confirmation (a
+  // technician or the office, read from the team as the dialog lists them).
+  // A new ticket someone took is open from then on.
   @Post("bulk/assign")
   async bulkAssign(
     @Context() ctx: RequestContext,
@@ -393,7 +393,7 @@ class ticketDataAPI extends DataController(
   ): Promise<{ count: number }> {
     await assertCanWriteTickets(ctx, user);
     const assignee = body?.assignee;
-    if (!assignee || !ASSIGNABLE.has(assignee)) {
+    if (!assignee || !(await isTicketHolder(assignee))) {
       throw new HTTPResult(400, {
         message: "$helio.service.bulk.assign.invalid",
         field: "assignee",
@@ -449,14 +449,13 @@ class ticketDataAPI extends DataController(
     const closed = (await this.loadTickets(ids)).filter(({ status }) =>
       CLOSED.includes(status),
     );
+    // null clears the stored date (undefined would leave it in place).
+    const reopened = Object.fromEntries([
+      ["status", "open"],
+      ["resolvedAt", null],
+    ]);
     await Promise.all(
-      closed.map(({ _id }) =>
-        // null clears the stored date (undefined would leave it in place).
-        this.model.update(_id, {
-          status: "open",
-          resolvedAt: null as unknown as undefined,
-        }),
-      ),
+      closed.map(({ _id }) => this.model.update(_id, reopened)),
     );
     await logTicketsReopened(closed);
     return this.published(closed.map(({ _id }) => _id));

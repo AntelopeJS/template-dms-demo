@@ -1,12 +1,16 @@
-import { Get } from "@antelopejs/interface-api";
+import { Context, Get, type RequestContext } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
+import { AuthUser } from "@antelopejs/interface-dms/auth";
+import type { User } from "@antelopejs/interface-dms/auth/db";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import { LiveToggle } from "@antelopejs/interface-dms/base/live-toggle";
 import { StatGroup } from "@antelopejs/interface-dms/base/stat-group";
 import {
+  serializeConfirmDialog,
   TableView,
   tableViewLink,
 } from "@antelopejs/interface-dms/base/table-view";
+import type { ConfirmDialogSerialized } from "@antelopejs/interface-dms/base/types/confirm-dialog";
 import {
   PageController,
   RegisterPage,
@@ -15,8 +19,13 @@ import {
 import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { helioOperationsCategory } from "../category";
 import { helioQuickActions } from "../shared/quick-actions";
-import { assertCanRun, setTicketWriteAction } from "./access";
+import {
+  assertCanRun,
+  assertCanWriteTickets,
+  setTicketWriteAction,
+} from "./access";
 import { logTicketReopened, logTicketResolved } from "./activity";
+import { ticketHolders } from "./assignees";
 import { ticketController } from "./controller";
 import { TicketModel } from "./database";
 import { SERVICE_DESK_PATH, SERVICE_TOPIC } from "./options";
@@ -24,6 +33,7 @@ import { assertSiteOfCustomer } from "./site-rule";
 import { refreshSlaHours, slaHours } from "./sla";
 import { serviceStats } from "./stats";
 import {
+  assignDialog,
   ticketFooter,
   ticketRowActions,
   ticketTabs,
@@ -190,6 +200,17 @@ export class PageHelioService extends PageController(
         slaHours("urgent"),
       ),
     };
+  }
+
+  // The "Assign to…" confirmation, listing the team's ticket holders as
+  // they are now (see assignDialog).
+  @Get("assign-confirm")
+  async assignConfirm(
+    @Context() ctx: RequestContext,
+    @AuthUser() user: User,
+  ): Promise<ConfirmDialogSerialized> {
+    await assertCanWriteTickets(ctx, user);
+    return serializeConfirmDialog(assignDialog(await ticketHolders()));
   }
 }
 

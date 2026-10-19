@@ -121,7 +121,7 @@
 				"workday": "Tickets created during the winter closure are counted from the start of the workday on the reopening day.",
 				"sla": "Time to answer a ticket before it is flagged late.",
 				"bridgeDays": "Extra days off when no visit is planned.",
-				"defaultTechnician": "Receives tickets that arrive without an assignee.",
+				"defaultTechnician": "Receives tickets that arrive without an assignee. An urgent one goes to the technician holding the fewest open tickets, through the urgent ticket procedure.",
 				"apiKey": "The key the monitoring platform identifies itself with.",
 				"monitoringEndpoint": "Give this address to the inverter monitoring platform.",
 				"webhooks": "The URLs to call when the event happens.",
