@@ -30,10 +30,13 @@ import {
 } from "@antelopejs/interface-dms/base/types";
 import { onSaleProductController } from "../catalog/controller";
 import { customerController, dealController } from "../crm/controller";
+import { currentSettings } from "../settings/current";
+import { isBlank, withBodyDefaults } from "../shared/body-defaults";
 import { DAY_MS } from "../shared/seed";
 import { Quote, type QuoteLine, QuoteModel } from "./database";
 import { quoteTotals, VAT_RESIDENTIAL } from "./lines";
 import { takeQuoteNumber } from "./numbering";
+import { defaultVatRate } from "./vat-rate";
 import { EXPIRING_WITHIN_MS, QUOTE_STATUSES, VALIDITY_DAYS } from "./options";
 import { lineText, otherLinesText } from "./summary";
 
@@ -64,7 +67,17 @@ const lineSlot = (name: string, subField?: string) => ({
 @RegisterDataController()
 class quoteDataAPI extends DataController(
   Quote,
-  TableViewRoutes.All,
+  // Left empty, the VAT rate is the default one of the Settings page.
+  {
+    ...TableViewRoutes.All,
+    new: withBodyDefaults(TableViewRoutes.New, async (body) => {
+      if (isBlank(body.vatRate))
+        body.vatRate = await defaultVatRate(
+          body.customer,
+          await currentSettings(),
+        );
+    }),
+  },
   Controller("/api/helio/quotes"),
 ) {
   @ModelReference()
@@ -242,10 +255,9 @@ class quoteDataAPI extends DataController(
     description: "$helio.sales.quotes.hints.vatRate",
     type: new DefaultDataTypes.PercentageType({ max: 0.21 }),
     filterable: true,
-    defaultValue: VAT_RESIDENTIAL,
     isVisible: false,
   })
-  @Mandatory("new", "edit")
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   get vatRate(): number {
     return this.table.vatRate;

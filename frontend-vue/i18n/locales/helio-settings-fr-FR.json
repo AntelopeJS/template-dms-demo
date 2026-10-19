@@ -237,7 +237,8 @@
 				"impact_credentials": "La clé API et le mot de passe SMTP sont conservés"
 			},
 			"errors": {
-				"vatNumber": "Ce n'est pas un numéro de TVA : BE suivi de 10 chiffres (BE0123456789), ou un autre numéro de TVA européen."
+				"vatNumber": "Ce n'est pas un numéro de TVA : BE suivi de 10 chiffres (BE0123456789), ou un autre numéro de TVA européen.",
+				"numberPattern": "Format de numérotation invalide : un seul jeton de séquence (SEQ ou SEQ:4 entre accolades), et seulement YYYY, YY ou MM entre accolades à côté."
 			}
 		}
 	}

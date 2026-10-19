@@ -32,7 +32,7 @@
 					"remindedAt": "Dernier rappel"
 				},
 				"placeholders": {
-					"number": "Attribué automatiquement (F-2026-…)",
+					"number": "Attribué automatiquement selon le format de numérotation",
 					"customer": "Choisir un client",
 					"project": "Lier un chantier (facultatif)",
 					"quote": "Lier un devis (facultatif)"
@@ -108,7 +108,14 @@
 					"success": "Facture annulée",
 					"nothing": "Aucune de ces factures ne peut être annulée : seule une facture émise et impayée peut l'être."
 				},
-				"customerChip": "Client"
+				"customerChip": "Client",
+				"hints": {
+					"dueAt": "Laissée vide, l'échéance suit le délai de paiement des paramètres.",
+					"vatRate": "Laissé vide, le taux par défaut des paramètres s'applique (21 % pour une entreprise)."
+				},
+				"errors": {
+					"numberTaken": "Une autre facture porte déjà ce numéro."
+				}
 			},
 			"nav": {
 				"invoices": "Factures"

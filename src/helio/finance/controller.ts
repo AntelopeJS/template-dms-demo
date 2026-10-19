@@ -31,7 +31,7 @@ import { VAT_RESIDENTIAL } from "../sales/lines";
 import { cents, DAY_MS } from "../shared/seed";
 import { Invoice, InvoiceModel, type InvoiceStatus } from "./database";
 import { daysLate } from "./due";
-import { withInvoiceNumber } from "./numbering";
+import { withInvoiceDefaults } from "./numbering";
 
 // An invoice's life. Exported for the status tabs, nav badge and row rules.
 export const INVOICE_STATUSES = [
@@ -101,7 +101,7 @@ const day = (date: Date) =>
 @RegisterDataController()
 class invoiceDataAPI extends DataController(
   Invoice,
-  { ...TableViewRoutes.All, new: withInvoiceNumber(TableViewRoutes.New) },
+  { ...TableViewRoutes.All, new: withInvoiceDefaults(TableViewRoutes.New) },
   Controller("/api/helio/invoices"),
 ) {
   @ModelReference()
@@ -236,6 +236,7 @@ class invoiceDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.finance.invoices.columns.dueAt",
+    description: "$helio.finance.invoices.hints.dueAt",
     type: new DefaultDataTypes.DateType(),
     filterable: true,
     display: new DefaultDisplays.RelativeDateDisplay({
@@ -245,7 +246,8 @@ class invoiceDataAPI extends DataController(
     }),
     size: 140,
   })
-  @Mandatory("new", "edit")
+  // Left empty on a new invoice, the payment terms set it (see numbering.ts).
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare dueAt: Date;
 
@@ -287,12 +289,13 @@ class invoiceDataAPI extends DataController(
   @Exported(["vatRate"])
   @Column({
     name: "$helio.finance.invoices.columns.vatRate",
+    description: "$helio.finance.invoices.hints.vatRate",
     type: new DefaultDataTypes.PercentageType({ max: 0.21 }),
     filterable: true,
-    defaultValue: VAT_RESIDENTIAL,
     isVisible: false,
   })
-  @Mandatory("new", "edit")
+  // Left empty on a new invoice, the default rate of the settings applies.
+  @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   get vatRate(): number {
     return this.table.vatRate;

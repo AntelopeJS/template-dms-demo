@@ -1,64 +1,84 @@
-// Invoice numbers follow the issue year: F-2026-0001, F-2026-0002, … A new
-// invoice created without a number gets the next free one of the current
-// year, so the form never asks the user to guess it.
+// Invoice numbers follow the pattern of the Settings page (F-{YYYY}-{SEQ:4}
+// by default: F-2026-0001, F-2026-0002, …). A new invoice created without a
+// number gets the next free one, so the form never asks the user to guess
+// it; without a due date it falls due after the payment terms, and without
+// a VAT rate it takes the default rate. Numbers are unique: a number already
+// used by another invoice is refused under the field.
 
-import type { RequestContext } from "@antelopejs/interface-api";
+import { HTTPResult } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
+import { defaultVatRate } from "../sales/vat-rate";
+import { currentSettings } from "../settings/current";
+import { DEFAULT_INVOICE_PATTERN } from "../settings/defaults";
+import { nextNumber } from "../settings/number-pattern";
+import { isBlank, withBodyDefaults } from "../shared/body-defaults";
+import { DAY_MS } from "../shared/seed";
 import { InvoiceModel } from "./database";
 
-const SEQUENCE_WIDTH = 4;
+const HTTP_BAD_REQUEST = 400;
 
-/** The next free number of `year`, after the highest one already used. */
-export async function nextInvoiceNumber(
-  year = new Date().getFullYear(),
-): Promise<string> {
-  const prefix = `F-${year}-`;
-  const invoices = await GetModel(InvoiceModel).getAll();
-  const last = invoices.reduce((highest, invoice) => {
-    if (!invoice.number?.startsWith(prefix)) return highest;
-    const sequence = Number(invoice.number.slice(prefix.length));
-    return Number.isFinite(sequence) ? Math.max(highest, sequence) : highest;
-  }, 0);
-  return `${prefix}${String(last + 1).padStart(SEQUENCE_WIDTH, "0")}`;
+/** The next free number the invoice pattern gives on `date`. */
+export async function nextInvoiceNumber(date = new Date()): Promise<string> {
+  const [settings, invoices] = await Promise.all([
+    currentSettings(),
+    GetModel(InvoiceModel).getAll(),
+  ]);
+  return nextNumber(
+    settings.invoiceNumberPattern,
+    date,
+    invoices.map((invoice) => invoice.number),
+    DEFAULT_INVOICE_PATTERN,
+  );
 }
 
-function readBody(raw: Buffer | string): Record<string, unknown> | undefined {
-  const text = Buffer.isBuffer(raw) ? raw.toString("utf8") : raw;
-  if (!text) return undefined;
-  const parsed: unknown = JSON.parse(text);
-  return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-    ? Object.fromEntries(Object.entries(parsed))
-    : undefined;
+function issueDate(value: unknown): Date {
+  const date =
+    typeof value === "string" || value instanceof Date
+      ? new Date(value)
+      : new Date();
+  return Number.isNaN(date.getTime()) ? new Date() : date;
 }
 
 /**
- * The `new` route with the number filled in when the body leaves it empty.
- * The data API reads the raw request body, which a `new` guard only gets a
- * parsed copy of, so the number is written into the body before the route
- * (permission check, guard, validation) runs. Two invoices created in the
- * same instant could draw the same number: fine for a demo, a real ledger
- * would use an atomic counter.
+ * The `new` route with what the body leaves empty filled in: the number,
+ * the due date (the issue date plus the payment terms) and the VAT rate.
+ * Two invoices created in the same instant could draw the same number: the
+ * second is then refused by the unique-number check, a real ledger would
+ * use an atomic counter.
  */
-export function withInvoiceNumber(
+export function withInvoiceDefaults(
   route: DataControllerCallback,
 ): DataControllerCallback {
-  return {
-    ...route,
-    func: async function (
-      this: unknown,
-      ctx: RequestContext,
-      params: unknown,
-      raw: Buffer | string,
-      ...rest: unknown[]
-    ) {
-      const body = readBody(raw);
-      if (!body || body.number) {
-        return route.func.call(this, ctx, params, raw, ...rest);
-      }
-      body.number = await nextInvoiceNumber();
-      const filled = Buffer.from(JSON.stringify(body), "utf8");
-      return route.func.call(this, ctx, params, filled, ...rest);
-    },
-  };
+  return withBodyDefaults(route, async (body) => {
+    const settings = await currentSettings();
+    const issuedAt = issueDate(body.issuedAt);
+    if (isBlank(body.number)) body.number = await nextInvoiceNumber(issuedAt);
+    if (isBlank(body.dueAt)) {
+      body.dueAt = new Date(
+        issuedAt.getTime() + settings.paymentTermsDays * DAY_MS,
+      ).toISOString();
+    }
+    if (isBlank(body.vatRate))
+      body.vatRate = await defaultVatRate(body.customer, settings);
+  });
+}
+
+/**
+ * Refuses a number another invoice already has (`id`: the invoice being
+ * edited, absent on a creation): two invoices with one number would share a
+ * structured reference too.
+ */
+export async function assertUniqueNumber(
+  number: unknown,
+  id?: string,
+): Promise<void> {
+  if (typeof number !== "string" || number.trim() === "") return;
+  const taken = await GetModel(InvoiceModel).getBy("number", number);
+  if (taken.some((invoice) => invoice._id !== id)) {
+    throw new HTTPResult(HTTP_BAD_REQUEST, {
+      message: "$helio.finance.invoices.errors.numberTaken",
+      field: "number",
+    });
+  }
 }

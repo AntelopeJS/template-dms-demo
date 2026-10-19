@@ -38,7 +38,7 @@
 					"product": "Choisir un produit en vente"
 				},
 				"hints": {
-					"vatRate": "6 % pour une habitation privée de plus de 10 ans, 21 % pour une entreprise ou une habitation récente."
+					"vatRate": "6 % pour une habitation privée de plus de 10 ans, 21 % pour une entreprise ou une habitation récente. Laissé vide, le taux par défaut des paramètres s'applique."
 				},
 				"addCustomer": {
 					"title": "Nouveau client",

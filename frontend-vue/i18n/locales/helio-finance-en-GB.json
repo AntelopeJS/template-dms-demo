@@ -32,7 +32,7 @@
 					"remindedAt": "Last reminder"
 				},
 				"placeholders": {
-					"number": "Assigned automatically (F-2026-…)",
+					"number": "Assigned automatically from the numbering pattern",
 					"customer": "Choose a customer",
 					"project": "Link a project (optional)",
 					"quote": "Link a quote (optional)"
@@ -108,7 +108,14 @@
 					"success": "Invoice cancelled",
 					"nothing": "None of these invoices can be cancelled: only an issued, unpaid invoice can."
 				},
-				"customerChip": "Customer"
+				"customerChip": "Customer",
+				"hints": {
+					"dueAt": "Left empty, the invoice falls due after the payment terms of the settings.",
+					"vatRate": "Left empty, the default rate of the settings applies (21% for a business)."
+				},
+				"errors": {
+					"numberTaken": "Another invoice already has this number."
+				}
 			},
 			"nav": {
 				"invoices": "Invoices"

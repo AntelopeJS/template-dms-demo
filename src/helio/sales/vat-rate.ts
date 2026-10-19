@@ -1,6 +1,7 @@
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { CustomerModel } from "../crm/database";
+import type { InvoicingSettings } from "../settings/types";
 import { VAT_BUSINESS } from "./lines";
 
 // The reduced Belgian rate (6 %) only covers renovation works in a private
@@ -20,4 +21,18 @@ export async function assertVatRate(
     message: "$helio.sales.quotes.errors.businessVat",
     field: "vatRate",
   });
+}
+
+/**
+ * The rate a new quote or invoice takes when none is typed in: the default
+ * rate of the Settings page, never below the standard rate for a business.
+ */
+export async function defaultVatRate(
+  customerId: unknown,
+  settings: Pick<InvoicingSettings, "defaultVatRate">,
+): Promise<number> {
+  const rate = settings.defaultVatRate;
+  if (typeof customerId !== "string" || rate >= VAT_BUSINESS) return rate;
+  const customer = await GetModel(CustomerModel).get(customerId);
+  return customer?.kind === "business" ? VAT_BUSINESS : rate;
 }

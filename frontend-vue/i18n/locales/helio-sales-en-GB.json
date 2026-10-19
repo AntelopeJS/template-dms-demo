@@ -38,7 +38,7 @@
 					"product": "Choose a product on sale"
 				},
 				"hints": {
-					"vatRate": "6% for a private home over 10 years old, 21% for a business or a recent home."
+					"vatRate": "6% for a private home over 10 years old, 21% for a business or a recent home. Left empty, the default rate of the settings applies."
 				},
 				"addCustomer": {
 					"title": "New customer",

@@ -237,7 +237,8 @@
 				"impact_credentials": "The API key and the SMTP password are kept"
 			},
 			"errors": {
-				"vatNumber": "Not a VAT number: BE followed by 10 digits (BE0123456789), or another EU VAT number."
+				"vatNumber": "Not a VAT number: BE followed by 10 digits (BE0123456789), or another EU VAT number.",
+				"numberPattern": "Not a numbering pattern: one sequence token (SEQ or SEQ:4 between braces), and only YYYY, YY or MM between braces besides."
 			}
 		}
 	}

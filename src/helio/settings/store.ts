@@ -13,6 +13,7 @@ import {
   type HelioSettingsValues,
   type ToggleableValue,
 } from "./types";
+import { isNumberPattern } from "./number-pattern";
 import { isValidVatNumber, normalizeVatNumber } from "./vat";
 
 const HTTP_BAD_REQUEST = 400;
@@ -142,6 +143,20 @@ function checkVatNumber(changes: Partial<HelioSettingsValues>): void {
   changes.vatNumber = normalized;
 }
 
+// A pattern without its one sequence token, or with a token Helio does not
+// know, could not number the next invoice or quote: refused under the field.
+function checkNumberPatterns(changes: Partial<HelioSettingsValues>): void {
+  for (const field of ["invoiceNumberPattern", "quoteNumberPattern"] as const) {
+    const pattern = changes[field];
+    if (typeof pattern === "string" && !isNumberPattern(pattern)) {
+      throw new HTTPResult(HTTP_BAD_REQUEST, {
+        message: "$helio.settings.errors.numberPattern",
+        field,
+      });
+    }
+  }
+}
+
 // The header list keeps a blank row for the next entry: a header without a
 // name is that row, not a header to send.
 function withoutBlankHeaders(
@@ -165,6 +180,7 @@ export async function saveSettings(
   // An emptied password field means "keep the current one", not "remove it".
   if (!changes.smtpPassword) delete changes.smtpPassword;
   checkVatNumber(changes);
+  checkNumberPatterns(changes);
   if (changes.webhookHeaders)
     changes.webhookHeaders = withoutBlankHeaders(changes.webhookHeaders);
   const merged: HelioSettingsValues = { ...(await readStored()), ...changes };
