@@ -28,9 +28,6 @@ const money = (euros: number): ComposedText => ({
   },
 });
 
-// To the euro: the detail line of a card has no room for cents.
-const wholeEuros = (euros: number): ComposedText => money(Math.round(euros));
-
 const sum = (invoices: Invoice[], pick: (invoice: Invoice) => number) =>
   invoices.reduce((total, invoice) => total + pick(invoice), 0);
 
@@ -135,8 +132,10 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
     detail: {
       key: "$helio.finance.kpis.dso.detail",
       params: {
-        receivable: wholeEuros(receivable),
-        sales: wholeEuros(sales),
+        // Written like the cards' amounts: the receivable reads the same
+        // figure as "Outstanding".
+        receivable: money(receivable),
+        sales: money(sales),
         days: { type: "number", value: DSO_WINDOW_DAYS },
       },
     },
