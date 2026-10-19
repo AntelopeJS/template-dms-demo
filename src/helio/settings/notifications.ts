@@ -22,6 +22,7 @@ const notificationFields: FormField[] = [
   {
     id: "digestFrequency",
     label: "$helio.settings.fields.digestFrequency",
+    description: "$helio.settings.descriptions.digestFrequency",
     type: new DefaultDataTypes.SelectType({
       items: DIGEST_FREQUENCIES,
       display: "segmented",

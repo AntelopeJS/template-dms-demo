@@ -61,6 +61,7 @@ const hoursSection: FormSection = {
     {
       id: "workingDays",
       label: "$helio.settings.fields.workingDays",
+      description: "$helio.settings.descriptions.workingDays",
       type: new DefaultDataTypes.SelectType({
         items: WEEKDAYS,
         multiple: true,

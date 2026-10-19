@@ -114,23 +114,25 @@
 				"tagline": "Une ligne sous le nom de la société sur les devis, dans chaque langue de Helio.",
 				"signature": "Signature scannée, conservée avec les paramètres de la société.",
 				"termsDocument": "PDF des conditions générales, conservé avec les paramètres de la société.",
-				"vatRates": "Un nouveau devis ou une nouvelle facture sans taux prend le taux par défaut ; une entreprise paie toujours au moins 21 %.",
+				"vatRates": "Un nouveau devis ou une nouvelle facture sans taux prend le taux par défaut ; une entreprise paie toujours au moins 21 %. Le taux réduit n'est pas encore appliqué : saisissez-le sur le devis ou la facture.",
 				"pricesIncludeVat": "Pas encore appliqué : les devis et les factures affichent les montants hors TVA, puis la TVA et le total TVA comprise.",
 				"invoiceFooter": "Imprimé au bas de chaque facture : mentions légales et coordonnées de paiement.",
 				"reminders": "Les relances automatiques suivent ces étapes à mesure que la facture prend du retard : les étapes par e-mail partent chez le client, les recommandés sont notés pour que le bureau les poste.",
-				"workday": "Les tickets créés pendant la fermeture d'hiver comptent à partir du début de journée, le jour de la réouverture.",
+				"workday": "Les tickets créés pendant la fermeture d'hiver comptent à partir du début de journée, le jour de la réouverture. L'heure de fin n'est pas encore appliquée.",
 				"sla": "Temps pour répondre à un ticket avant qu'il soit signalé en retard.",
-				"bridgeDays": "Jours de congé supplémentaires, sans aucune visite planifiée.",
+				"bridgeDays": "Jours de congé supplémentaires, sans aucune visite planifiée. Pas encore appliqué : les délais de service les comptent encore.",
 				"defaultTechnician": "Reçoit les tickets qui arrivent sans responsable. Un ticket urgent va au technicien qui a le moins de tickets ouverts, par la procédure des tickets urgents.",
 				"apiKey": "La clé avec laquelle la plateforme de monitoring s'identifie.",
 				"monitoringEndpoint": "Communiquez cette adresse à la plateforme de monitoring des onduleurs.",
 				"webhooks": "Les URL à appeler quand l'événement se produit.",
 				"webhookHeaders": "En-têtes des appels de webhook ; décochez un en-tête pour l'omettre.",
 				"alertPayloadTemplate": "Corps JSON des alertes de monitoring. Ctrl+Espace liste les variables.",
-				"alertChannels": "Plusieurs canaux peuvent être choisis.",
-				"notifyUrgentTickets": "Le technicien par défaut et les destinataires ci-dessous sont alertés immédiatement.",
+				"alertChannels": "Plusieurs canaux peuvent être choisis. Pas encore appliqué : les alertes n'arrivent que dans les notifications.",
+				"notifyUrgentTickets": "Les propriétaires, le technicien par défaut et les destinataires ci-dessous qui ont un compte reçoivent une notification immédiatement.",
 				"notifyOfflineSites": "Après 30 minutes sans données de l'onduleur. Pas encore envoyé par la démo.",
-				"notifyOverdueInvoices": "Le lendemain matin de l'échéance. Pas encore envoyé par la démo."
+				"notifyOverdueInvoices": "Le lendemain matin de l'échéance. Pas encore envoyé par la démo.",
+				"workingDays": "Pas encore appliqué : les délais de service comptent tous les jours de la semaine.",
+				"digestFrequency": "Pas encore envoyé par la démo."
 			},
 			"hints": {
 				"vatNumber": "BE suivi des 10 chiffres du numéro d'entreprise, ou un autre numéro de TVA européen.",
@@ -140,11 +142,11 @@
 				"lateInterestRate": "S'applique aux factures professionnelles en retard (loi du 2 août 2002).",
 				"recoveryFee": "Le minimum légal pour les clients professionnels est de 40 euros.",
 				"winterClosure": "Les tickets créés pendant la fermeture prennent leur délai à partir du jour de réouverture.",
-				"interventionZones": "Les régions où Helio installe et entretient.",
-				"travelRadiusKm": "Mesuré depuis le siège social.",
+				"interventionZones": "Les régions où Helio installe et entretient. Pas encore appliqué.",
+				"travelRadiusKm": "Mesuré depuis le siège social. Pas encore appliqué.",
 				"alertPayloadTemplate": "Un JSON invalide est refusé.",
 				"smtpPassword": "Plus jamais affiché une fois enregistré. Laissez vide pour garder le mot de passe actuel.",
-				"alertRecipients": "Reçoivent les alertes par e-mail, en plus du technicien par défaut."
+				"alertRecipients": "Leur compte reçoit les notifications des tickets urgents. Les alertes par e-mail ne sont pas encore envoyées par la démo."
 			},
 			"badges": {
 				"registered": "Banque-Carrefour des Entreprises"
