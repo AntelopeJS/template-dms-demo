@@ -25,6 +25,8 @@ export default defineConfig({
       "modules.auth-jwt.config.secret",
     ],
     MONGODB_URL: "modules.mongodb.config.url",
+    // Where uploaded files live; a read-only container needs a writable path.
+    FILE_STORAGE_PATH: "modules.file-storage-local.config.storagePath",
     SMTP_HOST: "modules.nodemailer.config.host",
     SMTP_USER: "modules.nodemailer.config.auth.user",
     SMTP_PASSWORD: "modules.nodemailer.config.auth.pass",
