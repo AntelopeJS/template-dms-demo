@@ -107,7 +107,8 @@
 				"urgent": "Urgents",
 				"unassigned": "Sans technicien",
 				"waiting": "En attente du client",
-				"breaching": "Hors délai"
+				"breaching": "Hors délai",
+				"resolvedRecently": "Résolus ces 30 derniers jours"
 			},
 			"form": {
 				"newTitle": "Nouveau ticket",

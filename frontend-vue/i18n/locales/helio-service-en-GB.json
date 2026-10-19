@@ -107,7 +107,8 @@
 				"urgent": "Urgent",
 				"unassigned": "Unassigned",
 				"waiting": "Waiting on customer",
-				"breaching": "Breaching SLA"
+				"breaching": "Breaching SLA",
+				"resolvedRecently": "Resolved in the last 30 days"
 			},
 			"form": {
 				"newTitle": "New ticket",

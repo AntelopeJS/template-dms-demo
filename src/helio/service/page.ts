@@ -193,8 +193,11 @@ export class PageHelioService extends PageController(
           open: link("open"),
           urgent: link("urgent"),
           breaching: link("breaching"),
+          // Resolved and closed alike: the "all" tab, so a status tab
+          // remembered from an earlier visit cannot narrow the view.
           resolved: tableViewLink(PageHelioService, "table", {
-            tab: "resolved",
+            tab: "all",
+            view: "resolved-recently",
           }),
         },
         slaHours("urgent"),

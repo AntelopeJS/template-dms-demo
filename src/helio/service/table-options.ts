@@ -80,6 +80,24 @@ export const ticketViews: TableViewViewsOptions = {
       ],
       sort: [{ field: "slaDueAt" }],
     },
+    {
+      // The tickets the "Average resolution" figure is computed from:
+      // resolved or closed within the last 30 days.
+      id: "resolved-recently",
+      label: "$helio.service.views.resolvedRecently",
+      icon: "i-ph-timer",
+      tone: "info",
+      count: true,
+      filters: [
+        {
+          accessorKey: "resolvedAt",
+          mode: "greater_than",
+          value: "{{now-30d}}",
+        },
+      ],
+      sort: [{ field: "resolvedAt", desc: true }],
+      columns: { visible: ["resolvedAt"] },
+    },
   ],
 };
 

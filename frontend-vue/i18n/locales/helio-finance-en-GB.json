@@ -144,7 +144,7 @@
 					"none": "Nothing overdue"
 				},
 				"collected": {
-					"label": "Collected this month",
+					"label": "Collected in the last 30 days",
 					"detail": "No payment yet | {count} payment received | {count} payments received"
 				},
 				"dso": {

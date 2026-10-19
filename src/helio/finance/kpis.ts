@@ -1,6 +1,7 @@
 // The figures above the invoice list: what customers still owe, what is late,
-// what came in this month and how long payment takes (DSO). Computed from the
-// stored invoices on every read, so they follow each payment recorded.
+// what came in over the last 30 days and how long payment takes (DSO).
+// Computed from the stored invoices on every read, so they follow each
+// payment recorded.
 
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
@@ -9,6 +10,11 @@ import { DAY_MS } from "../shared/seed";
 import { type Invoice, InvoiceModel } from "./database";
 import { daysLate } from "./due";
 
+/**
+ * Window of "Collected": the days the "Paid in the last 30 days" view it
+ * links to lists (a view filter moves by whole days, never to the 1st).
+ */
+const COLLECTED_WINDOW_DAYS = 30;
 /** Window of the DSO: receivables over the sales of the last 90 days. */
 const DSO_WINDOW_DAYS = 90;
 const NOT_BILLED: readonly string[] = ["draft", "cancelled"];
@@ -30,11 +36,6 @@ const money = (euros: number): ComposedText => ({
 
 const sum = (invoices: Invoice[], pick: (invoice: Invoice) => number) =>
   invoices.reduce((total, invoice) => total + pick(invoice), 0);
-
-function startOfMonth(): Date {
-  const date = new Date();
-  return new Date(date.getFullYear(), date.getMonth(), 1);
-}
 
 function outstandingCell(invoices: Invoice[], to: string): StatGroupItem {
   const open = invoices.filter((invoice) =>
@@ -82,12 +83,12 @@ function overdueCell(invoices: Invoice[], to: string): StatGroupItem {
 }
 
 function collectedCell(invoices: Invoice[], to: string): StatGroupItem {
-  const since = startOfMonth();
+  const since = Date.now() - COLLECTED_WINDOW_DAYS * DAY_MS;
   const paid = invoices.filter(
     (invoice) =>
       invoice.status === "paid" &&
       !!invoice.paidAt &&
-      invoice.paidAt.getTime() >= since.getTime(),
+      invoice.paidAt.getTime() > since,
   );
   return {
     id: "collected",

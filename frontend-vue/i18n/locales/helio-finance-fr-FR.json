@@ -144,7 +144,7 @@
 					"none": "Aucun retard"
 				},
 				"collected": {
-					"label": "Encaissé ce mois-ci",
+					"label": "Encaissé ces 30 derniers jours",
 					"detail": "Aucun paiement pour l'instant | {count} paiement reçu | {count} paiements reçus"
 				},
 				"dso": {
