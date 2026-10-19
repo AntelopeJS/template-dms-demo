@@ -26,6 +26,7 @@
 					"sentAt": "Sent",
 					"signedAt": "Signed",
 					"notes": "Internal notes",
+					"rejectionReason": "Rejection reason",
 					"otherLines": "Other lines",
 					"customerName": "Customer name",
 					"firstLines": "Lines"
@@ -60,7 +61,8 @@
 				"linesSummary": "{label} | {label} + {count} more line | {label} + {count} more lines",
 				"detail": {
 					"signed": "Signed {date}",
-					"validUntil": "Valid until {date}"
+					"validUntil": "Valid until {date}",
+					"rejected": "Rejected: {reason}"
 				},
 				"views": {
 					"all": "All quotes",
@@ -135,7 +137,7 @@
 				},
 				"reject": {
 					"title": "Mark {number} as rejected?",
-					"description": "The quote is closed as lost. The reason, if you give one, is added to the internal notes.",
+					"description": "The quote is closed as lost. The reason, if you give one, is kept with the quote.",
 					"confirm": "Mark as rejected",
 					"reason": "Reason",
 					"reasonPlaceholder": "Price, timing, chose a competitor…",

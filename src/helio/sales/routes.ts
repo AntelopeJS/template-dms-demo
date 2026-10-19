@@ -167,19 +167,19 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     return { ok: true };
   }
 
-  // The reason, when given, joins the internal notes.
+  // The reason, when given, is kept in a field of its own: the notes stay
+  // the team's, and no wording is stored in one language.
   @Post("reject")
   async reject(
     @Parameter("id", "query") id: string,
     @JSONBody() body: RejectBody | undefined,
     @AuthUserWithPermission(canEdit) _user: User,
   ): Promise<{ ok: true }> {
-    const quote = await quoteIn(id, "sent");
+    await quoteIn(id, "sent");
     const reason = body?.reason?.trim();
-    const notes = reason
-      ? [quote.notes, `Refus : ${reason}`].filter(Boolean).join("\n")
-      : quote.notes;
-    await GetModel(QuoteModel).update(id, { status: "rejected", notes });
+    const update: Partial<Quote> = { status: "rejected" };
+    if (reason) update.rejectionReason = reason;
+    await GetModel(QuoteModel).update(id, update);
     return { ok: true };
   }
 

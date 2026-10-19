@@ -26,6 +26,7 @@
 					"sentAt": "Envoyé le",
 					"signedAt": "Signé le",
 					"notes": "Notes internes",
+					"rejectionReason": "Motif du refus",
 					"otherLines": "Autres lignes",
 					"customerName": "Nom du client",
 					"firstLines": "Lignes"
@@ -60,7 +61,8 @@
 				"linesSummary": "{label} | {label} + {count} autre ligne | {label} + {count} autres lignes",
 				"detail": {
 					"signed": "Signé le {date}",
-					"validUntil": "Valable jusqu'au {date}"
+					"validUntil": "Valable jusqu'au {date}",
+					"rejected": "Refusé : {reason}"
 				},
 				"views": {
 					"all": "Tous les devis",
@@ -135,7 +137,7 @@
 				},
 				"reject": {
 					"title": "Marquer le devis {number} comme refusé ?",
-					"description": "Le devis est clôturé comme perdu. Le motif éventuel est ajouté aux notes internes.",
+					"description": "Le devis est clôturé comme perdu. Le motif éventuel est conservé avec le devis.",
 					"confirm": "Marquer comme refusé",
 					"reason": "Motif",
 					"reasonPlaceholder": "Prix, délai, concurrent retenu…",

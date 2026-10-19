@@ -75,7 +75,7 @@ const accept: CustomRowAction = {
   },
 };
 
-// The reason, when given, joins the internal notes of the quote.
+// The reason, when given, is kept with the quote (its own field).
 const reject: CustomRowAction = {
   id: "reject",
   label: "$helio.sales.quotes.actions.reject",

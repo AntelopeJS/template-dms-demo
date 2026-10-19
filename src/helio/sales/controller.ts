@@ -34,11 +34,7 @@ import { DAY_MS } from "../shared/seed";
 import { Quote, type QuoteLine, QuoteModel } from "./database";
 import { quoteTotals, VAT_RESIDENTIAL } from "./lines";
 import { takeQuoteNumber } from "./numbering";
-import {
-  EXPIRING_WITHIN_MS,
-  QUOTE_STATUSES,
-  VALIDITY_DAYS,
-} from "./options";
+import { EXPIRING_WITHIN_MS, QUOTE_STATUSES, VALIDITY_DAYS } from "./options";
 import { lineText, otherLinesText } from "./summary";
 
 export { QUOTE_STATUSES } from "./options";
@@ -348,6 +344,22 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare notes: string;
 
+  // Given by the "Mark as rejected" action, apart from the notes so it reads
+  // the same in any language: only the reason itself is the user's text.
+  @Listable()
+  @Column({
+    name: "$helio.sales.quotes.columns.rejectionReason",
+    type: new DefaultDataTypes.StringType({ maxLength: 200, fallback: "—" }),
+    // Read on the details only: no form writes it.
+    readonlyBehavior: {
+      new: ReadonlyBehaviorType.hidden,
+      edit: ReadonlyBehaviorType.hidden,
+    },
+    isVisible: false,
+  })
+  @Access(AccessMode.ReadOnly)
+  declare rejectionReason: string;
+
   // VAT of the quote, for the expanded row and the document.
   @Listable(["subtotal", "total"])
   @Column({
@@ -402,12 +414,20 @@ class quoteDataAPI extends DataController(
     };
   }
 
-  // Under the status pill: when it was signed, or until when it holds
-  // (orange in its last week).
-  @Listable(["status", "validUntil", "signedAt"])
+  // Under the status pill: when it was signed, why it was turned down, or
+  // until when it holds (orange in its last week).
+  @Listable(["status", "validUntil", "signedAt", "rejectionReason"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
-    const { status, validUntil, signedAt } = this.table;
+    const { status, validUntil, signedAt, rejectionReason } = this.table;
+    if (status === "rejected" && rejectionReason) {
+      return {
+        text: {
+          key: "$helio.sales.quotes.detail.rejected",
+          params: { reason: rejectionReason },
+        },
+      };
+    }
     if (status === "accepted" && signedAt) {
       return {
         text: {

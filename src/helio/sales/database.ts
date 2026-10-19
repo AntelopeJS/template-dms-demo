@@ -52,6 +52,8 @@ export class Quote extends Table {
   @Field("date") declare signedAt?: Date;
   @Index() @Field("string") declare portalToken: string;
   @Field("string") declare notes?: string;
+  /** Why the customer turned it down, as typed when marking it rejected. */
+  @Field("string") declare rejectionReason?: string;
 }
 
 export class QuoteModel extends BasicDataModel(Quote, TABLE_NAME) {}
