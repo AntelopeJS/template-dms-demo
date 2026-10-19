@@ -28,7 +28,12 @@ export interface DocumentTexts {
   paidOn: string;
   serviceLine: string;
   projectLine: string;
-  legal: string;
+  /**
+   * The late-payment terms, from the Settings page's collection fields: the
+   * interest rate and the fixed indemnity, already formatted; the statutory
+   * rate without the first, no indemnity without the second.
+   */
+  legal: (interest: string | undefined, fee: string | undefined) => string;
   demo: string;
   methods: Record<string, string>;
 }
@@ -59,8 +64,14 @@ const FR: DocumentTexts = {
   paidOn: "Payée le {date} par {method}.",
   serviceLine: "Prestations de service et contrat d'entretien",
   projectLine: "Installation — chantier {code}",
-  legal:
-    "Tout montant impayé à l'échéance porte de plein droit un intérêt de retard au taux légal et une indemnité forfaitaire de 40 €.",
+  legal: (interest, fee) =>
+    [
+      "Tout montant impayé à l'échéance porte de plein droit un intérêt de retard",
+      interest ? `de ${interest} l'an` : "au taux légal",
+      fee ? `et une indemnité forfaitaire de ${fee}` : "",
+    ]
+      .filter(Boolean)
+      .join(" ") + ".",
   demo: "Document de démonstration : Helio est une entreprise fictive.",
   methods: {
     transfer: "virement",
@@ -95,8 +106,14 @@ const EN: DocumentTexts = {
   paidOn: "Paid on {date} by {method}.",
   serviceLine: "Services and maintenance contract",
   projectLine: "Installation — project {code}",
-  legal:
-    "Any amount unpaid at the due date bears late-payment interest at the statutory rate and a fixed indemnity of €40.",
+  legal: (interest, fee) =>
+    [
+      "Any amount unpaid at the due date bears late-payment interest",
+      interest ? `of ${interest} a year` : "at the statutory rate",
+      fee ? `and a fixed indemnity of ${fee}` : "",
+    ]
+      .filter(Boolean)
+      .join(" ") + ".",
   demo: "Demonstration document: Helio is a fictional company.",
   methods: {
     transfer: "bank transfer",

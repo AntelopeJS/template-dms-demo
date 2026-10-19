@@ -29,11 +29,22 @@ export interface CompanyIdentity {
   website: string;
   iban: string;
   bic: string;
+  /** "#EA580C": headings and accents of the documents. */
+  brandColor: string;
+  /** The tagline in each language ("en", "fr"). */
+  tagline: Record<string, string>;
 }
 
 type IdentitySource = Pick<
   CompanySettings,
-  "companyName" | "vatNumber" | "address" | "phone" | "email" | "website"
+  | "companyName"
+  | "vatNumber"
+  | "address"
+  | "phone"
+  | "email"
+  | "website"
+  | "brandColor"
+  | "tagline"
 > &
   Pick<InvoicingSettings, "iban" | "bic">;
 
@@ -68,6 +79,8 @@ export function companyIdentity(source: IdentitySource): CompanyIdentity {
     website: source.website.replace(/^https?:\/\//, ""),
     iban: source.iban,
     bic: source.bic,
+    brandColor: source.brandColor,
+    tagline: source.tagline ?? {},
   };
 }
 

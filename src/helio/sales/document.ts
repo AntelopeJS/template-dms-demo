@@ -38,13 +38,14 @@ const ROW_HEIGHT = 20;
 const ROWS_BOTTOM = 770;
 const END_BLOCK = 200;
 
+// The brand colour of the Settings page stands in for this one when it is a
+// valid #RRGGBB.
 const ORANGE: Rgb = [0.96, 0.55, 0.11];
 const INK: Rgb = [0.11, 0.13, 0.17];
 const MUTED: Rgb = [0.42, 0.45, 0.5];
 const HAIRLINE: Rgb = [0.86, 0.87, 0.89];
 const PANEL: Rgb = [0.965, 0.969, 0.976];
 const ZEBRA: Rgb = [0.985, 0.985, 0.99];
-const TINT: Rgb = [0.996, 0.95, 0.9];
 const WHITE: Rgb = [1, 1, 1];
 
 // Columns of the lines table: where each starts (left) or ends (right).
@@ -58,14 +59,49 @@ const COL = {
 
 interface Formatters {
   texts: DocumentTexts;
+  /** The brand colour, and the light tint of it behind the total. */
+  brand: Rgb;
+  tint: Rgb;
+  /** The line under the brand: the Settings page's tagline, else ours. */
+  tagline: string;
   money: (amount: number) => string;
   qty: (value: number) => string;
   date: (date: Date | undefined) => string;
   percent: (rate: number) => string;
 }
 
-function formatters(language: DocumentLanguage): Formatters {
+function brandRgb(color: string | undefined): Rgb {
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(color ?? "");
+  if (!match) return ORANGE;
+  const [r = 0, g = 0, b = 0] = match
+    .slice(1)
+    .map((hex) => parseInt(hex, 16) / 255);
+  return [r, g, b];
+}
+
+// A tenth of the colour on white.
+const tintOf = (color: Rgb): Rgb => [
+  0.9 + color[0] / 10,
+  0.9 + color[1] / 10,
+  0.9 + color[2] / 10,
+];
+
+function taglineIn(
+  tagline: Record<string, string> | undefined,
+  language: DocumentLanguage,
+): string | undefined {
+  const entry = Object.entries(tagline ?? {}).find(([locale]) =>
+    locale.toLowerCase().startsWith(language),
+  );
+  return entry?.[1]?.trim() || undefined;
+}
+
+function formatters(
+  language: DocumentLanguage,
+  company: CompanyIdentity,
+): Formatters {
   const texts = documentTexts(language);
+  const brand = brandRgb(company.brandColor);
   const money = new Intl.NumberFormat(texts.locale, {
     style: "currency",
     currency: "EUR",
@@ -83,6 +119,9 @@ function formatters(language: DocumentLanguage): Formatters {
   });
   return {
     texts,
+    brand,
+    tint: tintOf(brand),
+    tagline: taglineIn(company.tagline, language) ?? texts.tagline,
     money: (amount) => money.format(amount),
     qty: (value) => qty.format(value),
     date: (value) => (value ? date.format(value) : "—"),
@@ -100,9 +139,9 @@ function addressLines(address: DefaultDataTypes.Address | undefined): string[] {
 }
 
 function drawBrand(page: PdfPage, f: Formatters, quote: Quote): void {
-  page.rect(0, 0, PAGE_WIDTH, 6, ORANGE);
-  page.text(LEFT, 62, "HELIO", { size: 26, font: "bold", color: ORANGE });
-  page.text(LEFT, 78, f.texts.tagline, { size: 8.5, color: MUTED });
+  page.rect(0, 0, PAGE_WIDTH, 6, f.brand);
+  page.text(LEFT, 62, "HELIO", { size: 26, font: "bold", color: f.brand });
+  page.text(LEFT, 78, f.tagline, { size: 8.5, color: MUTED });
   page.text(RIGHT, 56, f.texts.title, {
     size: 20,
     font: "bold",
@@ -272,7 +311,7 @@ function drawTotals(page: PdfPage, f: Formatters, quote: Quote, top: number) {
     });
   });
   const bandY = top + 46;
-  page.rect(labelX - 10, bandY, RIGHT - labelX + 10, 26, TINT);
+  page.rect(labelX - 10, bandY, RIGHT - labelX + 10, 26, f.tint);
   page.text(labelX, bandY + 17, f.texts.grandTotal, {
     size: 10.5,
     font: "bold",
@@ -281,7 +320,7 @@ function drawTotals(page: PdfPage, f: Formatters, quote: Quote, top: number) {
   page.text(COL.total, bandY + 17, f.money(quote.total), {
     size: 12,
     font: "bold",
-    color: ORANGE,
+    color: f.brand,
     align: "right",
   });
 }
@@ -353,8 +392,8 @@ function continuationPage(
   quote: Quote,
 ): PdfPage {
   const page = doc.addPage();
-  page.rect(0, 0, PAGE_WIDTH, 6, ORANGE);
-  page.text(LEFT, 44, "HELIO", { size: 14, font: "bold", color: ORANGE });
+  page.rect(0, 0, PAGE_WIDTH, 6, f.brand);
+  page.text(LEFT, 44, "HELIO", { size: 14, font: "bold", color: f.brand });
   page.text(RIGHT, 44, `${f.texts.continued} · ${quote.number}`, {
     size: 9,
     color: MUTED,
@@ -365,7 +404,7 @@ function continuationPage(
 
 /** The quote as a PDF file (an ASCII string). */
 export function renderQuoteDocument(input: QuoteDocumentInput): string {
-  const f = formatters(input.language);
+  const f = formatters(input.language, input.company);
   const { quote } = input;
   const doc = new PdfDocument(`${f.texts.title} ${quote.number}`);
   let page = doc.addPage();

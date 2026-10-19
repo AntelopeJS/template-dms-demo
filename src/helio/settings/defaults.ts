@@ -32,13 +32,13 @@ const BIC = "GEBABEBB";
 
 // Written from the company defaults, so the footer names the same address,
 // VAT number and account as the rest of the settings. In French, the
-// language Helio invoices its Walloon customers in.
+// language Helio invoices its Walloon customers in. The late-payment terms
+// are not repeated: the document writes them from the collection settings.
 function invoiceFooter(company: CompanySettings): string {
   const { address } = company;
   return [
     `<p><strong>${company.companyName}</strong> · ${address.streetName} ${address.houseNumber}, ${address.postalCode} ${address.city} · TVA BE${company.enterpriseNumber}</p>`,
-    `<p>Payable à ${DEFAULT_PAYMENT_TERMS_DAYS} jours par virement sur le compte ${IBAN} (${BIC}), en mentionnant le numéro de facture. `,
-    "Tout montant impayé à l'échéance porte un intérêt de 10 % l'an et une indemnité forfaitaire de 40 €.</p>",
+    `<p>Payable à ${DEFAULT_PAYMENT_TERMS_DAYS} jours par virement sur le compte ${IBAN} (${BIC}), en mentionnant le numéro de facture.</p>`,
   ].join("");
 }
 

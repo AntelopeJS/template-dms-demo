@@ -8,7 +8,10 @@ import { CustomerModel } from "../crm/database";
 import { ProjectModel } from "../projects/database";
 import { QuoteModel } from "../sales/database";
 import type { Invoice, InvoiceStatus } from "./database";
-import { type CompanyIdentity, readCompanyIdentity } from "../settings/company";
+import { type CompanyIdentity, companyIdentity } from "../settings/company";
+import { currentSettings } from "../settings/current";
+import { DEFAULT_BRAND_COLOR } from "../settings/defaults";
+import type { InvoicingSettings } from "../settings/types";
 import { type DocumentTexts, documentTexts } from "./document-texts";
 
 interface DocumentParty {
@@ -23,6 +26,11 @@ interface DocumentData {
   invoice: Invoice;
   /** The issuer, as saved on the Settings page. */
   company: CompanyIdentity;
+  /** The footer and late-payment terms of the Settings page. */
+  terms: Pick<
+    InvoicingSettings,
+    "invoiceFooter" | "lateInterestRate" | "recoveryFee"
+  >;
   customer: DocumentParty;
   projectCode?: string;
   quoteNumber?: string;
@@ -57,15 +65,20 @@ export function structuredReference(number: string): string {
 export async function loadDocumentData(
   invoice: Invoice,
 ): Promise<DocumentData> {
-  const [company, customer, project, quote] = await Promise.all([
-    readCompanyIdentity(),
+  const [settings, customer, project, quote] = await Promise.all([
+    currentSettings(),
     GetModel(CustomerModel).get(invoice.customer),
     invoice.project ? GetModel(ProjectModel).get(invoice.project) : undefined,
     invoice.quote ? GetModel(QuoteModel).get(invoice.quote) : undefined,
   ]);
   return {
     invoice,
-    company,
+    company: companyIdentity(settings),
+    terms: {
+      invoiceFooter: settings.invoiceFooter,
+      lateInterestRate: settings.lateInterestRate,
+      recoveryFee: settings.recoveryFee,
+    },
     customer: customer ?? { name: invoice.customer },
     projectCode: project?.code,
     quoteNumber: quote?.number,
@@ -187,13 +200,16 @@ function paymentBlock(data: DocumentData, texts: DocumentTexts): string {
 <p>${escapeHtml(texts.communication)} <strong class="mono">${escapeHtml(structuredReference(invoice.number))}</strong></p></section>`;
 }
 
-const STYLES = `
+const BRAND_COLOR = /^#[0-9a-f]{6}$/i;
+
+// The brand colour of the Settings page draws the header rule and the dot.
+const styles = (brand: string) => `
 @page { size: A4; margin: 18mm; }
 * { box-sizing: border-box; }
 body { font: 13px/1.5 "Helvetica Neue", Arial, sans-serif; color: #1c2430; margin: 0; background: #eef1f5; }
 .sheet { position: relative; max-width: 210mm; min-height: 297mm; margin: 24px auto; padding: 18mm; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #f59e0b; padding-bottom: 14px; }
-.brand { font-size: 26px; font-weight: 700; letter-spacing: -.5px; } .brand span { color: #f59e0b; }
+header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid ${brand}; padding-bottom: 14px; }
+.brand { font-size: 26px; font-weight: 700; letter-spacing: -.5px; } .brand span { color: ${brand}; }
 h1 { font-size: 30px; margin: 0; font-weight: 300; text-transform: uppercase; letter-spacing: 3px; }
 h2 { font-size: 15px; margin: 0 0 4px; } h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #6b7685; margin: 0 0 6px; }
 .parties { display: flex; justify-content: space-between; gap: 24px; margin: 22px 0; } .parties p { margin: 0; }
@@ -207,11 +223,44 @@ table { width: 100%; border-collapse: collapse; } .num { text-align: right; whit
 .totals .due th, .totals .due td { font-weight: 700; font-size: 16px; color: #b45309; border-top: 2px solid #1c2430; padding-top: 8px; }
 .payment { margin-top: 28px; padding: 12px 14px; border: 1px solid #d5dae1; border-radius: 6px; } .payment p { margin: 4px 0; }
 .mono { font-family: "SFMono-Regular", Consolas, monospace; letter-spacing: .5px; }
-footer { margin-top: 36px; font-size: 11px; color: #6b7685; border-top: 1px solid #eceff3; padding-top: 10px; }
+footer { margin-top: 36px; font-size: 11px; color: #6b7685; border-top: 1px solid #eceff3; padding-top: 10px; } footer .custom { color: #1c2430; } footer .custom p { margin: 0 0 4px; }
 .stamp { position: absolute; top: 60mm; right: 22mm; transform: rotate(-14deg); border: 3px solid; border-radius: 6px; padding: 4px 14px; font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: .8; }
 .stamp.paid { color: #15803d; } .stamp.cancelled { color: #6b7685; } .stamp.draft { color: #b45309; }
 @media print { body { background: #fff; } .sheet { margin: 0; padding: 0; box-shadow: none; min-height: auto; } }
 `;
+
+// The footer is the rich text of the Settings page: only its formatting tags
+// are kept, without attributes, so the document never runs a script.
+const FOOTER_TAGS = new Set(["p", "br", "strong", "b", "em", "i", "u", "s"]);
+
+function footerHtml(html: string | undefined): string {
+  return (html ?? "")
+    .replace(/<(script|style)\b[\s\S]*?<\/\1\s*>/gi, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (tag, name: string) => {
+      const lower = name.toLowerCase();
+      if (!FOOTER_TAGS.has(lower)) return "";
+      return tag.startsWith("</") ? `</${lower}>` : `<${lower}>`;
+    })
+    .trim();
+}
+
+function legalLine(data: DocumentData, texts: DocumentTexts): string {
+  const { lateInterestRate, recoveryFee } = data.terms;
+  const percent = new Intl.NumberFormat(texts.locale, {
+    style: "percent",
+    maximumFractionDigits: 2,
+  });
+  const interest = lateInterestRate ? percent.format(lateInterestRate) : "";
+  const fee = recoveryFee ? formatters(texts).money(recoveryFee) : "";
+  return texts.legal(interest || undefined, fee || undefined);
+}
+
+function footerBlock(data: DocumentData, texts: DocumentTexts): string {
+  const footer = footerHtml(data.terms.invoiceFooter);
+  return `<footer>${footer ? `<div class="custom">${footer}</div>` : ""}
+<p>${escapeHtml(legalLine(data, texts))}</p><p>${escapeHtml(texts.demo)}</p></footer>`;
+}
 
 /** The invoice as a complete HTML document, in the reader's language. */
 export function renderInvoiceDocument(
@@ -220,16 +269,19 @@ export function renderInvoiceDocument(
 ): string {
   const texts = documentTexts(language);
   const { invoice } = data;
+  const brand = BRAND_COLOR.test(data.company.brandColor)
+    ? data.company.brandColor
+    : DEFAULT_BRAND_COLOR;
   return `<!doctype html>
 <html lang="${escapeHtml(texts.locale)}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(`${texts.title} ${invoice.number}`)}</title><style>${STYLES}</style></head>
+<title>${escapeHtml(`${texts.title} ${invoice.number}`)}</title><style>${styles(brand)}</style></head>
 <body><main class="sheet">${stamp(invoice, texts)}
 <header><div class="brand">Helio<span>.</span></div><h1>${escapeHtml(texts.title)}</h1></header>
 ${partiesBlock(data, texts)}
 ${metaBlock(data, texts)}
 ${linesBlock(data, texts)}
 ${paymentBlock(data, texts)}
-<footer><p>${escapeHtml(texts.legal)}</p><p>${escapeHtml(texts.demo)}</p></footer>
+${footerBlock(data, texts)}
 </main></body></html>`;
 }
