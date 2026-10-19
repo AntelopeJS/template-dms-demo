@@ -19,6 +19,7 @@ import {
   invoiceController,
   PAYMENT_METHODS,
 } from "./controller";
+import { assertUniqueNumber } from "./numbering";
 
 /** URL of the Invoices page, under which its own routes are served. */
 export const INVOICES_PAGE_PATH = "helio/invoices";
@@ -343,11 +344,16 @@ export const invoicesTable = TableView(invoiceController, {
       cancelAction,
     ],
   },
-  // An invoice marked paid from its form reaches the activity feed, as one
-  // paid through the "Mark as paid" action does.
+  // Numbers are unique. An invoice marked paid from its form reaches the
+  // activity feed, as one paid through the "Mark as paid" action does.
   guards: {
-    edit: (_ctx, { id, body }) =>
-      body.status === "paid" ? () => logInvoicePaid(id) : undefined,
+    new: async (_ctx, { body }) => {
+      await assertUniqueNumber(body.number);
+    },
+    edit: async (_ctx, { id, body }) => {
+      if (body.number !== undefined) await assertUniqueNumber(body.number, id);
+      return body.status === "paid" ? () => logInvoicePaid(id) : undefined;
+    },
   },
 });
 
