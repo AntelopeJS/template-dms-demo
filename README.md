@@ -347,6 +347,7 @@ application (`pnpm run build`, then `npm start`).
 | --- | --- | --- |
 | backend | `MONGODB_URL`, `MONGODB_DATABASE` | The Cloud database's connection string and a database name. |
 | backend | `DMS_API_PUBLIC_BASE_URL` | The origin browsers reach the API at: the frontend's public URL when the backend is private (the frontend proxies `/api`, `/dms`, `/media` and `/i18n` to it), else the backend's public URL. |
+| backend | `DMS_CLIENT_BASE_URL` | The frontend's public URL: the base of e-mail links and redirects, the API's CORS origin and the OAuth redirect host. The backend refuses to start without it. |
 | backend | `JWT_SECRET` | Secret, `openssl rand -hex 32`. |
 | backend | `DMS_HTML_RENDER_SECRET` | Secret, `openssl rand -hex 32`. Same value on the frontend. |
 | backend | `DMS_BOOTSTRAP_SECRET` | Secret, `openssl rand -hex 32`. Gates the frontend manifest; needed by `pnpm snapshot`. |
