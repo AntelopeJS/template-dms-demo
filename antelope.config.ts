@@ -24,6 +24,10 @@ export default defineConfig({
       "modules.auth-jwt.config.secret",
     ],
     MONGODB_URL: "modules.mongodb.config.url",
+    SMTP_HOST: "modules.nodemailer.config.host",
+    SMTP_USER: "modules.nodemailer.config.auth.user",
+    SMTP_PASSWORD: "modules.nodemailer.config.auth.pass",
+    SMTP_FROM: "modules.nodemailer.config.defaults.from",
     MONGODB_DATABASE: "modules.mongodb.config.database",
     STRIPE_SECRET_KEY: "modules.dms-saas.config.stripe.secretKey",
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
@@ -37,6 +41,9 @@ export default defineConfig({
         "template-dms-demo": { config: { requireJwtSecret: true } },
         dms: { config: { auth: { jwtSecret: "" } } },
         "auth-jwt": { config: { secret: "" } },
+        // Ethereal creates an account over the internet at every start;
+        // production sends through the SMTP relay SMTP_HOST names.
+        nodemailer: { config: { ethereal: false, port: 587 } },
       },
     },
   },
