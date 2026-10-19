@@ -49,15 +49,27 @@ const ALERT_PAYLOAD_TEMPLATE = `{
   "source": "helio-monitoring"
 }`;
 
+/**
+ * The calendar day of `date` at UTC midnight, the way the form's date picker
+ * stores a day. A day stamped at local midnight (23:00 UTC the day before in
+ * Brussels) would show one day early.
+ */
+export function pickerDay(date: Date): Date {
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
+}
+
 // The winter closure runs from the next 24 December to 2 January, so the seed
 // stays in the future whatever day the demo is installed.
 function nextWinterClosure(): DateRange {
   const now = new Date();
-  const start = new Date(now.getFullYear(), 11, 24, 0, 0, 0, 0);
-  if (start.getTime() < now.getTime())
-    start.setFullYear(start.getFullYear() + 1);
-  const end = new Date(start.getFullYear() + 1, 0, 2, 0, 0, 0, 0);
-  return { start, end };
+  let year = now.getFullYear();
+  if (pickerDay(now).getTime() > Date.UTC(year, 11, 24)) year += 1;
+  return {
+    start: new Date(Date.UTC(year, 11, 24)),
+    end: new Date(Date.UTC(year + 1, 0, 2)),
+  };
 }
 
 function companyDefaults(): CompanySettings {
@@ -120,7 +132,7 @@ function operationsDefaults(): OperationsSettings {
     slaLowHours: SLA_HOURS.low,
     winterClosure: nextWinterClosure(),
     // Bridge days the crews take off (jours de pont), spread over the season.
-    bridgeDays: [daysFromNow(23, 0), daysFromNow(60, 0), daysFromNow(97, 0)],
+    bridgeDays: [23, 60, 97].map((days) => pickerDay(daysFromNow(days))),
     defaultTechnician: "team-05",
     interventionZones: ["Liège", "Namur", "Bruxelles", "Hainaut", "Luxembourg"],
     travelRadiusKm: 80,

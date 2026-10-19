@@ -6,8 +6,9 @@ import {
 } from "@antelopejs/interface-dms/base/form";
 import { TeamMemberModel } from "../team/database";
 import { HelioSettingsModel } from "./database";
-import { buildDefaultSettings, generateApiKey } from "./defaults";
+import { buildDefaultSettings, generateApiKey, pickerDay } from "./defaults";
 import {
+  type DateRange,
   HELIO_SETTINGS_ID,
   type HelioSettingsValues,
   type ToggleableValue,
@@ -75,12 +76,35 @@ async function joinTechnician(
   return { _id: member._id, name: member.name, avatar: member.avatar };
 }
 
+// A day already at UTC midnight is the picker's own; any other time is a day
+// stamped at local midnight by an earlier seed, moved to the day it meant.
+function asPickerDay(value: Date | string): Date {
+  const date = new Date(value);
+  return date.getUTCHours() === 0 && date.getUTCMinutes() === 0
+    ? date
+    : pickerDay(date);
+}
+
+function closureDays(
+  values: HelioSettingsValues,
+): Pick<HelioSettingsValues, "winterClosure" | "bridgeDays"> {
+  const range: DateRange | undefined = values.winterClosure;
+  return {
+    winterClosure:
+      range?.start && range.end
+        ? { start: asPickerDay(range.start), end: asPickerDay(range.end) }
+        : range,
+    bridgeDays: (values.bridgeDays ?? []).map(asPickerDay),
+  };
+}
+
 async function toFormValues(
   values: HelioSettingsValues,
 ): Promise<SettingsFormValues> {
   const { smtpPassword: _secret, defaultTechnician, ...served } = values;
   return {
     ...served,
+    ...closureDays(values),
     defaultTechnician: await joinTechnician(defaultTechnician),
   };
 }
