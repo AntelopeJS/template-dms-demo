@@ -37,8 +37,8 @@ export class Customer extends Table {
 
   @Index() @Field("string") declare kind: CustomerKind;
   @Field("string") declare name: string;
-  /** Belgian VAT number, businesses only. */
-  @Field("string") declare vatNumber?: string;
+  /** Belgian VAT number, businesses only (null once cleared). */
+  @Field("string") declare vatNumber?: string | null;
   @Field("string") declare contactName: string;
   @Field("string") declare email: string;
   @Field("string") declare phone: string;
@@ -50,7 +50,7 @@ export class Customer extends Table {
   @Field("string")
   @Relation({ to: () => TeamMember })
   declare owner?: string;
-  @Field("string") declare website?: string;
+  @Field("string") declare website?: string | null;
   /** Rich text (HTML). */
   @Field("string") declare notes?: string;
   @Index() @Field("date") declare createdAt: Date;
@@ -102,7 +102,13 @@ export class Deal extends Table {
   @Index() @Field("date") declare expectedClose: Date;
   @Index() @Field("date") declare lastActivityAt: Date;
   @Field("string") declare nextStep?: string;
-  @Field("string") declare lostReason?: string;
+  /**
+   * The signed quote whose kick-off call is the deal's next step, worded in
+   * the reader's language (deal-controller.ts); null once a next step is
+   * typed again.
+   */
+  @Field("string") declare kickoffQuote?: string | null;
+  @Field("string") declare lostReason?: string | null;
 }
 
 export class DealModel extends BasicDataModel(Deal, DEALS_TABLE) {}

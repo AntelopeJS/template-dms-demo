@@ -1,4 +1,6 @@
 import { HTTPResult } from "@antelopejs/interface-api";
+import { GetModel } from "@antelopejs/interface-database-decorators";
+import type { AfterWrite } from "@antelopejs/interface-dms/base/types/guards";
 import type { Action } from "@antelopejs/interface-dms/component";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import {
@@ -12,6 +14,7 @@ import { helioQuickActions } from "../shared/quick-actions";
 import { CUSTOMER_KINDS, customerController } from "./customer-controller";
 import { countCustomerDeals } from "./customer-deals";
 import { afterCustomerEdit } from "./customer-names";
+import { type Customer, CustomerModel } from "./database";
 import { isValidVatNumber } from "./vat-number";
 import {
   CUSTOMER_DELETE_CONFIRM_URL,
@@ -37,6 +40,49 @@ function assertBusinessVat(kind: unknown, vatNumber: unknown): void {
     throw new HTTPResult(400, {
       message: "$helio.crm.customers.errors.vatFormat",
       field: "vatNumber",
+    });
+  }
+}
+
+// The fields only a company fills in (VAT number, website) are hidden for a
+// household, and a hidden field keeps the value it held: a business turned
+// residential kept its VAT number, shown on its sheet and found by the
+// search. They are cleared once the customer is a household.
+const BUSINESS_ONLY_CLEARED = { vatNumber: null, website: null };
+
+const holdsBusinessFields = (customer: Partial<Customer>): boolean =>
+  customer.kind !== "business" && !!(customer.vatNumber || customer.website);
+
+async function clearBusinessFields(ids: string[]): Promise<void> {
+  const model = GetModel(CustomerModel);
+  await Promise.all(ids.map((id) => model.update(id, BUSINESS_ONLY_CLEARED)));
+}
+
+// A guard does not know a new row's id: the households holding one of these
+// fields are cleared instead (the new one among them).
+const afterResidentialNew: AfterWrite = async () => {
+  const households = await GetModel(CustomerModel).getBy("kind", "residential");
+  await clearBusinessFields(
+    households.filter(holdsBusinessFields).map(({ _id }) => _id),
+  );
+};
+
+function afterWrites(
+  ...writes: (AfterWrite | undefined)[]
+): AfterWrite | undefined {
+  const pending = writes.filter((write) => write !== undefined);
+  if (pending.length === 0) return undefined;
+  return async () => {
+    for (const write of pending) await write();
+  };
+}
+
+async function refuseActiveCustomers(ids: string[]): Promise<void> {
+  const model = GetModel(CustomerModel);
+  const customers = await Promise.all(ids.map((id) => model.get(id)));
+  if (customers.some((customer) => customer && !customer.isArchived)) {
+    throw new HTTPResult(409, {
+      message: "$helio.crm.customers.errors.notArchived",
     });
   }
 }
@@ -146,10 +192,12 @@ export class PageHelioCustomers extends PageController(
         isEnabled: true,
         successMessage: "$helio.crm.customers.restored",
       },
-      // Only archived customers can be deleted (archive mode); the dialog,
-      // worded by the server, asks to type the customer's name.
+      // Only archived customers can be deleted (archive mode): the rule
+      // keeps the action off the active ones, on the selection bar too. The
+      // dialog, worded by the server, asks to type the customer's name.
       delete: {
         isEnabled: true,
+        rule: { field: "isArchived", equals: true },
         confirm: { from: CUSTOMER_DELETE_CONFIRM_URL },
       },
       custom: [
@@ -225,20 +273,26 @@ export class PageHelioCustomers extends PageController(
     guards: {
       new: (_ctx, { body }) => {
         assertBusinessVat(body.kind, body.vatNumber);
+        return holdsBusinessFields(body) ? afterResidentialNew : undefined;
       },
       // An edit only sends what changed: the stored row fills the rest.
       // A new name reaches the deals and quotes that carry it for the search.
-      edit: (_ctx, { body, current }) => {
+      edit: (_ctx, { id, body, current }) => {
         const row = { ...current, ...body };
         assertBusinessVat(row.kind, row.vatNumber);
-        if (body.name !== undefined && body.name !== current.name) {
-          return afterCustomerEdit;
-        }
-        return undefined;
+        const renamed = body.name !== undefined && body.name !== current.name;
+        return afterWrites(
+          holdsBusinessFields(row)
+            ? () => clearBusinessFields([id])
+            : undefined,
+          renamed ? afterCustomerEdit : undefined,
+        );
       },
-      // A customer with deals still in play is not deleted: the dialog says
-      // so (blocked), and a bare API call is refused the same way.
+      // An active customer, or one with deals still in play, is not deleted:
+      // the dialog says so (blocked), and a bare API call is refused the same
+      // way instead of deleting nothing.
       delete: async (_ctx, { ids }) => {
+        await refuseActiveCustomers(ids);
         const { open } = await countCustomerDeals(ids);
         if (open > 0) {
           throw new HTTPResult(409, {

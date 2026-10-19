@@ -117,11 +117,14 @@
 					"confirm": "Delete the customer",
 					"impactDeals": "Closed deals no longer linked to a customer",
 					"blockedTitle": "{name} still has deals in progress",
-					"blockedDescription": "Close or reassign its open deal first. | Close or reassign its {count} open deals first."
+					"blockedDescription": "Close or reassign its open deal first. | Close or reassign its {count} open deals first.",
+					"activeTitle": "Archive {name} first",
+					"activeDescription": "Only an archived customer can be deleted: archive it, then delete it from the archived customers."
 				},
 				"errors": {
 					"vatRequired": "A business customer needs a VAT number.",
 					"openDeals": "This customer still has deals in progress.",
+					"notArchived": "Only archived customers can be deleted: archive them first.",
 					"notFound": "This customer no longer exists.",
 					"vatFormat": "Invalid VAT number: BE followed by 10 digits (e.g. BE0123.456.749), or the number of another EU country."
 				},
@@ -155,6 +158,7 @@
 					"description": "Create the customer without leaving the deal."
 				},
 				"activeNow": "Just now",
+				"kickoffNextStep": "Plan the kick-off call (quote {number} signed)",
 				"errors": {
 					"lostReasonRequired": "Give the loss reason: open the deal to mark it as lost."
 				}

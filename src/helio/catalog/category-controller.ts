@@ -30,8 +30,16 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
+import { withNameSort } from "./category-names";
 import { countCategoryProducts } from "./category-usage";
 import { ProductCategory, ProductCategoryModel } from "./database";
+
+// A request without a language (a call made on the server) reads and
+// searches the English names: searching a localized field in no language
+// failed with a 500 ($getField of a null field).
+function contentLanguageOf(header: string | undefined): string {
+  return header || "en";
+}
 
 // The top-level families only, for the parent picker of a category: a
 // category tree stays two levels deep. Read-only, select route only.
@@ -46,8 +54,12 @@ class productFamilyDataAPI extends DataController(
   declare model: ProductCategoryModel;
 
   @Parameter("x-content-language", "header")
+  declare contentLanguage: string | undefined;
+
   @ModifierKey(LocalizationModifier)
-  declare language: string;
+  get language(): string {
+    return contentLanguageOf(this.contentLanguage);
+  }
 
   @Select()
   @Access(AccessMode.ReadOnly)
@@ -75,7 +87,8 @@ class productFamilyDataAPI extends DataController(
 @RegisterDataController()
 class productCategoryDataAPI extends DataController(
   ProductCategory,
-  TableViewRoutes.All,
+  // Sorted by name in the caller's language (category-names.ts).
+  { ...TableViewRoutes.All, list: withNameSort(TableViewRoutes.List) },
   Controller("/api/helio/product-categories"),
 ) {
   @ModelReference()
@@ -85,8 +98,12 @@ class productCategoryDataAPI extends DataController(
   // Localized names are read and written in the caller's language; forms ask
   // with "*" and get every language at once.
   @Parameter("x-content-language", "header")
+  declare contentLanguage: string | undefined;
+
   @ModifierKey(LocalizationModifier)
-  declare language: string;
+  get language(): string {
+    return contentLanguageOf(this.contentLanguage);
+  }
 
   @Select()
   @Listable()

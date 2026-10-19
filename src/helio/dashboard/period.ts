@@ -146,16 +146,26 @@ export function chartBuckets(range: TimeRange): TimeRange[] {
   return monthBuckets(range);
 }
 
-/** The same buckets moved onto the comparison range, start for start. */
+/**
+ * The chart's buckets carried onto the comparison range: the comparison
+ * range cut the same way when it gives as many (month for month), else the
+ * same buckets moved onto it, start for start. Either way they cover the
+ * comparison range exactly, the last one running to its end (a 30-day month
+ * against a 31-day one), so the comparison curve ends on the comparison
+ * total the KPI cards print.
+ */
 export function shiftBuckets(
   buckets: TimeRange[],
   range: TimeRange,
   compare: TimeRange,
 ): TimeRange[] {
+  const own = chartBuckets(compare);
+  if (own.length === buckets.length) return own;
   const offset = compare.from - range.from;
-  return buckets.map((bucket) => ({
+  const last = buckets.length - 1;
+  return buckets.map((bucket, index) => ({
     from: bucket.from + offset,
-    to: bucket.to + offset,
+    to: index === last ? compare.to : Math.min(bucket.to + offset, compare.to),
   }));
 }
 

@@ -387,16 +387,23 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare lostReason: string;
 
-  // Under the title: the next step, in orange once an open deal stalls.
-  @Listable(["nextStep", "stage", "lastActivityAt"])
+  // Under the title: the next step, in orange once an open deal stalls. The
+  // kick-off call a signed quote plans is written in the reader's language.
+  @Listable(["nextStep", "kickoffQuote", "stage", "lastActivityAt"])
   @Access(AccessMode.ReadOnly)
   get nextStepLine(): CellSubline | null {
-    const { nextStep, stage, lastActivityAt } = this.table;
-    if (!nextStep) return null;
+    const { nextStep, kickoffQuote, stage, lastActivityAt } = this.table;
+    const text = kickoffQuote
+      ? {
+          key: "$helio.crm.deals.kickoffNextStep",
+          params: { number: kickoffQuote },
+        }
+      : nextStep;
+    if (!text) return null;
     const idleMs = lastActivityAt ? Date.now() - lastActivityAt.getTime() : 0;
     const stalled =
       OPEN_DEAL_STAGES.includes(stage) && idleMs > STALLED_DAYS * DAY_MS;
-    return { text: nextStep, tone: stalled ? "warning" : undefined };
+    return { text, tone: stalled ? "warning" : undefined };
   }
 
   // Under the stage pill: why a lost deal was lost.

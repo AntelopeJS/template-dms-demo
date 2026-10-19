@@ -232,9 +232,11 @@ const planKickoff: ActionType<{ quoteId?: string }, Record<string, unknown>> = {
         link: `${PROJECT_PAGE_URL}/${project._id}`,
       };
     }
+    // The deal's next step, worded in each reader's language (the deals'
+    // nextStepLine), until one is typed again.
     if (quote.deal) {
       await GetModel(DealModel).update(quote.deal, {
-        nextStep: `Planifier l'appel de lancement (devis ${quote.number} signé)`,
+        kickoffQuote: quote.number,
         lastActivityAt: new Date(),
       });
     }

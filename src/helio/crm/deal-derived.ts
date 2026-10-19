@@ -12,7 +12,9 @@ import { STAGE_PROBABILITY } from "./fixtures";
 
 // Some fields of a deal derive from others: its weighted amount (amount ×
 // probability), whether it is still open (neither won nor lost), its
-// customer's name (for the search) and, once closed, its probability. They
+// customer's name (for the search), once closed, its probability, and the
+// loss reason, kept on a lost deal only (the form hides it on the other
+// stages, and a hidden field would otherwise keep the value it held). They
 // are stored, not declared @Computed, for two reasons seen on this DMS
 // version: the data API materializes a @Computed field only while a list
 // sorts or filters on it (the grid and the footer summary would show
@@ -36,6 +38,8 @@ interface DerivedFields {
   weightedAmount: number;
   isOpen: boolean;
   customerName: string;
+  // null clears the stored value, as a field emptied in a form.
+  lostReason: string | null;
 }
 
 function derive(deal: Deal, customerNames: Map<string, string>): DerivedFields {
@@ -45,6 +49,7 @@ function derive(deal: Deal, customerNames: Map<string, string>): DerivedFields {
     weightedAmount: cents((deal.amount ?? 0) * probability),
     isOpen: deal.stage !== "won" && deal.stage !== "lost",
     customerName: customerNames.get(deal.customer) ?? "",
+    lostReason: deal.stage === "lost" ? (deal.lostReason ?? null) : null,
   };
 }
 
@@ -53,7 +58,8 @@ function isStale(deal: Deal, derived: DerivedFields): boolean {
     deal.probability !== derived.probability ||
     deal.weightedAmount !== derived.weightedAmount ||
     deal.isOpen !== derived.isOpen ||
-    deal.customerName !== derived.customerName
+    deal.customerName !== derived.customerName ||
+    (deal.lostReason ?? null) !== derived.lostReason
   );
 }
 
@@ -86,8 +92,10 @@ function stageProbability(
 
 /**
  * The pipeline table's new guard result: a deal created past the first stage
- * with the form's default probability takes its stage's. A guard does not
- * know the new row's id: the row is found by what was sent, then the derived
+ * with the form's default probability takes its stage's, and a deal created
+ * without a last activity starts with its creation (it would otherwise read
+ * as stalled, an empty date being older than any). A guard does not know
+ * the new row's id: the row is found by what was sent, then the derived
  * fields of every deal follow (a few hundred rows at most).
  */
 export function afterDealNew(body: Partial<Deal>): AfterWrite {
@@ -95,18 +103,30 @@ export function afterDealNew(body: Partial<Deal>): AfterWrite {
   const probability = body.stage
     ? stageProbability(body.stage, sent, DEFAULT_PROBABILITY)
     : undefined;
+  const newProbability =
+    probability !== undefined && probability !== sent ? probability : undefined;
   return async () => {
-    if (probability !== undefined && probability !== sent) {
+    if (newProbability !== undefined || !body.lastActivityAt) {
       const model = GetModel(DealModel);
       const created = (await model.getAll()).filter(
         (deal) =>
           deal.title === body.title &&
           deal.customer === body.customer &&
-          deal.stage === body.stage &&
-          deal.probability === sent,
+          deal.stage === body.stage,
       );
+      const now = new Date();
+      const updates = created.map((deal) => {
+        const changes: Partial<Deal> = {};
+        if (newProbability !== undefined && deal.probability === sent) {
+          changes.probability = newProbability;
+        }
+        if (!deal.lastActivityAt) changes.lastActivityAt = now;
+        return { id: deal._id, changes };
+      });
       await Promise.all(
-        created.map((deal) => model.update(deal._id, { probability })),
+        updates
+          .filter(({ changes }) => Object.keys(changes).length > 0)
+          .map(({ id, changes }) => model.update(id, changes)),
       );
     }
     await syncDerivedFields();
@@ -129,8 +149,8 @@ async function logDealWon(id: string): Promise<void> {
 /**
  * The pipeline table's edit guard result: a deal moved to another stage
  * (across the board or from its form) takes that stage's probability unless
- * the same edit set one, the derived fields follow, and a deal just won is
- * logged.
+ * the same edit set one, a next step typed replaces the kick-off a signed
+ * quote planned, the derived fields follow, and a deal just won is logged.
  */
 export function afterDealEdit(
   id: string,
@@ -139,6 +159,9 @@ export function afterDealEdit(
 ): AfterWrite {
   const { stage } = body;
   const moved = stage !== undefined && stage !== current.stage;
+  // A next step typed over the kick-off a signed quote planned replaces it.
+  const retyped =
+    body.nextStep !== undefined && body.nextStep !== current.nextStep;
   const probability = moved
     ? stageProbability(stage, body.probability, current.probability)
     : undefined;
@@ -146,6 +169,7 @@ export function afterDealEdit(
     if (probability !== undefined) {
       await GetModel(DealModel).update(id, { probability });
     }
+    if (retyped) await GetModel(DealModel).update(id, { kickoffQuote: null });
     await syncDerivedFields();
     if (moved && stage === "won") await logDealWon(id);
   };
