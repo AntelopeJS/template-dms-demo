@@ -8,6 +8,7 @@ import "./demo-app";
 
 interface TemplateConfig {
   requireJwtSecret?: boolean;
+  requireHtmlRenderSecret?: boolean;
 }
 
 export async function construct(config?: TemplateConfig): Promise<void> {
@@ -16,6 +17,11 @@ export async function construct(config?: TemplateConfig): Promise<void> {
   if (config?.requireJwtSecret && !process.env.JWT_SECRET) {
     throw new Error(
       "JWT_SECRET is required in production: it signs the dashboard's tokens, and the development secret is public.",
+    );
+  }
+  if (config?.requireHtmlRenderSecret && !process.env.DMS_HTML_RENDER_SECRET) {
+    throw new Error(
+      "DMS_HTML_RENDER_SECRET is required in production: it signs the backend's calls to the frontend's HTML renderer, and the development secret is public.",
     );
   }
 }
