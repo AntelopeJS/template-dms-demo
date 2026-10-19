@@ -18,11 +18,27 @@ export default defineConfig({
   envOverrides: {
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
+    // One secret signs and verifies the dashboard's tokens.
+    JWT_SECRET: [
+      "modules.dms.config.auth.jwtSecret",
+      "modules.auth-jwt.config.secret",
+    ],
     MONGODB_URL: "modules.mongodb.config.url",
     MONGODB_DATABASE: "modules.mongodb.config.database",
     STRIPE_SECRET_KEY: "modules.dms-saas.config.stripe.secretKey",
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
+  },
+  // `ajs project build/start -e production`: no development secret, and the
+  // module refuses to start until JWT_SECRET is set.
+  environments: {
+    production: {
+      modules: {
+        "template-dms-demo": { config: { requireJwtSecret: true } },
+        dms: { config: { auth: { jwtSecret: "" } } },
+        "auth-jwt": { config: { secret: "" } },
+      },
+    },
   },
   modules: {
     "template-dms-demo": {
@@ -33,6 +49,10 @@ export default defineConfig({
         installCommand: ["pnpm install", "pnpm run build"],
         // Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist.
         reloadCommand: ["pnpm exec tsc"],
+      },
+      config: {
+        // Development signs tokens with the public "dev" secret below.
+        requireJwtSecret: false,
       },
     },
 
