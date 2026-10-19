@@ -29,8 +29,8 @@
 					},
 					"remindOverdue": {
 						"name": "Helio · Relancer les factures échues",
-						"description": "Envoie un rappel de paiement par e-mail pour chaque facture échue depuis assez longtemps et y note la relance",
-						"minDaysOverdue": "Jours après l'échéance",
+						"description": "Envoie à chaque facture échue la relance suivante du calendrier des paramètres dès qu'elle a assez de retard, et y note la relance",
+						"minDaysOverdue": "Jours après l'échéance, sans calendrier dans les paramètres",
 						"minDaysBetween": "Jours entre deux rappels"
 					},
 					"planKickoff": {

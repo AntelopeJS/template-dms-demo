@@ -7,6 +7,7 @@ import { GetModel } from "@antelopejs/interface-database-decorators";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import { CustomerModel, DealModel } from "../../crm/database";
 import { type Invoice, InvoiceModel } from "../../finance/database";
+import { daysLate } from "../../finance/due";
 import { INVOICES_TOPIC } from "../../finance/table";
 import { PROJECT_PAGE_URL } from "../../projects/links";
 import {
@@ -16,6 +17,8 @@ import {
 } from "../../projects/database";
 import { QuoteModel } from "../../sales/database";
 import { QUOTES_PAGE_URL } from "../../sales/links";
+import { currentSettings } from "../../settings/current";
+import type { ReminderStep } from "../../settings/types";
 import { DAY_MS } from "../../shared/seed";
 import {
   mailInstallation,
@@ -37,18 +40,31 @@ interface ReminderInput {
   minDaysBetween?: number;
 }
 
-// Overdue for long enough, and not reminded too recently.
-function needsReminder(invoice: Invoice, input: ReminderInput): boolean {
-  const now = Date.now();
-  const overdueFor = (now - invoice.dueAt.getTime()) / DAY_MS;
+/**
+ * The reminder an overdue invoice is due for, from the schedule of the
+ * Settings page (Finance › Collections): its next step once the invoice is
+ * late by that step's days, nothing once every step was sent. Without a
+ * schedule, an e-mail once it is `minDaysOverdue` late. Never two reminders
+ * within `minDaysBetween` days.
+ */
+function dueReminder(
+  invoice: Invoice,
+  input: ReminderInput,
+  schedule: readonly ReminderStep[],
+): Pick<ReminderStep, "channel"> | undefined {
+  if (invoice.status !== "overdue") return undefined;
   const sinceLast = invoice.remindedAt
-    ? (now - invoice.remindedAt.getTime()) / DAY_MS
+    ? (Date.now() - invoice.remindedAt.getTime()) / DAY_MS
     : Number.POSITIVE_INFINITY;
-  return (
-    invoice.status === "overdue" &&
-    overdueFor >= (input.minDaysOverdue ?? 14) &&
-    sinceLast >= (input.minDaysBetween ?? 7)
-  );
+  if (sinceLast < (input.minDaysBetween ?? 7)) return undefined;
+  const late = daysLate(invoice.dueAt);
+  if (schedule.length === 0) {
+    return late >= (input.minDaysOverdue ?? 14)
+      ? { channel: "email" }
+      : undefined;
+  }
+  const step = schedule[invoice.reminderCount ?? 0];
+  return step && late >= step.afterDays ? step : undefined;
 }
 
 // Stamps the reminder on the invoice; answers its number.
@@ -104,13 +120,29 @@ const remindOverdueInvoices: ActionType<
     },
   },
   async execute(input, ctx) {
-    const overdue = await GetModel(InvoiceModel).getBy("status", "overdue");
-    const due = overdue.filter((invoice) => needsReminder(invoice, input));
+    const [overdue, settings] = await Promise.all([
+      GetModel(InvoiceModel).getBy("status", "overdue"),
+      currentSettings(),
+    ]);
+    const schedule = [...(settings.reminders ?? [])].sort(
+      (a, b) => a.afterDays - b.afterDays,
+    );
+    const due = overdue.flatMap((invoice) => {
+      const step = dueReminder(invoice, input, schedule);
+      return step ? [{ invoice, step }] : [];
+    });
     let sent = 0;
-    for (const invoice of due) {
+    for (const { invoice, step } of due) {
+      const reminderNumber = await stampReminder(invoice);
+      // A registered letter is posted by the office: the step is recorded,
+      // nothing is e-mailed.
+      if (step.channel !== "email") {
+        ctx.log("info", `${invoice.number}: ${step.channel} to send`);
+        continue;
+      }
       const result = await mailInvoiceReminder(
         invoice,
-        await stampReminder(invoice),
+        reminderNumber,
         MAIL_SOURCES.overdueReminders,
       );
       if (result && SENT.has(result.status)) sent += 1;
@@ -121,12 +153,15 @@ const remindOverdueInvoices: ActionType<
         payload: { count: due.length },
       });
     }
-    const amountDue = due.reduce((sum, invoice) => sum + invoice.amountDue, 0);
+    const amountDue = due.reduce(
+      (sum, { invoice }) => sum + invoice.amountDue,
+      0,
+    );
     ctx.log("info", `${due.length} reminder(s), ${sent} e-mailed`);
     return {
       reminded: due.length,
       amountDue,
-      summary: `${due.map(({ number }) => number).join(", ")} · ${money(amountDue)}`,
+      summary: `${due.map(({ invoice }) => invoice.number).join(", ")} · ${money(amountDue)}`,
     };
   },
 };

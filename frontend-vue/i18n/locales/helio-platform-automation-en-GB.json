@@ -29,8 +29,8 @@
 					},
 					"remindOverdue": {
 						"name": "Helio · Remind overdue invoices",
-						"description": "E-mails a payment reminder for every invoice overdue long enough, and stamps the reminder on it",
-						"minDaysOverdue": "Days past the due date",
+						"description": "Sends every overdue invoice the next reminder of the settings schedule once it is late enough, and stamps the reminder on it",
+						"minDaysOverdue": "Days past the due date, without a schedule in the settings",
 						"minDaysBetween": "Days between two reminders"
 					},
 					"planKickoff": {

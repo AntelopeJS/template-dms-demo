@@ -48,9 +48,9 @@ const urgentTicketDispatch: ProcedureDeclaration = {
 
 const overdueInvoiceReminders: ProcedureDeclaration = {
   id: "helio.overdue-invoice-reminders",
-  name: "En semaine à 8 h → relancer les factures en retard de 14 jours",
+  name: "En semaine à 8 h → relancer les factures en retard selon le calendrier",
   description:
-    "Chaque matin de semaine, envoie par e-mail une relance de paiement pour chaque facture en retard de plus de 14 jours (au plus une par semaine et par facture), puis prévient les responsables.",
+    "Chaque matin de semaine, chaque facture en retard reçoit la relance suivante du calendrier des paramètres (Finance › Recouvrement) dès qu'elle en atteint le délai, au plus une par semaine : par e-mail, ou notée pour l'envoi d'un recommandé. Les responsables sont ensuite prévenus.",
   enabled: true,
   graph: graph(
     [
@@ -59,7 +59,6 @@ const overdueInvoiceReminders: ProcedureDeclaration = {
       }),
       node("manual", "trigger", "manual", [0, 1]),
       node("remind", "action", "helio.remind-overdue-invoices", [1, 0], {
-        minDaysOverdue: 14,
         minDaysBetween: 7,
       }),
       node("none", "data", "const.number", [1, 1], { value: 0 }),
