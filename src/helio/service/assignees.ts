@@ -25,12 +25,15 @@ import {
 } from "@antelopejs/interface-data-api/metadata";
 import { GetModel, Model } from "@antelopejs/interface-database-decorators";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
+import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
 import type { TeamRole } from "../shared/roster";
 import { TeamMember, TeamMemberModel } from "../team/database";
+import { TicketModel } from "./database";
+import { SERVICE_TOPIC } from "./options";
 
 /** The roles a ticket can be assigned to. */
 export const TICKET_HOLDER_ROLES: ReadonlySet<TeamRole> = new Set([
@@ -51,6 +54,31 @@ export async function isTicketHolder(id: string | undefined): Promise<boolean> {
   if (!id) return false;
   const member = await GetModel(TeamMemberModel).get(id);
   return member !== undefined && TICKET_HOLDER_ROLES.has(member.role);
+}
+
+/**
+ * Hands the open tickets of members leaving the team back to nobody: they
+ * show in the desk's "Unassigned" view and every unassigned count, ready
+ * for a new holder. Resolved and closed tickets keep who held them.
+ */
+export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
+  const leaving = new Set(memberIds);
+  const model = GetModel(TicketModel);
+  const held = (await model.getAll()).filter(
+    (ticket) =>
+      !ticket.resolvedAt && ticket.assignee && leaving.has(ticket.assignee),
+  );
+  await Promise.all(
+    held.map(({ _id }) =>
+      // null clears the stored holder (undefined would leave it in place).
+      model.update(_id, { assignee: null as unknown as undefined }),
+    ),
+  );
+  if (held.length > 0) {
+    await PublishMessage(SERVICE_TOPIC, "tickets.updated", {
+      payload: { ids: held.map(({ _id }) => _id) },
+    });
+  }
 }
 
 interface SelectPage {

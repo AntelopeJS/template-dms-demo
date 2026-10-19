@@ -129,7 +129,7 @@
 			},
 			"delete": {
 				"title": "Remove {name} from the team? | Remove these {count} members from the team?",
-				"description": "Their tickets and sites keep the history but will need a new owner.",
+				"description": "Their open tickets become unassigned again. Their sites keep the history but will need a new owner.",
 				"confirm": "Remove member | Remove {count} members"
 			},
 			"quick": {

@@ -34,6 +34,11 @@ const count = (value: number) => ({ type: "count", value }) as const;
 const isOpen = (ticket: Ticket): boolean =>
   OPEN_TICKET_STATUSES.has(ticket.status);
 
+// A ticket nobody holds, the rule of the desk's "Unassigned" view: removing a
+// member clears the holder of their open tickets, so none is left with a
+// holder the team no longer has.
+const isUnassigned = (ticket: Ticket): boolean => !ticket.assignee;
+
 const isTechnician = (member: TeamMember): boolean =>
   member.role === "technician";
 
@@ -99,7 +104,7 @@ export function teamStats(rows: WorkloadRows): StatGroupItem[] {
   const techIds = new Set(technicians.map((member) => member._id));
   const onSite = [...peopleOnSite(rows)].filter((id) => techIds.has(id));
   const open = rows.tickets.filter(isOpen);
-  const unassigned = open.filter((ticket) => !ticket.assignee).length;
+  const unassigned = open.filter(isUnassigned).length;
   const onTechs = open.filter(
     (ticket) => ticket.assignee && techIds.has(ticket.assignee),
   ).length;
@@ -253,9 +258,9 @@ export function ticketCoverageMeter(rows: WorkloadRows): MeterProps {
   const open = rows.tickets.filter(isOpen);
   const tally = { technician: 0, other: 0, nobody: 0 };
   for (const ticket of open) {
-    const role = ticket.assignee ? roles.get(ticket.assignee) : undefined;
-    if (!role) tally.nobody += 1;
-    else if (role === "technician") tally.technician += 1;
+    if (isUnassigned(ticket)) tally.nobody += 1;
+    else if (roles.get(ticket.assignee ?? "") === "technician")
+      tally.technician += 1;
     else tally.other += 1;
   }
   const segment = (
