@@ -15,6 +15,7 @@ import {
   type TicketPriority,
 } from "../../service/database";
 import type { TicketSeed } from "../../service/fixtures";
+import { defaultHolderFor } from "../../service/assignees";
 import { notifyUrgentTicket } from "../../service/notifications";
 import { nextTicketNumber } from "../../service/numbering";
 import {
@@ -22,7 +23,7 @@ import {
   SERVICE_TOPIC,
   SLA_HOURS,
 } from "../../service/options";
-import { teamIdsByRole, TEAM_ROSTER } from "../../shared/roster";
+import { TeamMemberModel } from "../../team/database";
 import { fireTicketOpened } from "./events";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -115,7 +116,9 @@ async function insertAlertTicket(
     slaDueAt: new Date(createdAt.getTime() + SLA_HOURS[priority] * HOUR_MS),
     createdAt,
     resolvedAt: undefined,
-    assignee: undefined,
+    // An urgent one is left to the "urgent ticket" procedure (see
+    // defaultHolderFor).
+    assignee: await defaultHolderFor(priority),
     description:
       message ||
       `Alerte reçue de la plateforme de monitoring pour ${site.name} (${site.city}).`,
@@ -197,19 +200,27 @@ const createTicket: ActionType<AlertInput, Record<string, unknown>> = {
   },
 };
 
-// The technician with the fewest open tickets takes the urgent one.
-async function onCallTechnician(): Promise<string> {
-  const technicians = teamIdsByRole("technician");
+// The technician with the fewest open tickets takes the urgent one: one the
+// team has now, so a member removed since is never picked.
+async function onCallTechnician(): Promise<string | undefined> {
+  const technicians = (await GetModel(TeamMemberModel).getAll())
+    .filter((member) => member.role === "technician")
+    .map(({ _id }) => _id);
   const open = (await GetModel(TicketModel).getAll()).filter(
     (ticket) => ticket.assignee && !CLOSED.has(ticket.status),
   );
   const load = (id: string) =>
     open.filter((ticket) => ticket.assignee === id).length;
-  return technicians.reduce((best, id) => (load(id) < load(best) ? id : best));
+  return technicians.reduce<string | undefined>(
+    (best, id) => (best === undefined || load(id) < load(best) ? id : best),
+    undefined,
+  );
 }
 
-const memberName = (id: string | undefined) =>
-  TEAM_ROSTER.find((member) => member.id === id)?.name ?? "—";
+async function memberName(id: string | undefined): Promise<string> {
+  const member = id ? await GetModel(TeamMemberModel).get(id) : undefined;
+  return member?.name ?? "—";
+}
 
 const assignOnCall: ActionType<
   { ticketId?: string },
@@ -252,7 +263,7 @@ const assignOnCall: ActionType<
     const ticket = input.ticketId ? await model.get(input.ticketId) : undefined;
     if (!ticket) throw new Error(`unknown ticket "${input.ticketId ?? ""}"`);
     const assignee = ticket.assignee ?? (await onCallTechnician());
-    if (!ticket.assignee) {
+    if (!ticket.assignee && assignee) {
       await model.update(ticket._id, {
         assignee,
         status: ticket.status === "new" ? "open" : ticket.status,
@@ -262,11 +273,12 @@ const assignOnCall: ActionType<
       });
     }
     const customer = await GetModel(CustomerModel).get(ticket.customer);
-    ctx.log("info", `${ticket.number} handled by ${memberName(assignee)}`);
+    const name = await memberName(assignee);
+    ctx.log("info", `${ticket.number} handled by ${name}`);
     return {
-      assignee: memberName(assignee),
+      assignee: name,
       number: ticket.number,
-      summary: `${ticket.number} · ${memberName(assignee)} · ${ticket.subject} — ${customer?.name ?? ""}`,
+      summary: `${ticket.number} · ${name} · ${ticket.subject} — ${customer?.name ?? ""}`,
       link: deskLink(ticket.number),
     };
   },

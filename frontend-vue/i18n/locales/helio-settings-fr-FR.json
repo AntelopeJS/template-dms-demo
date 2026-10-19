@@ -121,7 +121,7 @@
 				"workday": "Aucune visite ne peut être planifiée en dehors de ces heures.",
 				"sla": "Temps pour répondre à un ticket avant qu'il soit signalé en retard.",
 				"bridgeDays": "Jours de congé supplémentaires, sans aucune visite planifiée.",
-				"defaultTechnician": "Reçoit les tickets qui arrivent sans responsable.",
+				"defaultTechnician": "Reçoit les tickets qui arrivent sans responsable. Un ticket urgent va au technicien qui a le moins de tickets ouverts, par la procédure des tickets urgents.",
 				"apiKey": "Utilisée par la plateforme de monitoring pour lire et envoyer des données.",
 				"monitoringEndpoint": "Communiquez cette adresse à la plateforme de monitoring des onduleurs.",
 				"webhooks": "Helio appelle ces URL quand l'événement se produit.",

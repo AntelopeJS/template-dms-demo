@@ -3,7 +3,7 @@ import {
   FormComponents,
   type FormSection,
 } from "@antelopejs/interface-dms/base/form";
-import { teamController } from "../team/controller";
+import { ticketAssigneeController } from "../service/assignees";
 import { DEFAULT_TRAVEL_RADIUS_KM } from "./defaults";
 import { WEEKDAYS, ZONE_SUGGESTIONS } from "./options";
 
@@ -106,7 +106,8 @@ const fieldworkSection: FormSection = {
       label: "$helio.settings.fields.defaultTechnician",
       description: "$helio.settings.descriptions.defaultTechnician",
       type: new DefaultDataTypes.RelationType({
-        dataApiController: teamController,
+        // The people a ticket can go to, as the desk's Assignee picker.
+        dataApiController: ticketAssigneeController,
         keyMapping: { label: "name", value: "_id", avatar: "avatar" },
         deselectable: true,
       }),

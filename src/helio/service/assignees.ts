@@ -30,6 +30,8 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
+import { HelioSettingsModel } from "../settings/database";
+import { HELIO_SETTINGS_ID } from "../settings/types";
 import type { TeamRole } from "../shared/roster";
 import { TeamMember, TeamMemberModel } from "../team/database";
 import { TicketModel } from "./database";
@@ -54,6 +56,25 @@ export async function isTicketHolder(id: string | undefined): Promise<boolean> {
   if (!id) return false;
   const member = await GetModel(TeamMemberModel).get(id);
   return member !== undefined && TICKET_HOLDER_ROLES.has(member.role);
+}
+
+/**
+ * Who takes a ticket that arrives without a holder (from the desk's form or
+ * a monitoring alert), in this order:
+ * 1. an urgent ticket is left to the "urgent ticket" procedure of the
+ *    automation module, which hands it to the technician holding the fewest
+ *    open tickets (it stays unassigned if that procedure is turned off);
+ * 2. any other one goes to the "Default technician" of the Settings page,
+ *    while the team still has them as a technician or in the office;
+ * 3. else nobody: it waits in the desk's "Unassigned" view.
+ */
+export async function defaultHolderFor(
+  priority: unknown,
+): Promise<string | undefined> {
+  if (priority === "urgent") return undefined;
+  const settings = await GetModel(HelioSettingsModel).get(HELIO_SETTINGS_ID);
+  const id = settings?.defaultTechnician ?? undefined;
+  return (await isTicketHolder(id)) ? id : undefined;
 }
 
 /**

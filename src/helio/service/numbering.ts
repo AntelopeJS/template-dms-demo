@@ -7,6 +7,7 @@ import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { fireTicketOpened } from "../platform/automation/events";
 import { mailTicketReceived } from "../platform/mailing/send";
+import { defaultHolderFor } from "./assignees";
 import { TicketModel } from "./database";
 import { notifyUrgentTicket } from "./notifications";
 
@@ -46,7 +47,8 @@ async function afterCreate(body: Record<string, unknown>): Promise<void> {
 }
 
 /**
- * The `new` route with the number filled in when the body leaves it empty.
+ * The `new` route with the number filled in when the body leaves it empty,
+ * and the holder when it names nobody (see defaultHolderFor).
  * The data API reads the raw request body, which a `new` guard only gets a
  * parsed copy of, so the number is written into the body before the route
  * (permission check, guards, validation) runs. Two tickets created in the
@@ -68,6 +70,10 @@ export function withTicketNumber(
       const body = readBody(raw);
       if (!body) return route.func.call(this, ctx, params, raw, ...rest);
       if (!body.number) body.number = await nextTicketNumber();
+      if (!body.assignee) {
+        const holder = await defaultHolderFor(body.priority);
+        if (holder) body.assignee = holder;
+      }
       const filled = Buffer.from(JSON.stringify(body), "utf8");
       const result: unknown = await route.func.call(
         this,

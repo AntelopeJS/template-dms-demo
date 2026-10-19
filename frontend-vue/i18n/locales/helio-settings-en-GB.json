@@ -121,7 +121,7 @@
 				"workday": "Visits cannot be planned outside these hours.",
 				"sla": "Time to answer a ticket before it is flagged late.",
 				"bridgeDays": "Extra days off when no visit is planned.",
-				"defaultTechnician": "Receives tickets that arrive without an assignee.",
+				"defaultTechnician": "Receives tickets that arrive without an assignee. An urgent one goes to the technician holding the fewest open tickets, through the urgent ticket procedure.",
 				"apiKey": "Used by the monitoring platform to read and push data.",
 				"monitoringEndpoint": "Give this address to the inverter monitoring platform.",
 				"webhooks": "Helio calls these URLs when the event happens.",
