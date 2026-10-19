@@ -331,6 +331,8 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare resolvedAt: Date;
 
+  // Listable so the desk's expanded row can show it.
+  @Listable()
   @Column({
     name: "$helio.service.tickets.columns.description",
     type: new DefaultDataTypes.StringType({
