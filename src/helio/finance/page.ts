@@ -90,10 +90,12 @@ export class PageHelioInvoices extends PageController(
     await sweepOverdueInvoices();
     const link = (target: { tab?: string; view?: string }) =>
       tableViewLink(PageHelioInvoices, "table", target);
+    // A view link names the "all" tab too: a tab remembered from an earlier
+    // visit would otherwise narrow the list the card counts.
     const items = await invoiceKpis({
       overdue: link({ tab: "overdue" }),
-      outstanding: link({ view: "outstanding" }),
-      paid: link({ view: "paid-recently" }),
+      outstanding: link({ tab: "all", view: "outstanding" }),
+      paid: link({ tab: "all", view: "paid-recently" }),
     });
     return { items };
   }

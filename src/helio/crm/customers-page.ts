@@ -208,7 +208,11 @@ export class PageHelioCustomers extends PageController(
           id: "invoices",
           label: "$helio.crm.customers.actions.invoices",
           icon: "i-ph-receipt",
-          target: { type: "page", url: `${INVOICES_URL}?customer={{row._id}}` },
+          // Every status of the customer's invoices, whatever tab was left open.
+          target: {
+            type: "page",
+            url: `${INVOICES_URL}?customer={{row._id}}&table.tab=all`,
+          },
         },
         {
           id: "email",
