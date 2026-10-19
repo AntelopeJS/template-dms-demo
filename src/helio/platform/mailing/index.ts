@@ -65,7 +65,7 @@ async function importHistory(): Promise<void> {
   }
   await recordNotice("history", HISTORY_VERSION, new Date());
   Logging.Info(
-    `[helio] mail history: ${history.imported} imported, ${history.skipped} already there`,
+    `[helio] mail history: ${history.imported} imported, ${history.skipped} already there, ${history.reported} bounce/complaint event(s) reported`,
   );
 }
 

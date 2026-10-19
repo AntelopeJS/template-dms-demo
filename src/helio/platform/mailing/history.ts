@@ -3,10 +3,19 @@
 // or reminded and ticket opened or resolved in the window has its e-mail, at
 // the date the record says. Imported once per send (`importId` is stable), so
 // the Mailing overview shows a living send log from the first boot.
+//
+// An import delivers nothing, so dms-mailing puts no address on its
+// suppression list from one. The bounces and spam complaints of the history
+// are therefore left out of the import and reported right after, as the
+// provider's webhook would, through RecordEmailEvent: dms-mailing then
+// suppresses the hard-bounced and complaining addresses itself, and later
+// sends to them are held back.
 
 import {
   type ImportedSend,
+  type ImportedSendEvent,
   ImportSends,
+  RecordEmailEvent,
 } from "@antelopejs/interface-dms-mailing";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
@@ -38,6 +47,9 @@ export const CONFIRMATION_LEAD_DAYS = 9;
 /** An unpaid invoice gets its first reminder a week after its due date. */
 const FIRST_REMINDER_DAYS = 7;
 const SIMULATED_TICKET = "ticket-sim-";
+const PROVIDER = "smtp";
+/** The provider events dms-mailing may suppress an address for. */
+const REPORTED_EVENTS = new Set<ImportedSendEvent["type"]>(["bounced", "spam"]);
 
 const ENGAGEMENT: Record<HelioTemplateSlug, Engagement> = {
   "helio-quote-sent": { openRate: 0.82, clickRate: 0.55 },
@@ -66,7 +78,7 @@ function toImportedSend(entry: HistoryEntry): ImportedSend {
     sentAt,
     locale: mail.locale,
     variables: mail.variables,
-    provider: "smtp",
+    provider: PROVIDER,
     providerMessageId: `<${importId}@mail.helio.example>`,
     source,
     events: historyEvents(
@@ -76,6 +88,30 @@ function toImportedSend(entry: HistoryEntry): ImportedSend {
       ENGAGEMENT[mail.slug],
     ),
   };
+}
+
+/**
+ * Reports the bounces and complaints held back from the import. Each keeps
+ * its date and details, so a boot that finds it recorded already skips it.
+ *
+ * @returns How many events were recorded
+ */
+async function reportProblems(sends: ImportedSend[]): Promise<number> {
+  let recorded = 0;
+  for (const send of sends) {
+    for (const event of send.events ?? []) {
+      if (!REPORTED_EVENTS.has(event.type) || !send.providerMessageId) continue;
+      const isRecorded = await RecordEmailEvent(DEFAULT_TENANT_ID, {
+        provider: PROVIDER,
+        messageId: send.providerMessageId,
+        type: event.type,
+        at: event.at,
+        details: event.details,
+      });
+      if (isRecorded) recorded++;
+    }
+  }
+  return recorded;
 }
 
 const inWindow = (date: Date | undefined, now: number): date is Date =>
@@ -234,6 +270,8 @@ async function serviceHistory(
 export interface HistoryImport {
   imported: number;
   skipped: number;
+  /** Bounces and complaints reported after the import (see the top). */
+  reported: number;
   /** Projects whose installation date the history already confirmed. */
   confirmedProjects: Array<{ projectId: string; sentAt: Date }>;
 }
@@ -251,13 +289,18 @@ export async function importMailHistory(): Promise<HistoryImport> {
     ...(await billingHistory(customers, now)),
     ...(await serviceHistory(customers, now)),
   ].sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime());
+  const sends = entries.map(toImportedSend);
   const result = await ImportSends({
     tenantId: DEFAULT_TENANT_ID,
-    sends: entries.map(toImportedSend),
+    sends: sends.map((send) => ({
+      ...send,
+      events: send.events?.filter(({ type }) => !REPORTED_EVENTS.has(type)),
+    })),
   });
   return {
     imported: result.imported,
     skipped: result.skipped,
+    reported: await reportProblems(sends),
     confirmedProjects: installations.map(({ projectId, sentAt }) => ({
       projectId,
       sentAt,
