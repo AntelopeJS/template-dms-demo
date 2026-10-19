@@ -107,7 +107,8 @@ function brandingSection(page: ControllerClass): FormSection {
           mimetypes: ["image/png", "image/svg+xml", "image/webp"],
           binding: {
             id: "helio.settings.logo",
-            folderName: "Helio branding",
+            // Named in French like the other Helio media folders (platform/media).
+            folderName: "Logo de l'entreprise",
             permissionsFromPage: page,
           },
         }),
