@@ -143,9 +143,15 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
   };
 }
 
-/** The four cells of the invoice KPI strip. */
+/**
+ * The four cells of the invoice KPI strip. Archived invoices are left out:
+ * the list the cells open hides them (archive mode), so a card counting one
+ * would announce a row the list never shows.
+ */
 export async function invoiceKpis(links: KpiLinks): Promise<StatGroupItem[]> {
-  const invoices = await GetModel(InvoiceModel).getAll();
+  const invoices = (await GetModel(InvoiceModel).getAll()).filter(
+    (invoice) => !invoice.isArchived,
+  );
   return [
     outstandingCell(invoices, links.outstanding),
     overdueCell(invoices, links.overdue),

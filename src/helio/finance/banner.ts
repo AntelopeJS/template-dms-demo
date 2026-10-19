@@ -13,7 +13,10 @@ import { PageHelioInvoices } from "./page";
 
 export async function overdueInvoicesBanner(): Promise<BannerContent | null> {
   await sweepOverdueInvoices();
-  const overdue = await GetModel(InvoiceModel).getBy("status", "overdue");
+  // Archived rows stay out, like in the overdue tab the button opens.
+  const overdue = (
+    await GetModel(InvoiceModel).getBy("status", "overdue")
+  ).filter((invoice) => !invoice.isArchived);
   if (overdue.length === 0) return null;
   const amount = overdue.reduce(
     (total, invoice) => total + invoice.amountDue,

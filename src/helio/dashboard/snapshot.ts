@@ -259,8 +259,11 @@ async function financeCards(): Promise<NavCardItem[]> {
     GetModel(SiteModel).getAll(),
   ]);
   const toCollect = invoices
+    // The invoices' "Outstanding" figure: archived rows stay out of it.
     .filter(
-      (invoice) => invoice.status === "sent" || invoice.status === "overdue",
+      (invoice) =>
+        !invoice.isArchived &&
+        (invoice.status === "sent" || invoice.status === "overdue"),
     )
     .reduce((sum, invoice) => sum + invoice.amountDue, 0);
   const offline = sites.filter((site) => site.inverterStatus === "offline");
