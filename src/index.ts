@@ -1,6 +1,7 @@
 import path from "node:path";
 import { RegisterSchema } from "@antelopejs/interface-database-decorators";
 import { AddFrontendModule } from "@antelopejs/interface-dms/page";
+import { assertClientBaseUrlSet } from "./client-origin";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./components";
@@ -9,6 +10,7 @@ import "./demo-app";
 interface TemplateConfig {
   requireJwtSecret?: boolean;
   requireHtmlRenderSecret?: boolean;
+  requireClientBaseUrl?: boolean;
 }
 
 export async function construct(config?: TemplateConfig): Promise<void> {
@@ -24,6 +26,7 @@ export async function construct(config?: TemplateConfig): Promise<void> {
       "DMS_HTML_RENDER_SECRET is required in production: it signs the backend's calls to the frontend's HTML renderer, and the development secret is public.",
     );
   }
+  if (config?.requireClientBaseUrl) assertClientBaseUrlSet();
 }
 
 export async function start(): Promise<void> {

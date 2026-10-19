@@ -181,7 +181,9 @@ For optional overrides, create a git-ignored `.env` at the repository root.
 The default development workflow does not need one. Two processes read it:
 
 - the **backend** (`pnpm dev`) only reads the variables mapped in the
-  `envOverrides` block of `antelope.config.ts`;
+  `envOverrides` block of `antelope.config.ts`, and `DMS_CLIENT_BASE_URL`,
+  which the configuration turns into the base URL, CORS origins and redirect
+  hosts (a list `envOverrides` cannot set);
 - the **frontend loader** (`ajs dms`, from
   [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend))
   reads the `DMS_*` loader variables below.
@@ -190,7 +192,7 @@ The default development workflow does not need one. Two processes read it:
 | --- | --- | --- | --- |
 | `DMS_API_BASE_URL` | loader | Backend URL the loader fetches the manifest from; discovered automatically in dev. | no |
 | `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). Ephemeral in dev; explicit for build/start. | no |
-| `DMS_CLIENT_BASE_URL` | loader | Dashboard URL. | no |
+| `DMS_CLIENT_BASE_URL` | backend + loader | The dashboard's origin, such as `https://dashboard.example.com`: the base of e-mail links and redirects, the one origin the API's CORS lets in and the one host OAuth returns to. `http://localhost:3001` (and `127.0.0.1:3001`) in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
 | `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with; the loader receives it in the manifest, so set it on the frontend only to override. `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `DMS_OAUTH_RELAY_SECRET` | loader | Override for the OAuth relay secret the backend ships in the manifest. | no |
