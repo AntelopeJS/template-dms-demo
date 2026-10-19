@@ -9,6 +9,7 @@ import {
   DefaultDisplays,
   TableView,
 } from "@antelopejs/interface-dms/base/table-view";
+import { LOCALITIES } from "../crm/seed-data";
 import { INVERTER_STATUSES } from "./controller";
 import { monitoringRoute, PERIOD_SCOPE, TELEMETRY_TOPIC } from "./links";
 
@@ -23,6 +24,14 @@ const statusTabs = INVERTER_STATUSES.map((status) => ({
   iconColor: status.iconColor,
   filter: { accessorKey: "inverterStatus", mode: "is", value: status.value },
 }));
+
+/// The towns Helio installs in, offered by the city quick filter: a quick
+// filter lists the options of a select, which a free-text column has none
+// of. A site whose customer lives elsewhere still shows its city, drawn as
+// written; it is only missing from the filter.
+const CITIES = [...new Set(LOCALITIES.map(({ city }) => city))]
+  .sort((a, b) => a.localeCompare(b, "fr"))
+  .map((city) => ({ value: city, label: city }));
 
 // The side panel of a site: its facts, read for the row in the URL
 // (?record=<site id>). The panel mounts one block: a container's children
@@ -53,7 +62,8 @@ const columns = {
   },
   city: {
     name: "$helio.monitoring.table.columns.city",
-    type: new DefaultDataTypes.StringType(),
+    type: new DefaultDataTypes.SelectType({ items: CITIES }),
+    display: new DefaultDisplays.TextDisplay(),
     sortable: true,
     isVisible: false,
     size: 130,
