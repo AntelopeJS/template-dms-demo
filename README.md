@@ -354,6 +354,7 @@ application (`pnpm run build`, then `npm start`).
 | backend | `FILE_STORAGE_PATH` | `/tmp/dms-file-storage` (see the storage limit below). |
 | backend | `SMTP_HOST` (+ `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`) | Required in production. With no reachable relay (see the egress limit below), set a name that cannot resolve, such as `smtp.invalid`, and know that e-mail does not work on that deployment. |
 | frontend | `DMS_API_BASE_URL` | How the frontend reaches the backend, see the first limit below. Overrides the URL recorded in the snapshot. |
+| frontend | `DMS_TRUSTED_PROXY_HOPS` | `2`. Cloud ends TLS at its edge (Cloudflare, then the gateway), so the server reads the scheme and host from `X-Forwarded-*`. Without it, every form post, sign-in included, answers 403 "missing or untrusted Origin header". |
 | frontend | `DMS_SESSION_SECRET` | Secret, `openssl rand -hex 32`, the same across restarts. |
 | frontend | `DMS_HTML_RENDER_SECRET` | The backend's value. |
 | frontend | `DMS_OAUTH_RELAY_SECRET` | Derived from the backend's `JWT_SECRET`: `node -e 'console.log(require("crypto").createHmac("sha256", process.argv[1]).update("oauth-relay").digest("hex"))' "$JWT_SECRET"`. Without it OAuth sign-in is refused. |
