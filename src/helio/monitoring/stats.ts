@@ -1,10 +1,8 @@
 // The fleet's figures of the moment: the stat strip, the two meters and the
 // facts of one site in its drawer. They read the instant, not the period.
 
-import type { KeyValueListItem } from "@antelopejs/interface-dms/base/key-value-list";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
-import type { ComposedText, Tone } from "@antelopejs/interface-dms/base/types";
-import { INVERTER_STATUSES } from "./controller";
+import type { ComposedText } from "@antelopejs/interface-dms/base/types";
 import {
   capacityOf,
   currentPowerKw,
@@ -18,11 +16,6 @@ import { DEGRADED_OUTPUT, energyKwh } from "./solar";
 
 // A Belgian household uses about 3,500 kWh a year.
 const HOUSEHOLD_DAILY_KWH = 9.6;
-const STATUS_TONES: Record<FleetSite["status"], Tone> = {
-  online: "success",
-  degraded: "warning",
-  offline: "error",
-};
 
 const decimal = (value: number) => ({ type: "number", value }) as const;
 const count = (value: number) => ({ type: "count", value }) as const;
@@ -180,71 +173,46 @@ export function lostCapacityMeter(sites: readonly FleetSite[]): MeterPayload {
   };
 }
 
-/** The facts of one site, for its drawer. */
-export function siteFacts(
+/** What the drawer of a site reads: one record, its figures as numbers. */
+export interface SiteRecord {
+  _id: string;
+  name: string;
+  customer: string;
+  city: string;
+  commissionedAt: string;
+  project: string | null;
+  status: FleetSite["status"];
+  /** Milliseconds since the inverter last reported. */
+  sinceLastReport: number;
+  capacityKwp: number;
+  powerKw: number;
+  todayKwh: number;
+  yieldKwhPerKwp: number;
+}
+
+/**
+ * The facts of one site, for its drawer: a read-only form, which draws each
+ * value through its field's type (the units are the fields' suffixes).
+ * `projectCode` names the site's project, when it has one.
+ */
+export function siteRecord(
   site: FleetSite,
   now: number,
-): { items: KeyValueListItem[] } {
+  projectCode: string | null,
+): SiteRecord {
   const today = energyKwh([site], startOfLocalDay(now), now, now);
-  const items: KeyValueListItem[] = [
-    {
-      id: "customer",
-      label: "$helio.monitoring.facts.customer",
-      value: site.customerName,
-    },
-    { id: "city", label: "$helio.monitoring.facts.city", value: site.city },
-    {
-      id: "status",
-      label: "$helio.monitoring.facts.status",
-      type: "status",
-      value:
-        INVERTER_STATUSES.find(({ value }) => value === site.status)?.label ??
-        "",
-      tone: STATUS_TONES[site.status],
-    },
-    {
-      id: "capacity",
-      label: "$helio.monitoring.facts.capacity",
-      value: kwp(site.capacityKwp),
-    },
-    {
-      id: "power",
-      label: "$helio.monitoring.facts.power",
-      value: kw(currentPowerKw(site, now)),
-    },
-    {
-      id: "today",
-      label: "$helio.monitoring.facts.today",
-      value: kwh(today),
-      detail: {
-        key: "$helio.monitoring.facts.yield",
-        params: { value: decimal(round1(today / site.capacityKwp)) },
-      },
-    },
-    {
-      id: "lastSeen",
-      label: "$helio.monitoring.facts.lastSeen",
-      value: {
-        key: "$helio.monitoring.facts.lastSeenValue",
-        params: { when: { type: "relative", value: lastSeenAt(site, now) } },
-      },
-      tone: site.status === "offline" ? "error" : undefined,
-    },
-    {
-      id: "commissioned",
-      label: "$helio.monitoring.facts.commissioned",
-      type: "date",
-      value: new Date(site.activeFrom).toISOString(),
-    },
-  ];
-  if (site.project) {
-    items.push({
-      id: "project",
-      label: "$helio.monitoring.facts.project",
-      type: "link",
-      value: "$helio.monitoring.facts.projectLink",
-      to: `/helio/operations/project/${encodeURIComponent(site.project)}`,
-    });
-  }
-  return { items };
+  return {
+    _id: site.id,
+    name: site.name,
+    customer: site.customerName,
+    city: site.city,
+    commissionedAt: new Date(site.activeFrom).toISOString(),
+    project: projectCode,
+    status: site.status,
+    sinceLastReport: Math.max(0, now - lastSeenAt(site, now)),
+    capacityKwp: round1(site.capacityKwp),
+    powerKw: round1(currentPowerKw(site, now)),
+    todayKwh: Math.round(today),
+    yieldKwhPerKwp: round1(today / site.capacityKwp),
+  };
 }

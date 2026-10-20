@@ -19,6 +19,7 @@ import { StatGroup } from "@antelopejs/interface-dms/base/stat-group";
 import { TopListCard } from "@antelopejs/interface-dms/base/top-list-card";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioCategory } from "../category";
+import { ProjectModel } from "../projects/database";
 import { heatmapSeries, productionCard, topProducers } from "./charts";
 import { SiteModel } from "./database";
 import { type FleetSite, loadFleet } from "./fleet";
@@ -34,7 +35,7 @@ import {
   capacityMeter,
   fleetStats,
   lostCapacityMeter,
-  siteFacts,
+  siteRecord,
 } from "./stats";
 import { fleetTable } from "./table";
 
@@ -283,6 +284,10 @@ export class PageHelioMonitoring extends PageController(
 
   @Get("sites/:id/facts")
   async facts(@Parameter("id", "param") id: string) {
-    return siteFacts(await findSite(id), Date.now());
+    const site = await findSite(id);
+    const project = site.project
+      ? await GetModel(ProjectModel).get(site.project)
+      : undefined;
+    return siteRecord(site, Date.now(), project?.code ?? null);
   }
 }

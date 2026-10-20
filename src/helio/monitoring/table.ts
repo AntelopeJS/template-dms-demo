@@ -3,8 +3,9 @@
 // computed, not stored). Offline sites stay pinned on top, a click opens the
 // site in a right drawer made of blocks, and a paused page holds the rows.
 
+import type { DataType } from "@antelopejs/interface-dms/base/data-types";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
-import { KeyValueList } from "@antelopejs/interface-dms/base/key-value-list";
+import { Form } from "@antelopejs/interface-dms/base/form";
 import {
   DefaultDisplays,
   TableView,
@@ -34,13 +35,109 @@ const CITIES = [...new Set(LOCALITIES.map(({ city }) => city))]
   .map((city) => ({ value: city, label: city }));
 
 // The drawer of a site: its facts, read for the row in the URL
-// (?record=<site id>). The drawer mounts one block: a container's children
-// are not rendered there (see the report), so the site's own production
-// chart stays out of it.
-const sitePanel = KeyValueList({
+// (?record=<site id>) and shown as the other Helio drawers show a record, a
+// read-only form in titled parts. The drawer mounts one block: a container's
+// children are not rendered there (see the report), so the site's own
+// production chart stays out of it.
+const fact = (id: string, label: string, type: DataType) => ({
+  id,
+  label,
+  type,
+  readonly: true,
+});
+
+const factGroup = (
+  id: string,
+  label: string,
+  description: string,
+  fields: ReturnType<typeof fact>[],
+) => ({ id, label, description, orientation: "vertical" as const, fields });
+
+const sitePanel = Form({
   fetchUrl: monitoringRoute("/sites/{{query.record}}/facts"),
-  realtimeTopic: TELEMETRY_TOPIC,
-  skeletonCount: 9,
+  saveMode: "none",
+  requiresRecord: true,
+  fields: [
+    factGroup(
+      "site",
+      "$helio.monitoring.facts.groups.site.label",
+      "$helio.monitoring.facts.groups.site.description",
+      [
+        fact(
+          "customer",
+          "$helio.monitoring.facts.customer",
+          new DefaultDataTypes.StringType(),
+        ),
+        fact(
+          "city",
+          "$helio.monitoring.facts.city",
+          new DefaultDataTypes.StringType(),
+        ),
+        fact(
+          "commissionedAt",
+          "$helio.monitoring.facts.commissioned",
+          new DefaultDataTypes.DateType(),
+        ),
+        fact(
+          "project",
+          "$helio.monitoring.facts.project",
+          new DefaultDataTypes.StringType(),
+        ),
+      ],
+    ),
+    factGroup(
+      "inverter",
+      "$helio.monitoring.facts.groups.inverter.label",
+      "$helio.monitoring.facts.groups.inverter.description",
+      [
+        fact(
+          "status",
+          "$helio.monitoring.facts.status",
+          new DefaultDataTypes.SelectType({ items: [...INVERTER_STATUSES] }),
+        ),
+        fact(
+          "sinceLastReport",
+          "$helio.monitoring.facts.sinceLastReport",
+          new DefaultDataTypes.StringTimeType(),
+        ),
+      ],
+    ),
+    factGroup(
+      "production",
+      "$helio.monitoring.facts.groups.production.label",
+      "$helio.monitoring.facts.groups.production.description",
+      [
+        fact(
+          "capacityKwp",
+          "$helio.monitoring.facts.capacity",
+          new DefaultDataTypes.NumberType({
+            suffix: "$helio.monitoring.units.kwp",
+          }),
+        ),
+        fact(
+          "powerKw",
+          "$helio.monitoring.facts.power",
+          new DefaultDataTypes.NumberType({
+            suffix: "$helio.monitoring.units.kw",
+          }),
+        ),
+        fact(
+          "todayKwh",
+          "$helio.monitoring.facts.today",
+          new DefaultDataTypes.NumberType({
+            suffix: "$helio.monitoring.units.kwh",
+          }),
+        ),
+        fact(
+          "yieldKwhPerKwp",
+          "$helio.monitoring.facts.yield",
+          new DefaultDataTypes.NumberType({
+            suffix: "$helio.monitoring.units.yield",
+          }),
+        ),
+      ],
+    ),
+  ],
 });
 
 // Sized to fit a 1440 px screen with the sidebar open: figures are written

@@ -34,7 +34,8 @@
 				"kwh": "kWh",
 				"kwValue": "{value} kW",
 				"kwpValue": "{value} kWc",
-				"kwhValue": "{value} kWh"
+				"kwhValue": "{value} kWh",
+				"yield": "kWh/kWc"
 			},
 			"live": {
 				"missed": "{count} site a transmis | {count} sites ont transmis"
@@ -95,18 +96,30 @@
 				"siteNotFound": "Ce site n'est pas suivi."
 			},
 			"facts": {
+				"groups": {
+					"site": {
+						"label": "Site",
+						"description": "À qui appartient l'installation, où, et depuis quand."
+					},
+					"inverter": {
+						"label": "Onduleur",
+						"description": "Son état et le temps écoulé depuis son dernier relevé."
+					},
+					"production": {
+						"label": "Production",
+						"description": "Puissance installée et production du jour."
+					}
+				},
 				"customer": "Client",
 				"city": "Localité",
-				"status": "Onduleur",
+				"commissioned": "Mise en service",
+				"project": "Chantier",
+				"status": "État",
+				"sinceLastReport": "Depuis le dernier relevé",
 				"capacity": "Puissance installée",
 				"power": "Production actuelle",
 				"today": "Énergie du jour",
-				"yield": "{value} kWh/kWc",
-				"lastSeen": "Dernier relevé",
-				"lastSeenValue": "{when}",
-				"commissioned": "Mise en service",
-				"project": "Installation",
-				"projectLink": "Ouvrir le chantier"
+				"yield": "Rendement spécifique du jour"
 			},
 			"table": {
 				"caption": "Sites",

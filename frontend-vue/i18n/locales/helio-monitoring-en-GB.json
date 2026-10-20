@@ -34,7 +34,8 @@
 				"kwh": "kWh",
 				"kwValue": "{value} kW",
 				"kwpValue": "{value} kWp",
-				"kwhValue": "{value} kWh"
+				"kwhValue": "{value} kWh",
+				"yield": "kWh/kWp"
 			},
 			"live": {
 				"missed": "{count} site reported | {count} sites reported"
@@ -95,18 +96,30 @@
 				"siteNotFound": "This site is not monitored."
 			},
 			"facts": {
+				"groups": {
+					"site": {
+						"label": "Site",
+						"description": "Whose installation it is, where, and since when."
+					},
+					"inverter": {
+						"label": "Inverter",
+						"description": "Its state and how long ago it last reported."
+					},
+					"production": {
+						"label": "Production",
+						"description": "Installed power and what the site produces today."
+					}
+				},
 				"customer": "Customer",
 				"city": "City",
-				"status": "Inverter",
+				"commissioned": "Commissioned",
+				"project": "Project",
+				"status": "State",
+				"sinceLastReport": "Since last report",
 				"capacity": "Capacity",
 				"power": "Output now",
 				"today": "Energy today",
-				"yield": "{value} kWh/kWp",
-				"lastSeen": "Last report",
-				"lastSeenValue": "{when}",
-				"commissioned": "Commissioned",
-				"project": "Installation",
-				"projectLink": "Open the project"
+				"yield": "Specific yield today"
 			},
 			"table": {
 				"caption": "Sites",
