@@ -61,7 +61,7 @@
 			},
 			"page": {
 				"name": "Service desk",
-				"description": "After-sales tickets as they arrive: triage, assign and resolve them, reading each one next to the list."
+				"description": "After-sales tickets as they arrive: triage, assign and resolve them, opening each one in a drawer."
 			},
 			"live": {
 				"missed": "{count} new ticket | {count} new tickets",
@@ -158,7 +158,7 @@
 				}
 			},
 			"quickView": {
-				"action": "Open",
+				"action": "Quick view",
 				"title": "Ticket",
 				"description": "The customer's request, its SLA and who handles it.",
 				"position": "Ticket {index} of {total}",

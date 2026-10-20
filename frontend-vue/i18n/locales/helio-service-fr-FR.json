@@ -61,7 +61,7 @@
 			},
 			"page": {
 				"name": "Service après-vente",
-				"description": "Les tickets SAV au fil de l'eau : triez-les, attribuez-les et résolvez-les en les lisant à côté de la liste."
+				"description": "Les tickets SAV au fil de l'eau : triez-les, attribuez-les et résolvez-les en ouvrant chacun dans un volet."
 			},
 			"live": {
 				"missed": "{count} nouveau ticket | {count} nouveaux tickets",
@@ -158,7 +158,7 @@
 				}
 			},
 			"quickView": {
-				"action": "Ouvrir",
+				"action": "Aperçu",
 				"title": "Ticket",
 				"description": "La demande du client, son SLA et qui la traite.",
 				"position": "Ticket {index} sur {total}",

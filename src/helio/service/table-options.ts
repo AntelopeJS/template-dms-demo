@@ -253,7 +253,8 @@ const quickViewAction: CustomRowAction = {
 export const ticketRowActions: TableViewRowActionOptions = {
   add: true,
   edit: true,
-  details: true,
+  // The quick view above shows a ticket: no bottom sheet besides it.
+  details: false,
   duplicate: false,
   // A ticket still open is worked on, not deleted: once resolved or closed
   // it can go (a test ticket, a duplicate call), from its menu or the
