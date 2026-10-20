@@ -302,13 +302,19 @@ export class PageHelioTeam extends PageController(
           id: "quick-view",
           label: "$helio.team.quickView.action",
           icon: "i-ph-sidebar-simple",
-          deepLink: true,
           rule: { field: "_id", in: [] },
           target: {
             type: "drawer",
             direction: "right",
             title: "$helio.team.quickView.title",
             description: "$helio.team.quickView.description",
+            rowTitle: "{name}",
+            positionLabel: "$helio.team.quickView.position",
+            deepLink: true,
+            notFound: {
+              title: "$helio.team.quickView.notFoundTitle",
+              description: "$helio.team.quickView.notFoundDescription",
+            },
             component: ResourceForm(teamController, {
               mode: "view",
               rowId: "{{query.record}}",

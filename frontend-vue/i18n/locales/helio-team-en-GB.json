@@ -138,7 +138,10 @@
 			"quickView": {
 				"action": "Open",
 				"title": "Team member",
-				"description": "Role, region, skills and contact details."
+				"description": "Role, region, skills and contact details.",
+				"position": "Member {index} of {total}",
+				"notFoundTitle": "This team member is no longer listed",
+				"notFoundDescription": "They were removed from the team, or the link is wrong."
 			}
 		}
 	}

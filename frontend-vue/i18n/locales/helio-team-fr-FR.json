@@ -138,7 +138,10 @@
 			"quickView": {
 				"action": "Ouvrir",
 				"title": "Membre de l'équipe",
-				"description": "Rôle, région, compétences et coordonnées."
+				"description": "Rôle, région, compétences et coordonnées.",
+				"position": "Membre {index} sur {total}",
+				"notFoundTitle": "Ce membre ne fait plus partie de l'équipe",
+				"notFoundDescription": "Il a été retiré de l'équipe, ou le lien est erroné."
 			}
 		}
 	}
