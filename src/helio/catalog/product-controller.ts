@@ -233,6 +233,7 @@ class productDataAPI extends DataController(
       min: 0,
       step: 1,
       suffix: "$helio.catalog.products.powerSuffix",
+      width: "compact",
       // A service has no power (left empty): a dash.
       fallback: "—",
     }),
@@ -264,7 +265,11 @@ class productDataAPI extends DataController(
   @Column({
     name: "$helio.catalog.products.columns.stock",
     description: "$helio.catalog.products.stockHint",
-    type: new DefaultDataTypes.NumberType({ min: 0, step: 1 }),
+    type: new DefaultDataTypes.NumberType({
+      min: 0,
+      step: 1,
+      width: "compact",
+    }),
     filterable: true,
     // The units in stock over the reorder threshold, toned by how close the
     // stock is to it.
@@ -281,7 +286,11 @@ class productDataAPI extends DataController(
   @Listable()
   @Column({
     name: "$helio.catalog.products.columns.stockMin",
-    type: new DefaultDataTypes.NumberType({ min: 0, step: 1 }),
+    type: new DefaultDataTypes.NumberType({
+      min: 0,
+      step: 1,
+      width: "compact",
+    }),
     isVisible: false,
   })
   @Optional()
@@ -411,7 +420,11 @@ class productDataAPI extends DataController(
   @Sortable()
   @Column({
     name: "$helio.catalog.products.columns.displayOrder",
-    type: new DefaultDataTypes.NumberType({ min: 0, step: 1 }),
+    type: new DefaultDataTypes.NumberType({
+      min: 0,
+      step: 1,
+      width: "compact",
+    }),
     defaultValue: 999,
     isVisible: false,
   })

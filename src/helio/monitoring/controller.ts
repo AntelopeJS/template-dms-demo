@@ -167,6 +167,7 @@ class siteDataAPI extends DataController(
       min: 0,
       step: 0.1,
       suffix: "$helio.monitoring.units.kwp",
+      width: "compact",
     }),
     filterable: true,
     size: 120,

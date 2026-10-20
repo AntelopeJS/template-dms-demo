@@ -192,6 +192,7 @@ class projectTaskDataAPI extends DataController(
       min: 0,
       step: 0.5,
       suffix: "$helio.projects.units.hours",
+      width: "compact",
     }),
     size: 110,
   })

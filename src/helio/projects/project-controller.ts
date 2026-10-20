@@ -367,6 +367,7 @@ class projectDataAPI extends DataController(
       min: 0,
       step: 0.1,
       suffix: "$helio.projects.units.kwp",
+      width: "compact",
       // A battery or a charger has no peak power (left empty): a dash.
       fallback: "—",
     }),
