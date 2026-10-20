@@ -2,7 +2,8 @@
 // installers. Seeds the dms-saas catalogue (features, plans gating Helio's
 // pages) and a handful of installer workspaces with their subscriptions and
 // invoices, so Modules › SaaS reads like a live business. The workspaces have
-// no made-up people: they belong to the platform owner (owner.ts).
+// no made-up people: they belong to the platform owner (owner.ts). Helio SRL's
+// own workspace gets a billing history too (default-billing.ts).
 //
 // Stripe stays unconfigured in this demo. Paying workspaces carry a fake
 // `sub_demo_…` subscription id: dms-saas only counts an active subscription
@@ -15,6 +16,7 @@ import { Logging } from "@antelopejs/interface-core/logging";
 import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/billing";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
+import { writeDefaultBilling } from "./default-billing";
 import { attachHqPlan, claimDefaultWorkspace } from "./default-workspace";
 import { findOnboardingOwner, linkWorkspace, registerOwnerLink } from "./owner";
 import { hasHelioPermissions, readGrantablePermissions } from "./permissions";
@@ -65,6 +67,7 @@ async function seedSaasShowcase(): Promise<void> {
   await grantNewPermissions(grantable);
   await claimDefaultWorkspace();
   const { created, linked } = await seedWorkspaces(grantable, now);
+  await writeDefaultBilling(now);
   await RecomputeTenantBillingState(DEFAULT_TENANT_ID);
   if (created > 0)
     Logging.Info(`${LOG_PREFIX} ${created} installer workspace(s) seeded`);
