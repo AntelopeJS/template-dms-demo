@@ -1,11 +1,14 @@
 import { resolve } from "node:path";
 import { defineConfig } from "@antelopejs/interface-core/config";
 import { config as loadDotenv } from "dotenv";
+import { clientOrigins } from "./src/client-origin";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
 
-// `localhost` and `127.0.0.1` are distinct browser origins.
-const CLIENT_ORIGINS = ["http://localhost:3001", "http://127.0.0.1:3001"];
+// The dashboard's origin: DMS_CLIENT_BASE_URL, else `ajs dms dev`'s. Read when
+// the configuration is evaluated, which a deployment does at start
+// (`--refresh-config`); production refuses to start without it.
+const CLIENT_ORIGINS = clientOrigins();
 const CLIENT_BASE_URL = CLIENT_ORIGINS[0];
 
 export default defineConfig({
@@ -18,11 +21,44 @@ export default defineConfig({
   envOverrides: {
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
+    DMS_HTML_RENDER_SECRET: "modules.dms.config.htmlRender.serviceSecret",
+    // One secret signs and verifies the dashboard's tokens.
+    JWT_SECRET: [
+      "modules.dms.config.auth.jwtSecret",
+      "modules.auth-jwt.config.secret",
+    ],
     MONGODB_URL: "modules.mongodb.config.url",
+    // Where uploaded files live; a read-only container needs a writable path.
+    FILE_STORAGE_PATH: "modules.file-storage-local.config.storagePath",
+    SMTP_HOST: "modules.nodemailer.config.host",
+    SMTP_USER: "modules.nodemailer.config.auth.user",
+    SMTP_PASSWORD: "modules.nodemailer.config.auth.pass",
+    SMTP_FROM: "modules.nodemailer.config.defaults.from",
     MONGODB_DATABASE: "modules.mongodb.config.database",
     STRIPE_SECRET_KEY: "modules.dms-saas.config.stripe.secretKey",
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
+  },
+  // `ajs project build/start -e production`: no development secret, and the
+  // module refuses to start until JWT_SECRET, DMS_HTML_RENDER_SECRET and
+  // DMS_CLIENT_BASE_URL are set.
+  environments: {
+    production: {
+      modules: {
+        "template-dms-demo": {
+          config: {
+            requireJwtSecret: true,
+            requireHtmlRenderSecret: true,
+            requireClientBaseUrl: true,
+          },
+        },
+        dms: { config: { auth: { jwtSecret: "" } } },
+        "auth-jwt": { config: { secret: "" } },
+        // Ethereal creates an account over the internet at every start;
+        // production sends through the SMTP relay SMTP_HOST names.
+        nodemailer: { config: { ethereal: false, port: 587 } },
+      },
+    },
   },
   modules: {
     "template-dms-demo": {
@@ -34,6 +70,10 @@ export default defineConfig({
         // Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist.
         reloadCommand: ["pnpm exec tsc"],
       },
+      config: {
+        // Development signs tokens with the public "dev" secret below.
+        requireJwtSecret: false,
+      },
     },
 
     // DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy.
@@ -41,7 +81,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.9.4 <1.0.0",
+        version: ">=0.9.8 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
