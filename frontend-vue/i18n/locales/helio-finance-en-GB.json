@@ -94,7 +94,7 @@
 					"nothing": "Only overdue invoices can be reminded."
 				},
 				"quickView": {
-					"action": "Open",
+					"action": "Quick view",
 					"title": "Invoice",
 					"description": "Amounts, due date and payment of the invoice.",
 					"position": "Invoice {index} of {total}",

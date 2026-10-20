@@ -213,15 +213,14 @@ const downloadAction: CustomRowAction = {
   },
 };
 
-// `?record=<invoice id>` (the dashboard's activity feed, a project's
-// invoicing tab) opens the invoice read-only in a right drawer. Its form reads
-// the row from the URL, so the drawer is only opened from it: a rule no row
-// meets keeps it out of the menus.
+// A click on an invoice, its "Quick view" and `?record=<invoice id>` (the
+// dashboard's activity feed, a project's invoicing tab) open the invoice
+// read-only in a right drawer; J / K walk the invoices.
 const quickViewAction: CustomRowAction = {
   id: "quick-view",
   label: "$helio.finance.invoices.quickView.action",
   icon: "i-ph-sidebar-simple",
-  rule: { field: "_id", in: [] },
+  isDefault: true,
   target: {
     type: "drawer",
     direction: "right",
@@ -247,6 +246,7 @@ export const invoicesTable = TableView(invoiceController, {
   caption: "$helio.finance.invoices.caption",
   searchPlaceholder: "$helio.finance.invoices.search",
   labelKey: "number",
+  rowClick: "single",
   archiveMode: true,
   realtimeTopic: INVOICES_TOPIC,
   pagination: "pages",
@@ -319,7 +319,8 @@ export const invoicesTable = TableView(invoiceController, {
     add: true,
     // A copy would carry the original's number: a new invoice starts blank.
     duplicate: false,
-    details: true,
+    // The quick view below shows an invoice: no bottom sheet besides it.
+    details: false,
     hasSelection: true,
     // A paid or cancelled invoice is a closed accounting record: read only.
     edit: {

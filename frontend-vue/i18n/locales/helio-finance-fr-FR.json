@@ -94,7 +94,7 @@
 					"nothing": "Seules les factures en retard peuvent faire l'objet d'un rappel."
 				},
 				"quickView": {
-					"action": "Ouvrir",
+					"action": "Aperçu",
 					"title": "Facture",
 					"description": "Montants, échéance et paiement de la facture.",
 					"position": "Facture {index} sur {total}",
