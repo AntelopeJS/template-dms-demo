@@ -210,13 +210,19 @@ export class PageHelioPipeline extends PageController(
           id: "quick-view",
           label: "$helio.crm.pipeline.quickView.action",
           icon: "i-ph-sidebar-simple",
-          deepLink: true,
           rule: { field: "_id", in: [] },
           target: {
             type: "drawer",
             direction: "right",
             title: "$helio.crm.pipeline.quickView.title",
             description: "$helio.crm.pipeline.quickView.description",
+            rowTitle: "{title}",
+            positionLabel: "$helio.crm.pipeline.quickView.position",
+            deepLink: true,
+            notFound: {
+              title: "$helio.crm.pipeline.quickView.notFoundTitle",
+              description: "$helio.crm.pipeline.quickView.notFoundDescription",
+            },
             component: ResourceForm(dealController, {
               mode: "view",
               rowId: "{{query.record}}",

@@ -96,7 +96,10 @@
 				"quickView": {
 					"action": "Quick view",
 					"title": "Customer",
-					"description": "Contact details, address and account manager."
+					"description": "Contact details, address and account manager.",
+					"position": "Customer {index} of {total}",
+					"notFoundTitle": "This customer no longer exists",
+					"notFoundDescription": "It was deleted, or the link is wrong."
 				},
 				"actions": {
 					"deals": "See the deals",
@@ -213,7 +216,10 @@
 				"quickView": {
 					"action": "Open",
 					"title": "Deal",
-					"description": "Stage, amount, owner and next step of the deal."
+					"description": "Stage, amount, owner and next step of the deal.",
+					"position": "Deal {index} of {total}",
+					"notFoundTitle": "This deal no longer exists",
+					"notFoundDescription": "It was deleted, or the link is wrong."
 				},
 				"ownerChip": "Sales rep"
 			}

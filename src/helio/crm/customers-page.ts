@@ -211,13 +211,19 @@ export class PageHelioCustomers extends PageController(
           id: "quick-view-drawer",
           label: "$helio.crm.customers.quickView.action",
           icon: "i-ph-sidebar-simple",
-          deepLink: true,
           rule: { field: "_id", in: [] },
           target: {
             type: "drawer",
             direction: "right",
             title: "$helio.crm.customers.quickView.title",
             description: "$helio.crm.customers.quickView.description",
+            rowTitle: "{name}",
+            positionLabel: "$helio.crm.customers.quickView.position",
+            deepLink: true,
+            notFound: {
+              title: "$helio.crm.customers.quickView.notFoundTitle",
+              description: "$helio.crm.customers.quickView.notFoundDescription",
+            },
             component: ResourceForm(customerController, {
               mode: "view",
               rowId: "{{query.record}}",

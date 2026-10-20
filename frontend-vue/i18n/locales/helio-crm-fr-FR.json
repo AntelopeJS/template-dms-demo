@@ -96,7 +96,10 @@
 				"quickView": {
 					"action": "Aperçu",
 					"title": "Client",
-					"description": "Coordonnées, adresse et gestionnaire du compte."
+					"description": "Coordonnées, adresse et gestionnaire du compte.",
+					"position": "Client {index} sur {total}",
+					"notFoundTitle": "Ce client n'existe plus",
+					"notFoundDescription": "Il a été supprimé, ou le lien est erroné."
 				},
 				"actions": {
 					"deals": "Voir les affaires",
@@ -213,7 +216,10 @@
 				"quickView": {
 					"action": "Ouvrir",
 					"title": "Affaire",
-					"description": "Étape, montant, responsable et prochaine action de l'affaire."
+					"description": "Étape, montant, responsable et prochaine action de l'affaire.",
+					"position": "Affaire {index} sur {total}",
+					"notFoundTitle": "Cette affaire n'existe plus",
+					"notFoundDescription": "Elle a été supprimée, ou le lien est erroné."
 				},
 				"ownerChip": "Commercial"
 			}
