@@ -175,9 +175,12 @@ class dealDataAPI extends DataController(
     display: new DefaultDisplays.TwoLineDisplay({
       subField: "nextStepLine",
     }),
+    // The deal drawer's header names the deal: its read-only view leaves the
+    // title out (read through `get`, hidden there), the forms keep it.
+    readonlyBehavior: { view: ReadonlyBehaviorType.hidden },
   })
   @Mandatory("new", "edit")
-  @Access(AccessMode.ReadWrite)
+  @Access(AccessMode.ReadWrite, { get: AccessMode.ReadOnly })
   declare title: string;
 
   @Select()
