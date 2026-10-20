@@ -136,7 +136,7 @@
 				"add": "Nouveau membre de l'équipe"
 			},
 			"quickView": {
-				"action": "Ouvrir",
+				"action": "Aperçu",
 				"title": "Membre de l'équipe",
 				"description": "Rôle, région, compétences et coordonnées.",
 				"position": "Membre {index} sur {total}",

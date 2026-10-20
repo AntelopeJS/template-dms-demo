@@ -154,6 +154,7 @@ export class PageHelioTeam extends PageController(
     caption: "$helio.team.table.caption",
     labelKey: "name",
     searchPlaceholder: "$helio.team.table.search",
+    rowClick: "single",
     pageSize: 12,
     displays: [{ id: "cards" }, { id: "table" }],
     defaultDisplay: "cards",
@@ -281,7 +282,8 @@ export class PageHelioTeam extends PageController(
     rowActions: {
       add: true,
       edit: true,
-      details: true,
+      // The quick view below shows a member: no details modal besides it.
+      details: false,
       copyLink: true,
       hasSelection: true,
       delete: {
@@ -294,15 +296,15 @@ export class PageHelioTeam extends PageController(
           confirmLabel: "$helio.team.delete.confirm",
         },
       },
-      // `?record=<member id>` (a project's crew) opens the member read-only
-      // in a right drawer. Its form reads the row from the URL, so the drawer
-      // is only opened from it: a rule no row meets keeps it out of the menus.
+      // A click on a member (a card or a row), their "Quick view" and
+      // `?record=<member id>` (a project's crew) open the member read-only in
+      // a right drawer; "Edit" from the menu opens the form.
       custom: [
         {
           id: "quick-view",
           label: "$helio.team.quickView.action",
           icon: "i-ph-sidebar-simple",
-          rule: { field: "_id", in: [] },
+          isDefault: true,
           target: {
             type: "drawer",
             direction: "right",
