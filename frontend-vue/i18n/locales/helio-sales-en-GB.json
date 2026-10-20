@@ -110,7 +110,7 @@
 				},
 				"actions": {
 					"new": "New quote",
-					"quickView": "Open",
+					"quickView": "Quick view",
 					"send": "Send to customer",
 					"accept": "Mark as accepted",
 					"reject": "Mark as rejected",

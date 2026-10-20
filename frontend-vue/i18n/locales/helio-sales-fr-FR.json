@@ -110,7 +110,7 @@
 				},
 				"actions": {
 					"new": "Nouveau devis",
-					"quickView": "Ouvrir",
+					"quickView": "Aperçu",
 					"send": "Envoyer au client",
 					"accept": "Marquer comme accepté",
 					"reject": "Marquer comme refusé",

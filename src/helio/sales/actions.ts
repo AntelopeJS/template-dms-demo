@@ -15,8 +15,8 @@ import { quoteActionUrl } from "./links";
 const isDraft = { field: "status", equals: "draft" };
 const isSent = { field: "status", equals: "sent" };
 
-// Opened by a click on the row and by `?record=<id>`, the link other Helio
-// pages (projects, dashboard) use to show one quote.
+// Opened by a click on the row, its "Quick view" and `?record=<id>`, the
+// link other Helio pages (projects, dashboard) use to show one quote.
 const quickView: CustomRowAction = {
   id: "quick-view",
   label: "$helio.sales.quotes.actions.quickView",
@@ -168,7 +168,8 @@ export const quoteRowActions: TableViewRowActionOptions = {
   },
   // Only a draft changes: a sent quote is what the customer holds.
   edit: { isEnabled: true, rule: isDraft },
-  details: true,
+  // The quick view shows a quote: no details page besides it.
+  details: false,
   duplicate: { label: "$helio.sales.quotes.actions.duplicate" },
   delete: {
     isEnabled: true,

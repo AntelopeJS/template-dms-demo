@@ -39,6 +39,7 @@ export class PageHelioQuotes extends PageController(
     caption: "$helio.sales.quotes.table.caption",
     labelKey: "number",
     searchPlaceholder: "$helio.sales.quotes.table.search",
+    rowClick: "single",
     defaultSort: { field: "issuedAt", desc: true },
     pageSize: 25,
     tabs: statusTabs,
