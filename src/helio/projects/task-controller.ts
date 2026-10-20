@@ -17,6 +17,7 @@ import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/defa
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
 import {
   Column,
+  ColumnGroup,
   DefaultDisplays,
   Exported,
   Select,
@@ -54,7 +55,13 @@ export const PROJECT_TASK_STATUSES = [
 
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
+// The due date and the estimate share one row of the form: an estimate is a
+// few digits, which a row of its own stretches across the whole form.
 @RegisterDataController()
+@ColumnGroup("schedule", {
+  label: "$helio.projects.tasks.groups.schedule",
+  orientation: "horizontal",
+})
 class projectTaskDataAPI extends DataController(
   ProjectTask,
   TableViewRoutes.All,
@@ -161,6 +168,7 @@ class projectTaskDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.projects.tasks.columns.dueDate",
+    group: "schedule",
     type: new DefaultDataTypes.DateType(),
     filterable: true,
     display: new DefaultDisplays.RelativeDateDisplay({
@@ -179,6 +187,7 @@ class projectTaskDataAPI extends DataController(
   @Exported()
   @Column({
     name: "$helio.projects.tasks.columns.estimateHours",
+    group: "schedule",
     type: new DefaultDataTypes.NumberType({
       min: 0,
       step: 0.5,

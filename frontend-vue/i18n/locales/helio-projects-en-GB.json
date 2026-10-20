@@ -56,6 +56,9 @@
 					"dueDate": "Due",
 					"estimateHours": "Estimate"
 				},
+				"groups": {
+					"schedule": "Schedule"
+				},
 				"placeholders": {
 					"title": "Order the inverter",
 					"project": "Choose a project",

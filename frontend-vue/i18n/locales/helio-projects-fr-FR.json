@@ -56,6 +56,9 @@
 					"dueDate": "Échéance",
 					"estimateHours": "Estimation"
 				},
+				"groups": {
+					"schedule": "Planning"
+				},
 				"placeholders": {
 					"title": "Commander l'onduleur",
 					"project": "Choisir un chantier",
