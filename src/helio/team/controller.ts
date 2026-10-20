@@ -16,7 +16,6 @@ import { Model } from "@antelopejs/interface-database-decorators";
 import { StatusType } from "@antelopejs/interface-dms/base/data-types";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Searchable } from "@antelopejs/interface-dms/base/searchable";
-import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import {
   Column,
   ColumnGroup,
@@ -270,9 +269,8 @@ class teamDataAPI extends DataController(
   declare skills: string[];
 
   // A plain URL rather than an ImageType: seeded avatars are remote images,
-  // which IdentityDisplay and relation pickers draw directly. A read-only
-  // form would show it as a raw link, so the member's quick view leaves it
-  // out (read through `get`, hidden there); the forms keep it editable.
+  // which IdentityDisplay and relation pickers draw directly. Read-only (the
+  // member's quick view) it is drawn as the avatar; the forms edit the URL.
   @Select()
   @Listable()
   @Column({
@@ -280,12 +278,12 @@ class teamDataAPI extends DataController(
     group: "identity",
     type: new DefaultDataTypes.UrlType({
       placeholder: "https://…",
+      preview: "avatar",
     }),
     isVisible: false,
-    readonlyBehavior: { view: ReadonlyBehaviorType.hidden },
   })
   @Optional()
-  @Access(AccessMode.ReadWrite, { get: AccessMode.ReadOnly })
+  @Access(AccessMode.ReadWrite)
   declare avatar: string;
 
   @Listable()
