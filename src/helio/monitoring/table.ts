@@ -1,7 +1,7 @@
 // The fleet table: every site with its live reading, read from the telemetry
 // route of the page (a source table, no data controller: the readings are
 // computed, not stored). Offline sites stay pinned on top, a click opens the
-// site in a side panel made of blocks, and a paused page holds the rows.
+// site in a right drawer made of blocks, and a paused page holds the rows.
 
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { KeyValueList } from "@antelopejs/interface-dms/base/key-value-list";
@@ -33,8 +33,8 @@ const CITIES = [...new Set(LOCALITIES.map(({ city }) => city))]
   .sort((a, b) => a.localeCompare(b, "fr"))
   .map((city) => ({ value: city, label: city }));
 
-// The side panel of a site: its facts, read for the row in the URL
-// (?record=<site id>). The panel mounts one block: a container's children
+// The drawer of a site: its facts, read for the row in the URL
+// (?record=<site id>). The drawer mounts one block: a container's children
 // are not rendered there (see the report), so the site's own production
 // chart stays out of it.
 const sitePanel = KeyValueList({
@@ -200,11 +200,13 @@ export const fleetTable = TableView.fromSource({
         icon: "i-ph-sidebar-simple",
         isDefault: true,
         target: {
-          type: "sidePanel",
+          type: "drawer",
+          direction: "right",
           component: sitePanel,
           title: "$helio.monitoring.table.panel.title",
           rowTitle: "{name}",
           positionLabel: "$helio.monitoring.table.panel.position",
+          deepLink: true,
           notFound: {
             title: "$helio.monitoring.table.panel.notFoundTitle",
             description: "$helio.monitoring.table.panel.notFoundDescription",

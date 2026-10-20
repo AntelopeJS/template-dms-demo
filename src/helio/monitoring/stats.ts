@@ -1,5 +1,5 @@
 // The fleet's figures of the moment: the stat strip, the two meters and the
-// facts of one site in its side panel. They read the instant, not the period.
+// facts of one site in its drawer. They read the instant, not the period.
 
 import type { KeyValueListItem } from "@antelopejs/interface-dms/base/key-value-list";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
@@ -180,7 +180,7 @@ export function lostCapacityMeter(sites: readonly FleetSite[]): MeterPayload {
   };
 }
 
-/** The facts of one site, for its side panel. */
+/** The facts of one site, for its drawer. */
 export function siteFacts(
   site: FleetSite,
   now: number,
