@@ -22,12 +22,18 @@ const quickView: CustomRowAction = {
   label: "$helio.sales.quotes.actions.quickView",
   icon: "i-ph-sidebar-simple",
   isDefault: true,
-  deepLink: true,
   target: {
     type: "drawer",
     direction: "right",
     title: "$helio.sales.quotes.quickView.title",
     description: "$helio.sales.quotes.quickView.description",
+    rowTitle: "{number}",
+    positionLabel: "$helio.sales.quotes.quickView.position",
+    deepLink: true,
+    notFound: {
+      title: "$helio.sales.quotes.quickView.notFoundTitle",
+      description: "$helio.sales.quotes.quickView.notFoundDescription",
+    },
     component: ResourceForm(quoteController, {
       mode: "view",
       rowId: "{{query.record}}",

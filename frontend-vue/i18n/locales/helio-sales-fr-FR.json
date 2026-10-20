@@ -103,7 +103,10 @@
 				},
 				"quickView": {
 					"title": "Devis",
-					"description": "Le devis tel qu'il est, avec ses lignes et ses montants."
+					"description": "Le devis tel qu'il est, avec ses lignes et ses montants.",
+					"position": "Devis {index} sur {total}",
+					"notFoundTitle": "Ce devis n'existe plus",
+					"notFoundDescription": "Il a été supprimé, ou le lien est erroné."
 				},
 				"actions": {
 					"new": "Nouveau devis",

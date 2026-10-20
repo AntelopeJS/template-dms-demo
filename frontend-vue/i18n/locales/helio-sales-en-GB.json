@@ -103,7 +103,10 @@
 				},
 				"quickView": {
 					"title": "Quote",
-					"description": "The quote as it stands, with its lines and amounts."
+					"description": "The quote as it stands, with its lines and amounts.",
+					"position": "Quote {index} of {total}",
+					"notFoundTitle": "This quote no longer exists",
+					"notFoundDescription": "It was deleted, or the link is wrong."
 				},
 				"actions": {
 					"new": "New quote",
