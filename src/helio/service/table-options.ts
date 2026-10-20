@@ -224,17 +224,20 @@ const reopenAction: CustomRowAction = {
 };
 
 // A click on a ticket (or ?record=<ticket id>, the dashboard's activity feed)
-// opens it read-only in the row side panel, next to the list: J / K walk the
-// tickets, "Modifier" from the row menu opens the edit form.
+// opens it read-only in a right drawer: J / K walk the tickets, "Modifier"
+// from the row menu opens the edit form. Its form reads the ticket from the
+// URL, so the drawer keeps it there.
 const quickViewAction: CustomRowAction = {
   id: "quick-view",
   label: "$helio.service.quickView.action",
   icon: "i-ph-sidebar-simple",
   isDefault: true,
   target: {
-    type: "sidePanel",
+    type: "drawer",
+    direction: "right",
     title: "$helio.service.quickView.title",
     rowTitle: "{number} · {subject}",
+    deepLink: true,
     component: ResourceForm(ticketController, {
       mode: "view",
       rowId: "{{query.record}}",
