@@ -221,13 +221,19 @@ const quickViewAction: CustomRowAction = {
   id: "quick-view",
   label: "$helio.finance.invoices.quickView.action",
   icon: "i-ph-sidebar-simple",
-  deepLink: true,
   rule: { field: "_id", in: [] },
   target: {
     type: "drawer",
     direction: "right",
     title: "$helio.finance.invoices.quickView.title",
     description: "$helio.finance.invoices.quickView.description",
+    rowTitle: "{number}",
+    positionLabel: "$helio.finance.invoices.quickView.position",
+    deepLink: true,
+    notFound: {
+      title: "$helio.finance.invoices.quickView.notFoundTitle",
+      description: "$helio.finance.invoices.quickView.notFoundDescription",
+    },
     component: ResourceForm(invoiceController, {
       mode: "view",
       rowId: "{{query.record}}",

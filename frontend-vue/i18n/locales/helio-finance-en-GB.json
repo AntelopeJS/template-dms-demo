@@ -96,7 +96,10 @@
 				"quickView": {
 					"action": "Open",
 					"title": "Invoice",
-					"description": "Amounts, due date and payment of the invoice."
+					"description": "Amounts, due date and payment of the invoice.",
+					"position": "Invoice {index} of {total}",
+					"notFoundTitle": "This invoice no longer exists",
+					"notFoundDescription": "It was deleted, or the link is wrong."
 				},
 				"cancel": {
 					"action": "Cancel the invoice",

@@ -96,7 +96,10 @@
 				"quickView": {
 					"action": "Ouvrir",
 					"title": "Facture",
-					"description": "Montants, échéance et paiement de la facture."
+					"description": "Montants, échéance et paiement de la facture.",
+					"position": "Facture {index} sur {total}",
+					"notFoundTitle": "Cette facture n'existe plus",
+					"notFoundDescription": "Elle a été supprimée, ou le lien est erroné."
 				},
 				"cancel": {
 					"action": "Annuler la facture",
