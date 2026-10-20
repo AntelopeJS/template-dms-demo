@@ -46,7 +46,7 @@
 					"pinned": "Pinned"
 				},
 				"placeholders": {
-					"number": "Leave empty for the next number",
+					"number": "Next number",
 					"subject": "Inverter shows an error code",
 					"customer": "Choose a customer",
 					"site": "Choose the installation",

@@ -46,7 +46,7 @@
 					"pinned": "Épinglé"
 				},
 				"placeholders": {
-					"number": "Laisser vide pour le numéro suivant",
+					"number": "Numéro suivant",
 					"subject": "L'onduleur affiche un code d'erreur",
 					"customer": "Choisir un client",
 					"site": "Choisir l'installation",
