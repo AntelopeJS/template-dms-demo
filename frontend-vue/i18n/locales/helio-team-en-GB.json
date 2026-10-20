@@ -9,7 +9,7 @@
 				"region": "Region",
 				"online": "Availability",
 				"skills": "Skills",
-				"avatar": "Photo URL",
+				"avatar": "Photo",
 				"color": "Planning colour",
 				"hiredAt": "Joined",
 				"bio": "About"
@@ -18,6 +18,9 @@
 				"name": "First and last name",
 				"email": "first.last{'@'}helio.example",
 				"skills": "Add a skill"
+			},
+			"hints": {
+				"avatar": "Address (URL) of an image, shown as the member's avatar."
 			},
 			"roles": {
 				"manager": "Manager",

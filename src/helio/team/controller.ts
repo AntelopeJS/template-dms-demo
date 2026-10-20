@@ -270,11 +270,13 @@ class teamDataAPI extends DataController(
 
   // A plain URL rather than an ImageType: seeded avatars are remote images,
   // which IdentityDisplay and relation pickers draw directly. Read-only (the
-  // member's quick view) it is drawn as the avatar; the forms edit the URL.
+  // member's quick view) it is drawn as the avatar; the forms edit the URL,
+  // which the hint names, as a field reads one label in every mode.
   @Select()
   @Listable()
   @Column({
     name: "$helio.team.columns.avatar",
+    description: "$helio.team.hints.avatar",
     group: "identity",
     type: new DefaultDataTypes.UrlType({
       placeholder: "https://…",

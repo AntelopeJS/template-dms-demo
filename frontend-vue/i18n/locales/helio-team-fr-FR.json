@@ -9,7 +9,7 @@
 				"region": "Région",
 				"online": "Disponibilité",
 				"skills": "Compétences",
-				"avatar": "URL de la photo",
+				"avatar": "Photo",
 				"color": "Couleur au planning",
 				"hiredAt": "Arrivée",
 				"bio": "Présentation"
@@ -18,6 +18,9 @@
 				"name": "Prénom et nom",
 				"email": "prenom.nom{'@'}helio.example",
 				"skills": "Ajouter une compétence"
+			},
+			"hints": {
+				"avatar": "Adresse (URL) d'une image, affichée comme avatar du membre."
 			},
 			"roles": {
 				"manager": "Direction",
