@@ -237,7 +237,12 @@ const quickViewAction: CustomRowAction = {
     direction: "right",
     title: "$helio.service.quickView.title",
     rowTitle: "{number} · {subject}",
+    positionLabel: "$helio.service.quickView.position",
     deepLink: true,
+    notFound: {
+      title: "$helio.service.quickView.notFoundTitle",
+      description: "$helio.service.quickView.notFoundDescription",
+    },
     component: ResourceForm(ticketController, {
       mode: "view",
       rowId: "{{query.record}}",

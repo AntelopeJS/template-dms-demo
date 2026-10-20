@@ -160,7 +160,10 @@
 			"quickView": {
 				"action": "Ouvrir",
 				"title": "Ticket",
-				"description": "La demande du client, son SLA et qui la traite."
+				"description": "La demande du client, son SLA et qui la traite.",
+				"position": "Ticket {index} sur {total}",
+				"notFoundTitle": "Ce ticket n'existe plus",
+				"notFoundDescription": "Il a été supprimé, ou le lien est erroné."
 			},
 			"delete": {
 				"title": "Supprimer ce ticket ? | Supprimer ces {count} tickets ?",
