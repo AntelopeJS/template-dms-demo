@@ -214,7 +214,7 @@
 				},
 				"newDeal": "New deal",
 				"quickView": {
-					"action": "Open",
+					"action": "Quick view",
 					"title": "Deal",
 					"description": "Stage, amount, owner and next step of the deal.",
 					"position": "Deal {index} of {total}",

@@ -106,6 +106,7 @@ export class PageHelioPipeline extends PageController(
     caption: "$helio.crm.pipeline.caption",
     labelKey: "title",
     searchPlaceholder: "$helio.crm.pipeline.search",
+    rowClick: "single",
     // The board first: one column per stage, a card moved to another column
     // changes the deal's stage. The grid stays one click away.
     kanban: { groupByField: "stage", draggable: true, columnMaxHeight: "68vh" },
@@ -202,15 +203,15 @@ export class PageHelioPipeline extends PageController(
         },
       },
       custom: [
-        // `?record=<deal id>` (the dashboard's activity feed, a customer's
-        // deals) opens the deal read-only in a right drawer. Its form reads
-        // the row from the URL, so the drawer is only opened from it: a rule
-        // no row meets keeps it out of the menus, a click edits the deal.
+        // A click on a deal (a card of the board or a row), its "Quick view"
+        // and `?record=<deal id>` (the dashboard's activity feed, a
+        // customer's deals) open the deal read-only in a right drawer; "Edit"
+        // from the menu opens the form.
         {
           id: "quick-view",
           label: "$helio.crm.pipeline.quickView.action",
           icon: "i-ph-sidebar-simple",
-          rule: { field: "_id", in: [] },
+          isDefault: true,
           target: {
             type: "drawer",
             direction: "right",

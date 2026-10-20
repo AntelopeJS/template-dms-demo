@@ -214,7 +214,7 @@
 				},
 				"newDeal": "Nouvelle affaire",
 				"quickView": {
-					"action": "Ouvrir",
+					"action": "Aperçu",
 					"title": "Affaire",
 					"description": "Étape, montant, responsable et prochaine action de l'affaire.",
 					"position": "Affaire {index} sur {total}",
