@@ -81,7 +81,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.9.8 <1.0.0",
+        version: ">=0.10.0 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -202,7 +202,9 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "^1.4.3",
+        // 1.4.4 (mongodb#54) resolves a single row's relations next to a
+        // computed field: the products' edit form reads its range again.
+        version: "^1.4.4",
       },
       config: {
         url: "mongodb://localhost:27017",
