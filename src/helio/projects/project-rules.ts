@@ -14,6 +14,7 @@ import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { QuoteModel } from "../sales/database";
+import { readBody } from "../shared/body-defaults";
 import { ProjectModel } from "./database";
 
 const PREFIX = "CH-";
@@ -30,25 +31,16 @@ export async function nextProjectCode(): Promise<string> {
   return `${PREFIX}${String(last + 1).padStart(DIGITS, "0")}`;
 }
 
-function readBody(raw: Buffer | string): Record<string, unknown> | undefined {
-  const text = Buffer.isBuffer(raw) ? raw.toString("utf8") : raw;
-  if (!text) return undefined;
-  const parsed: unknown = JSON.parse(text);
-  return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-    ? Object.fromEntries(Object.entries(parsed))
-    : undefined;
-}
-
 const blank = (value: unknown): boolean =>
   value === undefined ||
   value === null ||
   (typeof value === "string" && value.trim() === "");
 
 /**
- * The `new` route with the code filled in when the body leaves it empty. The
- * data API reads the raw body, which a `new` guard only gets a parsed copy
- * of, so the code is written into the body before the route (permission
- * check, guards, validation) runs.
+ * The `new` route with the code filled in when the body leaves it empty. A
+ * `new` guard only gets a parsed copy of the body, so the code is written
+ * into the body, handed on parsed, before the route (permission check,
+ * guards, validation) runs.
  */
 export function withProjectCode(
   route: DataControllerCallback,
@@ -67,8 +59,7 @@ export function withProjectCode(
         return route.func.call(this, ctx, params, raw, ...rest);
       }
       body.code = await nextProjectCode();
-      const filled = Buffer.from(JSON.stringify(body), "utf8");
-      return route.func.call(this, ctx, params, filled, ...rest);
+      return route.func.call(this, ctx, params, body, ...rest);
     },
   };
 }

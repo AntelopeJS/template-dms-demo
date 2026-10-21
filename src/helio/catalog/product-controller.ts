@@ -35,7 +35,6 @@ import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 import type { CellSubline } from "@antelopejs/interface-dms/base/table-view/column-display";
 import { productCategoryController } from "./category-controller";
 import { CATEGORIES_TABLE, Product, ProductModel } from "./database";
-import { withListedFamily, withStoredCategory } from "./product-read";
 import {
   FORMS_ONLY_VIEW,
   LOW_STOCK_MARGIN,
@@ -51,13 +50,7 @@ import {
 @RegisterDataController()
 class productDataAPI extends DataController(
   Product,
-  // The range id put back on a single-row read, the family on a list
-  // (product-read.ts).
-  {
-    ...TableViewRoutes.All,
-    get: withStoredCategory(TableViewRoutes.Get),
-    list: withListedFamily(TableViewRoutes.List),
-  },
+  TableViewRoutes.All,
   Controller("/api/helio/products"),
 ) {
   @ModelReference()
@@ -146,9 +139,8 @@ class productDataAPI extends DataController(
   // The family is the parent of the product's range, read in the database
   // from helio_product_categories: the views and the quick filter narrow on
   // five families instead of eleven ranges, without a stored copy that could
-  // drift when a range moves. Hidden by default; the DMS list route only
-  // returns a computed field it filters or sorts on, so the list puts it
-  // back for the column (product-read.ts).
+  // drift when a range moves. Hidden by default: the list route answers it
+  // whenever the Columns menu shows it (Query.ListPage, interface-data-api#43).
   @Listable()
   @Sortable()
   @Computed(

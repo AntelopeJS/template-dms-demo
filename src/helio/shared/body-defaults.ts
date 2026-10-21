@@ -3,7 +3,8 @@ import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 
 type Body = Record<string, unknown>;
 
-function readBody(raw: Buffer | string): Body | undefined {
+/** The JSON object a `new` or `edit` request sent, or undefined. */
+export function readBody(raw: Buffer | string): Body | undefined {
   const text = Buffer.isBuffer(raw) ? raw.toString("utf8") : raw;
   if (!text) return undefined;
   const parsed: unknown = JSON.parse(text);
@@ -18,10 +19,11 @@ export const isBlank = (value: unknown): boolean =>
 
 /**
  * A data API route whose body gets the values `fill` writes in before the
- * route runs. The data API reads the raw request body, which a guard only
- * gets a parsed copy of, so defaults that need the database (the next
- * number, the settings) are written into the body here; the route's
- * permission check, guard and validation then see them as sent.
+ * route runs. A guard only gets a parsed copy of the body, so defaults that
+ * need the database (the next number, the settings) are written here and the
+ * amended object is handed on (the data API takes a parsed body since
+ * interface-data-api#43); the route's permission check, guard and
+ * validation then see them as sent.
  */
 export function withBodyDefaults(
   route: DataControllerCallback,
@@ -39,8 +41,7 @@ export function withBodyDefaults(
       const body = readBody(raw);
       if (!body) return route.func.call(this, ctx, params, raw, ...rest);
       await fill(body);
-      const filled = Buffer.from(JSON.stringify(body), "utf8");
-      return route.func.call(this, ctx, params, filled, ...rest);
+      return route.func.call(this, ctx, params, body, ...rest);
     },
   };
 }

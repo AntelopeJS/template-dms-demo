@@ -25,7 +25,6 @@ import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
 import { applyTenantOwnership } from "@antelopejs/interface-dms/tenant-ownership";
 import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/billing";
 import { TenantSubscriptionModel } from "@antelopejs/interface-dms-saas/db";
-import { isLegacySeedUser, removeLegacyPeople } from "./legacy-people";
 import { WORKSPACES } from "./workspaces";
 
 const LOG_PREFIX = "[helio:saas]";
@@ -53,15 +52,13 @@ async function claimSubscription(
   const model = GetModel(TenantSubscriptionModel, workspaceId);
   const subscription = await model.get(workspaceId);
   if (!subscription) return false;
-  const creator = subscription.createdBy;
-  if (creator && !isLegacySeedUser(workspaceId, creator)) return false;
+  if (subscription.createdBy) return false;
   await model.update(workspaceId, { createdBy: ownerId });
   return true;
 }
 
 /**
- * Makes `owner` the owner of one seeded workspace when it has none, after
- * removing the made-up people an older seed gave it.
+ * Makes `owner` the owner of one seeded workspace when it has none.
  *
  * @returns Whether anything changed, so the caller refreshes its billing state
  */
@@ -70,7 +67,7 @@ export async function linkWorkspace(
   owner: User,
 ): Promise<boolean> {
   if (!(await GetModel(TenantModel).get(workspaceId))) return false;
-  let changed = (await removeLegacyPeople(workspaceId)) > 0;
+  let changed = false;
   const owners = await GetModel(TenantMemberModel, workspaceId).listOwners();
   if (owners.length === 0) {
     await applyTenantOwnership(GetModel(UserModel), owner._id, workspaceId, {

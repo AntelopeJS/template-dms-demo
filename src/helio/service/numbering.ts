@@ -5,6 +5,7 @@
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
+import { readBody } from "../shared/body-defaults";
 import { fireTicketOpened } from "../platform/automation/events";
 import { mailTicketReceived } from "../platform/mailing/send";
 import { defaultHolderFor } from "./assignees";
@@ -24,20 +25,12 @@ export async function nextTicketNumber(): Promise<string> {
   return `${PREFIX}${last + 1}`;
 }
 
-function readBody(raw: Buffer | string): Record<string, unknown> | undefined {
-  const text = Buffer.isBuffer(raw) ? raw.toString("utf8") : raw;
-  if (!text) return undefined;
-  const parsed: unknown = JSON.parse(text);
-  return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-    ? Object.fromEntries(Object.entries(parsed))
-    : undefined;
-}
-
-// Once written, an urgent ticket warns the owners. Looked up by its number:
-// the data API's insert does not hand the new id back in a stable shape.
-async function afterCreate(body: Record<string, unknown>): Promise<void> {
-  if (typeof body.number !== "string") return;
-  const [ticket] = await GetModel(TicketModel).getBy("number", body.number);
+// Once written, an urgent ticket warns the owners. `new` answers the created
+// row with its `_id` (interface-data-api#43).
+async function afterCreate(created: unknown): Promise<void> {
+  const id = (created as { _id?: unknown } | null)?._id;
+  if (typeof id !== "string") return;
+  const ticket = await GetModel(TicketModel).get(id);
   if (!ticket) return;
   if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);
   // Helio platform: the customer's acknowledgement e-mail (in the background,
@@ -49,9 +42,9 @@ async function afterCreate(body: Record<string, unknown>): Promise<void> {
 /**
  * The `new` route with the number filled in when the body leaves it empty,
  * and the holder when it names nobody (see defaultHolderFor).
- * The data API reads the raw request body, which a `new` guard only gets a
- * parsed copy of, so the number is written into the body before the route
- * (permission check, guards, validation) runs. Two tickets created in the
+ * A `new` guard only gets a parsed copy of the body, so the number is
+ * written into the body, handed on parsed, before the route (permission
+ * check, guards, validation) runs. Two tickets created in the
  * same instant could draw the same number: fine for a demo, a real desk
  * would use an atomic counter.
  */
@@ -74,15 +67,14 @@ export function withTicketNumber(
         const holder = await defaultHolderFor(body.priority);
         if (holder) body.assignee = holder;
       }
-      const filled = Buffer.from(JSON.stringify(body), "utf8");
       const result: unknown = await route.func.call(
         this,
         ctx,
         params,
-        filled,
+        body,
         ...rest,
       );
-      await afterCreate(body);
+      await afterCreate(result);
       return result;
     },
   };
