@@ -60,11 +60,8 @@ export default defineConfig({
 
     // DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy.
     dms: {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms",
-        version: ">=0.9.8 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms" },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
         homepage: "/home",
@@ -103,11 +100,8 @@ export default defineConfig({
       },
     },
     "dms-saas": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-saas",
-        version: ">=0.6.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-saas" },
       config: {
         stripe: {
           secretKey: "sk_test_replace_me",
