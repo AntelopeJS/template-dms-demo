@@ -34,8 +34,8 @@ const CITIES = [...new Set(LOCALITIES.map(({ city }) => city))]
   .sort((a, b) => a.localeCompare(b, "fr"))
   .map((city) => ({ value: city, label: city }));
 
-// The drawer of a site: its facts, read for the row in the URL
-// (?record=<site id>) and shown as the other Helio drawers show a record, a
+// The drawer of a site: its facts, read for the row it opens on (clicked,
+// or named by ?record=<site id>) and shown as the other Helio drawers show a record, a
 // read-only form in titled parts. The drawer mounts one block: a container's
 // children are not rendered there (see the report), so the site's own
 // production chart stays out of it.
@@ -54,7 +54,7 @@ const factGroup = (
 ) => ({ id, label, description, orientation: "vertical" as const, fields });
 
 const sitePanel = Form({
-  fetchUrl: monitoringRoute("/sites/{{query.record}}/facts"),
+  fetchUrl: monitoringRoute("/sites/{{row.id}}/facts"),
   saveMode: "none",
   requiresRecord: true,
   fields: [

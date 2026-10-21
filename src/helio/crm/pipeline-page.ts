@@ -226,7 +226,7 @@ export class PageHelioPipeline extends PageController(
             },
             component: ResourceForm(dealController, {
               mode: "view",
-              rowId: "{{query.record}}",
+              rowId: "{{row._id}}",
             }),
           },
         },

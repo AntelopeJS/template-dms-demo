@@ -18,7 +18,6 @@ import { type Customer, CustomerModel } from "./database";
 import { isValidVatNumber } from "./vat-number";
 import {
   CUSTOMER_DELETE_CONFIRM_URL,
-  CUSTOMER_RECORD_URL,
   INVOICES_URL,
   PIPELINE_URL,
   PROJECTS_URL,
@@ -202,16 +201,13 @@ export class PageHelioCustomers extends PageController(
       },
       custom: [
         // The quick view: a right drawer showing the customer's own table
-        // form, read-only. Its form reads the row from ?record=, which the
-        // drawer writes only after it mounted: opened from a click, the form
-        // would find no row. So the drawer is only ever opened from the URL
-        // (this deep-linked action, kept out of the menus by a rule no row
-        // meets), and the click goes through the URL (the next action).
+        // form, read-only, for the row clicked (`{{row._id}}`) or the one
+        // `?record=<id>` names.
         {
-          id: "quick-view-drawer",
+          id: "quick-view",
           label: "$helio.crm.customers.quickView.action",
           icon: "i-ph-sidebar-simple",
-          rule: { field: "_id", in: [] },
+          isDefault: true,
           target: {
             type: "drawer",
             direction: "right",
@@ -226,16 +222,9 @@ export class PageHelioCustomers extends PageController(
             },
             component: ResourceForm(customerController, {
               mode: "view",
-              rowId: "{{query.record}}",
+              rowId: "{{row._id}}",
             }),
           },
-        },
-        {
-          id: "quick-view",
-          label: "$helio.crm.customers.quickView.action",
-          icon: "i-ph-sidebar-simple",
-          isDefault: true,
-          target: { type: "page", url: CUSTOMER_RECORD_URL },
         },
         {
           id: "deals",

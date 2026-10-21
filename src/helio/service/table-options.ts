@@ -245,7 +245,7 @@ const quickViewAction: CustomRowAction = {
     },
     component: ResourceForm(ticketController, {
       mode: "view",
-      rowId: "{{query.record}}",
+      rowId: "{{row._id}}",
     }),
   },
 };

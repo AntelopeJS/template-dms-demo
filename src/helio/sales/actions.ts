@@ -36,7 +36,7 @@ const quickView: CustomRowAction = {
     },
     component: ResourceForm(quoteController, {
       mode: "view",
-      rowId: "{{query.record}}",
+      rowId: "{{row._id}}",
     }),
   },
 };

@@ -319,7 +319,7 @@ export class PageHelioTeam extends PageController(
             },
             component: ResourceForm(teamController, {
               mode: "view",
-              rowId: "{{query.record}}",
+              rowId: "{{row._id}}",
             }),
           },
         },

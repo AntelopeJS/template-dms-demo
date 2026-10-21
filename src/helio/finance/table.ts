@@ -235,7 +235,7 @@ const quickViewAction: CustomRowAction = {
     },
     component: ResourceForm(invoiceController, {
       mode: "view",
-      rowId: "{{query.record}}",
+      rowId: "{{row._id}}",
     }),
   },
 };
