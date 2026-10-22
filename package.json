@@ -18,8 +18,9 @@
     "knip:all": "knip --workspace ."
   },
   "dependencies": {
-    "@antelopejs/core": "1.16.0",
-    "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.1.tgz",
+    "@antelopejs/api": "file:vendor/antelopejs-api-1.3.5-af.1.tgz",
+    "@antelopejs/core": "file:vendor/antelopejs-core-1.16.0-af.1.tgz",
+    "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.2.tgz",
     "@antelopejs/dms-saas": "file:vendor/antelopejs-dms-saas-0.7.4-af.1.tgz",
     "@antelopejs/interface-api": "^0.0.15",
     "@antelopejs/interface-auth": "^0.0.7",
@@ -46,7 +47,17 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "@antelopejs/core": "file:vendor/antelopejs-core-1.16.0-af.1.tgz",
+      "@antelopejs/api": "file:vendor/antelopejs-api-1.3.5-af.1.tgz",
+      "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.2.tgz"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@antelopejs/core": "1.16.0-af.1"
+      }
+    }
   },
   "antelopeJs": {
     "baseUrl": "dist",

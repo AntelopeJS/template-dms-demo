@@ -4,16 +4,24 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@antelopejs/core': file:vendor/antelopejs-core-1.16.0-af.1.tgz
+  '@antelopejs/api': file:vendor/antelopejs-api-1.3.5-af.1.tgz
+  '@antelopejs/dms': file:vendor/antelopejs-dms-0.9.8-af.2.tgz
+
 importers:
 
   .:
     dependencies:
+      '@antelopejs/api':
+        specifier: file:vendor/antelopejs-api-1.3.5-af.1.tgz
+        version: file:vendor/antelopejs-api-1.3.5-af.1.tgz
       '@antelopejs/core':
-        specifier: 1.16.0
-        version: 1.16.0
+        specifier: file:vendor/antelopejs-core-1.16.0-af.1.tgz
+        version: file:vendor/antelopejs-core-1.16.0-af.1.tgz
       '@antelopejs/dms':
-        specifier: file:vendor/antelopejs-dms-0.9.8-af.1.tgz
-        version: file:vendor/antelopejs-dms-0.9.8-af.1.tgz(@antelopejs/core@1.16.0)(@antelopejs/interface-auth@0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5))
+        specifier: file:vendor/antelopejs-dms-0.9.8-af.2.tgz
+        version: file:vendor/antelopejs-dms-0.9.8-af.2.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)(@antelopejs/interface-auth@0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5))
       '@antelopejs/dms-saas':
         specifier: file:vendor/antelopejs-dms-saas-0.7.4-af.1.tgz
         version: file:vendor/antelopejs-dms-saas-0.7.4-af.1.tgz(@antelopejs/interface-auth@0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-file-storage@0.1.4(@antelopejs/interface-core@0.2.5))(@types/node@26.6.5)
@@ -44,7 +52,7 @@ importers:
     devDependencies:
       '@antelopejs/dms-frontend':
         specifier: file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz
-        version: file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz(@antelopejs/core@1.16.0)
+        version: file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)
       '@antelopejs/tooling-configs':
         specifier: ^0.0.9
         version: 0.0.9(knip@6.42.1)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
@@ -78,8 +86,13 @@ packages:
   2fa@0.1.2:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
-  '@antelopejs/core@1.16.0':
-    resolution: {integrity: sha512-dj1R8xPgLzkTksfenPNh3kX1fffRnWktielk1yad/4/1wTEMhkPSx1WQ/4QI98d95L6Th0EMGTV/U4o84p/2yw==}
+  '@antelopejs/api@file:vendor/antelopejs-api-1.3.5-af.1.tgz':
+    resolution: {integrity: sha512-Ut2nTQyS5vxKFOL54k3fs0tgfULnu2VleXxHQECiFoQpecUv5b8NQ8aKKcUSheom+jCHME/Wil8QuTs+kP1oeg==, tarball: file:vendor/antelopejs-api-1.3.5-af.1.tgz}
+    version: 1.3.5-af.1
+
+  '@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz':
+    resolution: {integrity: sha512-JNc5rId6LLV+DnrnYH6+sAwLuyTBRMLc6jqGhFAODupvXTOtcWRll8lfJnkQ/2nbSrOZCnRagTdwTdvYtwZ3DA==, tarball: file:vendor/antelopejs-core-1.16.0-af.1.tgz}
+    version: 1.16.0-af.1
     engines: {node: '>=20.19'}
     hasBin: true
 
@@ -95,9 +108,9 @@ packages:
     resolution: {integrity: sha512-wlyOEyQ1rG0t9n1iJjdmVHIHfrhmZpPSmr/zYeoxj2PB7Bjbs8NqJ+BqUxGLxNu0BvJLvSTLGQSMV5cYFwBAFA==, tarball: file:vendor/antelopejs-dms-saas-0.7.4-af.1.tgz}
     version: 0.7.4-af.1
 
-  '@antelopejs/dms@file:vendor/antelopejs-dms-0.9.8-af.1.tgz':
-    resolution: {integrity: sha512-GaONHPCxB/1mSXM10XleYGabc9BTvnBwKk/rhpypC2SCO3LzZQ8xz85JFbXnHQ83nTfTAeWD+Grf8X+gGL30Mw==, tarball: file:vendor/antelopejs-dms-0.9.8-af.1.tgz}
-    version: 0.9.8-af.1
+  '@antelopejs/dms@file:vendor/antelopejs-dms-0.9.8-af.2.tgz':
+    resolution: {integrity: sha512-RFvITBKPpFfL8t4uFPxAF3wC4NTYyyv01Tl7O8cMnQAEtFnyjes18JuhhNjVpDMp8RRq5rW7GFTFe9RYr+Z/2w==, tarball: file:vendor/antelopejs-dms-0.9.8-af.2.tgz}
+    version: 0.9.8-af.2
     peerDependencies:
       '@antelopejs/core': '>=1.16.0 <2'
     peerDependenciesMeta:
@@ -1808,6 +1821,18 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
+  ws@8.22.0:
+    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
@@ -1866,7 +1891,18 @@ snapshots:
       qr-image: 3.2.0
       thirty-two: 0.0.2
 
-  '@antelopejs/core@1.16.0':
+  '@antelopejs/api@file:vendor/antelopejs-api-1.3.5-af.1.tgz':
+    dependencies:
+      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.2.5)
+      '@antelopejs/interface-api-util': 0.1.3(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5)
+      '@antelopejs/interface-core': 0.2.5
+      reflect-metadata: 0.2.2
+      ws: 8.22.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz':
     dependencies:
       '@antelopejs/interface-core': 0.2.5
       '@clack/prompts': 1.8.1
@@ -1881,9 +1917,9 @@ snapshots:
       semver: 7.8.5
       typescript: 5.9.3
 
-  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz(@antelopejs/core@1.16.0)':
+  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)':
     dependencies:
-      '@antelopejs/core': 1.16.0
+      '@antelopejs/core': file:vendor/antelopejs-core-1.16.0-af.1.tgz
       chokidar: 4.0.3
       commander: 13.1.0
       ignore: 7.0.12
@@ -1916,7 +1952,7 @@ snapshots:
       - '@antelopejs/interface-file-storage'
       - '@types/node'
 
-  '@antelopejs/dms@file:vendor/antelopejs-dms-0.9.8-af.1.tgz(@antelopejs/core@1.16.0)(@antelopejs/interface-auth@0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5))':
+  '@antelopejs/dms@file:vendor/antelopejs-dms-0.9.8-af.2.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)(@antelopejs/interface-auth@0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5))':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.2.5)
@@ -1941,7 +1977,7 @@ snapshots:
       ua-parser-js: 2.0.10
       zod: 3.24.4
     optionalDependencies:
-      '@antelopejs/core': 1.16.0
+      '@antelopejs/core': file:vendor/antelopejs-core-1.16.0-af.1.tgz
       '@antelopejs/interface-dms-automation': 0.2.1(@antelopejs/interface-core@0.2.5)
       '@antelopejs/interface-redis': 0.0.9(@antelopejs/interface-core@0.2.5)
     transitivePeerDependencies:
@@ -3484,6 +3520,8 @@ snapshots:
       strip-ansi: 7.2.0
 
   wrappy@1.0.2: {}
+
+  ws@8.22.0: {}
 
   xtend@4.0.2: {}
 

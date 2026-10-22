@@ -182,13 +182,8 @@ export default defineConfig({
       },
     },
     api: {
-      source: {
-        type: "package",
-        package: "@antelopejs/api",
-        // 1.3.0 publishes the API_* variables referenced above; 1.3.3 ends open
-        // connections on stop, so Ctrl+C does not wait for a dashboard tab.
-        version: "^1.3.5",
-      },
+      // af/integration: the packed module vendored in vendor/ (startup gate, AF·01).
+      source: { type: "local", path: "node_modules/@antelopejs/api" },
       config: {
         servers: [
           {

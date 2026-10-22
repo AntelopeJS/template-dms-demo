@@ -1,0 +1,6 @@
+{
+  "servicePorts": {
+    "af01-mongo": 30479,
+    "af01-dms": 31937
+  }
+}
