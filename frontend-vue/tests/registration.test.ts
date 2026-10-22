@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest'
 import frontendModule from '../dms.frontend'
 
-it('registers no project component: every screen is made of DMS blocks', async () => {
+it('registers only the home page components: Helio is made of DMS blocks', async () => {
 	const registerComponent = vi.fn()
 	await frontendModule.setup({
 		options: { public: {} },
@@ -16,5 +16,5 @@ it('registers no project component: every screen is made of DMS blocks', async (
 		use: vi.fn(),
 	})
 	const names = registerComponent.mock.calls.map(([name]) => name)
-	expect(names).toEqual([])
+	expect(names).toEqual(['DemoHomeHero', 'DemoHomeProse'])
 })

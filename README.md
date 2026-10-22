@@ -9,8 +9,9 @@ A ready-to-run [AntelopeJS DMS](https://dms.antelopejs.com) project: every DMS
 feature module and Helio, a complete demo business app, translated in English
 and French.
 
-- **Home**: an editorial presentation of the demo (`Hero` and `Prose` blocks,
-  texts per language in `content/home/`).
+- **Home**: an editorial presentation of the demo (a hero and long-form
+  Markdown sections, two Vue components of this template, texts per language
+  in `content/home/`).
 - **Helio**: the back-office of a fictional solar installer (sales pipeline,
   quotes, customers, catalog, projects, live service desk, team, invoices, live
   fleet monitoring, settings and dashboard), made only of generic DMS blocks
@@ -49,12 +50,11 @@ The local module lives in [`src/`](./src):
 
 - `src/index.ts` — module lifecycle entry point; also registers the local
   frontend module via `AddFrontendModule`.
-- `src/home.ts` — the `home` page, made of DMS blocks only: a `Banner`
-  introducing the demo, a `StatGroup` of figures about Helio, a `NavCardGrid`
-  with one card per Helio page (read from the Helio category), what AntelopeJS
-  brought (with links to the docs), the installed modules, a getting-started
-  list and a `CodeBlock` quoting a real Helio declaration
-  (`src/home-excerpt.ts`).
+- `src/home.ts` — the `home` page: a hero (`CustomComponent("DemoHomeHero")`),
+  a `StatGroup` of figures about Helio counted at runtime, the story in
+  long-form sections (`CustomComponent("DemoHomeProse")`, each reading the
+  Markdown of `content/home/` in the reader's language from the page's
+  `sections/:id` route) and a `NavCardGrid` of links.
 - `src/helio/` — **Helio**, its own sidebar section: one folder per domain
   (`crm`, `sales`, `catalog`, `projects`, `service`, `team`, `finance`,
   `monitoring`, `settings`, `dashboard`), each holding its Mongo tables and
@@ -230,9 +230,12 @@ serves it.
 
 [`frontend-vue/`](./frontend-vue) is this template's own frontend module. Its
 `dms.frontend.ts` entry registers every component under `app/components/` as
-`Demo<Name>`, which is how the backend would reference one through
-`CustomComponent("demo-<name>")`; the demo ships none, every screen being made
-of DMS blocks. The module ships the `i18n/locales/*.json` catalogs (`demo-*`
+`Demo<Name>`, which is how the backend references one through
+`CustomComponent("Demo<Name>")`. Helio ships none, every one of its screens
+being made of DMS blocks; the home page's hero and long-form sections are the
+template's own (`HomeHero.vue`, `HomeProse.vue`). `HomeProse` reads Markdown
+with `marked` and draws it as Vue nodes: raw HTML is dropped, and only
+`http(s)`, `mailto:`, `tel:`, paths and anchors become links (`app/prose/`). The module ships the `i18n/locales/*.json` catalogs (`demo-*`
 for the home page, `helio-*` per Helio domain), merged into the dashboard's.
 
 It is a workspace package with its own ESLint, Prettier and Vitest setup.
