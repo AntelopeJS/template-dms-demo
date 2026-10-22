@@ -10,6 +10,7 @@ overrides:
   '@antelopejs/dms': file:vendor/antelopejs-dms-0.9.8-af.6.tgz
   '@antelopejs/interface-dms': file:vendor/antelopejs-interface-dms-0.7.5+af.2.tgz
   '@antelopejs/interface-dms-automation': 0.3.0
+  '@antelopejs/interface-file-storage': 0.1.4
 
 importers:
 

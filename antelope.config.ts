@@ -172,10 +172,12 @@ export default defineConfig({
       },
     },
     "file-storage-local": {
+      // af/integration: exactly 0.1.9 through the root lockfile. 0.1.10/0.1.11
+      // need interface-api 0.0.16, and a fresh 0.1.9 install alone picks up
+      // interface-file-storage 0.1.5, whose writeFile 0.1.9 does not implement.
       source: {
-        type: "package",
-        package: "@antelopejs/file-storage-local",
-        version: "^0.1.9",
+        type: "local",
+        path: "node_modules/@antelopejs/file-storage-local",
       },
       config: {
         storagePath: ".antelope/file-storage",
