@@ -10,4 +10,6 @@ USER node
 COPY --chown=node:node . .
 RUN pnpm install --frozen-lockfile && pnpm run build
 ENV NODE_ENV=production
-CMD ["pnpm", "start"]
+# Start from the installed binary, not through pnpm: corepack would fetch pnpm
+# from the registry at container start, and tenant egress refuses it.
+CMD ["/app/node_modules/.bin/ajs-dms", "start", "--workspace", ".dms-frontend"]
