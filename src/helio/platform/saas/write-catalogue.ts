@@ -8,6 +8,7 @@ import { GetModel } from "@antelopejs/interface-database-decorators";
 import {
   type Feature,
   FeatureModel,
+  type Plan,
   PlanModel,
 } from "@antelopejs/interface-dms-saas/db";
 import { FEATURES, type LocalizedText, type SeedFeature } from "./features";
@@ -32,8 +33,8 @@ function toFeatureRow(feature: SeedFeature): SeedRow {
   };
 }
 
-function localizeAll(feature: Feature): Feature {
-  return feature.localize(ALL_LOCALES);
+function localizeAll<Row extends Feature | Plan>(row: Row): Row {
+  return row.localize(ALL_LOCALES) as Row;
 }
 
 function toPlanRow(
@@ -41,8 +42,8 @@ function toPlanRow(
   grantable: string[],
   createdAt: Date,
 ): SeedRow {
-  const { id, grant, features, ...fields } = plan;
-  return {
+  const { id, grant, features, borderLabel, ...fields } = plan;
+  const row: SeedRow = {
     ...fields,
     _id: id,
     features: Object.entries(features).map(([featureId, value]) => ({
@@ -57,6 +58,9 @@ function toPlanRow(
     createdAt,
     updatedAt: createdAt,
   };
+  // No badge is no text: a localized field cannot be read back from a null.
+  if (borderLabel) row.borderLabel = borderLabel;
+  return row;
 }
 
 /** Writes the features and plans that are not stored yet. */
@@ -73,6 +77,8 @@ export async function writeCatalogue(
   await insertMissing(
     PlanModel,
     PLANS.map((plan) => toPlanRow(plan, grantable, createdAt)),
+    undefined,
+    localizeAll,
   );
 }
 
