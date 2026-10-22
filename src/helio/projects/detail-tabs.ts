@@ -6,6 +6,7 @@ import {
   ActivityFeed,
   BlockFunctions,
   Card,
+  type FormBuilder,
   FormEvents,
   FormFunctions,
   Grid,
@@ -84,12 +85,14 @@ export function overviewPanel() {
 // the URL on creation). FIELD_CHANGE fires for every field once the form
 // has loaded, so a watch keyed on the status (which always holds a value,
 // "todo" on a new task) hides them from the start.
-const TASK_FORM_HIDDEN = ["position", "project"].map((field) => ({
-  event: FormEvents.FIELD_CHANGE,
-  functionId: FormFunctions.SET_FIELD_HIDDEN,
-  params: { targetField: field, setHidden: true },
-  onParam: [{ key: "fieldId", value: "status" }],
-}));
+function hideTaskFormFields(form: FormBuilder): void {
+  for (const field of ["position", "project"]) {
+    form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_HIDDEN, {
+      params: { targetField: field, setHidden: true },
+      onParam: [{ key: "fieldId", value: "status" }],
+    });
+  }
+}
 
 /**
  * The project's tasks, in the order the crew works through them. The table
@@ -138,7 +141,7 @@ export function tasksPanel() {
         edit: { displayName: "$helio.projects.detail.tasks.editTitle" },
       },
     },
-    formWatches: { new: TASK_FORM_HIDDEN, edit: TASK_FORM_HIDDEN },
+    forms: { new: hideTaskFormFields, edit: hideTaskFormFields },
     guards: { new: newProjectTaskGuard },
     rowActions: {
       add: { isEnabled: true, label: "$helio.projects.detail.tasks.add" },

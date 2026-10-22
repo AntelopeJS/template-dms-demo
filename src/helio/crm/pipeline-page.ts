@@ -1,10 +1,13 @@
 import { HTTPResult } from "@antelopejs/interface-api";
-import { FormEvents, FormFunctions } from "@antelopejs/interface-dms/base/form";
+import {
+  type FormBuilder,
+  FormEvents,
+  FormFunctions,
+} from "@antelopejs/interface-dms/base/form";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import {
   ResourceForm,
   TableView,
-  type TableViewFormWatch,
 } from "@antelopejs/interface-dms/base/table-view";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
@@ -24,29 +27,25 @@ const OPEN_DEAL = { field: "stage", notIn: ["won", "lost"] };
 // The loss reason belongs to a lost deal only: shown, and required, once the
 // stage is "lost", hidden before. FIELD_CHANGE also fires once with the value
 // the form starts from, so an opened form is right before any change.
-const LOST_REASON_WATCHES: TableViewFormWatch[] = DEAL_STAGES.flatMap(
-  ({ value }) => {
-    const onStage = [
+function watchLostReason(form: FormBuilder): FormBuilder {
+  for (const { value } of DEAL_STAGES) {
+    const onParam = [
       { key: "fieldId", value: "stage" },
       { key: "value", value },
     ];
     const lost = value === "lost";
-    return [
-      {
-        event: FormEvents.FIELD_CHANGE,
-        functionId: FormFunctions.SET_FIELD_HIDDEN,
+    form
+      .watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_HIDDEN, {
         params: { targetField: "lostReason", setHidden: !lost },
-        onParam: onStage,
-      },
-      {
-        event: FormEvents.FIELD_CHANGE,
-        functionId: FormFunctions.SET_FIELD_REQUIRED,
+        onParam,
+      })
+      .watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_REQUIRED, {
         params: { targetField: "lostReason", setRequired: lost },
-        onParam: onStage,
-      },
-    ];
-  },
-);
+        onParam,
+      });
+  }
+  return form;
+}
 
 // The probability follows the stage as it is picked, before the save: each
 // stage's usual figure (100 % won, 0 % lost), which the owner may still
@@ -56,28 +55,28 @@ const LOST_REASON_WATCHES: TableViewFormWatch[] = DEAL_STAGES.flatMap(
 // opens with the probability the deal stored.
 const PROBABILITY_BY_STAGE: Record<string, number> = { ...STAGE_PROBABILITY };
 
-const PROBABILITY_WATCHES: TableViewFormWatch[] = [
-  {
-    event: FormEvents.FIELD_CHANGE,
-    functionId: FormFunctions.SET_FIELD_VALUE,
+function watchProbability(form: FormBuilder): FormBuilder {
+  form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_VALUE, {
     params: { targetField: "probability", valueMap: PROBABILITY_BY_STAGE },
     onParam: { key: "fieldId", value: "stage" },
-  },
-  ...DEAL_STAGES.map(({ value }) => ({
-    event: FormEvents.FIELD_CHANGE,
-    functionId: FormFunctions.SET_FIELD_DISABLED,
-    params: {
-      targetField: "probability",
-      setDisabled: value === "won" || value === "lost",
-    },
-    onParam: [
-      { key: "fieldId", value: "stage" },
-      { key: "value", value },
-    ],
-  })),
-];
+  });
+  for (const { value } of DEAL_STAGES) {
+    form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_DISABLED, {
+      params: {
+        targetField: "probability",
+        setDisabled: value === "won" || value === "lost",
+      },
+      onParam: [
+        { key: "fieldId", value: "stage" },
+        { key: "value", value },
+      ],
+    });
+  }
+  return form;
+}
 
-const EDIT_FORM_WATCHES = [...LOST_REASON_WATCHES, ...PROBABILITY_WATCHES];
+const watchDealForm = (form: FormBuilder) =>
+  watchProbability(watchLostReason(form));
 
 // The write routes refuse a lost deal without its reason, whichever client
 // sent it (a card dropped on "Lost" included: the deal is opened to say why).
@@ -238,10 +237,10 @@ export class PageHelioPipeline extends PageController(
         },
       ],
     },
-    formWatches: {
-      new: EDIT_FORM_WATCHES,
-      edit: EDIT_FORM_WATCHES,
-      view: LOST_REASON_WATCHES,
+    forms: {
+      new: watchDealForm,
+      edit: watchDealForm,
+      view: watchLostReason,
     },
     // A lost deal says why; the stored derived fields follow each write (see
     // deal-derived.ts). An edit only sends what changed: the stored row
