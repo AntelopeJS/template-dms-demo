@@ -28,7 +28,7 @@
     "@antelopejs/interface-data-api": "^0.2.2",
     "@antelopejs/interface-database": "^0.1.10",
     "@antelopejs/interface-database-decorators": "^0.1.9",
-    "@antelopejs/interface-dms": "file:vendor/antelopejs-interface-dms-0.7.5+af.1.tgz",
+    "@antelopejs/interface-dms": "file:vendor/antelopejs-interface-dms-0.7.5+af.2.tgz",
     "@antelopejs/interface-dms-media": "^0.3.0"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
       "@antelopejs/core": "file:vendor/antelopejs-core-1.16.0-af.1.tgz",
       "@antelopejs/api": "file:vendor/antelopejs-api-1.3.5-af.1.tgz",
       "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.5.tgz",
-      "@antelopejs/interface-dms": "file:vendor/antelopejs-interface-dms-0.7.5+af.1.tgz"
+      "@antelopejs/interface-dms": "file:vendor/antelopejs-interface-dms-0.7.5+af.2.tgz"
     },
     "peerDependencyRules": {
       "allowedVersions": {
