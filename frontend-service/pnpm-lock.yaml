@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antelopejs/dms-frontend':
-        specifier: file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz
-        version: file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz(@antelopejs/core@1.16.0)
+        specifier: file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz
+        version: file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz(@antelopejs/core@1.16.0)
 
 packages:
 
@@ -19,9 +19,9 @@ packages:
     engines: {node: '>=20.19'}
     hasBin: true
 
-  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz':
-    resolution: {integrity: sha512-9RTKmrPcAxGdJDRvWuVcZ55twqAW4KBMsubz3v4vu5L80RNBSKSTvIhDQBgeFuJZDEx7kEDekROUkvbxW5Vtzw==, tarball: file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz}
-    version: 0.7.1-af.1
+  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz':
+    resolution: {integrity: sha512-G5kpdN/tcKLm7u4pGrncof8mpq/q7W0qbw3c8NAlTcaI74grz4ohlwWb4S7zeJqRGiom4YQcL5VFlEXfQEqenw==, tarball: file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz}
+    version: 0.7.1-af.2
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -668,7 +668,7 @@ snapshots:
       semver: 7.8.5
       typescript: 5.9.3
 
-  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz(@antelopejs/core@1.16.0)':
+  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz(@antelopejs/core@1.16.0)':
     dependencies:
       '@antelopejs/core': 1.16.0
       chokidar: 4.0.3

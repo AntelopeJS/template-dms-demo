@@ -9,7 +9,7 @@
     "start": "ajs-dms start --workspace .dms-frontend"
   },
   "dependencies": {
-    "@antelopejs/dms-frontend": "file:vendor/antelopejs-dms-frontend-0.7.1-af.1.tgz"
+    "@antelopejs/dms-frontend": "file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz"
   },
   "engines": {
     "node": ">=24"
