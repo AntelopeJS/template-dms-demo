@@ -1,7 +1,7 @@
-import path from "node:path";
 import { RegisterSchema } from "@antelopejs/interface-database-decorators";
 import { AddFrontendModule } from "@antelopejs/interface-dms/page";
 import { assertClientBaseUrlSet } from "./client-origin";
+import { frontendModule } from "./frontend-module";
 import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./components";
@@ -35,12 +35,7 @@ export async function start(): Promise<void> {
   // adapter is already available.
   await RegisterSchema(DEMO_SCHEMA_NAME);
 
-  void AddFrontendModule({
-    name: "template-dms-demo-frontend-vue",
-    sourcePath: path.join(__dirname, "../frontend-vue"),
-    renderer: { name: "vue", version: "3" },
-    priority: 100,
-  });
+  void AddFrontendModule(frontendModule());
 }
 
 export function destroy(): void {}
