@@ -196,14 +196,15 @@ The default development workflow does not need one. Two processes read it:
 | `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
 | `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with; the loader receives it in the manifest, so set it on the frontend only to override. `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `DMS_OAUTH_RELAY_SECRET` | loader | Override for the OAuth relay secret the backend ships in the manifest. | no |
-| `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`. | no |
+| `DMS_CLIENT_IP_HEADER` | backend + loader | Header carrying the client address, which only the platform's gateway may set (AntelopeJS Cloud sets `X-Client-IP`). Read for the sign-in throttle and the recorded IP; absent or invalid falls back to the socket address, never `X-Forwarded-For`. | no |
+| `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`, for self-hosting behind your own proxies; `0` by default. Not needed on AntelopeJS Cloud, which sets `DMS_CLIENT_IP_HEADER`. | no |
 | `DMS_API_PUBLIC_BASE_URL` | backend | Public origin of the API, base of asset and e-mail links. **Required** for `ajs project start`. | no |
 | `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest. Generated automatically in development; required by `ajs dms build`. | no |
 | `MONGODB_URL` | backend | MongoDB connection string. | no (`mongodb://localhost:27017`) |
 | `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
-| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. | no |
+| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts; on AntelopeJS Cloud, give the backend service a volume and point this at its mount path. | no |
 | `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend | Stripe webhook signing secret. | no |

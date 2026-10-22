@@ -21,6 +21,8 @@ export default defineConfig({
   envOverrides: {
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
+    // Set by AntelopeJS Cloud (X-Client-IP): the header its gateway overwrites with the client address.
+    DMS_CLIENT_IP_HEADER: "modules.dms.config.auth.clientIpHeader",
     DMS_HTML_RENDER_SECRET: "modules.dms.config.htmlRender.serviceSecret",
     // One secret signs and verifies the dashboard's tokens.
     JWT_SECRET: [
