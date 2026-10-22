@@ -204,7 +204,7 @@ The default development workflow does not need one. Two processes read it:
 | `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
-| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts; on AntelopeJS Cloud, give the backend service a volume and point this at its mount path. | no |
+| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. **Required on AntelopeJS Cloud**: the mount path of the backend service's volume, see [Uploaded files on AntelopeJS Cloud](#uploaded-files-on-antelopejs-cloud). | on AntelopeJS Cloud |
 | `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend | Stripe webhook signing secret. | no |
@@ -232,6 +232,26 @@ Keep this table and `envOverrides` in sync.
 - **Module frontends**: every DMS feature module ships its own frontend module
   through `AddFrontendModule`. Remove a module block in `antelope.config.ts` to
   drop the feature and its frontend with it.
+
+## Uploaded files on AntelopeJS Cloud
+
+`file-storage-local` keeps uploaded files, their metadata and their upload
+tokens on the backend's local disk. Without a volume, the backend runs on a
+temporary directory: every file is lost each time the service sleeps,
+restarts or is redeployed, and with two replicas an upload lands on one and
+its confirmation on the other, so uploads fail with `File not found`. Before
+the first upload, **required**:
+
+1. In the console, attach a volume to the backend service (Settings ›
+   Volume), mounted at `/data/file-storage`. Attaching it keeps the service at
+   one replica. The Free plan allows one volume of 1 GB per workspace; a
+   managed database's volume does not count.
+2. Set `FILE_STORAGE_PATH=/data/file-storage` on the backend service.
+3. Redeploy the backend.
+
+A deployment that needs several backend replicas uses
+`@antelopejs/file-storage-s3` instead. AntelopeJS Cloud's edge also refuses a
+request body over 100 MB, so a larger file cannot be uploaded there.
 
 ## The frontend
 
