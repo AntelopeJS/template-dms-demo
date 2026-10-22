@@ -1,7 +1,7 @@
 {
   "format": 1,
   "backendUrl": "http://127.0.0.1:5010",
-  "takenAt": "2026-10-22T08:31:44.993Z",
+  "takenAt": "2026-10-22T10:17:48.190Z",
   "digest": "ee9968d12795df6b",
   "manifest": {
     "pack": "/dms/frontend/modules?renderer=vue&rendererVersion=3",

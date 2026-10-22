@@ -20,7 +20,7 @@
   "dependencies": {
     "@antelopejs/api": "file:vendor/antelopejs-api-1.3.5-af.1.tgz",
     "@antelopejs/core": "file:vendor/antelopejs-core-1.16.0-af.1.tgz",
-    "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.3.tgz",
+    "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.4.tgz",
     "@antelopejs/dms-saas": "file:vendor/antelopejs-dms-saas-0.7.4-af.1.tgz",
     "@antelopejs/interface-api": "^0.0.15",
     "@antelopejs/interface-auth": "^0.0.7",
@@ -32,7 +32,7 @@
     "@antelopejs/interface-dms-media": "^0.3.0"
   },
   "devDependencies": {
-    "@antelopejs/dms-frontend": "file:vendor/antelopejs-dms-frontend-0.7.1-af.2.tgz",
+    "@antelopejs/dms-frontend": "file:vendor/antelopejs-dms-frontend-0.7.1-af.3.tgz",
     "@antelopejs/tooling-configs": "^0.0.9",
     "@types/node": "^26.6.5",
     "dotenv": "^18.0.8",
@@ -51,7 +51,7 @@
     "overrides": {
       "@antelopejs/core": "file:vendor/antelopejs-core-1.16.0-af.1.tgz",
       "@antelopejs/api": "file:vendor/antelopejs-api-1.3.5-af.1.tgz",
-      "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.3.tgz"
+      "@antelopejs/dms": "file:vendor/antelopejs-dms-0.9.8-af.4.tgz"
     },
     "peerDependencyRules": {
       "allowedVersions": {
