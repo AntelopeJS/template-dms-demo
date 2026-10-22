@@ -1,0 +1,43 @@
+{
+  "name": "@antelopejs/dms-lang-frontend-vue",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dms.frontend.ts",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.6.5",
+  "engines": {
+    "@antelopejs/dms-frontend": ">=0.6.3 <0.8.0"
+  },
+  "scripts": {
+    "build": "ajs dms build",
+    "dev": "ajs dms dev",
+    "prepare-frontend": "ajs dms prepare",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@antelopejs/core": "1.16.0",
+    "@antelopejs/dms-frontend": "0.6.3",
+    "@eslint/js": "^9",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "@vueuse/core": "^14.4.0",
+    "eslint": "^9",
+    "eslint-plugin-vue": "^9",
+    "globals": "^15",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "@nuxt/ui": "4.10.0",
+    "@vueuse/core": "^14.4.0",
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@intlify/message-compiler": "^11.1.12"
+  }
+}

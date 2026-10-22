@@ -1,0 +1,866 @@
+{
+  "api": {
+    "module": {
+      "title": "API",
+      "description": "Monitor, explore and test the routes of your API.",
+      "catalog_category": "Developer",
+      "readout": {
+        "failing": "Routes failing",
+        "attention": "Routes need attention",
+        "healthy": "All routes healthy",
+        "idle": "No traffic in 24 h"
+      }
+    },
+    "nav": {
+      "monitor": "Monitor",
+      "explore": "Explore",
+      "configure": "Configure"
+    },
+    "common": {
+      "retry": "Retry",
+      "ms": "{value} ms",
+      "refresh": "Refresh"
+    },
+    "scope": {
+      "own": "Own routes · {count}",
+      "modules": "Module routes · {count}",
+      "all": "All routes · {count}",
+      "tooltip": "The routes this console watches. Change it in API settings."
+    },
+    "blocks": {
+      "scope_chip": {
+        "name": "Route scope",
+        "description": "The active route scope and how many routes it holds, linking to API settings."
+      },
+      "live_traffic": {
+        "name": "Live traffic",
+        "description": "Requests per minute over the last hour, following the page's Live / Pause control."
+      },
+      "request_detail": {
+        "name": "Request details",
+        "description": "One captured request: error, timing, headers and bodies."
+      },
+      "route_tree": {
+        "name": "Route list",
+        "description": "Every route in scope, grouped by folder, with its health."
+      },
+      "route_header": {
+        "name": "Route summary",
+        "description": "The selected route: handler, access and origin."
+      },
+      "route_documentation": {
+        "name": "Route documentation",
+        "description": "The contract of the selected route, inferred from its code and traffic."
+      },
+      "route_tester": {
+        "name": "Route tester",
+        "description": "Send a request to the selected route from the dashboard."
+      },
+      "split_layout": {
+        "name": "Routes and detail",
+        "description": "The route list beside the selected route."
+      },
+      "logs_filters": {
+        "name": "Request filters",
+        "description": "Method, slow requests and the filters a link brought, above the request table."
+      },
+      "logs_empty_state": {
+        "name": "Empty request table",
+        "description": "What the request table says when it lists nothing, and the way out."
+      },
+      "health_hero": {
+        "name": "API health",
+        "description": "Health verdict, its reasons and the headline metrics of the last minutes."
+      },
+      "beta_badge": {
+        "name": "Beta badge",
+        "description": "Says the console is still in beta, beside the page's toolbar."
+      }
+    },
+    "health": {
+      "verdict": {
+        "operational": "Healthy",
+        "degraded": "Degraded",
+        "down": "Down",
+        "recovered": "Recovered",
+        "idle": "No traffic"
+      },
+      "since_degraded": "Degraded since {date}",
+      "since_down": "Down since {date}",
+      "since_recovered": "Recovered since {date}",
+      "metrics": {
+        "server_errors": "5xx · {minutes} min",
+        "server_errors_rules": "Degraded ≥ {degraded} / {minutes} min · Down ≥ {down} / {downMinutes} min",
+        "p95": "p95 latency · {minutes} min",
+        "p95_sub": "Slow from {threshold}",
+        "traffic": "Traffic · {minutes} min",
+        "per_minute": "req/min",
+        "traffic_sub": "{count} route in scope | {count} routes in scope",
+        "client_errors": "4xx · {minutes} min",
+        "client_errors_sub": "Client errors, often expected"
+      },
+      "reasons": {
+        "failing": "{count} route failing | {count} routes failing",
+        "slow": "{count} slow route (≥ {threshold}) | {count} slow routes (≥ {threshold})",
+        "recovered": "{count} route recovered | {count} routes recovered",
+        "none": "No route is above the thresholds over the last {minutes} minutes."
+      },
+      "first_run": {
+        "title": "No requests captured yet",
+        "description": "{count} routes are registered. The console records calls as soon as your API receives them.",
+        "browse": "Browse routes",
+        "logs": "Open request logs",
+        "step_1": "Pick a route",
+        "step_1_detail": "Routes lists everything your project registers.",
+        "step_2": "Send a first request",
+        "step_2_detail": "From the tester on any route, or from your app.",
+        "step_3": "Watch it arrive",
+        "step_3_detail": "Request logs shows it within seconds."
+      },
+      "label": "API health",
+      "state": {
+        "live": "live",
+        "paused": "paused",
+        "stale": "not updated"
+      },
+      "for": "for {duration}",
+      "for_over": "for more than {duration}",
+      "recovered_ago": "{duration} ago",
+      "incident_started": "The incident started {date}",
+      "last_incident": "Last incident {date}",
+      "checked": "checked {time}",
+      "duration": {
+        "s": "{n} s",
+        "min": "{n} min",
+        "h": "{n} h",
+        "d": "{n} d"
+      },
+      "view_errors": "View {count} server error | View {count} server errors",
+      "stale_title": "Showing data from {time}",
+      "stale_description": "The last refresh failed. The numbers may be out of date.",
+      "error_title": "Monitoring data is unavailable",
+      "error_description": "The console could not read its statistics. The API itself may be fine."
+    },
+    "overview": {
+      "title": "Overview",
+      "description": "Health, traffic and errors for the routes in scope. Click any route or request to drill down.",
+      "toolbar": "Overview toolbar",
+      "dashboard": "Overview dashboard",
+      "beta": {
+        "title": "Beta",
+        "description": "The API console is read-only for now: inspect, monitor and test routes."
+      },
+      "no_previous": "No previous period to compare with",
+      "traffic": {
+        "title": "Traffic & errors",
+        "2xx": "2xx success",
+        "4xx": "4xx client",
+        "5xx": "5xx server"
+      },
+      "classes": {
+        "title": "Responses by class",
+        "description": "Calls per status class",
+        "empty": "No responses in this period",
+        "share": "{share} of calls",
+        "2xx": "2xx success",
+        "4xx": "4xx client",
+        "5xx": "5xx server"
+      },
+      "error_share": {
+        "title": "Error share",
+        "client": "4xx",
+        "server": "5xx"
+      },
+      "attention": {
+        "title": "Needs attention",
+        "all_errors": "All server errors",
+        "empty_title": "Every route looks healthy",
+        "empty_description": "Last 24 hours: no server error, slow route or high 4xx rate.",
+        "failing": "Failing",
+        "recovered": "Recovered",
+        "failing_detail": "{rate} server errors · {serverErrors} of {calls} call | {rate} server errors · {serverErrors} of {calls} calls",
+        "window_detail": "{rate} server errors over {minutes} min · {serverErrors} of {calls} call | {rate} server errors over {minutes} min · {serverErrors} of {calls} calls",
+        "recovered_detail": "back {end} · last 5xx {last}",
+        "recovered_last": "last 5xx {last}",
+        "slow": "Slow",
+        "slow_detail": "p95 {p95} · avg {average} · {calls} call | p95 {p95} · avg {average} · {calls} calls",
+        "client_errors": "4xx rate",
+        "client_errors_detail": "{rate} client errors · {clientErrors} of {calls} call | {rate} client errors · {clientErrors} of {calls} calls",
+        "top_error": "{status} “{message}” × {count}",
+        "top_status": "{status} × {count}",
+        "stray": "No route answers this path",
+        "badge": "Last 24 h"
+      },
+      "slowest": {
+        "title": "Slowest routes",
+        "description": "Average latency per route",
+        "empty": "No calls in this period",
+        "detail": "p95 {p95} · max {max} · {calls} call | p95 {p95} · max {max} · {calls} calls",
+        "detail_no_p95": "max {max} · {calls} call | max {max} · {calls} calls"
+      },
+      "recent": {
+        "title": "Recent requests",
+        "description": "Latest captured calls · click one to inspect it",
+        "open_logs": "Open logs",
+        "empty_title": "No requests yet",
+        "empty_description": "Requests show up here as soon as your API receives them."
+      },
+      "activity": {
+        "title": "Activity · 7 days",
+        "empty": "Nothing happened in the last 7 days",
+        "incident": "Server errors on {route}",
+        "incident_detail": "{count} × {status}",
+        "incident_ongoing": "still going on · peak {peak}/min",
+        "incident_span": "lasted {minutes} min · peak {peak}/min",
+        "incident_top_error": "{topStatus} “{topMessage}” × {topCount}",
+        "registered": "Route registered: {route}",
+        "registered_many": "{count} routes registered",
+        "registered_many_detail": "{routes}…",
+        "from_project": "From your project code",
+        "from_module": "From the {module} module"
+      }
+    },
+    "live": {
+      "title": "Requests per minute · last hour · all traffic",
+      "kept": "Kept {days} days · bodies up to {size}",
+      "kept_days": "Kept {days} days",
+      "kept_no_bodies": "Kept {days} days · bodies not captured",
+      "size_b": "{amount} B",
+      "size_kb": "{amount} KB",
+      "total": "{count} request | {count} requests",
+      "legend_success": "2xx–3xx",
+      "reconnecting": "Reconnecting…",
+      "following": "Live",
+      "paused": "Paused",
+      "last_data": "data from {time}",
+      "no_data_yet": "no data yet",
+      "error": "Could not load the last hour",
+      "error_description": "The graph tries again at the next refresh.",
+      "scale": "Scale up to {count} per minute",
+      "scale_cut": "busier minutes are cut",
+      "tooltip_none": "no request",
+      "tooltip_current": "minute in progress",
+      "summary": "Requests per minute over the last hour: {total} requests, {client} 4xx, {server} 5xx. Busiest minute: {peak} at {time}.",
+      "summary_empty": "No request over the last hour."
+    },
+    "live_mode": {
+      "verdict": {
+        "title": "API health: {verdict}",
+        "description": "It was {previous}.",
+        "tab": "● {verdict} · {page}"
+      },
+      "new_requests": "{count} new request | {count} new requests",
+      "server_errors": "{count} in 5xx",
+      "typing_in_tester": "typing in the Tester"
+    },
+    "logs": {
+      "title": "Request logs",
+      "description": "Every captured request, newest first. Filter, then open one to see headers, bodies and the error.",
+      "table": "Request table",
+      "search": "Path, request ID, error…",
+      "count": "{count} request | {count} requests",
+      "keys_hint": "/ search · J / K next / previous request · Esc close the panel · L live / pause · ? shortcuts",
+      "toolbar": "Request logs toolbar",
+      "drawer_title": "Request",
+      "open_request": "Open request",
+      "filters": {
+        "method": "Method",
+        "method_value": "Method: {method}",
+        "method_aria": "Method: {value}",
+        "all_methods": "All methods",
+        "method_locked": "The route filter {route} sets the method",
+        "slow": "Slow only",
+        "slow_threshold": "Slow (≥ {threshold})",
+        "slow_hint": "Only the requests at or above the slowness threshold set in Settings"
+      },
+      "windows": {
+        "last-hour": "Last hour",
+        "last-24h": "Last 24 hours",
+        "last-7-days": "Last 7 days",
+        "last-30-days": "Last 30 days"
+      },
+      "linked": {
+        "title": "Linked filters:",
+        "origin": "From {page}",
+        "origin_window": "{window} · from {page}",
+        "pages": {
+          "overview": "Overview",
+          "routes": "Routes"
+        },
+        "route": "Route is {value}",
+        "route_unknown": "Unknown route: {value}",
+        "route_unknown_hint": "The link names no route (METHOD /path): no request matches it.",
+        "path": "Path is {value}",
+        "error": "Error contains “{value}”",
+        "incident": "Incident {since} → {until}",
+        "remove": "Remove the filter {label}",
+        "clear": "Clear linked filters"
+      },
+      "shortcuts": {
+        "title": "Keyboard shortcuts",
+        "open": "Keyboard shortcuts (?)",
+        "search": "Search the requests",
+        "steps": "Next / previous request in the panel",
+        "close": "Close the panel",
+        "live": "Live or Pause for the whole page",
+        "help": "Show these shortcuts",
+        "group": "Request logs"
+      },
+      "columns": {
+        "time": "Time",
+        "method": "Method",
+        "path": "Path",
+        "status": "Status",
+        "duration": "Duration",
+        "request_id": "Request ID",
+        "status_class": "Status class",
+        "slow": "Slow",
+        "route": "Route",
+        "error": "Error"
+      },
+      "empty": {
+        "first_run_title": "No requests yet",
+        "first_run_description": "Calls show up here as soon as your API receives them. A status tab lists its own class only.",
+        "browse_routes": "Browse routes",
+        "filtered_title": "No requests match these filters",
+        "narrowed": "Narrowed by: {filters}.",
+        "period_hint": "The requests may be outside this period.",
+        "widen": "Show all time",
+        "search_title": "No request matches “{search}”",
+        "search_description": "The search looks in paths, request IDs and error messages.",
+        "route_title": "No request for {route}",
+        "error_filter_title": "No request carries this error",
+        "incident_title": "No request during this incident",
+        "link_description": "The filter the link brought matches no captured request.",
+        "remove_link": "Remove the linked filter",
+        "path": "Path {path}",
+        "error_title": "Request logs could not be loaded",
+        "error_description": "The console's log store did not answer. Try again."
+      }
+    },
+    "request": {
+      "tabs": {
+        "overview": "Summary",
+        "request": "Request",
+        "response": "Response"
+      },
+      "replay": "Replay in tester",
+      "copy_curl": "Copy cURL",
+      "copy_url": "Copy the URL",
+      "copy_message": "Copy the message",
+      "open_route": "Open route",
+      "same_error": "Same error",
+      "see_also": "See also",
+      "same_route": "Requests to this route",
+      "same_path": "Requests to this path",
+      "slow_route": "Slow requests to this route",
+      "curl_copied": "cURL copied",
+      "copy_failed": "Could not copy to the clipboard",
+      "error": "Error",
+      "show_all": "Show all",
+      "show_less": "Show less",
+      "general": "General",
+      "fields": {
+        "url": "URL",
+        "date": "Date",
+        "route": "Route",
+        "ip": "Client IP",
+        "user_agent": "User agent",
+        "request_id": "Request ID",
+        "source": "Source"
+      },
+      "tester": "Tester",
+      "source_tester": "Sent from the console's tester: kept in the logs, left out of the statistics and the health.",
+      "timing": "Timing",
+      "slow": "slow",
+      "slow_ratio": "Slow · {ratio}× the threshold",
+      "threshold_ratio": "{ratio}× the slow threshold",
+      "threshold": "Slow threshold {threshold}, as set now.",
+      "route_latency": "This route, last day: p50 {p50} · p95 {p95} | This route, last {days} days: p50 {p50} · p95 {p95}",
+      "meter_label": "Duration against the slow threshold",
+      "not_measured": "not measured",
+      "not_measured_hint": "Not measured: the request was turned away before reaching a handler.",
+      "route": "Route",
+      "unmatched": "no registered route matched",
+      "path_params": "Path parameters",
+      "no_path_params": "No path parameters",
+      "headers": "Headers",
+      "headers_hint": "Only allow-listed headers are captured.",
+      "headers_settings": "Change the list in API settings",
+      "query": "Query",
+      "body": "Body",
+      "no_body": "No body captured.",
+      "no_body_method": "A {method} request sends no body.",
+      "body_omitted": {
+        "disabled": "Not stored: body capture is off.",
+        "too_large": "Not stored: larger than the maximum body size.",
+        "not_json": "Not stored: only JSON bodies are captured.",
+        "malformed": "Not stored: the JSON was invalid, so its secrets could not be masked safely.",
+        "empty": "The body was empty.",
+        "not_read": "Not stored: the request was answered before a handler read its body (unknown route, refused by a guard)."
+      },
+      "body_settings": "Body capture in API settings",
+      "body_size_of": "{kept} of {total}",
+      "view_tree": "Tree",
+      "view_raw": "Raw",
+      "json_items": "{count} item | {count} items",
+      "json_keys": "{count} key | {count} keys",
+      "no_headers": "No headers captured",
+      "truncated": "truncated",
+      "redacted": "{count} value redacted: values under keys that look like secrets, and payment card numbers wherever they appear, are never stored. | {count} values redacted: values under keys that look like secrets, and payment card numbers wherever they appear, are never stored.",
+      "redacted_query": "{count} query value redacted: parameters that look like secrets, and payment card numbers, are never stored. | {count} query values redacted: parameters that look like secrets, and payment card numbers, are never stored.",
+      "redacted_headers": "Left out because their name looks like a secret: {names}.",
+      "invalid_title": "This link names no request",
+      "invalid_description": "The address does not hold a valid request id. Check the link you followed.",
+      "not_found_title": "This request is no longer stored",
+      "not_found_description": "It was pruned by the log retention, is outside the route scope, or the link is wrong.",
+      "forbidden_title": "You cannot open this request",
+      "forbidden_description": "Your role shows this list but not the detail of its requests. Ask an administrator for access to Request logs.",
+      "error_title": "Could not open this request",
+      "error_description": "The console did not answer. Try again.",
+      "position": "Request {index} of {total} shown",
+      "heading": "{method} {path}"
+    },
+    "routes": {
+      "title": "Routes",
+      "description": "Every registered route, its health, contract and a tester. Pick a route in the list.",
+      "toolbar": "Routes toolbar",
+      "explorer": "Route explorer",
+      "tabs": {
+        "name": "Route tabs",
+        "statistics": "Statistics",
+        "documentation": "Documentation",
+        "beta": "Beta",
+        "tester": "Tester"
+      },
+      "state": {
+        "failing": "Failing · server errors",
+        "slow": "Slow",
+        "client_errors": "High 4xx rate",
+        "recovered": "Recovered",
+        "healthy": "Healthy",
+        "idle": "No traffic"
+      },
+      "window": {
+        "min": "{amount} min",
+        "h": "{amount} h",
+        "d": "{amount} d"
+      },
+      "tree": {
+        "hide_idle": "Hide routes without traffic",
+        "collapse_all": "Collapse all",
+        "expand_all": "Expand all",
+        "requests": "{count} requests",
+        "requests_window": "{count} requests · last {window}",
+        "window": "Health over the last {window}",
+        "folder_routes": "{n} route | {n} routes",
+        "search": "Filter by path or handler",
+        "label": "Routes",
+        "method": "Method",
+        "all": "All",
+        "only_attention": "Only routes needing attention",
+        "footer": "{shown} of {total} routes · {folders} folders",
+        "footer_flat": "{shown} of {total} routes",
+        "clear": "Clear filters",
+        "did_you_mean": "Did you mean",
+        "no_match": "No route matches “{search}”",
+        "no_match_filters": "No route matches these filters",
+        "empty_title": "No route in scope",
+        "empty_description": "Widen the route scope in Settings.",
+        "error": "Could not load the routes"
+      },
+      "header": {
+        "pick_title": "Pick a route",
+        "pick_description": "Its statistics, contract and a tester open here.",
+        "missing_title": "{route} is not registered",
+        "missing_description": "The route was removed or renamed since this link was made.",
+        "clear": "Clear selection",
+        "error_title": "Could not load this route",
+        "requests": "Requests",
+        "auth": "Signed-in users",
+        "auth_probable": "Signed-in users, probably",
+        "auth_unknown": "Auth unknown",
+        "own": "Project code",
+        "module": "Module {module}",
+        "unknown_source": "Unknown origin",
+        "state_window": "{state} · last {window}",
+        "crumb": "Routes · {route}",
+        "first_seen": "First seen {date}",
+        "first_seen_hint": "First day with a call among the statistics kept",
+        "out_of_scope_title": "This route is outside the current scope",
+        "out_of_scope_description": "It does not show in the list or in the figures of the other pages. The scope is set in Settings.",
+        "out_of_scope_action": "Open Settings"
+      },
+      "statistics": {
+        "title": "Route statistics",
+        "charts": "Route charts",
+        "error_rate_chart": "Error rate by status",
+        "series_p95": "p95",
+        "idle_title": "No call over this period",
+        "requests": "Requests",
+        "error_rate": "Error rate",
+        "response_time": "Response time (ms)",
+        "series_average": "Average",
+        "series_max": "Max",
+        "top_errors": "Top errors",
+        "no_errors": "No errors in this period",
+        "recent": "Recent requests",
+        "no_calls_title": "No call to this route yet",
+        "no_calls_description": "Its requests show here as soon as it is called.",
+        "top_errors_description": "Errors grouped by status and message",
+        "server_error": "Server error · last {at}",
+        "client_error": "Client error · last {at}",
+        "average": "Avg latency",
+        "max": "Slowest call",
+        "ms": "{value} ms",
+        "rate": "{rate}",
+        "error_split": "{client} × 4xx · {server} × 5xx",
+        "slow_line": "slow above {threshold}",
+        "no_baseline": "No previous period",
+        "vs_previous": "{delta} vs. previous period",
+        "summary": "Route figures",
+        "p95_detail": "p95 {p95}",
+        "p95_none": "No p95 kept over the period",
+        "idle_description": "It was called before this period: pick a longer one, or call it now to see its figures.",
+        "idle_never": "No call to it is stored: call it now to see its figures.",
+        "idle_try": "Test this route"
+      },
+      "docs": {
+        "beta_title": "Beta · inferred from traffic",
+        "beta_description": "Read from the requests captured over the last {days} days (the tester's left out) and from the handler's code. What was never called does not show.",
+        "example": "Example request",
+        "origin_unknown": "The console could not tell the public URL of the API: the snippet uses API_URL. Set apiBaseUrl in the DMS module config.",
+        "try": "Try it",
+        "auth_title": "Requires a signed-in user",
+        "auth_description": "Guard found in the code: {guards}. Calls without a valid token are refused with 401.",
+        "probable_title": "Probably protected",
+        "probable_description": "No guard found in the code, but the route answered 401 once in {days} days. | No guard found in the code, but the route answered 401 {count} times in {days} days.",
+        "unknown_title": "Authentication unknown",
+        "unknown_description": "No guard was found before or on the handler, and no 401 was seen. A check made inside the handler would not show here.",
+        "body": "Body",
+        "inferred": "Inferred from {count} successful request | Inferred from {count} successful requests",
+        "no_body": "No JSON body in the successful requests of the last {days} days.",
+        "required": "required",
+        "optional": "optional",
+        "parameters": "Parameters",
+        "in_path": "Path",
+        "in_query": "Query",
+        "in_header": "Headers read by the handler",
+        "no_parameters": "No path, query or header parameter, declared or seen.",
+        "seen_only": "seen in traffic",
+        "example_value": "e.g. {value}",
+        "no_example": "no successful call yet",
+        "responses": "Responses",
+        "no_responses": "Nothing observed in the last {days} days, and no error code found in the handler's code.",
+        "observed": "seen once in {days} days | seen {count} times in {days} days",
+        "last_seen": "last seen {time}",
+        "more_messages": "+{count} other message | +{count} other messages",
+        "latency": "p50 {p50} · p95 {p95}",
+        "response": "Response",
+        "example_response": "{status} · last successful response",
+        "response_truncated": "Cut when captured: the body is longer than shown.",
+        "source_assert": "assert() in the handler's code",
+        "source_result": "HTTPResult in the handler's code",
+        "pipeline": "Request pipeline",
+        "pipeline_description": "What runs, in order, when this route is called",
+        "kind_prefix": "Before",
+        "kind_handler": "Handler",
+        "kind_postfix": "After",
+        "kind_monitor": "Monitor",
+        "auth": "auth",
+        "internals": "Controller internals",
+        "internals_parameters": "{count} parameter | {count} parameters",
+        "internals_members": "{count} class member | {count} class members",
+        "internal_name": "Name",
+        "internal_source": "Source",
+        "internal_type": "Type",
+        "internal_modifiers": "Modifiers",
+        "class_member": "class member"
+      },
+      "shortcuts": {
+        "group": "Routes",
+        "filter": "Filter the routes"
+      }
+    },
+    "tester": {
+      "send": "Send",
+      "session": "Send with my session",
+      "auth": {
+        "session": "Your session token is sent",
+        "manual": "Your Authorization header replaces the session",
+        "manual_common": "Your Authorization header for all routes replaces the session",
+        "none": "No credentials are sent"
+      },
+      "auth_short": {
+        "session": "session",
+        "manual": "own Authorization",
+        "none": "no credentials"
+      },
+      "writes": "Changes data",
+      "writes_hint": "Calls the live API. A DELETE is always confirmed, and the first write on each route once per session.",
+      "path_param": "Path parameter {name}",
+      "blocked": {
+        "path_missing": "Fill in {names} to send",
+        "path_value": "{name} holds a character the tester's proxy refuses in a path (/, a space or #)",
+        "header": "“{name}” is not a valid HTTP header",
+        "too_large": "The request weighs {size}: the tester's proxy takes up to {limit}"
+      },
+      "tabs": {
+        "body": "Body",
+        "headers": "Headers",
+        "query": "Query",
+        "captured": "Captured"
+      },
+      "draft_modified": "Draft modified",
+      "reset": "Back to example",
+      "body_mode": "Body type",
+      "body_modes": {
+        "json": "JSON",
+        "text": "Text",
+        "form": "Form",
+        "none": "None"
+      },
+      "format": "Format",
+      "json_warning": "Not valid JSON: {message}. It is sent as typed.",
+      "body_redacted": "{count} masked value, {names}: replace it before sending. | {count} masked values, {names}: replace them before sending.",
+      "body_hint": {
+        "example": "Prefilled from the last request this route accepted.",
+        "no_capture": "No request captured on this route in the last {days} days: write the body by hand.",
+        "no_success": "The only request of the last {days} days failed: write the body by hand. | None of the {count} requests of the last {days} days succeeded: write the body by hand.",
+        "no_json": "The successful request of the last {days} days had no JSON body: write it by hand. | No JSON body among the {count} successful requests of the last {days} days: write it by hand.",
+        "history": "Restored from the history.",
+        "empty": "No body will be sent.",
+        "none": "No body is sent. Choose a type to add one.",
+        "form": "Sent as application/x-www-form-urlencoded.",
+        "replay": "Body of the replayed request {id}.",
+        "replay_missing": "The body of this request was not stored ({reason}): write it by hand, or send none.",
+        "replay_missing_unknown": "The body of this request was not stored: write it by hand, or send none.",
+        "replay_truncated": "This body was cut at capture: it is not the whole request, and is replayed as text. The API gets only this part.",
+        "replay_truncated_too_large": "This body was cut at capture, so it is incomplete, and with the request around it, it is over the {limit} the tester's proxy takes: it cannot be replayed as is. Shorten it to send it."
+      },
+      "body_omitted": {
+        "disabled": "body capture is off",
+        "too-large": "over the capture size limit",
+        "not-json": "not a JSON body",
+        "malformed": "invalid JSON",
+        "empty": "empty body",
+        "not-read": "answered before a handler read it"
+      },
+      "remove": "Remove",
+      "add_header": "Add header",
+      "add_query": "Add parameter",
+      "add_field": "Add field",
+      "redacted_value": "Masked at capture: replace it with the real value",
+      "implied_header": "set by the body type",
+      "headers_hint": "A header named Authorization replaces your session. Credentials are never stored.",
+      "marks_hint": "x-request-id and x-dms-api-source are added to find the call in the logs.",
+      "common_headers": "Headers for all routes",
+      "common_headers_hint": "Sent to every route, under the headers above. Kept in this browser; credentials only until the page reloads.",
+      "common_secret": "{names} goes to every route, in place of your session, and is forgotten when the page reloads.",
+      "query_known": "Seen in captured requests: {names}",
+      "query_none": "No query parameter in the requests of the last {days} days. Added ones are sent as-is.",
+      "query_no_capture": "No request captured on this route in the last {days} days. Added parameters are sent as-is.",
+      "response": "Response",
+      "open_logs": "Open in logs",
+      "open_captured": "Open the captured request",
+      "not_captured": "Not captured by the module",
+      "not_captured_hint": "The console's own routes are left out of the request logs: there is no captured request to show.",
+      "no_response_title": "No response yet",
+      "no_response_description": "Send the request ({shortcut} + Enter) to see what the route answers.",
+      "waiting_title": "Waiting for the API…",
+      "waiting_description": "The tester's proxy gives up after {seconds} s. Cancel to stop waiting.",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "duration_browser": "{duration} in the browser",
+      "duration_server": "{duration} on the server",
+      "duration_tooltip": "The browser time goes through the console's proxy; the server time is the one the module captured.",
+      "truncated_in_history": "Response cut in the history: {shown} of {size}.",
+      "errors": {
+        "invalid_input": {
+          "title": "The tester's proxy refused the request",
+          "description": "It checks the path, the headers and the body before calling the API: nothing reached the API."
+        },
+        "body_too_large": {
+          "title": "Request too large for the tester",
+          "description": "The tester's proxy takes up to {limit} of request, body and headers included: nothing reached the API."
+        },
+        "not_authenticated": {
+          "title": "Your console session has ended",
+          "description": "Sign in again to use the tester: nothing reached the API."
+        },
+        "not_owner": {
+          "title": "The tester is for owners only",
+          "description": "The DMS lets only an owner call routes from the console: nothing reached the API."
+        },
+        "cross_origin": {
+          "title": "Call refused: untrusted origin",
+          "description": "The tester's proxy only accepts calls from the console's own origin: nothing reached the API."
+        },
+        "proxy_failed": {
+          "title": "No usable answer from the API",
+          "description": "Either the API could not be reached, or its response is over {limit}: the tester's proxy then returns neither its status nor its body. If the call reached the API, the Captured tab shows it.",
+          "description_uncaptured": "Either the API could not be reached, or its response is over {limit}: the tester's proxy then returns neither its status nor its body, and the module does not capture this route."
+        },
+        "response_too_large": {
+          "title": "The route answered {status}, with more than {limit}",
+          "description": "The tester's proxy returns neither the status nor the body of a response over {limit}. The Captured tab shows what the module recorded."
+        },
+        "timeout": {
+          "title": "No answer after {seconds} s",
+          "description": "The tester's proxy stopped waiting. The API may still have received the call: see the Captured tab.",
+          "description_uncaptured": "The tester's proxy stopped waiting. The API may still have received the call."
+        },
+        "aborted": {
+          "title": "Request cancelled",
+          "description": "The API may still have received and processed it: see the Captured tab.",
+          "description_uncaptured": "The API may still have received and processed it."
+        },
+        "abandoned": {
+          "title": "Cancelled when you left the route",
+          "description": "The call was still waiting for its answer. The API may have received and processed it: see the Captured tab.",
+          "description_uncaptured": "The call was still waiting for its answer. The API may have received and processed it."
+        },
+        "network": {
+          "title": "The console's server could not be reached",
+          "description": "{message}. Check your connection, then send again."
+        },
+        "unexpected": {
+          "title": "The tester's proxy failed",
+          "description": "{message}."
+        }
+      },
+      "unauthorized_title": "The route refused the call (401)",
+      "unauthorized": {
+        "none": "No credentials were sent: “Send with my session” is off.",
+        "manual": "Your Authorization header was sent instead of your session. Remove it to use your session.",
+        "session": "Your session token was sent: this route expects other credentials."
+      },
+      "turn_on_session": "Turn on session",
+      "captured": {
+        "loading": "Looking for the request the module captured…",
+        "missing": "No captured request found for this call ({id}): capture may be off for this route, or the call never reached the API.",
+        "error": "Could not read the request logs.",
+        "headers": "Captured headers",
+        "body": "Captured body",
+        "body_omitted": "Body not stored: {reason}.",
+        "stack": "Stack"
+      },
+      "live": {
+        "sent": "{status} {text}, {duration}",
+        "failed": "No answer: {title}"
+      },
+      "history": "History",
+      "history_hint": "Last 25 calls, stored in this browser · click to restore",
+      "history_empty": "Calls you send show up here.",
+      "clear": "Clear",
+      "history_cleared": "History cleared ({count} call) | History cleared ({count} calls)",
+      "history_abandoned": "the API may have received it",
+      "undo": "Undo",
+      "secrets_not_kept": "{names} was not kept: type it again to send the same request.",
+      "replayed": "Captured request loaded",
+      "replay_failed": "Could not load the captured request",
+      "replay_other_route": "This captured request belongs to {route}: it was not loaded here.",
+      "replay_banner": {
+        "title": "Replayed from {id} ({at})",
+        "headers": "{count} header not restored | {count} headers not restored",
+        "redacted": "{count} masked value to fill in | {count} masked values to fill in",
+        "truncated": "body cut at capture",
+        "skipped": "Not restored: {names}. Authorization, Cookie and X-Api-Key are never captured.",
+        "credentials": "Authorization, Cookie and X-Api-Key are never captured: add them if the route needs them.",
+        "open": "Original request"
+      },
+      "confirm": {
+        "delete_title": "Send this DELETE?",
+        "delete": "DELETE {path} calls the live API and may delete data.",
+        "write_title": "Write to the live API?",
+        "write": "{method} {path} changes real data. You will not be asked again for this route during this session.",
+        "redacted_title": "Send masked values?",
+        "redacted": "{count} value is still [REDACTED] and would be sent as is. | {count} values are still [REDACTED] and would be sent as is.",
+        "truncated_title": "Send an incomplete body?",
+        "truncated": "The body was cut at capture: the API gets only its start."
+      },
+      "source_failed": "Not sent: the console could not mark the call as the Tester's.",
+      "replay_not_found": "This request can no longer be replayed: it was pruned, is outside the route scope, or matched no route."
+    },
+    "settings": {
+      "title": "API settings",
+      "description": "Which routes the console watches, how long data is kept and what gets captured. Changes apply immediately, no restart.",
+      "form": "API console settings",
+      "saved": "Settings saved",
+      "sections": {
+        "visibility": "Route visibility",
+        "visibility_description": "Applies to Overview, Routes and Request logs",
+        "retention": "Retention",
+        "retention_description": "Pruned every hour",
+        "capture": "Capture & privacy",
+        "capture_description": "What a request log keeps",
+        "thresholds": "Health thresholds",
+        "thresholds_description": "When a route shows up in Needs attention"
+      },
+      "scope": {
+        "label": "Scope",
+        "description": "Own routes come from your project's code. Module routes come from installed Antelope modules, like this console's own endpoints. All routes adds both.",
+        "own": "Own routes",
+        "own_description": "Your project's code only",
+        "modules": "Module routes",
+        "modules_description": "Installed modules only",
+        "all": "All routes",
+        "all_description": "No filtering"
+      },
+      "retention": {
+        "logs": "Request logs (days)",
+        "logs_description": "Full requests with headers and bodies. Lowering it deletes older logs at the next hourly prune.",
+        "logs_hint": "1 to 366 days.",
+        "statistics": "Statistics (days)",
+        "statistics_description": "Per-day aggregates behind charts and KPIs. From 60 days, 30D can be compared with the 30 days before.",
+        "statistics_choice": "Pick 30, 60 or 90 days.",
+        "days": "{count} day | {count} days",
+        "choice_no_comparison": "No 30D comparison with the period before",
+        "choice_comparison": "Keeps the 30D comparison",
+        "choice_default": "Default · keeps the 30D comparison",
+        "logs_name": "Request logs",
+        "statistics_name": "Statistics",
+        "impact_pending": "Counting what the next hourly prune deletes…",
+        "impact_none": "Nothing stored is older than {days} day: the next prune deletes nothing yet. | Nothing stored is older than {days} days: the next prune deletes nothing yet.",
+        "impact_statistics": "The next hourly prune deletes {days} day of statistics (about {requests} requests). | The next hourly prune deletes {days} days of statistics (about {requests} requests).",
+        "impact_logs": "The next hourly prune deletes {days} day of request logs ({requests} requests). | The next hourly prune deletes {days} days of request logs ({requests} requests).",
+        "confirm_title": "Delete stored data?",
+        "confirm_description": "A lower retention deletes the data older than it at the next hourly prune. This cannot be undone.",
+        "confirm_save": "Save and delete",
+        "confirm_change": "{field}: {from} → {to} day | {field}: {from} → {to} days",
+        "confirm_requests": "≈ {requests} requests"
+      },
+      "capture": {
+        "max_body": "Max body size (KB)",
+        "max_body_description": "Larger request and response bodies are stored truncated and flagged.",
+        "max_body_hint": "0 to 10,240 KB. 0 turns body capture off.",
+        "headers": "Captured headers",
+        "headers_description": "Only these request headers are stored. Add one to debug an integration, for example a webhook signature.",
+        "headers_hint": "Header names, stored in lower case. Secret-looking headers (authorization, cookies, API keys) are never stored.",
+        "headers_placeholder": "Add a header name",
+        "invalid_header": "Not a header name: use letters, digits and dashes.",
+        "sensitive_header": "Never stored, for your security",
+        "redacted": "Always redacted",
+        "redacted_description": "Values under keys that match these words are replaced before storage, in bodies and query strings.",
+        "redacted_hint": "Example: “portal_token”: “abc” is stored as [REDACTED].",
+        "always": "Not editable"
+      },
+      "thresholds": {
+        "slow": "Slow request (ms)",
+        "slow_description": "Requests at or above this are flagged slow; a route whose p95 reaches it is listed as Slow.",
+        "slow_hint": "50 to 600,000 ms, in steps of 50.",
+        "slow_step": "Use a multiple of 50 ms.",
+        "error_rate": "Error rate warning",
+        "error_rate_description": "A route is flagged for its client errors when 4xx reach this share of its calls over the last 24 hours, counted from 20 calls.",
+        "down_rate": "Down threshold",
+        "down_rate_description": "API health turns Down when server errors (5xx) reach this share of the calls of the last 5 minutes, counted from 20 calls. From 1% over the last 15 minutes it is Degraded and the route Failing, then Recovered for 15 minutes once it is back.",
+        "fixed": "Fixed in this version"
+      },
+      "number": {
+        "adjusted_max": "{typed} is above the maximum: set to {value}.",
+        "adjusted_min": "{typed} is below the minimum: set to {value}.",
+        "adjusted_step": "{typed} is not a step of {step}: rounded to {value}."
+      }
+    }
+  }
+}

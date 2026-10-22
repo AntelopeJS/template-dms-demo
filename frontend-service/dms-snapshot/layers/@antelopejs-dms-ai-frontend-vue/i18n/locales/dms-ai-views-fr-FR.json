@@ -1,0 +1,142 @@
+{
+	"dms_ai": {
+		"views": {
+			"common": {
+				"load_more": "Charger plus",
+				"loading": "Chargement",
+				"next": "Suivant",
+				"previous": "Précédent",
+				"open_assistant": "Ouvrir l'assistant",
+				"position": "{index} / {total}",
+				"retry": "Réessayer",
+				"unknown": "Inconnu"
+			},
+			"moment": {
+				"today": "Aujourd'hui {time}",
+				"yesterday": "Hier {time}"
+			},
+			"unavailable": {
+				"title": "Impossible de joindre l'assistant",
+				"description": "L'assistant ne tourne pas, ces données n'ont donc pas pu être chargées. Ce n'est pas une liste vide."
+			},
+			"error": {
+				"title": "Chargement impossible",
+				"description": "Un problème est survenu. Réessayez dans un instant."
+			},
+			"agent": {
+				"claude": "Claude Code",
+				"codex": "Codex"
+			},
+			"scope": {
+				"safe": "Mode sûr",
+				"vibe": "Mode code"
+			},
+			"typecheck": {
+				"passed": "Vérification des types réussie",
+				"failed": "Vérification des types en échec",
+				"skipped": "Vérification des types ignorée"
+			},
+			"source": {
+				"builder": "Builder",
+				"code": "Code",
+				"web": "Web",
+				"project": "Projet",
+				"assistant": "Assistant"
+			},
+			"allowed": {
+				"read_auto": "Lecture seule, automatique",
+				"builder_auto": "Builder, automatique",
+				"approved": "Autorisé par vous",
+				"rule": "Autorisé par une règle",
+				"full_auto": "Automatique complet",
+				"blocked": "Bloqué · mode sûr",
+				"denied": "Refusé par vous",
+				"expired": "Expiré, sans réponse"
+			},
+			"result": {
+				"done": "Terminé",
+				"applied": "Appliqué · #{number}",
+				"failed": "Échec",
+				"denied": "Non exécuté",
+				"blocked": "Bloqué",
+				"stopped": "Arrêté",
+				"pending": "En attente",
+				"expired": "Expiré"
+			},
+			"changes": {
+				"search": "Rechercher des fichiers ou des modifications",
+				"filter_label": "Portée",
+				"filter_all": "Tout",
+				"filter_safe": "Sûr",
+				"filter_code": "Code",
+				"list_label": "Lots de modifications · {count}",
+				"eyebrow": "Lot #{number} · point de restauration avant {time}",
+				"conversation": "Conversation",
+				"open_page": "Ouvrir la page",
+				"undo": "Annuler le lot",
+				"redo": "Rétablir",
+				"undone": "Annulé",
+				"undone_at": "Annulé {time}",
+				"undone_at_by": "Annulé {time} par {by}",
+				"overlapped": "Peut contenir des modifications d'une autre conversation exécutée en même temps.",
+				"auto_fix": "Correction auto",
+				"asked_by": "Demandé par",
+				"agent_scope": "Agent · portée",
+				"approvals": "Validations",
+				"approvals_value": "{needed} requise(s) · {ops} opérations Builder",
+				"checks": "Vérifications",
+				"undo_note": "Annuler restaure ce fichier tel qu'au point de restauration et recharge la page. | Annuler restaure ces {count} fichiers tels qu'au point de restauration et recharge la page.",
+				"redo_note": "Rétablir remet ce fichier tel que l'assistant l'avait laissé. | Rétablir remet ces {count} fichiers tels que l'assistant les avait laissés.",
+				"empty_title": "Aucune modification pour l'instant",
+				"empty_description": "Quand l'assistant modifie une page ou un fichier, le lot de modifications arrive ici avec son diff et une annulation.",
+				"no_match_title": "Aucun lot ne correspond",
+				"no_match_description": "Essayez une autre recherche ou une autre portée.",
+				"off_title": "Les lots de modifications sont désactivés",
+				"off_description": "Git n'est pas disponible sur cette machine : l'assistant ne peut pas enregistrer de points de restauration pour annuler ses modifications. Installez Git puis redémarrez l'assistant."
+			},
+			"diff": {
+				"new": "nouveau",
+				"deleted": "supprimé",
+				"binary": "Fichier binaire, aucun diff à afficher.",
+				"no_lines": "Aucune ligne modifiée.",
+				"collapse": "Replier {path}",
+				"expand": "Déplier {path}"
+			},
+			"toast": {
+				"undone": "Annulé · point de restauration #{number} restauré",
+				"undone_description": "La page se recharge avec les fichiers tels qu'ils étaient. | {count} lots ont été annulés ; la page se recharge avec les fichiers tels qu'ils étaient.",
+				"redone": "Lot #{number} appliqué à nouveau"
+			},
+			"activity": {
+				"allowed": "Autorisation",
+				"result": "Résultat",
+				"arguments": "Arguments",
+				"decision_trail": "Historique des décisions",
+				"diff": "Diff produit",
+				"output": "Sortie",
+				"show_raw": "Afficher le JSON brut",
+				"hide_raw": "Masquer le JSON brut",
+				"open_conversation": "Ouvrir la conversation",
+				"view_change_set": "Voir le lot de modifications",
+				"view_change_set_number": "Voir le lot #{number}"
+			},
+			"skills": {
+				"source": {
+					"module": "Module",
+					"local": "Local"
+				},
+				"shadowed": "Masqué",
+				"shadowed_by": "Ignoré : {winner} porte le même nom et est utilisé à sa place.",
+				"shadowed_description": "Ignoré : une autre compétence porte le même nom et est utilisée à sa place.",
+				"uses": "{count} utilisation | {count} utilisations",
+				"never_used": "jamais utilisée",
+				"source_label": "Source",
+				"origin_label": "Origine",
+				"used_label": "Utilisée",
+				"used_value": "{count}× · 30 jours",
+				"last_used_label": "Dernière utilisation",
+				"open_last_conversation": "Ouvrir la dernière conversation"
+			}
+		}
+	}
+}

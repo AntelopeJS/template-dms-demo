@@ -1,0 +1,64 @@
+function collectFromComponentInfo(
+  info: ComponentInfo | undefined,
+  names: Set<string>,
+): void {
+  if (!info) return;
+  if (info.componentName) {
+    names.add(info.componentName);
+  }
+  for (const child of info.children || []) {
+    collectFromComponentInfo(child.component, names);
+  }
+}
+
+/**
+ * Collect every componentName referenced by a page layout: the top-level
+ * components and all their nested children, and the children of the layout
+ * component. The layout component itself is a layout the frontend modules
+ * register apart from components (`registerLayout`), which the renderer
+ * loads with the page: looked up among the components, it is not found.
+ */
+export function collectPageLayoutComponentNames(
+  layout: PageLayout | null | undefined,
+): string[] {
+  if (!layout) return [];
+
+  const names = new Set<string>();
+  for (const child of layout.layout?.children || []) {
+    collectFromComponentInfo(child.component, names);
+  }
+  for (const info of Object.values(layout.components || {})) {
+    collectFromComponentInfo(info, names);
+  }
+  return [...names];
+}
+
+interface AsyncComponentLoader {
+  __asyncLoader?: () => Promise<unknown>;
+}
+
+function loadPageLayoutComponents(
+  layout: PageLayout | null | undefined,
+): Promise<unknown> {
+  return Promise.all(
+    collectPageLayoutComponentNames(layout).map((name) =>
+      (
+        resolveDmsComponent(name) as AsyncComponentLoader | undefined
+      )?.__asyncLoader?.(),
+    ),
+  );
+}
+
+/**
+ * Start fetching the chunks of every component a page layout references,
+ * in parallel, instead of letting each <Component :is> trigger its own
+ * fetch when it mounts (which waterfalls for nested children).
+ * No-op on the server: SSR resolves async components during render.
+ */
+export function preloadPageLayoutComponents(
+  layout: PageLayout | null | undefined,
+): void {
+  if (import.meta.env.SSR) return;
+
+  loadPageLayoutComponents(layout).catch(() => {});
+}

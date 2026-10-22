@@ -1,0 +1,269 @@
+{
+  "format": 1,
+  "backendUrl": "http://127.0.0.1:5010",
+  "takenAt": "2026-10-22T08:31:44.993Z",
+  "digest": "ee9968d12795df6b",
+  "manifest": {
+    "pack": "/dms/frontend/modules?renderer=vue&rendererVersion=3",
+    "modules": [
+      {
+        "name": "@antelopejs/dms-api-frontend-vue",
+        "archiveName": "@antelopejs-dms-api-frontend-vue",
+        "priority": 0,
+        "options": {},
+        "privateOptions": {},
+        "configKey": "dmsApi",
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-automation-frontend-vue",
+        "archiveName": "@antelopejs-dms-automation-frontend-vue",
+        "priority": 0,
+        "options": {
+          "authHeaderName": "x-dashboard-auth"
+        },
+        "privateOptions": {},
+        "configKey": "dmsAutomation",
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-database-frontend-vue",
+        "archiveName": "@antelopejs-dms-database-frontend-vue",
+        "priority": 0,
+        "options": {},
+        "privateOptions": {},
+        "configKey": "dmsDatabase",
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-frontend-vue",
+        "archiveName": "@antelopejs-dms-frontend-vue",
+        "priority": 0,
+        "options": {
+          "baseURL": "https://dms-demo-e2e-frontend.antelopejs.io",
+          "clientBaseUrl": "https://dms-demo-e2e-frontend.antelopejs.io",
+          "mustValidateEmail": false,
+          "token": {
+            "maxAgeInSeconds": 3600
+          },
+          "homepage": "/home",
+          "oauthProviders": []
+        },
+        "privateOptions": {
+          "htmlRender": {
+            "serviceSecret": ""
+          },
+          "oauth": {
+            "relaySecret": ""
+          }
+        },
+        "configKey": "dms",
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [
+          "/api/auth/session-handoff"
+        ],
+        "publicEndpoints": [],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-lang-frontend-vue",
+        "archiveName": "@antelopejs-dms-lang-frontend-vue",
+        "priority": 0,
+        "options": {},
+        "privateOptions": {},
+        "configKey": "dmsLang",
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": [
+          {
+            "path": "/i18n/**",
+            "auth": "none"
+          }
+        ]
+      },
+      {
+        "name": "@antelopejs/dms-mailing-frontend-vue",
+        "archiveName": "@antelopejs-dms-mailing-frontend-vue",
+        "priority": 0,
+        "options": {
+          "dmsMailing": {}
+        },
+        "privateOptions": {},
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [
+          {
+            "path": "/api/mailing/events/*/*",
+            "methods": [
+              "POST"
+            ],
+            "headers": [
+              "x-mailing-webhook-secret"
+            ]
+          }
+        ],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-marketing-frontend-vue",
+        "archiveName": "@antelopejs-dms-marketing-frontend-vue",
+        "priority": 0,
+        "options": {},
+        "privateOptions": {},
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [
+          {
+            "path": "/api/marketing/tracker.js",
+            "methods": [
+              "GET",
+              "HEAD"
+            ],
+            "headers": []
+          },
+          {
+            "path": "/api/marketing/experiments.js",
+            "methods": [
+              "GET",
+              "HEAD"
+            ],
+            "headers": []
+          },
+          {
+            "path": "/api/marketing/snapshot.js",
+            "methods": [
+              "GET",
+              "HEAD"
+            ],
+            "headers": []
+          },
+          {
+            "path": "/api/marketing/collect",
+            "methods": [
+              "POST"
+            ],
+            "headers": []
+          },
+          {
+            "path": "/api/marketing/snapshot",
+            "methods": [
+              "POST"
+            ],
+            "headers": []
+          }
+        ],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-media-frontend-vue",
+        "archiveName": "@antelopejs-dms-media-frontend-vue",
+        "priority": 0,
+        "options": {},
+        "privateOptions": {},
+        "configKey": "dmsMedia",
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": [
+          {
+            "path": "/media/**",
+            "auth": "session"
+          }
+        ]
+      },
+      {
+        "name": "@antelopejs/dms-saas-frontend-vue",
+        "archiveName": "@antelopejs-dms-saas-frontend-vue",
+        "priority": 0,
+        "options": {
+          "dmsSaas": {
+            "stripePublishableKey": "pk_test_replace_me",
+            "admissionMode": "open",
+            "registrationPaymentMethod": "required",
+            "publicScreens": [
+              "register",
+              "pricing"
+            ]
+          }
+        },
+        "privateOptions": {},
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [
+          "/api/saas/register/finalize"
+        ],
+        "publicEndpoints": [],
+        "backendProxies": []
+      },
+      {
+        "name": "@antelopejs/dms-ai-frontend-vue",
+        "archiveName": "@antelopejs-dms-ai-frontend-vue",
+        "priority": 100,
+        "options": {},
+        "privateOptions": {},
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": [
+          {
+            "path": "/ai/**",
+            "auth": "session"
+          }
+        ]
+      },
+      {
+        "name": "template-dms-demo-frontend-vue",
+        "archiveName": "template-dms-demo-frontend-vue",
+        "priority": 100,
+        "options": {},
+        "privateOptions": {},
+        "renderer": {
+          "name": "vue",
+          "version": "3"
+        },
+        "authEstablishEndpoints": [],
+        "publicEndpoints": [],
+        "backendProxies": []
+      }
+    ]
+  }
+}

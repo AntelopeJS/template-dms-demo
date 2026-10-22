@@ -1,0 +1,1151 @@
+{
+  "page": {
+    "marketing": {
+      "acquisition": {
+        "campaigns": {
+          "all": "All",
+          "campaign": "Campaign",
+          "channel": "Channel",
+          "count": "{count} campaign | {count} campaigns",
+          "empty_description": "Sessions only land here when their URL carries utm_* parameters.",
+          "empty_title": "No tagged campaign in this period",
+          "filter": "Filter source, medium or campaign",
+          "flags": "Flags",
+          "medium": "Medium",
+          "missing_description": "Without utm_medium they are classified by their referrer alone: Direct when there is none, as from a mail client. Add utm_medium to the link.",
+          "missing_medium": "No medium",
+          "missing_title": "{count} session tagged without a medium | {count} sessions tagged without a medium",
+          "no_match": "No campaign matches this filter.",
+          "not_set": "not set",
+          "note": "One row per source × medium × campaign and the channel its sessions got. \"not set\": the landing URL did not carry that parameter.",
+          "per_day": "Per day",
+          "sessions": "Sessions",
+          "share": "Share",
+          "source": "Source",
+          "tagged": "{count} tagged session · {share} of traffic | {count} tagged sessions · {share} of traffic",
+          "title": "UTM campaigns"
+        },
+        "channels": {
+          "channel": "Channel",
+          "compare_unavailable": "No comparison: the details of days this old are no longer kept.",
+          "empty": "No session in this period.",
+          "show_campaigns": "Show the {channel} campaigns",
+          "sessions": "Sessions",
+          "share": "Share",
+          "split": "Channel split: {shares}",
+          "title": "Channels · {count} session | Channels · {count} sessions",
+          "vs_previous": "Sessions vs prev.",
+          "vs_previous_hint": "Change of the channel's sessions against the comparison period"
+        },
+        "description": "Where sessions come from: the channel split and every UTM-tagged campaign.",
+        "rules": {
+          "direct": "No referrer and nothing above: a typed URL, a bookmark, a mail client or an app.",
+          "email": "utm_medium is email, e-mail, e_mail, mail or newsletter. Mail clients send no referrer, so this tag is the only proof.",
+          "organic": "utm_medium is organic, or a known search engine as referrer (google, bing, duckduckgo…).",
+          "paid": "utm_medium is cpc, ppc, cpm, display, banner, retargeting… or starts with paid, or an ad click id (gclid, msclkid…). Checked first.",
+          "referral": "Any other referrer, or utm_medium is referral, affiliate or partner.",
+          "social": "utm_medium is social, a known network as referrer (facebook, linkedin, t.co…), or a fbclid click id.",
+          "title": "How a session gets its channel"
+        },
+        "title": "Acquisition",
+        "tops": {
+          "contents": "UTM contents",
+          "empty": "Nothing in this period.",
+          "referrers": "Top referrers",
+          "terms": "UTM terms"
+        }
+      },
+      "blocks": {
+        "acquisition_contents": {
+          "description": "utm_content values.",
+          "name": "UTM contents"
+        },
+        "acquisition_referrers": {
+          "description": "Referring domains.",
+          "name": "Top referrers"
+        },
+        "acquisition_terms": {
+          "description": "utm_term values.",
+          "name": "UTM terms"
+        },
+        "acquisition_tops": {
+          "description": "Top referrers, UTM contents and UTM terms.",
+          "name": "Referrers and UTM details"
+        },
+        "campaigns": {
+          "description": "Every source × medium × campaign of the period.",
+          "name": "UTM campaigns"
+        },
+        "campaigns_missing": {
+          "description": "Warns when tagged sessions carry no utm_medium and get their channel from the referrer alone.",
+          "name": "Missing medium notice"
+        },
+        "campaigns_tagged": {
+          "description": "The UTM-tagged sessions of the period and their share of the traffic.",
+          "name": "Tagged sessions"
+        },
+        "channel_rules": {
+          "description": "How a session gets its channel.",
+          "name": "Channel rules"
+        },
+        "channels": {
+          "description": "Sessions per channel, their share and change.",
+          "name": "Channel split"
+        },
+        "channels_row": {
+          "description": "The channel split and its rules.",
+          "name": "Channels"
+        },
+        "collection": {
+          "description": "Pause or resume collection on every website.",
+          "name": "Collection switch"
+        },
+        "collection_paused": {
+          "description": "Shown while collection is paused for the whole module, with a link to Settings.",
+          "name": "Collection paused notice"
+        },
+        "context": {
+          "description": "Picks the website and the period every block of the page reads.",
+          "name": "Website and period bar"
+        },
+        "devices": {
+          "description": "Sessions by device type.",
+          "name": "Devices"
+        },
+        "funnel_builder": {
+          "description": "Create and edit funnels and A/B tests.",
+          "name": "Funnel builder"
+        },
+        "funnel_report": {
+          "description": "One funnel or A/B test, step by step.",
+          "name": "Funnel report"
+        },
+        "funnels_table": {
+          "description": "Every funnel with its conversion and A/B status.",
+          "name": "Funnels and A/B tests"
+        },
+        "funnels_winner": {
+          "description": "The running A/B test that reached significance, with a link to its report.",
+          "name": "Winning test"
+        },
+        "glance_raw": {
+          "description": "Days of raw events kept.",
+          "name": "Raw events retention"
+        },
+        "glance_snapshots": {
+          "description": "Days of page snapshots kept.",
+          "name": "Snapshots retention"
+        },
+        "glance_statistics": {
+          "description": "Days of rollups kept.",
+          "name": "Statistics retention"
+        },
+        "install_guide": {
+          "description": "Add a website and check its tracker.",
+          "name": "Tracker install"
+        },
+        "kpi_custom_events": {
+          "description": "Custom events sent by the site over the period.",
+          "name": "Custom events"
+        },
+        "kpi_new_visitors": {
+          "description": "First-time visitors over the period.",
+          "name": "New visitors"
+        },
+        "kpi_pageviews": {
+          "description": "Pageviews over the period, with the change and a sparkline.",
+          "name": "Pageviews"
+        },
+        "kpi_sessions": {
+          "description": "Sessions over the period, with the change and a sparkline.",
+          "name": "Sessions"
+        },
+        "kpis": {
+          "description": "Pageviews, sessions, new visitors and custom events with their change.",
+          "name": "Volume KPIs"
+        },
+        "pages_explorer": {
+          "description": "Tracked pages with their click and scroll heatmaps.",
+          "name": "Pages and heatmaps"
+        },
+        "quality": {
+          "description": "Bounce rate, average session duration and pages per session.",
+          "name": "Session quality"
+        },
+        "retention_form": {
+          "description": "Edits the retention periods.",
+          "name": "Retention form"
+        },
+        "sampling_form": {
+          "description": "Edits the heatmap sampling.",
+          "name": "Sampling form"
+        },
+        "settings_collection": {
+          "description": "The master switch of collection.",
+          "name": "Collection"
+        },
+        "settings_glance": {
+          "description": "The retention periods on one scale.",
+          "name": "Retention at a glance"
+        },
+        "settings_retention": {
+          "description": "How long each kind of data is kept.",
+          "name": "Retention"
+        },
+        "settings_sampling": {
+          "description": "The share of page loads recording clicks.",
+          "name": "Sampling"
+        },
+        "tops": {
+          "description": "Content, acquisition, audience and custom events.",
+          "name": "Top lists"
+        },
+        "tops_acquisition": {
+          "description": "Channels, campaigns and referrers.",
+          "name": "Top acquisition"
+        },
+        "tops_audience": {
+          "description": "Countries, languages and browsers.",
+          "name": "Audience"
+        },
+        "tops_content": {
+          "description": "Top, entry and exit pages.",
+          "name": "Top content"
+        },
+        "tops_events": {
+          "description": "The custom events the site sends, goals flagged.",
+          "name": "Custom events"
+        },
+        "traffic": {
+          "description": "Sessions or pageviews over time, against the compared period.",
+          "name": "Traffic"
+        },
+        "traffic_pageviews": {
+          "description": "Pageviews per day, or per hour over a single day.",
+          "name": "Pageviews over time"
+        },
+        "traffic_row": {
+          "description": "The traffic curve and the device split.",
+          "name": "Traffic and devices"
+        },
+        "traffic_sessions": {
+          "description": "Sessions per day, or per hour over a single day.",
+          "name": "Sessions over time"
+        },
+        "website_waiting": {
+          "description": "Shown while the website has sent no pageview, with a link to the install guide.",
+          "name": "First pageview notice"
+        },
+        "websites_grid": {
+          "description": "The tracked websites and their settings.",
+          "name": "Websites"
+        }
+      },
+      "builder": {
+        "add_event_step": "Add {name} as a step",
+        "add_step": "Add a step",
+        "add_variation": "Add a variation",
+        "copy_name": "Copy of {name}",
+        "description": "Create or edit a funnel and its A/B split.",
+        "draft_description": "No visitor is assigned until you start the test. Once started, the key and the variations freeze.",
+        "draft_title": "Saved as a draft",
+        "duplicate": "Duplicate",
+        "edit_title": "Edit {name}",
+        "end_to_end": "End to end",
+        "errors": {
+          "key": "Use lowercase letters, digits, hyphens and underscores, starting with a letter or a digit ({max} characters max).",
+          "name": "Give the funnel a name.",
+          "name_length": "Keep the name to {max} characters.",
+          "step_length": "Step {index} is longer than {max} characters.",
+          "steps": "Add at least one step.",
+          "variations": "Every variation needs its own key: lowercase letters, digits, hyphens and underscores, starting with a letter or a digit ({max} characters max).",
+          "website": "Pick a website.",
+          "weights": "Weights are numbers, 0 or more, and at least one must be above 0.",
+          "window": "Enter a whole number of hours, from 1 to {max}."
+        },
+        "events_hint": "Send more with dmsMarketing.track(\"name\")",
+        "events_title": "Events this site sends",
+        "frozen_description": "Its key and variations are frozen: changing them would reassign visitors. The name, steps and window stay editable.",
+        "frozen_title": "This test has started",
+        "goal_hint": "The last step is the goal.",
+        "hours": "hours",
+        "key": "Experiment key",
+        "key_hint": "What the page asks for: lowercase letters, digits, hyphens and underscores, starting with a letter or a digit.",
+        "load_error": "Couldn't load this funnel.",
+        "months": "{months} month | {months} months",
+        "months_under": "under {months} month",
+        "move_down_step": "Move step {n} down",
+        "move_up_step": "Move step {n} up",
+        "name": "Funnel name",
+        "name_placeholder": "Sale page to order",
+        "no_events": "No custom event yet.",
+        "objective_confirm": {
+          "cancel": "Keep editing",
+          "confirm": "Save and re-score",
+          "description": "Every arm is scored again over the whole test with the new steps and window: the verdict may change. To test a new hypothesis, duplicate the funnel instead.",
+          "title": "Change what this running test measures?"
+        },
+        "objective_description": "Saving re-scores every arm over the whole test with these steps and this window: the verdict may change. To test a new hypothesis, duplicate the funnel instead.",
+        "objective_title": "You are changing the goal of a started test",
+        "optional": "Optional",
+        "or": "or",
+        "page_title": "Funnel builder",
+        "preview": "Preview · last 30 days",
+        "preview_empty": "Add a step to see how many sessions match.",
+        "preview_error": "The preview is unavailable right now. You can still save.",
+        "preview_invalid": "Fix the steps and the window to see the preview.",
+        "remove_step_n": "Remove step {n}",
+        "remove_variation_n": "Remove variation {letter}",
+        "sample_hint": "Detecting a +20% lift on {rate} needs about {total} entered sessions: {duration} at this traffic. Test a bigger change, or score an earlier step.",
+        "save": "Save funnel",
+        "save_error": "The funnel could not be saved.",
+        "saved": "Funnel saved",
+        "sections": {
+          "basics": "Basics",
+          "split": "A/B split",
+          "steps": "Steps",
+          "window": "Conversion window"
+        },
+        "sessions_short": "sessions",
+        "snippet_title": "Add to the page · {path}",
+        "split_description": "Visitors get an arm server-side; each arm is scored against the steps above.",
+        "split_title": "Split traffic between variations",
+        "step_kind_label": "Step {n} type",
+        "step_rate": "Share of the previous step's sessions",
+        "step_value_label": "Step {n} page or event",
+        "steps_hint": "1 to {max} · matched in order within one session",
+        "subtitle": "Pick pages and events in the order visitors should hit them. The preview scores the last 30 days while you edit.",
+        "title": "New funnel",
+        "tracked_events": "Events this site sends",
+        "tracked_pages": "Tracked pages",
+        "triggers": "{count} trigger | {count} triggers",
+        "variation_key_label": "Variation {letter} key",
+        "variation_weight_label": "Variation {letter} weight",
+        "variations": "Variations",
+        "variations_hint": "{min} to {max} · the first one is the control",
+        "views": "{count} view | {count} views",
+        "website": "Website",
+        "website_locked": "A started test stays on its website.",
+        "weight": "weight",
+        "window_hint": "Time allowed after entering step 1, within the same session (it ends after 30 min without activity)",
+        "window_label": "Custom window, in hours",
+        "window_max": "Max {max} h",
+        "window_presets": {
+          "1": "1 h",
+          "24": "Whole session"
+        },
+        "step_matched_as": "Matched as {path}",
+        "step_unseen": "No raw event matches it in the last 30 days: funnels count raw events, not the daily statistics beside"
+      },
+      "catalog": {
+        "collecting": "Collection is on",
+        "paused": "Collection is paused",
+        "resume_hint": "Resume it in Marketing › Settings"
+      },
+      "catalog_category": "Analytics",
+      "category_name": "Marketing",
+      "channels": {
+        "direct": "Direct",
+        "email": "Email",
+        "organic": "Organic search",
+        "paid": "Paid",
+        "referral": "Referral",
+        "social": "Social"
+      },
+      "common": {
+        "cancel": "Cancel",
+        "data_safe": "Tracking keeps running and the collected data is not affected.",
+        "edit": "Edit",
+        "load_error": "Couldn't load this block",
+        "more": "More",
+        "new": "New",
+        "retry": "Try again",
+        "save_changes": "Save changes"
+      },
+      "compose": {
+        "delta": "{sign}{value} · vs previous period",
+        "delta_previous_year": "{sign}{value} · vs previous year",
+        "duration_hours": "{hours}h {minutes}m",
+        "duration_minutes": "{minutes}m {seconds}s",
+        "duration_seconds": "{seconds}s",
+        "number": "{value}",
+        "percent": "{value}%",
+        "points": "{value} pt",
+        "range": "{from} – {to}",
+        "signed": "{sign}{value}"
+      },
+      "context": {
+        "add_website": "Add a website",
+        "comparisons": {
+          "none": "No comparison",
+          "previous-period": "vs previous period",
+          "previous-year": "vs previous year"
+        },
+        "error": {
+          "description": "Tracking keeps running and nothing was lost. Try again in a moment.",
+          "title": "Couldn't load your websites"
+        },
+        "idle": "Last event {ago}",
+        "imported": "Imported history · last event {ago}",
+        "label": "Website and period",
+        "live": "Live · last event {ago}",
+        "no_website": "No website yet",
+        "presets": {
+          "custom": "Custom",
+          "last-30-days": "30D",
+          "last-7-days": "7D",
+          "last-90-days": "90D",
+          "today": "Today"
+        },
+        "range_cut": "Only the last {days} days of this range are shown.",
+        "refresh": "Refresh",
+        "state": {
+          "imported": "Imported history only",
+          "live": "Live",
+          "paused": "Tracking paused for this website",
+          "waiting": "Waiting for the first event"
+        },
+        "switch_error": "Couldn't switch to this website",
+        "switch_website": "Switch website",
+        "utc_days": "Statistics are counted per UTC day: each day shown here starts at {time} your time.",
+        "vs_previous": "vs previous period",
+        "vs_previous_short": "vs previous",
+        "waiting_guide": {
+          "action": "Open the install guide",
+          "description": "Add the tracker to the site, then open one of its pages: the first figures show up here within a minute.",
+          "title": "{name} hasn't received any event yet"
+        }
+      },
+      "devices": {
+        "console": "Console",
+        "desktop": "Desktop",
+        "embedded": "Embedded",
+        "mobile": "Mobile",
+        "smarttv": "Smart TV",
+        "tablet": "Tablet",
+        "wearable": "Wearable",
+        "xr": "XR headset"
+      },
+      "errors": {
+        "duplicate_host": "Another website of this workspace already declares this host.",
+        "duplicate_host_named": "{site} already declares {host}: a host belongs to one website of the workspace.",
+        "duplicate_experiment_key": "Another A/B test on this website already uses this key.",
+        "experiment_locked": "This test has started: its key, its variations and its website can no longer change.",
+        "funnel_not_found": "This funnel no longer exists.",
+        "invalid_body": "The request body is not valid JSON.",
+        "invalid_hostname": "Enter a hostname without scheme or path, such as shop.example.com.",
+        "invalid_experiment_key": "Invalid key: lowercase letters, digits, hyphens and underscores, starting with a letter or a digit, 64 characters max.",
+        "invalid_metric": "Unknown metric.",
+        "invalid_settings": "Invalid settings: check that every value is within its allowed range.",
+        "invalid_status_transition": "This status change is not allowed: a draft can start, a running test can stop and a stopped test can resume.",
+        "invalid_steps": "Invalid steps: 1 to 10 steps, each a page or an event of 500 characters max.",
+        "invalid_variations": "Invalid variations: 2 to 8, each with its own key, weights of 0 or more with at least one above 0.",
+        "invalid_website": "Invalid website details: check the name, the domain and the extra domains.",
+        "missing_path": "A page path is required.",
+        "no_website": "This workspace tracks no website yet.",
+        "retention_cut": {
+          "raw_events": "Save again to confirm. On the hour, the cleanup deletes the raw events older than this ({deleted}).",
+          "rollups": "Save again to confirm. On the hour, the cleanup deletes the daily statistics older than this ({deleted}, days × websites).",
+          "sessions": "Save again to confirm. On the hour, the cleanup deletes the sessions older than this, and their daily statistics ({deleted}).",
+          "snapshots": "Save again to confirm. On the hour, the cleanup deletes the page snapshots older than this ({deleted})."
+        },
+        "snapshot_retention_above_raw": "Snapshots can't be kept longer than raw events: they would outlive every click they back.",
+        "statistics_retention_below_raw": "Statistics can't be kept shorter than raw events: funnels and A/B results would lose the sessions of their events.",
+        "website_not_found": "This website does not exist, or belongs to another workspace."
+      },
+      "experiment": {
+        "colours_note": "Arms keep their colour everywhere: A is neutral, B is the primary colour. Green and red only mean a verdict.",
+        "control_arm": "control arm",
+        "exposed": "Exposed sessions",
+        "frozen": "Frozen",
+        "insufficient_badge": "Not enough data yet",
+        "insufficient_description": "Rates on a sample this thin would be noise. A verdict appears once every arm has at least {count} conversions.",
+        "insufficient_title": "Too few conversions to compare the arms",
+        "lift": "Relative lift",
+        "lift_hint": "{letter} vs A at the goal",
+        "not_significant": "Not significant",
+        "on_site": "On the site",
+        "raw_counts": "{exposed} exposed · {goal} reached the goal",
+        "ready": "Ready to decide",
+        "significant": "Significant at {level}%",
+        "srm_failed": "Observed {observed} for a {expected} split. Assignment or exposure reporting is broken: don't trust this reading.",
+        "srm_passed": "Split check passed: {observed} observed for {expected} configured",
+        "srm_title": "Sample ratio mismatch",
+        "steps_title": "Each arm, step by step · share of exposed sessions",
+        "truncated_description": "The run holds more raw events than one read covers; the numbers cover its oldest part only.",
+        "truncated_title": "Window truncated · verdict withheld",
+        "variations": "Variations",
+        "verdict": {
+          "flat": "No difference you can trust yet",
+          "flat_detail": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control. Keep the test running or keep the control.",
+          "loser": "Variation {letter} converts {lift} worse than the control",
+          "loser_detail": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control. Stop the test and keep the control.",
+          "winner": "Variation {letter} converts {lift} better than the control",
+          "winner_detail": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control. Stop the test, then ship {key} on the site.",
+          "withheld": "Verdict withheld",
+          "withheld_detail": "The warning above voids this reading.",
+          "early": "Too early to call",
+          "early_detail": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control. Significant so far, but a verdict waits for {minDays} days and {minConversions} conversions in every arm ({days} days served): read every day before that, chance alone crowns winners. Keep it running.",
+          "flat_detail_stopped": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control: no difference you can trust. Keep the control and remove the variation(\"{experiment}\") call.",
+          "loser_detail_stopped": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control. Keep the control and remove the variation(\"{experiment}\") call.",
+          "winner_detail_stopped": "{key} reached {goal} in {best} of its exposed sessions, against {control} for the control. Ship {key} on the site, then remove the variation(\"{experiment}\") call."
+        },
+        "days_served": "in {days} day | in {days} days",
+        "lift_interval": "{level}% interval: {low} to {high}",
+        "no_exposure_badge": "No exposure yet",
+        "no_exposure_description": "The site has not asked for an arm: check that its pages load the tracker and call window.dmsMarketing.variation(\"{key}\").",
+        "no_exposure_title": "No visitor of {website} has been exposed since the start",
+        "on_site_stopped": "Code to remove",
+        "on_site_stopped_hint": "The test is stopped: variation(\"{key}\") answers null and every visitor gets the control. Ship the winner, then remove this call.",
+        "p_value": "p-value",
+        "p_value_hint": "two-sided z-test · significant below {alpha}",
+        "too_early": "Too early to decide",
+        "code_show": "show {variation}",
+        "code_keep": "null or \"{control}\": keep the current page"
+      },
+      "first_run": {
+        "add": "Add a website",
+        "description": "Add your website and paste one script tag. Pageviews, sources and devices show up here within a minute; heatmaps and funnels build on the same data.",
+        "eyebrow": "Cookieless · first-party",
+        "how": "How tracking works",
+        "title": "See how your site is doing, without a cookie banner"
+      },
+      "funnel": {
+        "back": "Back to the funnels",
+        "basis": {
+          "entered": "% of entered",
+          "previous": "% of previous step"
+        },
+        "converted": "converted",
+        "definition": {
+          "steps": "Steps",
+          "title": "Definition",
+          "website": "Website",
+          "window": "Window",
+          "window_value": "{hours} h after step 1, within the same session"
+        },
+        "delete": {
+          "action": "Delete funnel…",
+          "confirm": "Delete funnel",
+          "description": "The definition goes; the collected events stay. Type the name to confirm.",
+          "done": "Funnel deleted",
+          "title": "Delete “{name}”?",
+          "description_running": "This test is running: deleting it stops it at once, and its results can no longer be read. Type the name to confirm.",
+          "impact_running": "variation(\"{key}\") answers null within a minute: every visitor gets the control."
+        },
+        "description": "One funnel or A/B test, step by step.",
+        "draft_description": "No visitor is assigned until you start the test. Once started, the key and the variations freeze.",
+        "draft_title": "Saved as a draft",
+        "edit": "Edit",
+        "edit_steps": "Edit steps",
+        "empty": {
+          "description": "Nobody matched {step} in this period, though the site sent other events. Check the step: a page path matches whatever its case, query string or trailing slash, and a final * matches every path that starts with it.",
+          "title": "No session entered this funnel"
+        },
+        "error": "Couldn't load this funnel",
+        "figure_note": "A session counts at step N only if it matched steps 1 to N−1 earlier in the same session, within {hours} h. A session ends after 30 minutes without activity (by default): a longer window changes nothing.",
+        "figure_title": "Sessions at each step",
+        "goal": "goal",
+        "kind": {
+          "custom": "Custom event",
+          "url": "Page view"
+        },
+        "kind_ab": "A/B test",
+        "kind_funnel": "Funnel",
+        "kpis": {
+          "biggest_loss": "Biggest loss",
+          "completed": "Completed",
+          "end_to_end": "End to end",
+          "entered": "Entered"
+        },
+        "lifecycle": {
+          "error": "The status could not be changed.",
+          "resume": "Resume test",
+          "resume_confirm": "Resume test",
+          "resume_description": "Visitors get their variations again, bucketed as before; the pause counts for nothing. Resume an accidental or early stop only: resuming until the numbers look significant makes the verdict meaningless.",
+          "resume_title": "Resume this test?",
+          "running_done": "Test running",
+          "start": "Start test",
+          "start_code": "The page must ask for the arm: check that the site calls variation(\"{key}\").",
+          "start_confirm": "Start test",
+          "start_description": "Visitors of {website} start receiving variations within a minute.",
+          "start_freezes": "The key and the variations freeze: {key} · {shares}.",
+          "start_title": "Start “{name}”?",
+          "stop": "Stop test",
+          "stop_confirm": "Stop test",
+          "stop_description": "Every visitor gets the control again. Results stay readable for the raw-event retention; shipping the winner is a change on the site.",
+          "stop_title": "Stop this test?",
+          "stopped_done": "Test stopped",
+          "start_rescored": "The name, steps and window stay editable, but changing the steps or the window scores the whole test again: the verdict may change.",
+          "start_unseen": "{step} was never received on {website} in this period: check its tracking first, or the test measures nothing.",
+          "stop_code": "Then ship the winner on the site, or remove the variation(\"{key}\") call: it answers null and the page shows the control.",
+          "stop_reading_early": "Reading at the stop: too early to call, the decision rule is not met yet.",
+          "stop_reading_flat": "Reading at the stop: no significant difference.",
+          "stop_reading_loser": "Reading at the stop: {key} converts {lift} worse than the control (significant).",
+          "stop_reading_winner": "Reading at the stop: {key} converts {lift} better than the control (significant).",
+          "stop_reading_withheld": "Reading at the stop: verdict withheld, a warning voids this reading.",
+          "stop_settles": "Sessions exposed before the stop keep counting their conversions for {hours} h (the conversion window); the numbers settle after that."
+        },
+        "lost": "{count} session lost · {rate} | {count} sessions lost · {rate}",
+        "lost_rate": "{rate} leave before {next}",
+        "next": {
+          "first": "{rate} of entering sessions never reach {step}",
+          "first_hint": "Test a different version of {step} with an A/B split.",
+          "heatmap": "Heatmap",
+          "none": "No loss between the steps in this period.",
+          "split": "Split",
+          "title": "Where to look next",
+          "worst": "{rate} of sessions leave {step}",
+          "worst_hint": "The step with the highest loss rate. Its heatmap shows where they click before leaving.",
+          "nobody": "Nobody entered the funnel in this period.",
+          "unseen": "Fix the tracking of the step never received first: a loss before it is not a drop-off."
+        },
+        "of_entered": "of entered",
+        "of_previous": "of previous",
+        "see_clicks": "see clicks",
+        "split": "Split into A/B test",
+        "subtitle": "Steps matched in order within one session on {website} · conversion window {hours} h",
+        "subtitle_draft": "Key {key} on {website} · draft: no visitor is assigned yet",
+        "subtitle_running": "Key {key} on {website} · running since {date} ({days}) · read over its own run, not the selected period",
+        "subtitle_stopped": "Key {key} on {website} · ran {date} – {until} · read over its own run, not the selected period",
+        "title": "Funnel",
+        "truncated_description": "The period holds more raw events than one read covers: these numbers cover its oldest part only. Narrow the period.",
+        "truncated_title": "Window truncated",
+        "worst_step": "worst step",
+        "duplicate": "Duplicate",
+        "no_traffic": {
+          "description": "There is nothing to count: check the period, or that the tracker is still on the site's pages.",
+          "overview": "Open the overview",
+          "title": "{website} sent no page view or event in this period"
+        },
+        "not_found_description": "It may have been deleted. The collected events are not affected.",
+        "run_days": "{days} day | {days} days",
+        "run_today": "started today",
+        "unseen": {
+          "badge": "never received",
+          "description": "Its 0% is a tracking gap, not a result: check that the page exists, or that the site calls dmsMarketing.track() with this exact name.",
+          "title": "{step} was never received on {website} in this period"
+        },
+        "sessions_count": "{count} session | {count} sessions"
+      },
+      "funnels": {
+        "column": {
+          "created": "Created",
+          "name": "Name",
+          "website": "Website"
+        },
+        "columns": {
+          "conversion": "Conversion",
+          "entered": "Entered",
+          "kind": "Kind",
+          "name": "Name",
+          "status": "Status",
+          "steps": "Steps",
+          "completed_of_entered": "Completed / entered"
+        },
+        "count": "{count} funnel | {count} funnels",
+        "description": "Where visitors drop off, step by step, and which variation converts. Results are computed from raw events, so a new funnel scores past traffic at once.",
+        "empty": {
+          "blank": "Blank",
+          "description": "A funnel is a list of pages or events matched in order within a session. It scores past traffic as soon as you save it. These templates follow the journeys {website} already records.",
+          "entering": "{count} session would enter | {count} sessions would enter",
+          "scratch": "Start from scratch",
+          "scratch_description": "Pick pages and events one by one, with a live count of sessions at each step.",
+          "template": "Template",
+          "title": "No funnel on {website} yet",
+          "title_plain": "No funnel on this website yet",
+          "description_none": "The raw events of {website} over this period hold no custom event to build a template from. Start from scratch, or track an event with dmsMarketing.track() first.",
+          "description_waiting": "{website} hasn't sent anything yet. Install the tracker first: funnels score what it collects.",
+          "install": "Open the install guide"
+        },
+        "form": {
+          "add_step": "Add a step",
+          "add_variation": "Add a variation",
+          "event_placeholder": "signup_submitted",
+          "experiment": "A/B split",
+          "experiment_description": "Serve variations of the page to visitors, assigned server-side, and score each arm against the steps above.",
+          "experiment_toggle": "Split traffic between variations",
+          "key": "hero-cta",
+          "key_description": "The identifier page code passes to dmsMarketing.variation(…). Lowercase letters, digits, hyphens and underscores.",
+          "key_label": "Experiment key",
+          "name": "Funnel name",
+          "steps": "Steps",
+          "steps_description": "Each step is a page URL or a custom event, matched in order within a session — a single step counts conversions on its own.",
+          "url_placeholder": "/pricing",
+          "variation_key": "variation-key",
+          "variations": "Variations",
+          "variations_description": "2 to 8 arms with relative weights; the first arm is the control.",
+          "window": "Conversion window (hours)"
+        },
+        "list_title": "Funnels",
+        "locked_hint": "Key and variations are frozen outside draft — weights moved mid-run would silently reassign visitors.",
+        "new": "New funnel",
+        "no_match": "Nothing matches these filters.",
+        "note": "Steps match in order within one session. A/B tests are read over their own run, not the selected period.",
+        "open": "Open report",
+        "results": {
+          "control": "control"
+        },
+        "row": {
+          "draft": "{key} · A/B · {count} variation | {key} · A/B · {count} variations",
+          "leader": "{key} · {letter} leads by {lift}",
+          "no_leader": "{key} · no leader yet",
+          "no_traffic": "{key} · no visitor exposed yet",
+          "plain": "{steps} step · window {hours} h | {steps} steps · window {hours} h",
+          "since": "since {date}",
+          "control_leads": "{key} · the control leads",
+          "unseen": "{step} never received in this period"
+        },
+        "status": {
+          "draft": "Draft",
+          "running": "Running",
+          "stopped": "Stopped"
+        },
+        "step_kind": {
+          "custom": "event",
+          "url": "page view"
+        },
+        "tabs": {
+          "ab": "A/B tests",
+          "all": "All",
+          "funnels": "Funnels"
+        },
+        "title": "Funnels & A/B tests",
+        "winner": {
+          "description": "Lift between {low} and {high} (95% interval), over {exposed} exposed sessions in {days} day. Stop the test, then ship the winner on the site. | Lift between {low} and {high} (95% interval), over {exposed} exposed sessions in {days} days. Stop the test, then ship the winner on the site.",
+          "review": "Review results",
+          "title": "{name} has a winner: it converts {lift} better"
+        },
+        "actions": {
+          "edit": "Edit",
+          "duplicate": "Duplicate",
+          "delete": "Delete…"
+        },
+        "coverage": {
+          "period_title": "Funnels cover this period from {date} only",
+          "previous_title": "No comparison with the previous period",
+          "description": "Funnels are computed from raw events, kept from {date} on: earlier days count nothing, and a comparison window they don't cover is left out rather than shown as a huge change."
+        }
+      },
+      "install": {
+        "add": "Add website",
+        "allow": "Allow this host",
+        "allow_confirm": {
+          "title": "Allow {host}?",
+          "description": "We haven't checked that this domain is yours: anyone can send page views naming any host. Allow it only if you know it, such as your staging site; its visits then count in this website's statistics.",
+          "confirm": "Allow",
+          "cancel": "Cancel"
+        },
+        "allow_error": "The host could not be added.",
+        "allowed": "{host} is now accepted",
+        "and_subdomains": "and its subdomains.",
+        "back": "Back to the websites",
+        "check_again": "Check again",
+        "connected": "Pageview received on {when}",
+        "copy_instructions": "Copy instructions for a developer",
+        "create_error": "The website could not be added. Check the name and the domain.",
+        "description": "Add a website and check its tracker.",
+        "developer_note": "Please add the analytics tag to every page of {name} ({domain}), before {'<'}/body> or inside {'<'}head>:\n\n{snippet}\n\nIt sets no cookie and stores no IP address.",
+        "done": "Done",
+        "flavors": {
+          "gtm": "Google Tag Manager",
+          "html": "HTML",
+          "nuxt": "Nuxt"
+        },
+        "listening": "Listening for the first pageview from {domain}…",
+        "listening_again": "Listening for a new pageview from {domain}…",
+        "listening_again_since": "Only a pageview sent after {when} counts: open or reload a page of the site.",
+        "listening_since": "Added on {when} · keeps listening if you leave this page",
+        "live_description": "Report business events to build funnels on them:",
+        "live_title": "Once it's live",
+        "missing": {
+          "description": "It was deleted, or the link is wrong.",
+          "title": "This website doesn't exist"
+        },
+        "open_overview": "Open the overview",
+        "open_site": "Open the site",
+        "option_dnt": "\"false\" to ignore the browser's Do Not Track signal.",
+        "option_host": "The origin beacons go to, when it is not the script's.",
+        "option_sample": "0 to 1: share of page loads recording clicks and scrolls, overriding the module setting.",
+        "options": "Options",
+        "options_hint": "Do Not Track, sampling",
+        "poll_error": "The connection check failed; it keeps trying.",
+        "records": {
+          "clicks": "Clicks and scroll depth",
+          "clicks_hint": "On a sample of page loads, for heatmaps.",
+          "pageviews": "Pageviews and sources",
+          "pageviews_hint": "Including SPA navigations and all five utm_* parameters.",
+          "privacy": "Nothing personal",
+          "privacy_hint": "No cookie, no IP, no user agent stored. Do Not Track honoured.",
+          "snapshots": "Page snapshots, if you enable them",
+          "snapshots_hint": "Form fields always masked."
+        },
+        "records_title": "What the tracker records",
+        "refused": "{count} event refused from {host} | {count} events refused from {host}",
+        "refused_hint": "That host isn't declared for this website. Declare it, or install on the production site.",
+        "step1": "Add the website",
+        "step2": "Paste the script on every page",
+        "step2_description": "Before {'<'}/body> or inside {'<'}head>. It is the same for every page, loads deferred and sets no cookie.",
+        "step3": "Check the connection",
+        "step3_description": "Open any page of the site once the tag is live. This page updates by itself.",
+        "subtitle": "Three steps, about five minutes. Nothing to configure on the site beyond one script tag.",
+        "title": "Install the tracker",
+        "title_for": "Install the tracker on {name}"
+      },
+      "module_description": "Cookieless analytics: traffic, heatmaps, funnels and A/B tests.",
+      "nav": {
+        "analytics": "Analytics",
+        "conversion": "Conversion",
+        "setup": "Setup"
+      },
+      "overview": {
+        "description": "How the site is doing: traffic, where visitors come from and what they do. Cookieless, first-party, read from daily rollups.",
+        "devices": {
+          "empty": "No device recorded in this period.",
+          "title": "Devices"
+        },
+        "groups": {
+          "acquisition": {
+            "note": "Email counts tagged newsletter links",
+            "tabs": {
+              "campaigns": "Campaigns",
+              "channels": "Channels",
+              "referrers": "Referrers"
+            },
+            "title": "Acquisition",
+            "value": "Sessions",
+            "view_all": "Open acquisition"
+          },
+          "audience": {
+            "note": "The visitor's IP address is never stored",
+            "tabs": {
+              "browsers": "Browsers",
+              "countries": "Countries",
+              "languages": "Languages"
+            },
+            "title": "Audience",
+            "value": "Sessions"
+          },
+          "content": {
+            "note": "Click a page to see its heatmap",
+            "tabs": {
+              "entry": "Entry pages",
+              "exit": "Exit pages",
+              "pages": "Top pages"
+            },
+            "title": "Content",
+            "value": "Views",
+            "view_all": "Open heatmaps"
+          },
+          "empty": "Nothing recorded in this period.",
+          "events": {
+            "goal": "Goal",
+            "note": "Goal: the last step of a funnel",
+            "tabs": {
+              "events": "Custom events"
+            },
+            "title": "Custom events",
+            "value": "Triggers",
+            "view_all": "Build a funnel from these events"
+          }
+        },
+        "kpis": {
+          "custom-events": "Custom events",
+          "new-visitors": "New visitors",
+          "pageviews": "Pageviews",
+          "sessions": "Sessions"
+        },
+        "quality": {
+          "avg_session_duration": "Avg. session duration",
+          "bounce_rate": "Bounce rate",
+          "pages_per_session": "Pages / session"
+        },
+        "title": "Overview",
+        "traffic": {
+          "compared_period": "Compared period",
+          "pageviews_title": "Pageviews over time",
+          "series": {
+            "custom-events": "Custom events",
+            "in_progress": "In progress (partial)",
+            "new-visitors": "New visitors",
+            "pageviews": "Pageviews",
+            "previous": "Previous period",
+            "previous_year": "Previous year",
+            "sessions": "Sessions"
+          },
+          "sessions_title": "Sessions over time",
+          "tabs": {
+            "pageviews": "Pageviews",
+            "sessions": "Sessions"
+          },
+          "this_period": "This period"
+        },
+        "view_funnels": "View funnels"
+      },
+      "pages": {
+        "anchoring_note": "Clicks stick to the element they hit, so they stay on the right button at every width.",
+        "clicks_unit": "click | clicks",
+        "count": "{count} page | {count} pages",
+        "count_of": "{count} of {total} page | {count} of {total} pages",
+        "density": "Click density",
+        "density_few": "Few",
+        "density_many": "Many",
+        "description": "Pages your visitors actually loaded, where they clicked and how far they scrolled.",
+        "empty": {
+          "no_clicks": "Visitors loaded this page but no click was captured over the selected period.",
+          "no_scrolls": "Visitors loaded this page but no scroll depth was measured over the selected period.",
+          "none_sampled": "None of this page's views was sampled for clicks and scrolls over the selected period. Widen the period, or raise the sampling (module settings, or data-heatmap-sample in the snippet).",
+          "none_sampled_rate": "None of this page's views was sampled over the selected period: this site records clicks and scrolls on {rate} of page loads. Widen the period, or raise the sampling (module settings, or data-heatmap-sample in the snippet).",
+          "scroll_title": "No scroll measured on this page",
+          "title": "No click recorded on this page",
+          "tracking_off": "Collection is disabled in the module settings, so no click or scroll is being recorded."
+        },
+        "list_truncated": "Only the first {count} pages are listed. Filter, or type a path, to find another.",
+        "missing_hint": "Missing a page? Type its exact path above.",
+        "more_list": "More list actions",
+        "most_clicked": "Most clicked",
+        "most_clicked_empty": "No element anchored yet: clicks show on the page only.",
+        "no_match": {
+          "description": "No page listed over this period. Press Enter to inspect the path anyway.",
+          "inspect": "Inspect {path}",
+          "title": "No page matches this filter"
+        },
+        "no_pages": {
+          "description": "You can still type a path in the filter to inspect it.",
+          "title": "No page visited on {website} in this period"
+        },
+        "overlay": {
+          "clicks": "Clicks",
+          "label": "Overlay",
+          "scroll": "Scroll"
+        },
+        "preview": {
+          "all_masked": "All text masked",
+          "approximate_layout": "Showing the {layout} snapshot at {width}px",
+          "approximate_layout_hint": "No visitor has been captured at this width yet, so the layout is reflowed. Clicks still land on their element.",
+          "enable_snapshots": "Enable page snapshots",
+          "fields_masked": "Text visible, form fields masked",
+          "layout": "Layout",
+          "layout_desktop": "Desktop",
+          "layout_phone": "Phone",
+          "layout_tablet": "Tablet (portrait)",
+          "mask_text": "Mask all text",
+          "more": "More page actions",
+          "no_backdrop": "Nothing to draw the clicks on yet",
+          "no_backdrop_hint": "The counts in the header are exact; the heatmap appears once a snapshot is captured.",
+          "no_snapshot": "No snapshot of this page yet",
+          "no_snapshot_hint": "The next sampled visit captures one. The numbers above are already exact.",
+          "no_snapshot_hint_rate": "The next sampled visit captures one ({rate} of page loads are sampled on this site). The numbers above are already exact.",
+          "open_in_tab": "Open",
+          "options_error": "Saving the snapshot options failed. Retry in a moment.",
+          "overflow": "Page wider than the chosen layout",
+          "overflow_hint": "The snapshot lays out at {width}px. The overlay follows the document, so it stays aligned; the backdrop may be cut off.",
+          "oversized": "Page too tall to preview accurately",
+          "oversized_hint": "The document exceeds the largest surface that can be drawn, so the overlay and the backdrop no longer line up. The click figures are unaffected.",
+          "snapshots_enabled": "Page snapshots",
+          "snapshots_off": "Page snapshots are off for this site",
+          "snapshots_off_hint": "Clicks and scrolls are still counted, but the heatmap is only drawn over a snapshot of the page as visitors see it: its text and images are then stored, every form field masked, for the snapshot retention set in the module settings. Enable it if that fits this site's privacy commitments.",
+          "status_line": "Snapshot captured {date} · {layout} {width}px",
+          "too_heavy": "Page too heavy to capture",
+          "too_heavy_hint": "The last sampled visit serialised {size} MiB of HTML and CSS, past the {limit} MiB upload cap, so this page has no backdrop. The click and scroll figures above are unaffected. A visit retries daily: lighter markup — or a heavy section marked data-dms-marketing-block — brings it under the cap."
+        },
+        "reset": {
+          "and": "{first} and {second}",
+          "confirm": "Delete the heatmap",
+          "confirm_count": "Delete {what}",
+          "done": "Deleted: {what}.",
+          "events": "{count} event | {count} events",
+          "impact_events": "Clicks and scroll depths, every period",
+          "impact_kept": "Traffic, sessions and funnels are not affected",
+          "impact_snapshots": "Page snapshots",
+          "page_button": "Reset this page…",
+          "page_description": "Deletes the clicks, scroll depths and snapshots of this page, whatever the period. Type its path to confirm.",
+          "page_done": "Heatmap of the page reset",
+          "page_title": "Reset the heatmap of this page?",
+          "site_button": "Reset every heatmap…",
+          "site_description": "Deletes every click, scroll depth and page snapshot of the website, whatever the period. Type the domain to confirm.",
+          "site_done": "Heatmaps of {name} reset",
+          "site_title": "Reset the heatmaps of {name}?",
+          "snapshots": "{count} snapshot | {count} snapshots"
+        },
+        "row_clicks": "{count} click | {count} clicks",
+        "row_views": "{count} view | {count} views",
+        "sampled_unit": "sampled view | sampled views",
+        "sampling_note": "Clicks and scrolls were recorded on {rate} of page loads over this period.",
+        "scroll": {
+          "fold_line": "Bottom of the first screen",
+          "legend_all": "All views",
+          "legend_few": "Few",
+          "legend_title": "Scroll depth",
+          "lines_hint": "Dashed lines: how far 75%, 50% and 25% of the sampled views get. Point at the page to read any depth.",
+          "mark": "{percent}%",
+          "median": "Half of the sampled views reach {depth}% of the page.",
+          "reach_line": "{percent}% of sampled views reach here",
+          "truncated": "Partial scroll depth",
+          "truncated_hint": "This page recorded more scrolls than one read walks through. Narrow the period to see them all."
+        },
+        "search_placeholder": "Filter, or type a path…",
+        "select_hint": "Pick a page to see its heatmap",
+        "sort": "Sort by",
+        "strip": {
+          "collection_off": "Collection is off",
+          "collection_off_hint": "The tracker is switched off in settings: no new click, scroll or snapshot is recorded on any site.",
+          "open_settings": "Open settings"
+        },
+        "title": "Pages & heatmaps",
+        "tracking_off": {
+          "description": "The tracker is switched off in the module settings: nothing new is being recorded, no page snapshot either.",
+          "title": "Collection is disabled"
+        },
+        "truncated": "Partial heatmap",
+        "truncated_hint": "This page recorded more clicks than one heatmap reads. Narrow the period to see them all.",
+        "used_in": "Used in",
+        "views": "Views",
+        "views_unit": "view | views",
+        "waiting": {
+          "action": "Check the installation",
+          "description": "Pages and heatmaps appear once the tracker is on the site and a first page is loaded.",
+          "title": "{website} hasn't received a visit yet"
+        },
+        "quoted": "“{text}”"
+      },
+      "quick_actions": {
+        "add_website": "Add a website to track",
+        "new_funnel": "New funnel or A/B test"
+      },
+      "settings": {
+        "collection": {
+          "collecting": "Collecting",
+          "impact_delay": "Browsers holding the cached script stop within an hour",
+          "impact_script": "The tracker script turns into a stub that records nothing, on every site",
+          "impact_tests": "Running A/B tests stop assigning variations",
+          "pause": "Pause collection…",
+          "pause_confirm": "Pause collection",
+          "pause_description": "Nothing new is recorded until you resume. What was collected stays.",
+          "pause_title": "Pause collection on every website?",
+          "paused": "Paused",
+          "paused_toast": "Collection paused",
+          "resume": "Resume collection",
+          "resumed": "Collection resumed",
+          "summary": "{websites} website · {sessions} sessions in 30 days | {websites} websites · {sessions} sessions in 30 days"
+        },
+        "description": "Collection, retention and sampling for every website of the workspace. Per-site capture options live on Websites.",
+        "glance": {
+          "days": "{count} day | {count} days",
+          "raw": "Raw events",
+          "snapshots": "Snapshots",
+          "statistics": "Statistics"
+        },
+        "heatmap_sample": "Heatmap sampling (%)",
+        "heatmap_sample_description": "0 to 100. At 0, no heatmap records anything, except on sites whose snippet sets its own rate.",
+        "raw_retention": "Raw events (days)",
+        "raw_retention_description": "Funnels, heatmaps and A/B results read this window. Dashboards use daily rollups. 1 to 366.",
+        "retention_saved": "Retention saved. The next hourly cleanup applies it, on the hour.",
+        "sampling_saved": "Sampling saved. Visitors get it within an hour.",
+        "sections": {
+          "collection": "Collection",
+          "collection_description": "Master switch for every website. Off, the tracker script records nothing — pages calling it keep working — and nothing new is recorded.",
+          "glance": "At a glance",
+          "glance_description": "The three retention periods on one 760-day scale, the statistics ceiling.",
+          "retention": "Retention",
+          "retention_description": "A cleanup runs every hour, on the hour, and deletes what is older. Lowering a value that deletes data asks you to save twice. Empty a field to use the default.",
+          "sampling": "Sampling",
+          "sampling_description": "Share of page loads that record clicks, scrolls and, on sites that enable them, page snapshots. Lower it on busy sites. The tracker script is cached: visitors get a change within an hour."
+        },
+        "snapshot_retention": "Page snapshots (days)",
+        "snapshot_retention_description": "Backdrops of the heatmaps; they hold page content. Never longer than the raw events.",
+        "stats_retention": "Statistics (days)",
+        "stats_retention_description": "Daily rollups and sessions behind the overview and acquisition pages. Never shorter than the raw events, 760 at most (25 months).",
+        "title": "Settings",
+        "tracker_enabled": "Collection enabled",
+        "tracker_enabled_description": "Master switch for the collect endpoint and the served tracker script."
+      },
+      "websites": {
+        "also_accepts": "Also accepts",
+        "collection_paused": {
+          "description": "No website records anything until collection is resumed in Settings.",
+          "open": "Open settings",
+          "title": "Collection is paused for the whole module"
+        },
+        "column": {
+          "domain": "Domain",
+          "name": "Name"
+        },
+        "create": "Add a website",
+        "delete": {
+          "action": "Delete website…",
+          "confirm": "Delete website",
+          "description": "Everything tracked on this website goes, for every period. Type the domain to confirm.",
+          "done": "{name} deleted",
+          "funnels": "Funnels and their A/B tests",
+          "impact_error": "Couldn't list what deleting this website would remove.",
+          "pageviews": "Pageviews, all time",
+          "pageviews_since": "Pageviews since {date}",
+          "section": "Delete this website",
+          "section_description": "Its sessions, rollups, raw events, snapshots and funnels (with their A/B tests) are deleted.",
+          "sessions": "Sessions, all time",
+          "sessions_since": "Sessions since {date}",
+          "snapshots": "Snapshots",
+          "title": "Delete {name}?"
+        },
+        "description": "The sites sending data to this workspace, their tracker, and what is captured on each.",
+        "drawer": {
+          "added": "added {date}",
+          "capture": "Capture",
+          "close": "Close",
+          "danger": "Danger zone",
+          "eyebrow": "Website",
+          "general": "General"
+        },
+        "error": "Couldn't load the websites",
+        "fields": {
+          "discard": "This change discards the site's snapshot. Clicks are kept. | This change discards the site's {count} snapshots. Clicks are kept.",
+          "domain": "Domain",
+          "domain_hint": "Without scheme (example.com). Its subdomains are accepted.",
+          "hosts": "Also accepts",
+          "hosts_hint": "Other hosts the tag may run on: a staging host, another TLD.",
+          "mask": "Mask all text",
+          "mask_hint": "Replace every captured character with a placeholder.",
+          "name": "Name",
+          "snapshots": "Page snapshots",
+          "snapshots_hint": "Capture the page as visitors see it to draw heatmaps over it. Stores page text and images; form fields are always masked.",
+          "tracking": "Collect data",
+          "tracking_hint": "Off: the tag's beacons are refused and nothing new is recorded for this site. What was collected stays."
+        },
+        "finish_install": "Finish install",
+        "open_overview": "Open overview",
+        "paused_description": "Nothing new is recorded for this site until tracking resumes.",
+        "privacy": "No cookie and no IP address are stored. Visitors are counted with a server-side hash salted every month; Do Not Track is honoured.",
+        "refused": "{count} event refused from {host}, an undeclared host | {count} events refused from {host}, an undeclared host",
+        "sampling": "Heatmap sampling",
+        "resume": "Resume tracking",
+        "resumed": "Tracking resumed",
+        "sampling_default": "module setting",
+        "save_error": "The website could not be saved.",
+        "saved": "Website saved",
+        "snapshots": "Page snapshots",
+        "snapshots_masked": "On · text masked",
+        "snapshots_off": "Off",
+        "snapshots_on": "On · text visible",
+        "snippet_button": "Tracker snippet",
+        "stats": {
+          "funnels": "Funnels",
+          "pages": "Distinct pages",
+          "sessions": "Sessions",
+          "window": "30 days"
+        },
+        "subdomains_only": "Subdomains only",
+        "title": "Websites",
+        "waiting_description": "Added {date}. No pageview has arrived yet: the snippet is probably not on the site.",
+        "waiting_install": "Install the tracker",
+        "waiting_notice": "Channels, campaigns and referrers fill in from the first pageview. Add the tracker snippet to the site to start.",
+        "waiting_refused": "Added {date}. The tag is running, but on a host this website doesn't declare.",
+        "waiting_title": "{name} hasn't sent a visit yet",
+        "edit_named": "Settings of {name}",
+        "snippet_named": "Tracker snippet for {name}",
+        "open_overview_named": "Open the {name} overview",
+        "finish_install_named": "Finish installing {name}"
+      }
+    }
+  }
+}

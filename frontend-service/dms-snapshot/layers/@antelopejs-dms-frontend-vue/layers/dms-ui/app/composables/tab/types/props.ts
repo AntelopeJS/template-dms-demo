@@ -1,0 +1,42 @@
+import type { TabItem } from "./item";
+
+// A tab set is also used directly in hand-written pages, outside any
+// registered component: the ids exist only for server-driven ones.
+interface TabComponentProps {
+  componentId?: string;
+  pageId?: string;
+  routeParams?: Record<string, string>;
+  watchActions?: WatchAction[];
+  childCount?: number;
+}
+
+export enum TabVariant {
+  pill = "pill",
+  link = "link",
+}
+
+export interface TabProps extends TabComponentProps {
+  items: TabItem[];
+  color?: Color;
+  size?: Size;
+  variant?: TabVariant;
+  orientation?: AxeOrientation;
+  unmountOnHide?: boolean;
+  persistState?: boolean;
+  stateKey?: string;
+  /**
+   * GET answering `{ [slot]: string | number }`: the badge of each tab it
+   * names, read in one request and again when a watch action fires.
+   */
+  badgesUrl?: string;
+  /** Topics whose events make the tab set read `badgesUrl` again. */
+  realtimeTopic?: string | string[];
+  /**
+   * A horizontal `pill` list as wide as its tabs, not the full width; a
+   * `link` list already sizes its tabs to their labels.
+   */
+  fit?: boolean;
+}
+
+/** The badges `badgesUrl` answers with, by tab slot. */
+export type TabBadges = Record<string, string | number>;

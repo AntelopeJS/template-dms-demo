@@ -1,0 +1,396 @@
+<script setup lang="ts">
+import { pageLink } from "../../build/composables/page/pageUrlValues";
+import { computed, ref, resolveComponent } from "vue";
+import DmsActivityItem from "../activity/ActivityItem.vue";
+import DmsBlockActions, {
+  type BlockAction,
+} from "../../build/components/blocks/BlockActions.vue";
+import DmsEmptyState from "../empty-state/EmptyState.vue";
+import DmsEyebrow from "../section-header/Eyebrow.vue";
+import DmsRowSkeleton from "../../build/components/skeleton/RowSkeleton.vue";
+import { useBlockItems } from "../../build/composables/blocks/useBlockItems";
+import { formatRelativeTime } from "#dms-core/app/utils/formatter";
+import {
+  type ActivityFeedDay,
+  type ActivityFeedItem,
+  formatActivityTime,
+  activityText,
+  groupActivityByDay,
+} from "../../build/components/activity-feed/activityFeedDays";
+import { useComposedText } from "../../../../dms-core/app/composables/translation/useComposedText";
+import type { DefaultComponentProps } from "../../../../dms-core/app/types/component";
+import type { BlockText } from "../../../../dms-core/app/types/composed-text";
+import DmsBlockStatus, {
+  type BlockEmptyText,
+} from "../../build/components/blocks/BlockStatus.vue";
+
+// The renderer's props are optional: DmsActivityFeed is both the backend
+// `ActivityFeed` block (`dms-activity-feed-block`) and a template component.
+interface ActivityFeedProps extends Partial<DefaultComponentProps> {
+  /** Eyebrow title of the card head ("Activity"). */
+  title?: string;
+  /** Count chip beside the title; a `count` the source answers wins. */
+  count?: number;
+  /** Soft badge in the card head, before the actions ("Last 24 h"). */
+  badge?: BlockText;
+  /** Entries shown when no data source is set. */
+  items?: ActivityFeedItem[];
+  /** Endpoint answering `{ items }`, newest first. */
+  fetchUrl?: string;
+  fetchUrlMethod?: string;
+  /** Id of the PeriodSelector the data follows. */
+  periodScope?: string;
+  /** Topics whose events make the block read `fetchUrl` again. */
+  realtimeTopic?: string | string[];
+  /**
+   * Files the entries under day separators ("Today · Sep 29") with their
+   * time; off, each entry shows how long ago it happened.
+   */
+  groupByDay?: boolean;
+  /** Shows at most this many entries. */
+  maxItems?: number;
+  /**
+   * Shows the first this many entries, and a "Show N more" button under them
+   * that unfolds the rest (up to `maxItems`), and folds them back.
+   */
+  visibleItems?: number;
+  /**
+   * Entries wrap their title, details and detail line rather than cutting
+   * each to one line with an ellipsis.
+   */
+  wrap?: boolean;
+  /**
+   * Fills its grid cell instead of growing with its entries, which scroll
+   * under the fixed head: the cards beside it set the row's height.
+   */
+  fillHeight?: boolean;
+  /**
+   * Placeholder rows while `fetchUrl` loads: the length the source usually
+   * answers, never more than `maxItems`. Optional. Defaults to `maxItems`,
+   * or 3.
+   */
+  skeletonCount?: number;
+  /** Link buttons in the card head ("View all"). */
+  actions?: BlockAction[];
+  /** Empty state text (i18n keys with `$` or literals). */
+  empty?: BlockEmptyText;
+  /** Mono titles and meta (paths, queries, request logs). */
+  mono?: boolean;
+  /** Card frame with a head; off, the bare list. */
+  card?: boolean;
+}
+
+const props = withDefaults(defineProps<ActivityFeedProps>(), {
+  title: undefined,
+  count: undefined,
+  badge: undefined,
+  items: undefined,
+  fetchUrl: undefined,
+  fetchUrlMethod: undefined,
+  periodScope: undefined,
+  realtimeTopic: undefined,
+  groupByDay: true,
+  maxItems: undefined,
+  visibleItems: undefined,
+  wrap: false,
+  fillHeight: false,
+  skeletonCount: undefined,
+  actions: () => [],
+  empty: undefined,
+  mono: false,
+  card: true,
+});
+
+const SKELETON_ROWS = 3;
+// A day separator every few placeholder rows, the rhythm of a recent feed.
+const SKELETON_ROWS_PER_DAY = 3;
+const SKELETON_TITLE_WIDTHS = ["w-3/5", "w-1/2", "w-2/5"];
+
+const { t, locale } = useI18n();
+const { processI18n } = useTranslation();
+const { processText } = useComposedText();
+
+const {
+  items: list,
+  count: fetchedCount,
+  isPending,
+  hasError,
+  notFound,
+  refresh,
+} = useBlockItems<ActivityFeedItem>({
+  items: () => props.items,
+  fetchUrl: props.fetchUrl,
+  fetchUrlMethod: props.fetchUrlMethod,
+  periodScope: props.periodScope,
+  realtimeTopic: props.realtimeTopic,
+  routeParams: () => props.routeParams,
+  watchActions: props.watchActions,
+  componentId: props.componentId,
+});
+
+const entries = computed<ActivityFeedItem[]>(() =>
+  props.maxItems ? list.value.slice(0, props.maxItems) : list.value,
+);
+
+// Folded, the feed shows its first `visibleItems` entries; the button under
+// them unfolds the rest and folds them back.
+const isUnfolded = ref(false);
+const foldedCount = computed(() =>
+  props.visibleItems
+    ? Math.max(0, entries.value.length - props.visibleItems)
+    : 0,
+);
+const shownEntries = computed<ActivityFeedItem[]>(() =>
+  foldedCount.value > 0 && !isUnfolded.value
+    ? entries.value.slice(0, props.visibleItems)
+    : entries.value,
+);
+const foldLabel = computed(() =>
+  isUnfolded.value
+    ? t("dms.activity_feed.show_fewer")
+    : t(
+        "dms.activity_feed.show_more",
+        { count: foldedCount.value },
+        foldedCount.value,
+      ),
+);
+
+const days = computed<ActivityFeedDay[]>(() =>
+  props.groupByDay
+    ? groupActivityByDay(shownEntries.value, locale.value, {
+        today: t("dms.activity_feed.today"),
+        yesterday: t("dms.activity_feed.yesterday"),
+      })
+    : [{ key: "all", items: shownEntries.value }],
+);
+
+const trailingOf = (item: ActivityFeedItem): string | undefined => {
+  if (item.time) return processText(item.time);
+  if (!item.date) return undefined;
+  return props.groupByDay
+    ? formatActivityTime(item.date, locale.value)
+    : formatRelativeTime(item.date, t, locale.value);
+};
+
+const textOf = (item: ActivityFeedItem, text: BlockText): string =>
+  processText(activityText(text, item.params));
+
+const detailOf = (item: ActivityFeedItem): string | undefined =>
+  item.detail ? textOf(item, item.detail) : undefined;
+
+const headCount = computed(() => fetchedCount.value ?? props.count);
+const badgeText = computed(() =>
+  props.badge ? processText(props.badge) : undefined,
+);
+const hasHeadActions = computed(
+  () => props.actions.length > 0 || !!badgeText.value,
+);
+
+const metaOf = (item: ActivityFeedItem): string | undefined =>
+  item.meta?.length
+    ? item.meta.map((entry) => textOf(item, entry)).join(" · ")
+    : undefined;
+
+const isFirstLoad = isPending;
+
+// The placeholder takes the feed's loaded shape: as many rows as it will show
+// (`skeletonCount`, else `visibleItems` or `maxItems`; never more than
+// those), under day separators when the entries are grouped by day.
+const skeletonDays = computed<number[][]>(() => {
+  const shown = props.visibleItems ?? props.maxItems;
+  const wanted = props.skeletonCount ?? shown ?? SKELETON_ROWS;
+  const count = shown ? Math.min(wanted, shown) : wanted;
+  const perDay = props.groupByDay ? SKELETON_ROWS_PER_DAY : count;
+  const days: number[][] = [];
+  for (let start = 0; start < count; start += perDay) {
+    days.push(
+      Array.from(
+        { length: Math.min(perDay, count - start) },
+        (_, offset) => start + offset,
+      ),
+    );
+  }
+  return days;
+});
+
+// Filling its cell, the body is the scroll area: sized to nothing
+// (`contain: size`), it leaves the row's height to the cards beside it and
+// stretches to it. Once the grid stacks its cells (`--dms-grid-tracks: 1`,
+// see grid/columns.ts) no neighbour sets that height: the list takes its own,
+// capped like a top-list card's (24rem, about six entries under their day
+// separators). Focusable, so the keyboard scrolls it too; its ring is drawn
+// inside, where the card's clipped edge cannot hide it.
+const scrollArea = computed(() =>
+  props.fillHeight
+    ? {
+        class:
+          "h-full overflow-y-auto overscroll-contain [scrollbar-width:thin] contain-size focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--dms-accent-line) [@container_style(--dms-grid-tracks:1)]:h-auto [@container_style(--dms-grid-tracks:1)]:max-h-[24rem] [@container_style(--dms-grid-tracks:1)]:contain-none",
+        role: "region",
+        tabindex: 0,
+        "aria-label": props.title
+          ? processI18n(props.title)
+          : t("dms.activity_feed.list_label"),
+      }
+    : {},
+);
+// Inside the scroll area, a day's separator stays on top of its entries.
+const dayHeadClass = computed(
+  () => props.fillHeight && "sticky top-0 z-[1] bg-(--dms-surface-card)",
+);
+// …and the "Show N more" button at its foot, where entries taller than the
+// row would otherwise push it out of sight.
+const foldClass = computed(
+  () => props.fillHeight && "sticky bottom-0 z-[1] bg-(--dms-surface-card)",
+);
+
+const Wrapper = props.card ? resolveComponent("DmsCard") : "div";
+const wrapperProps = computed(() =>
+  props.card
+    ? {
+        padded: false,
+        title: props.title ? processI18n(props.title) : undefined,
+        count: headCount.value,
+        class: "min-w-0 overflow-hidden",
+      }
+    : { class: "min-w-0" },
+);
+</script>
+
+<template>
+  <component :is="Wrapper" v-bind="wrapperProps">
+    <template v-if="props.card && hasHeadActions" #actions>
+      <UBadge
+        v-if="badgeText"
+        :label="badgeText"
+        color="primary"
+        variant="soft"
+        size="sm"
+      />
+      <DmsBlockActions
+        v-if="props.actions.length"
+        :actions="props.actions"
+        size="xs"
+        lead-variant="ghost"
+        lead-color="neutral"
+        rest-variant="ghost"
+      />
+    </template>
+
+    <div v-bind="scrollArea">
+      <!-- Rows at the loaded rows' boxes (a 18px title line over a 16px meta
+           line beside the 30px well), split by the same hairlines. -->
+      <div v-if="isFirstLoad" class="py-1" aria-busy="true">
+        <div v-for="(day, dayIndex) in skeletonDays" :key="dayIndex">
+          <div
+            v-if="props.groupByDay"
+            class="flex items-center gap-2.5 px-[18px] pt-3.5 pb-1.5 after:h-px after:flex-1 after:bg-(--ui-border-muted)"
+          >
+            <USkeleton
+              :aria-label="t('dms.a11y.loading')"
+              class="my-[1.5px] h-2.5 w-24"
+            />
+          </div>
+          <div class="divide-y divide-(--ui-border-muted)">
+            <DmsRowSkeleton
+              v-for="row in day"
+              :key="row"
+              class="px-[18px] py-2.5"
+              well="size-[30px] rounded-lg"
+              :lines="[
+                `my-[3px] h-3 ${SKELETON_TITLE_WIDTHS[row % SKELETON_TITLE_WIDTHS.length]}`,
+                'my-[3px] h-2.5 w-1/3',
+              ]"
+              lines-class="grid gap-px"
+            />
+          </div>
+        </div>
+      </div>
+
+      <DmsEmptyState
+        v-else-if="hasError"
+        variant="error"
+        size="sm"
+        :title="t('dms.activity_feed.error_title')"
+        :description="t('dms.activity_feed.error_description')"
+        :actions="[
+          {
+            label: t('dms.activity_feed.retry'),
+            icon: 'i-ph-arrow-clockwise',
+            color: 'neutral',
+            variant: 'outline',
+            onClick: () => refresh(),
+          },
+        ]"
+      />
+
+      <DmsBlockStatus
+        v-else-if="notFound"
+        state="not-found"
+        :card="false"
+        :not-found="notFound"
+      />
+
+      <DmsEmptyState
+        v-else-if="!entries.length"
+        icon="i-ph-tray"
+        size="sm"
+        :title="
+          props.empty
+            ? processI18n(props.empty.title)
+            : t('dms.activity_feed.empty_title')
+        "
+        :description="
+          props.empty?.description
+            ? processI18n(props.empty.description)
+            : undefined
+        "
+      />
+
+      <div v-else class="py-1">
+        <section v-for="day in days" :key="day.key">
+          <!-- v2 .feed__day: "Today · Sep 29" and a hairline to the edge. -->
+          <div
+            v-if="props.groupByDay && day.name"
+            class="flex items-center gap-2.5 px-[18px] pt-3.5 pb-1.5 after:h-px after:flex-1 after:bg-(--ui-border-muted)"
+            :class="dayHeadClass"
+          >
+            <DmsEyebrow as="h3">
+              <b class="text-muted font-semibold">{{ day.name }}</b>
+              {{ day.date ? ` · ${day.date}` : "" }}
+            </DmsEyebrow>
+          </div>
+          <DmsActivityItem
+            v-for="(item, index) in day.items"
+            :key="item.id ?? `${day.key}-${index}`"
+            :icon="item.icon"
+            :icon-color="item.tone ?? 'neutral'"
+            :title="textOf(item, item.title)"
+            :subtitle="metaOf(item)"
+            :detail="detailOf(item)"
+            :trailing="trailingOf(item)"
+            :unread="item.unread"
+            :mono="props.mono"
+            :wrap="props.wrap"
+            :to="pageLink(item.to)"
+            :interactive="!!item.to"
+          />
+        </section>
+        <div
+          v-if="foldedCount > 0"
+          class="dms-activity-feed__fold border-t border-(--ui-border-muted) px-[18px] pt-2 pb-1"
+          :class="foldClass"
+        >
+          <UButton
+            :label="foldLabel"
+            :aria-expanded="isUnfolded"
+            color="neutral"
+            variant="link"
+            size="xs"
+            class="p-0 font-medium"
+            @click="isUnfolded = !isUnfolded"
+          />
+        </div>
+      </div>
+    </div>
+  </component>
+</template>

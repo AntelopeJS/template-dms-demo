@@ -1,0 +1,636 @@
+{
+	"dms_ai": {
+		"module": {
+			"title": "Assistant",
+			"description": "The AI assistant: what it did, what you can undo, its skills and its settings"
+		},
+		"pages": {
+			"overview": {
+				"title": "Overview",
+				"description": "What the assistant did, how each action was allowed, and what you can still undo"
+			},
+			"changes": {
+				"title": "Changes",
+				"description": "Every turn that touched the project, saved as a change set you can review and undo"
+			},
+			"activity": {
+				"title": "Activity",
+				"description": "Audit log of every tool the assistant used, who allowed it and what came out"
+			},
+			"skills": {
+				"title": "Skills",
+				"description": "Instructions the assistant loads for specific jobs, shipped by modules or this machine"
+			},
+			"settings": {
+				"title": "Settings",
+				"description": "Defaults for new conversations. Changes save as you go"
+			}
+		},
+		"blocks": {
+			"overview": {
+				"period": {
+					"name": "Period",
+					"description": "Picks the period the Overview's figures cover"
+				},
+				"status": {
+					"name": "Assistant status",
+					"description": "The assistant's state, agent, default scope, approval mode, Builder and sidecar",
+					"title": "Assistant",
+					"settings": "Settings"
+				},
+				"kpis": {
+					"name": "Key figures",
+					"description": "Actions, change sets, approvals and undos over the period"
+				},
+				"kpis_row": {
+					"name": "Key figures row",
+					"description": "The row holding the four key figures"
+				},
+				"kpi_actions": {
+					"name": "Actions",
+					"description": "Tool calls the assistant made over the period",
+					"title": "Actions",
+					"caption": "Tool calls, Builder operations included"
+				},
+				"kpi_change_sets": {
+					"name": "Change sets",
+					"description": "Turns that changed the project over the period",
+					"title": "Change sets",
+					"caption": "Turns that changed files, undone too"
+				},
+				"kpi_approved": {
+					"name": "Approved by you",
+					"description": "Requests you allowed over the period",
+					"title": "Approved by you",
+					"caption": "Requests you allowed when asked"
+				},
+				"kpi_undone": {
+					"name": "Undone",
+					"description": "Change sets rolled back over the period",
+					"title": "Undone",
+					"caption": "Change sets rolled back"
+				},
+				"activity": {
+					"name": "Activity",
+					"description": "The activity chart and how its actions were allowed"
+				},
+				"activity_row": {
+					"name": "Activity row",
+					"description": "The row holding the activity chart and its breakdown"
+				},
+				"activity_chart": {
+					"name": "Activity chart",
+					"description": "Actions per day, compared with the previous period",
+					"title": "Activity",
+					"caption": "Actions over the selected period",
+					"primary": "Actions",
+					"comparison": "Previous period"
+				},
+				"allowed": {
+					"name": "How actions were allowed",
+					"description": "Actions by the way they were allowed: automatically, by you, by a rule",
+					"title": "How actions were allowed",
+					"caption": "Deletions always ask, in every mode",
+					"empty": "No action over this period"
+				},
+				"changes": {
+					"name": "Changes",
+					"description": "The latest change sets and the tools used most"
+				},
+				"changes_row": {
+					"name": "Changes row",
+					"description": "The row holding the recent change sets and the top tools"
+				},
+				"recent_changes": {
+					"name": "Recent change sets",
+					"description": "The latest change sets, each with Undo or Redo",
+					"title": "Recent change sets"
+				},
+				"top_tools": {
+					"name": "Top tools",
+					"description": "The tools the assistant ran most over the period",
+					"title": "Top tools",
+					"caption": "Runs over the selected period",
+					"empty": "No tool ran over this period"
+				},
+				"activity_chart_series": {
+					"name": "Activity chart series",
+					"description": "The area chart drawn inside the activity card"
+				},
+				"status_banner": {
+					"name": "Assistant notice",
+					"description": "Says when the assistant is offline, its last turn failed or requests wait for you"
+				},
+				"status_facts": {
+					"name": "Assistant facts",
+					"description": "One row per fact of the assistant's status"
+				}
+			},
+			"changes": {
+				"view": {
+					"name": "Change sets",
+					"description": "The change sets, their diffs, and Undo with its preview"
+				}
+			},
+			"activity": {
+				"log": {
+					"name": "Audit log",
+					"description": "Every tool call, how it was allowed and what came out"
+				},
+				"detail": {
+					"name": "Action detail",
+					"description": "One tool call: its arguments, decision trail and diff"
+				}
+			},
+			"skills": {
+				"conflicts": {
+					"name": "Duplicate skills",
+					"description": "Warns when two skills share a name and one is ignored"
+				},
+				"catalog": {
+					"name": "Skill catalog",
+					"description": "The skills loaded into the assistant"
+				},
+				"card": {
+					"name": "Skill card",
+					"description": "One skill in the catalog's cards"
+				},
+				"detail": {
+					"name": "Skill detail",
+					"description": "One skill: where it comes from, its use and its SKILL.md"
+				}
+			},
+			"settings": {
+				"chatgpt": {
+					"name": "ChatGPT account",
+					"description": "The ChatGPT account Codex runs on, with sign-in and sign-out"
+				},
+				"form": {
+					"name": "Assistant settings",
+					"description": "Agent, approvals, scope, skills and history defaults"
+				},
+				"usage": {
+					"name": "Usage",
+					"description": "Tokens the conversations used",
+					"title": "Usage",
+					"caption": "Counted per conversation. Your provider bills them."
+				},
+				"usage_chart": {
+					"name": "Tokens per day",
+					"description": "Tokens used per day over the last 14 days",
+					"title": "Tokens · last 14 days",
+					"caption": "Tokens used per day"
+				},
+				"usage_summary": {
+					"name": "Usage totals",
+					"description": "Tokens, conversations and the biggest conversation",
+					"title": "Last 14 days"
+				},
+				"usage_chart_series": {
+					"name": "Tokens chart series",
+					"description": "The column chart drawn inside the tokens card"
+				}
+			}
+		},
+		"activity": {
+			"export": "Export CSV",
+			"search": "Search tools, files, pages",
+			"count": "{count} action | {count} actions",
+			"columns": {
+				"time": "Time",
+				"action": "Action",
+				"allowed": "Allowed",
+				"result": "Result",
+				"conversation": "Conversation",
+				"duration": "Duration",
+				"category": "Category",
+				"agent": "Agent",
+				"read_only": "Read-only"
+			},
+			"tabs": {
+				"all": "All",
+				"changed": "Changed files",
+				"asked": "Asked you",
+				"denied": "Denied or blocked",
+				"failed": "Failed"
+			},
+			"quick": {
+				"tool": "Tool",
+				"agent": "Agent",
+				"read_only": "Read-only"
+			},
+			"read_only": {
+				"hide": "Hide read-only",
+				"show": "Show read-only"
+			},
+			"detail": {
+				"open": "Details",
+				"title": "Action detail"
+			},
+			"empty": {
+				"title": "No activity yet",
+				"description": "Every tool the assistant uses lands here, with who allowed it and what came out."
+			},
+			"offline": {
+				"title": "Can't reach the assistant",
+				"description": "The audit log comes from the assistant, which isn't running. This isn't an empty log."
+			},
+			"category": {
+				"changed": "Changed files",
+				"asked": "Asked you",
+				"denied": "Denied or blocked",
+				"failed": "Failed"
+			},
+			"agent": {
+				"claude": "Claude Code",
+				"codex": "Codex"
+			},
+			"allowed_by": {
+				"read_auto": "Read-only, automatic",
+				"builder_auto": "Builder, automatic",
+				"approved": "Approved by you",
+				"rule": "Allowed by a rule",
+				"full_auto": "Full auto",
+				"blocked": "Blocked · safe mode",
+				"denied": "Denied by you",
+				"expired": "Expired"
+			},
+			"allowed_metric": {
+				"deletions_asked": "Deletions asked",
+				"deletions_note": "Deletions always ask, even in Full auto"
+			},
+			"result": {
+				"done": "Done",
+				"pending": "Pending",
+				"failed": "Failed",
+				"denied": "Not run",
+				"blocked": "Blocked",
+				"stopped": "Stopped",
+				"expired": "Expired"
+			},
+			"tool_source": {
+				"builder": "Builder",
+				"project": "Project",
+				"code": "Code mode",
+				"web": "Web",
+				"assistant": "Assistant"
+			},
+			"tools": {
+				"Read": "Read file",
+				"Write": "Write file",
+				"Edit": "Edit file",
+				"MultiEdit": "Edit file (several edits)",
+				"NotebookEdit": "Edit notebook",
+				"Bash": "Run command",
+				"Glob": "Find files",
+				"Grep": "Search code",
+				"LS": "List folder",
+				"WebFetch": "Fetch web page",
+				"WebSearch": "Search the web",
+				"TodoWrite": "Update steps",
+				"Task": "Run sub-agent",
+				"ExitPlanMode": "Propose plan",
+				"GetCurrentPage": "Read current page",
+				"NavigateToPage": "Open page",
+				"FindPagesUsing": "Find pages using",
+				"ListPages": "List pages",
+				"AskUser": "Ask you",
+				"Typecheck": "Typecheck",
+				"QueryLogs": "Read logs",
+				"BuilderCatalog": "Read block catalog",
+				"BuilderListPages": "List Builder pages",
+				"BuilderPageStructure": "Read page",
+				"BuilderCreatePage": "Create page",
+				"BuilderConfigurePage": "Configure page",
+				"BuilderDeletePage": "Delete page",
+				"BuilderAddBlock": "Add block",
+				"BuilderConfigureBlock": "Configure block",
+				"BuilderMoveBlock": "Move block",
+				"BuilderRemoveBlock": "Remove block",
+				"BuilderCreateCategory": "Create category",
+				"BuilderConfigureCategory": "Configure category",
+				"BuilderDeleteCategory": "Delete category",
+				"BuilderRefresh": "Refresh Builder",
+				"BuilderCreateResource": "Create table",
+				"BuilderDeleteResource": "Delete table",
+				"BuilderListResources": "List tables",
+				"BuilderResourceStructure": "Read table",
+				"BuilderAddField": "Add field",
+				"BuilderConfigureField": "Configure field",
+				"BuilderRemoveField": "Remove field",
+				"BuilderQueryTemplates": "Read query templates",
+				"BuilderAddQuery": "Add query",
+				"BuilderConfigureQuery": "Configure query",
+				"BuilderRemoveQuery": "Remove query",
+				"UndoChangeSet": "Undo change set",
+				"RedoChangeSet": "Redo change set",
+				"ToolSearch": "Load tools",
+				"Skill": "Use skill",
+				"AskUserQuestion": "Ask you (built-in)"
+			}
+		},
+		"changes_table": {
+			"columns": {
+				"number": "#",
+				"title": "Change",
+				"scope": "Scope",
+				"files": "Files",
+				"when": "When",
+				"state": "State"
+			},
+			"scope": {
+				"safe": "Safe",
+				"vibe": "Code"
+			},
+			"state": {
+				"applied": "Applied",
+				"undone": "Undone"
+			},
+			"actions": {
+				"open": "Review diff",
+				"undo": "Undo",
+				"redo": "Redo",
+				"all_changes": "All changes"
+			},
+			"toasts": {
+				"undone": "Change set undone",
+				"redone": "Change set reapplied"
+			},
+			"empty": {
+				"title": "No changes yet",
+				"description": "When the assistant edits a page or a file, the change set lands here with an undo."
+			},
+			"offline": {
+				"title": "Can't reach the assistant",
+				"description": "Change sets come from the assistant, which isn't running."
+			},
+			"undo_confirm": {
+				"title": "Undo change set #{number}?",
+				"description": "Restores the file to how it was before this change set, then reloads the page. | Restores {count} files to how they were before this change set, then reloads the page.",
+				"description_conflict": "Restores the file to how it was before this change set. A later change set touches the same file. | Restores {count} files to how they were before this change set. A later change set touches the same files.",
+				"description_conflicts": "Restores the file to how it was before this change set. {conflicts} later change sets touch the same file. | Restores {count} files to how they were before this change set. {conflicts} later change sets touch the same files.",
+				"confirm": "Undo",
+				"include_later": "Also undo the later change sets",
+				"include_later_hint": "Safe: undoing this one alone keeps their lines and may not compile."
+			}
+		},
+		"settings": {
+			"hints": {
+				"next_turn": "Applies to new turns. Open chats lose the agent's memory; transcripts stay.",
+				"next_message": "Applies from the next message",
+				"new_conversations": "Applies to new conversations"
+			},
+			"sections": {
+				"agent": {
+					"label": "Agent",
+					"description": "Which agent answers, and how long it thinks."
+				},
+				"approvals": {
+					"label": "Approvals",
+					"description": "Default for new chats. Each chat can change it from the composer."
+				},
+				"scope": {
+					"label": "Scope",
+					"description": "Default for new chats. Each chat can change it from the composer."
+				},
+				"skills": {
+					"label": "Skills",
+					"description": "Where the assistant's skills come from."
+				},
+				"history": {
+					"label": "History",
+					"description": "How long change sets can be undone."
+				}
+			},
+			"provider": {
+				"label": "Coding agent",
+				"description": "Runs on this machine, in the project folder. Your code only goes to the provider you pick; a failing agent never falls back to the other.",
+				"unavailable": "Not set up on this machine",
+				"claude": {
+					"label": "Claude Code",
+					"description": "Anthropic · model chosen by Claude Code"
+				},
+				"codex": {
+					"label": "Codex",
+					"description": "OpenAI · runs on your ChatGPT plan, once signed in below"
+				}
+			},
+			"chatgpt": {
+				"signed_out": {
+					"title": "Run Codex on your ChatGPT plan",
+					"description": "Sign in with ChatGPT to use your plan's Codex usage here, with no API key. If the DMS runs on another machine, the page OpenAI sends you back to won't load: paste its address with “Paste the return address”.",
+					"action": "Sign in with ChatGPT"
+				},
+				"signed_in": {
+					"title": "Codex runs on the ChatGPT plan of {email}",
+					"description": "Its usage counts toward your plan's limits, which you can cap per app in ChatGPT's settings.",
+					"action": "Sign out"
+				},
+				"sign_out_confirm": {
+					"title": "Sign out of ChatGPT?",
+					"description": "Codex stops working on every DMS project of this machine until you sign in again. To remove dms-ai from your ChatGPT account entirely, disconnect it in ChatGPT's settings."
+				},
+				"signed_out_toast": "Signed out of ChatGPT",
+				"paste": {
+					"action": "Paste the return address",
+					"title": "Finish signing in with ChatGPT",
+					"description": "After you allowed access, OpenAI sent you to an address starting with http://127.0.0.1 that could not load. Copy that whole address from the address bar and paste it here. It works once, within 10 minutes.",
+					"field": "Return address",
+					"confirm": "Finish signing in",
+					"success": "Signed in with ChatGPT"
+				}
+			},
+			"thinking": {
+				"label": "Thinking",
+				"description": "How long the agent reasons before acting. More thinking is slower and uses more tokens.",
+				"options": {
+					"off": "Off",
+					"low": "Low",
+					"medium": "Medium",
+					"high": "High"
+				}
+			},
+			"mode": {
+				"label": "Approval mode",
+				"description": "What the assistant may do without asking you first.",
+				"normal": {
+					"label": "Ask first",
+					"description": "Asks before any change outside the Builder."
+				},
+				"acceptEdits": {
+					"label": "Accept edits",
+					"description": "Applies file edits, asks for the rest."
+				},
+				"plan": {
+					"label": "Plan only",
+					"description": "Reads and proposes. Changes nothing."
+				},
+				"auto": {
+					"label": "Full auto",
+					"description": "Not available as a default. Turn it on per chat, for a limited time."
+				}
+			},
+			"always_ask": {
+				"label": "Always ask for",
+				"description": "These ask in every mode, including Full auto."
+			},
+			"always_ask_deletions": {
+				"label": "Deleting pages, tables, fields or queries",
+				"description": "Locked: may delete data.",
+				"locked": "Deleting pages, tables, fields or queries · locked"
+			},
+			"always_ask_dependencies": {
+				"label": "Adding or removing dependencies",
+				"description": "Package installs and removals run by a command."
+			},
+			"always_ask_block_removal": {
+				"label": "Removing or moving Builder blocks",
+				"description": "Even when other Builder operations run automatically."
+			},
+			"unanswered": {
+				"label": "Unanswered requests",
+				"description": "What happens to a request nobody answers."
+			},
+			"request_timeout": {
+				"label": "Deny after",
+				"options": {
+					"5": "5 minutes",
+					"15": "15 minutes",
+					"30": "30 minutes"
+				}
+			},
+			"notify_requests": {
+				"label": "Notify me in the DMS",
+				"description": "Shows a toast when a request arrives while the assistant panel is closed."
+			},
+			"generation_mode": {
+				"label": "Scope",
+				"description": "What the assistant may change in the project.",
+				"builder_missing": "Needs the dms-builder module, which isn't loaded.",
+				"safe": {
+					"label": "Safe mode · recommended",
+					"description": "Changes pages, tables and queries through the Builder only. Every change typechecks before it's written; raw file edits and commands are blocked."
+				},
+				"vibe": {
+					"label": "Code mode",
+					"description": "Can also edit any project file and run commands, following the approval mode. For custom logic the Builder can't express."
+				}
+			},
+			"allow_local_skills": {
+				"title": "Machine-local skills",
+				"label": "Use machine-local skills",
+				"description": "Adds skills from ~/.claude/skills on this machine. Not shared with teammates or other environments."
+			},
+			"checkpoint_retention": {
+				"label": "Checkpoints",
+				"description": "Change sets older than this can no longer be undone.",
+				"options": {
+					"7": "Keep 7 days",
+					"30": "Keep 30 days",
+					"90": "Keep 90 days"
+				}
+			},
+			"usage": {
+				"series": "Tokens",
+				"total_tokens": "Tokens",
+				"conversations": "Conversations",
+				"top_conversation": "Biggest conversation",
+				"top_tokens": "{count} token | {count} tokens"
+			}
+		},
+		"skills": {
+			"search": "Search name, module or tag",
+			"count": "{count} skill | {count} skills",
+			"settings_link": "Skill settings",
+			"never_used": "Never used",
+			"columns": {
+				"name": "Name",
+				"description": "Description",
+				"source": "Source",
+				"uses": "Uses · 30 days",
+				"last_used": "Last used"
+			},
+			"source": {
+				"module": "Module",
+				"local": "Local"
+			},
+			"tabs": {
+				"all": "All",
+				"module": "Modules",
+				"local": "Local"
+			},
+			"detail": {
+				"open": "Details",
+				"title": "Skill detail"
+			},
+			"empty": {
+				"title": "No skills loaded",
+				"description": "Modules that ship skills list them here. You can also add your machine's skills.",
+				"action": "Use machine-local skills"
+			},
+			"offline": {
+				"title": "Can't reach the assistant",
+				"description": "Skills come from the assistant, which isn't running. This isn't an empty list."
+			},
+			"conflicts": {
+				"title": "{count} skill name is shared by several skills | {count} skill names are shared by several skills",
+				"description": "{names}: only one copy of the name is used, the other is marked Shadowed. Rename a copy to use both. | {names}: only one copy of each name is used, the others are marked Shadowed. Rename a copy to use them all.",
+				"action": "Skill sources"
+			}
+		},
+		"status": {
+			"state": {
+				"ready": "Ready",
+				"working": "Working",
+				"waiting": "Waiting for you",
+				"offline": "Offline"
+			},
+			"agent": {
+				"claude": "Claude Code",
+				"codex": "Codex"
+			},
+			"scope": {
+				"safe": "Safe mode",
+				"vibe": "Code mode"
+			},
+			"mode": {
+				"normal": "Ask first",
+				"acceptEdits": "Accept edits",
+				"plan": "Plan only",
+				"auto": "Full auto"
+			},
+			"facts": {
+				"state": "Status",
+				"agent": "Agent",
+				"default_scope": "Default scope",
+				"scope_safe_needs_builder": "Safe needs Builder",
+				"approvals": "Approvals",
+				"builder": "Builder",
+				"builder_connected": "Connected",
+				"builder_missing": "Not installed",
+				"sidecar": "Sidecar",
+				"sidecar_stopped": "Not running",
+				"working_count": "{count} conversation working | {count} conversations working",
+				"waiting_count": "{count} waiting for you | {count} waiting for you"
+			},
+			"banner": {
+				"offline": {
+					"title": "The assistant is offline",
+					"description": "Its sidecar isn't running. Restart it to use the assistant again.",
+					"disabled": "Its sidecar is turned off in this module's configuration.",
+					"restart": "Restart assistant",
+					"restarted": "Assistant restarted"
+				},
+				"last_error": {
+					"title": "The assistant's last turn failed",
+					"description": "{error}",
+					"action": "Open activity"
+				},
+				"waiting": {
+					"title": "{count} request is waiting for you | {count} requests are waiting for you",
+					"description": "Open the assistant to answer: the button in the header, or ⌘⇧K."
+				}
+			}
+		}
+	}
+}

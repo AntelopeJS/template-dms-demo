@@ -1,0 +1,232 @@
+<script lang="ts">
+import { tv } from "tailwind-variants";
+
+const theme = tv({
+  slots: {
+    topLevelButton:
+      "relative flex items-center justify-center size-8 rounded-md transition-colors hover:bg-elevated",
+    link: "flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors hover:bg-elevated",
+    icon: "shrink-0",
+    // The collapsed rail leaves no room for a trailing dot, so a top-level
+    // entry carries it as a badge on the corner of its icon. The ring makes it
+    // readable whatever the icon underneath.
+    topLevelStatusDot:
+      "absolute top-0.5 right-0.5 size-2 rounded-full bg-current ring-2 ring-default",
+    statusDot: "ml-auto size-2 shrink-0 rounded-full bg-current",
+    chevron: "text-muted size-4 transition-transform",
+    popoverContent: "p-1",
+    popoverHeader:
+      "text-muted px-2 py-1.5 text-xs font-semibold tracking-wide uppercase",
+    childList: "space-y-0.5",
+    collapsibleTrigger: "w-full justify-between",
+    collapsibleContent: "mt-0.5 space-y-0.5",
+    // "Preview as role" only: the badge the rail puts on a locked entry's
+    // icon, and the lock a nested locked entry ends with (toned by state).
+    topLevelLock:
+      "absolute -top-0.5 -right-0.5 size-3.5 rounded-full bg-default",
+    lock: "ml-auto size-3.5 shrink-0",
+    groupLock: "size-3.5 shrink-0",
+  },
+  variants: {
+    isTopLevel: {
+      true: { icon: "size-5" },
+      false: { icon: "size-4" },
+    },
+    isOpen: {
+      true: { chevron: "rotate-180" },
+    },
+    isAccent: {
+      true: { topLevelButton: "text-primary", link: "text-primary" },
+    },
+    // Same hatches as the expanded menu (NavigationMenu.vue): red for an
+    // entry the role could not open, orange for one it opens partially.
+    previewState: {
+      hidden: {
+        topLevelButton: "text-muted dms-hatch-locked",
+        link: "text-muted dms-hatch-locked",
+        topLevelLock: "text-error",
+        lock: "text-error",
+        groupLock: "text-error",
+      },
+      partial: {
+        topLevelButton: "dms-hatch-partial",
+        link: "dms-hatch-partial",
+        topLevelLock: "text-warning",
+        lock: "text-warning",
+        groupLock: "text-warning",
+      },
+    },
+  },
+});
+</script>
+
+<script setup lang="ts">
+import { DmsLink } from "#dms/frontend-module";
+import { PREVIEW_LOCK_ICON } from "#dms-ui/app/build/utils/permissionPreview";
+
+interface Props {
+  item: DmsMenuItem;
+  isTopLevel?: boolean;
+  level?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isTopLevel: false,
+  level: 0,
+});
+
+const ui = computed(() =>
+  theme({
+    isTopLevel: props.isTopLevel,
+    isAccent: props.item.variant === "accent",
+    previewState: props.item.previewState,
+  }),
+);
+
+// Rendered as a plain dot taking its color from the shared status map.
+const statusClass = computed(() =>
+  props.item.status ? MENU_STATUS_TEXT_CLASSES[props.item.status] : undefined,
+);
+
+const hasChildren = computed(() => {
+  return props.item.children && props.item.children.length > 0;
+});
+
+const MENU_INDENT_PX = 12;
+const TOOLTIP_OPEN_DELAY = 50;
+
+const paddingLeft = computed(() => {
+  return props.level > 0 ? `${props.level * MENU_INDENT_PX}px` : undefined;
+});
+
+const chevronClass = (isOpen: boolean) => {
+  return theme({ isOpen }).chevron();
+};
+</script>
+
+<template>
+  <template v-if="!hasChildren">
+    <UTooltip
+      v-if="isTopLevel"
+      :text="
+        item.previewState && item.title
+          ? `${item.label} · ${item.title}`
+          : item.label
+      "
+      :content="{ side: 'right', sideOffset: 8 }"
+    >
+      <component
+        :is="item.to ? DmsLink : 'div'"
+        :to="item.to"
+        :class="ui.topLevelButton()"
+      >
+        <UIcon v-if="item.icon" :name="item.icon" :class="ui.icon()" />
+        <UIcon
+          v-if="item.previewState"
+          :name="PREVIEW_LOCK_ICON"
+          :class="ui.topLevelLock()"
+        />
+        <span
+          v-else-if="statusClass"
+          :class="[ui.topLevelStatusDot(), statusClass]"
+        />
+      </component>
+    </UTooltip>
+
+    <component
+      :is="item.to ? DmsLink : 'div'"
+      v-else
+      :to="item.to"
+      :class="ui.link()"
+      :style="{ paddingLeft }"
+      :title="item.title"
+    >
+      <UIcon v-if="item.icon" :name="item.icon" :class="ui.icon()" />
+      <span>{{ item.label }}</span>
+      <UIcon
+        v-if="item.previewState"
+        :name="PREVIEW_LOCK_ICON"
+        :class="ui.lock()"
+      />
+      <span v-else-if="statusClass" :class="[ui.statusDot(), statusClass]" />
+    </component>
+  </template>
+
+  <template v-else>
+    <UPopover
+      v-if="isTopLevel"
+      mode="hover"
+      :open-delay="TOOLTIP_OPEN_DELAY"
+      :content="{ side: 'right', sideOffset: 8, align: 'start' }"
+      :ui="{ content: 'min-w-48 max-h-[70vh] overflow-y-auto' }"
+    >
+      <button
+        type="button"
+        :class="ui.topLevelButton()"
+        :title="item.title"
+        :aria-label="
+          item.previewState && item.title
+            ? `${item.label} · ${item.title}`
+            : undefined
+        "
+      >
+        <UIcon v-if="item.icon" :name="item.icon" :class="ui.icon()" />
+        <UIcon
+          v-if="item.previewState"
+          :name="PREVIEW_LOCK_ICON"
+          :class="ui.topLevelLock()"
+        />
+      </button>
+
+      <template #content>
+        <div :class="ui.popoverContent()">
+          <div v-if="item.label" :class="ui.popoverHeader()">
+            {{ item.label }}
+          </div>
+          <ul :class="ui.childList()">
+            <li v-for="(child, index) in item.children" :key="index">
+              <DmsCollapsedMenuItem
+                :item="child"
+                :is-top-level="false"
+                :level="0"
+              />
+            </li>
+          </ul>
+        </div>
+      </template>
+    </UPopover>
+
+    <UCollapsible v-else class="w-full">
+      <template #default="{ open }">
+        <button
+          type="button"
+          :class="[ui.link(), ui.collapsibleTrigger()]"
+          :style="{ paddingLeft }"
+        >
+          <span class="flex items-center gap-2">
+            <UIcon v-if="item.icon" :name="item.icon" :class="ui.icon()" />
+            <span>{{ item.label }}</span>
+            <UIcon
+              v-if="item.previewState"
+              :name="PREVIEW_LOCK_ICON"
+              :class="ui.groupLock()"
+            />
+          </span>
+          <UIcon name="i-ph-caret-down-light" :class="chevronClass(open)" />
+        </button>
+      </template>
+
+      <template #content>
+        <ul :class="ui.collapsibleContent()">
+          <li v-for="(child, index) in item.children" :key="index">
+            <DmsCollapsedMenuItem
+              :item="child"
+              :is-top-level="false"
+              :level="level + 1"
+            />
+          </li>
+        </ul>
+      </template>
+    </UCollapsible>
+  </template>
+</template>

@@ -1,0 +1,64 @@
+import type { NavigationMenuItem } from "@nuxt/ui";
+
+/** Semantic look of a menu entry, mirroring `MenuItemVariant` in the backend. */
+export type MenuItemVariant = "default" | "accent";
+
+/** Semantic state dot of a menu entry, mirroring `MenuItemStatus` in the backend. */
+export type MenuItemStatus = "success" | "warning" | "error" | "neutral";
+
+/**
+ * Tone of a counted menu badge, mirroring `Tone` in the backend: the page's
+ * `navBadges` entry carries it next to `badge` (`{ badge, tone? }`); neutral
+ * when absent.
+ */
+export type MenuItemBadgeTone =
+  | "neutral"
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "error"
+  | "info";
+
+/** Query parameters carried by a menu entry's link. */
+export type MenuItemQuery = Record<string, string>;
+
+/**
+ * A menu entry link. Entries carrying query parameters (one page serving many
+ * entries, e.g. `/project?project=<id>`) use the object form.
+ */
+export interface MenuItemTarget {
+  path: string;
+  query?: MenuItemQuery;
+}
+
+/**
+ * Nuxt UI menu item enriched with the DMS registration fields: the registered
+ * `fullId`, plus the semantic `variant` / `status` a page or a dynamic menu
+ * provider declares. Nuxt UI forwards unknown keys untouched.
+ */
+export interface DmsMenuItem extends NavigationMenuItem {
+  fullId?: string;
+  variant?: MenuItemVariant;
+  status?: MenuItemStatus;
+  /** The tone of the entry's counted `badge`. */
+  badgeTone?: MenuItemBadgeTone;
+  /**
+   * Set by "Preview as role" only, on an entry the previewed role could not
+   * open: the menu draws it hatched and locked. Never set outside a preview.
+   */
+  previewLocked?: boolean;
+  /**
+   * Set by "Preview as role" only: `hidden` on an entry the previewed role
+   * could not open (red hatch and lock), `partial` on one it opens without
+   * some of its blocks, actions or entries (orange hatch and lock). Never set
+   * outside a preview.
+   */
+  previewState?: "hidden" | "partial";
+}
+
+/** The route a menu is highlighted against. */
+export interface MenuRouteState {
+  path: string;
+  query: Record<string, unknown>;
+}

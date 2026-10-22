@@ -1,0 +1,229 @@
+import { defineAsyncComponent, type Component } from "vue";
+import {
+  type DmsFrontendModule,
+  useDmsRuntimeConfig,
+} from "#dms/frontend-module";
+import authMiddleware from "./layers/dms-auth/app/middleware/auth";
+import permissionsPreloadPlugin from "./layers/dms-auth/app/plugins/permissions-preload";
+import asyncDataScopePlugin from "./layers/dms-core/app/plugins/async-data-scope";
+import homepageRedirectMiddleware from "./layers/dms-layout/app/middleware/homepage-redirect.global";
+import moduleRoutingMiddleware from "./layers/dms-layout/app/middleware/module-routing.global";
+import pageLeaveGuardMiddleware from "./layers/dms-layout/app/middleware/page-leave-guard.global";
+import accessibilityPlugin from "./layers/dms-layout/app/plugins/accessibility";
+import colorModePlugin from "./layers/dms-layout/app/plugins/color-mode";
+import faviconPlugin from "./layers/dms-layout/app/plugins/favicon";
+import interfaceScalePlugin from "./layers/dms-layout/app/plugins/interface-scale";
+import fontPreloadPlugin from "./layers/dms-layout/app/plugins/font-preload";
+import permissionPreviewPrepaintPlugin from "./layers/dms-layout/app/plugins/permission-preview-prepaint";
+import regionalPreferencesPlugin from "./layers/dms-layout/app/plugins/regional-preferences";
+import seoPlugin from "./layers/dms-layout/app/plugins/seo";
+import sidePanelHostPlugin from "./layers/dms-layout/app/plugins/side-panel-host";
+import onboardingMiddleware from "./layers/dms-onboarding/app/middleware/onboarding.global";
+import onboardingPreloadPlugin from "./layers/dms-onboarding/app/plugins/onboarding-preload";
+import registerPlugin from "./layers/dms-ui/app/plugins/register";
+import shortcutsPlugin from "./layers/dms-ui/app/plugins/shortcuts";
+import tableViewDisplaysPlugin from "./layers/dms-ui/app/plugins/table-view-displays";
+import "./layers/dms-layout/app/assets/css/main.css";
+import type {} from "./layers/dms-core/shared/types/runtime-config";
+import type {} from "./layers/dms-core/shared/types/app-config";
+
+interface VueModule {
+  default: Component;
+}
+
+type VueLoader = () => Promise<VueModule>;
+
+interface DmsPublicOptions {
+  dms?: {
+    baseURL?: string;
+  };
+}
+
+// The build/ components are registered too, so a backend page tree can name
+// them, but they stay the layer's internals: never auto-imported, and not a
+// surface other modules should build on.
+const components = import.meta.glob<VueModule>([
+  "./layers/**/app/components/**/*.vue",
+  "./layers/**/app/build/components/**/*.vue",
+]);
+const customPages = import.meta.glob<VueModule>(
+  "./layers/**/app/custom-pages/**/*.vue",
+);
+const dynamicPages = import.meta.glob<VueModule>(
+  "./layers/**/app/pages/**/*.vue",
+);
+const layouts = import.meta.glob<VueModule>(
+  "./layers/**/app/custom-layouts/**/*.vue",
+);
+const errorPages = import.meta.glob<VueModule>("./layers/**/app/error.vue");
+
+function pascalCase(path: string): string {
+  return path
+    .replace(/\.vue$/, "")
+    .split(/[./_-]+/)
+    .filter(Boolean)
+    .map((part) => `${part[0].toUpperCase()}${part.slice(1)}`)
+    .join("");
+}
+
+function componentName(path: string): string {
+  const relativePath = path.replace(
+    /^.*\/(?:components|build\/components)\//,
+    "",
+  );
+  return pascalCase(relativePath.split("/").at(-1) ?? relativePath);
+}
+
+function entryName(path: string, directory: string): string {
+  return path
+    .replace(new RegExp(`^.*\\/${directory}\\/`), "")
+    .replace(/\.vue$/, "");
+}
+
+function sortedEntries(
+  loaders: Record<string, VueLoader>,
+): Array<[string, VueLoader]> {
+  return Object.entries(loaders).sort(([left], [right]) =>
+    left.localeCompare(right),
+  );
+}
+
+function lazyComponent(loader: VueLoader): Component {
+  return defineAsyncComponent(async () => (await loader()).default);
+}
+
+// Components that render a backend block under a name of their own: the block
+// names (`dms-xxx-block`) resolve to the same component as the template name.
+const COMPONENT_ALIASES: Record<string, string> = {
+  ActivityFeed: "ActivityFeedBlock",
+  Section: "SectionBlock",
+  FieldRow: "FieldRowBlock",
+};
+
+function registerComponents(
+  sdk: Parameters<DmsFrontendModule["setup"]>[0],
+): void {
+  const names = new Map<string, string>();
+  for (const [path, loader] of sortedEntries(components)) {
+    const name = componentName(path);
+    const previousPath = names.get(name);
+    if (previousPath) {
+      throw new Error(
+        `Duplicate component name ${name}: ${previousPath}, ${path}`,
+      );
+    }
+    names.set(name, path);
+    const component = lazyComponent(loader);
+    sdk.registerComponent(name, component);
+    const alias = COMPONENT_ALIASES[name];
+    if (alias) sdk.registerComponent(alias, component);
+  }
+}
+
+function registerEntries(
+  entries: Record<string, VueLoader>,
+  directory: string,
+  register: (name: string, component: Component, preload?: VueLoader) => void,
+): void {
+  sortedEntries(entries).forEach(([path, loader]) => {
+    register(entryName(path, directory), lazyComponent(loader), loader);
+  });
+}
+
+function registerCustomPages(
+  sdk: Parameters<DmsFrontendModule["setup"]>[0],
+): void {
+  sortedEntries(customPages).forEach(([path, loader]) => {
+    const name = entryName(path, "custom-pages").replace(/\/index$/, "");
+    const component = lazyComponent(loader);
+    sdk.registerPage(name, component, loader);
+    sdk.registerComponent(pascalCase(name), component);
+  });
+}
+
+function registerDeferredPlugins(
+  sdk: Parameters<DmsFrontendModule["setup"]>[0],
+): void {
+  sdk.registerPlugin(
+    (context) => {
+      context.hook("app:mounted", async () => {
+        const { installDeferredPlugins } = await import("./deferred-plugins");
+        await installDeferredPlugins(context);
+      });
+    },
+    { clientOnly: true },
+  );
+}
+
+function registerPlugins(sdk: Parameters<DmsFrontendModule["setup"]>[0]): void {
+  const clientOnly = { clientOnly: true };
+  if (import.meta.env.DEV) {
+    sdk.registerPlugin(async (context) => {
+      const plugin = await import(
+        "./layers/dms-layout/app/plugins/dms-dev-reload.client"
+      );
+      await plugin.default(context);
+    }, clientOnly);
+  }
+  // Before any data is read, a higher-priority module's plugins included:
+  // every key lives in the session's scope, and a new scope aborts the reads
+  // started before it.
+  sdk.registerPlugin(asyncDataScopePlugin, { enforce: "pre" });
+  // First: the requests the middlewares wait on start with the app, alongside
+  // the ones the plugins below and the page make, instead of one after the
+  // other once the page has set up.
+  sdk.registerPlugin(onboardingPreloadPlugin);
+  sdk.registerPlugin(permissionsPreloadPlugin);
+  sdk.registerPlugin(colorModePlugin);
+  sdk.registerPlugin(permissionPreviewPrepaintPlugin);
+  sdk.registerPlugin(fontPreloadPlugin);
+  sdk.registerPlugin(interfaceScalePlugin);
+  sdk.registerPlugin(accessibilityPlugin);
+  sdk.registerPlugin(regionalPreferencesPlugin);
+  sdk.registerPlugin(seoPlugin);
+  sdk.registerPlugin(faviconPlugin);
+  sdk.registerPlugin(sidePanelHostPlugin);
+  sdk.registerPlugin(registerPlugin);
+  sdk.registerPlugin(shortcutsPlugin);
+  sdk.registerPlugin(tableViewDisplaysPlugin);
+  registerDeferredPlugins(sdk);
+}
+
+function registerMiddleware(
+  sdk: Parameters<DmsFrontendModule["setup"]>[0],
+): void {
+  const global = { global: true };
+  sdk.registerMiddleware("auth", authMiddleware);
+  sdk.registerMiddleware(
+    "homepage-redirect",
+    homepageRedirectMiddleware,
+    global,
+  );
+  sdk.registerMiddleware("module-routing", moduleRoutingMiddleware, global);
+  sdk.registerMiddleware("page-leave-guard", pageLeaveGuardMiddleware, global);
+  sdk.registerMiddleware("onboarding", onboardingMiddleware, global);
+}
+
+const frontendModule: DmsFrontendModule = {
+  componentPrefix: "Dms",
+  // The layout's app config is not merged here: the loader applies every
+  // layer's `app/app.config.ts` before any module is set up, and a second
+  // merge would repeat the arrays defu concatenates.
+  setup(sdk) {
+    const runtimeDms = (useDmsRuntimeConfig().public as DmsPublicOptions).dms;
+    if (runtimeDms && typeof window !== "undefined")
+      runtimeDms.baseURL = window.location.origin;
+    registerPlugins(sdk);
+    registerMiddleware(sdk);
+    registerComponents(sdk);
+    registerCustomPages(sdk);
+    registerEntries(dynamicPages, "pages", sdk.registerDynamicPage);
+    registerEntries(layouts, "custom-layouts", sdk.registerLayout);
+    sortedEntries(errorPages).forEach(([, loader]) => {
+      sdk.registerErrorPage(lazyComponent(loader), loader);
+    });
+    sdk.provide("dmsPublicConfig", sdk.options.public);
+  },
+};
+
+export default frontendModule;

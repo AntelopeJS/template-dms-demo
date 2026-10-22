@@ -1,0 +1,53 @@
+{
+  "page": {
+    "onboarding": {
+      "start_title": "Configurer votre plateforme",
+      "steps": {
+        "aria_label": "Progression de la configuration",
+        "eyebrow": "Étape {step} sur {total} · {label}",
+        "platform": "Plateforme",
+        "administrator": "Administrateur",
+        "ready": "Prête"
+      },
+      "platform": {
+        "duration": "environ 1 min",
+        "title": "Bienvenue dans Antelope DMS",
+        "description": "Nommez la plateforme et choisissez sa langue par défaut. Le nom apparaît dans l'onglet du navigateur et sur la page de connexion.",
+        "name_help": "Affiché dans l'onglet du navigateur et sur la page de connexion.",
+        "language": "Langue par défaut",
+        "language_help": "Votre compte administrateur démarre dans cette langue. Chacun peut en changer dans son profil.",
+        "address": "Adresse",
+        "address_secure": "Détectée depuis ce navigateur · HTTPS activé",
+        "address_insecure": "Détectée depuis ce navigateur · HTTPS désactivé",
+        "submit": "Continuer vers l'administrateur",
+        "team_hint": "Vous configurez pour une équipe ? Vous inviterez vos collègues une fois la plateforme prête."
+      },
+      "administrator": {
+        "title": "Créer le compte administrateur",
+        "description": "Ce compte possède la plateforme : il gère les modules, les paramètres et invite tous les autres.",
+        "first_name": "Prénom",
+        "last_name": "Nom",
+        "name_required": "Obligatoire",
+        "email": "E-mail professionnel",
+        "submit": "Créer le compte administrateur",
+        "back": "Retour aux informations de la plateforme",
+        "error_title": "Le compte n'a pas pu être créé"
+      },
+      "ready": {
+        "title": "{platform} est prête",
+        "description": "Vous êtes connecté en tant que {name}, propriétaire de la plateforme. Voici ce que la plupart des équipes font en premier.",
+        "invite_title": "Invitez vos collègues",
+        "invite_description": "Donnez-leur un rôle pour qu'ils ne voient que ce dont ils ont besoin.",
+        "security_title": "Activez l'authentification à deux facteurs",
+        "security_description": "Recommandée pour le compte propriétaire.",
+        "modules_title": "Passez en revue les modules installés",
+        "modules_description": "Découvrez ce que chaque module installé apporte à la plateforme.",
+        "docs_title": "Lire la documentation",
+        "docs_description": "Antelope DMS et le framework Antelope.",
+        "submit": "Ouvrir le tableau de bord",
+        "recap_platform": "Plateforme",
+        "recap_language": "Langue par défaut"
+      }
+    }
+  }
+}

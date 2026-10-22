@@ -1,0 +1,866 @@
+{
+  "api": {
+    "module": {
+      "title": "API",
+      "description": "Surveillez, explorez et testez les routes de votre API.",
+      "catalog_category": "Développeur",
+      "readout": {
+        "failing": "Routes en échec",
+        "attention": "Routes à surveiller",
+        "healthy": "Toutes les routes sont saines",
+        "idle": "Aucun trafic en 24 h"
+      }
+    },
+    "nav": {
+      "monitor": "Surveiller",
+      "explore": "Explorer",
+      "configure": "Configurer"
+    },
+    "common": {
+      "retry": "Réessayer",
+      "ms": "{value} ms",
+      "refresh": "Actualiser"
+    },
+    "scope": {
+      "own": "Routes du projet · {count}",
+      "modules": "Routes des modules · {count}",
+      "all": "Toutes les routes · {count}",
+      "tooltip": "Les routes que cette console surveille. À changer dans Réglages API."
+    },
+    "blocks": {
+      "scope_chip": {
+        "name": "Périmètre des routes",
+        "description": "Le périmètre actif et son nombre de routes, avec un lien vers les réglages API."
+      },
+      "live_traffic": {
+        "name": "Trafic en direct",
+        "description": "Requêtes par minute sur la dernière heure, au rythme du contrôle En direct / Pause de la page."
+      },
+      "request_detail": {
+        "name": "Détail d'une requête",
+        "description": "Une requête capturée : erreur, durée, en-têtes et corps."
+      },
+      "route_tree": {
+        "name": "Liste des routes",
+        "description": "Toutes les routes du périmètre, groupées par dossier, avec leur santé."
+      },
+      "route_header": {
+        "name": "Résumé de la route",
+        "description": "La route sélectionnée : handler, accès et origine."
+      },
+      "route_documentation": {
+        "name": "Documentation de la route",
+        "description": "Le contrat de la route, déduit de son code et de son trafic."
+      },
+      "route_tester": {
+        "name": "Testeur de route",
+        "description": "Envoyer une requête à la route depuis le tableau de bord."
+      },
+      "split_layout": {
+        "name": "Routes et détail",
+        "description": "La liste des routes à côté de la route sélectionnée."
+      },
+      "logs_filters": {
+        "name": "Filtres des requêtes",
+        "description": "Méthode, requêtes lentes et filtres apportés par un lien, au-dessus de la table des requêtes."
+      },
+      "logs_empty_state": {
+        "name": "Table des requêtes vide",
+        "description": "Ce que dit la table des requêtes quand elle ne liste rien, et comment en sortir."
+      },
+      "health_hero": {
+        "name": "Santé de l'API",
+        "description": "Verdict de santé, ses raisons et les indicateurs clés des dernières minutes."
+      },
+      "beta_badge": {
+        "name": "Pastille bêta",
+        "description": "Signale que la console est encore en bêta, à côté de la barre d'outils de la page."
+      }
+    },
+    "health": {
+      "verdict": {
+        "operational": "Opérationnelle",
+        "degraded": "Dégradée",
+        "down": "En panne",
+        "recovered": "Rétablie",
+        "idle": "Aucun trafic"
+      },
+      "since_degraded": "Dégradée depuis le {date}",
+      "since_down": "En panne depuis le {date}",
+      "since_recovered": "Rétablie depuis le {date}",
+      "metrics": {
+        "server_errors": "5xx · {minutes} min",
+        "server_errors_rules": "Dégradée ≥ {degraded} / {minutes} min · En panne ≥ {down} / {downMinutes} min",
+        "p95": "Latence p95 · {minutes} min",
+        "p95_sub": "Lente dès {threshold}",
+        "traffic": "Trafic · {minutes} min",
+        "per_minute": "req/min",
+        "traffic_sub": "{count} route dans le périmètre | {count} routes dans le périmètre",
+        "client_errors": "4xx · {minutes} min",
+        "client_errors_sub": "Erreurs client, souvent attendues"
+      },
+      "reasons": {
+        "failing": "{count} route en échec | {count} routes en échec",
+        "slow": "{count} route lente (≥ {threshold}) | {count} routes lentes (≥ {threshold})",
+        "recovered": "{count} route rétablie | {count} routes rétablies",
+        "none": "Aucune route ne dépasse les seuils ces {minutes} dernières minutes."
+      },
+      "first_run": {
+        "title": "Aucune requête capturée",
+        "description": "{count} routes sont enregistrées. La console enregistre les appels dès que votre API les reçoit.",
+        "browse": "Parcourir les routes",
+        "logs": "Ouvrir les journaux",
+        "step_1": "Choisir une route",
+        "step_1_detail": "Routes liste tout ce que votre projet enregistre.",
+        "step_2": "Envoyer une première requête",
+        "step_2_detail": "Depuis le testeur d'une route, ou depuis votre application.",
+        "step_3": "La voir arriver",
+        "step_3_detail": "Les journaux l'affichent en quelques secondes."
+      },
+      "label": "Santé de l'API",
+      "state": {
+        "live": "en direct",
+        "paused": "en pause",
+        "stale": "non actualisée"
+      },
+      "for": "depuis {duration}",
+      "for_over": "depuis plus de {duration}",
+      "recovered_ago": "il y a {duration}",
+      "incident_started": "L'incident a commencé le {date}",
+      "last_incident": "Dernier incident {date}",
+      "checked": "vérifié à {time}",
+      "duration": {
+        "s": "{n} s",
+        "min": "{n} min",
+        "h": "{n} h",
+        "d": "{n} j"
+      },
+      "view_errors": "Voir {count} erreur serveur | Voir {count} erreurs serveur",
+      "stale_title": "Données de {time}",
+      "stale_description": "La dernière actualisation a échoué. Les chiffres peuvent être périmés.",
+      "error_title": "Données de supervision indisponibles",
+      "error_description": "La console n'a pas pu lire ses statistiques. L'API elle-même va peut-être bien."
+    },
+    "overview": {
+      "title": "Vue d'ensemble",
+      "description": "Santé, trafic et erreurs des routes du périmètre. Cliquez sur une route ou une requête pour creuser.",
+      "toolbar": "Barre d'outils de la vue d'ensemble",
+      "dashboard": "Tableau de bord",
+      "beta": {
+        "title": "Bêta",
+        "description": "La console API est en lecture seule pour l'instant : inspecter, surveiller et tester les routes."
+      },
+      "no_previous": "Pas de période précédente à comparer",
+      "traffic": {
+        "title": "Trafic et erreurs",
+        "2xx": "2xx succès",
+        "4xx": "4xx client",
+        "5xx": "5xx serveur"
+      },
+      "classes": {
+        "title": "Réponses par classe",
+        "description": "Appels par classe de statut",
+        "empty": "Aucune réponse sur la période",
+        "share": "{share} des appels",
+        "2xx": "2xx succès",
+        "4xx": "4xx client",
+        "5xx": "5xx serveur"
+      },
+      "error_share": {
+        "title": "Part d'erreurs",
+        "client": "4xx",
+        "server": "5xx"
+      },
+      "attention": {
+        "title": "À surveiller",
+        "all_errors": "Toutes les erreurs serveur",
+        "empty_title": "Toutes les routes semblent saines",
+        "empty_description": "24 dernières heures : aucune erreur serveur, route lente ou taux de 4xx élevé.",
+        "failing": "En échec",
+        "recovered": "Rétablie",
+        "failing_detail": "{rate} d'erreurs serveur · {serverErrors} sur {calls} appel | {rate} d'erreurs serveur · {serverErrors} sur {calls} appels",
+        "window_detail": "{rate} d'erreurs serveur sur {minutes} min · {serverErrors} sur {calls} appel | {rate} d'erreurs serveur sur {minutes} min · {serverErrors} sur {calls} appels",
+        "recovered_detail": "rétablie {end} · dernière 5xx {last}",
+        "recovered_last": "dernière 5xx {last}",
+        "slow": "Lente",
+        "slow_detail": "p95 {p95} · moy. {average} · {calls} appel | p95 {p95} · moy. {average} · {calls} appels",
+        "client_errors": "Taux de 4xx",
+        "client_errors_detail": "{rate} d'erreurs client · {clientErrors} sur {calls} appel | {rate} d'erreurs client · {clientErrors} sur {calls} appels",
+        "top_error": "{status} « {message} » × {count}",
+        "top_status": "{status} × {count}",
+        "stray": "Aucune route ne répond à ce chemin",
+        "badge": "Dernières 24 h"
+      },
+      "slowest": {
+        "title": "Routes les plus lentes",
+        "description": "Latence moyenne par route",
+        "empty": "Aucun appel sur la période",
+        "detail": "p95 {p95} · max {max} · {calls} appel | p95 {p95} · max {max} · {calls} appels",
+        "detail_no_p95": "max {max} · {calls} appel | max {max} · {calls} appels"
+      },
+      "recent": {
+        "title": "Requêtes récentes",
+        "description": "Derniers appels capturés · cliquez pour inspecter",
+        "open_logs": "Ouvrir les journaux",
+        "empty_title": "Aucune requête",
+        "empty_description": "Les requêtes apparaissent ici dès que votre API les reçoit."
+      },
+      "activity": {
+        "title": "Activité · 7 jours",
+        "empty": "Rien ces 7 derniers jours",
+        "incident": "Erreurs serveur sur {route}",
+        "incident_detail": "{count} × {status}",
+        "incident_ongoing": "toujours en cours · pic de {peak}/min",
+        "incident_span": "a duré {minutes} min · pic de {peak}/min",
+        "incident_top_error": "{topStatus} « {topMessage} » × {topCount}",
+        "registered": "Route enregistrée : {route}",
+        "registered_many": "{count} routes enregistrées",
+        "registered_many_detail": "{routes}…",
+        "from_project": "Depuis le code du projet",
+        "from_module": "Depuis le module {module}"
+      }
+    },
+    "live": {
+      "title": "Requêtes par minute · dernière heure · tout le trafic",
+      "kept": "Conservées {days} jours · corps jusqu'à {size}",
+      "kept_days": "Conservées {days} jours",
+      "kept_no_bodies": "Conservées {days} jours · corps non capturés",
+      "size_b": "{amount} o",
+      "size_kb": "{amount} Ko",
+      "total": "{count} requête | {count} requêtes",
+      "legend_success": "2xx–3xx",
+      "reconnecting": "Reconnexion…",
+      "following": "En direct",
+      "paused": "En pause",
+      "last_data": "données de {time}",
+      "no_data_yet": "aucune donnée pour l'instant",
+      "error": "Impossible de charger la dernière heure",
+      "error_description": "Le graphe réessaie à la prochaine actualisation.",
+      "scale": "Échelle jusqu'à {count} par minute",
+      "scale_cut": "les minutes plus chargées sont coupées",
+      "tooltip_none": "aucune requête",
+      "tooltip_current": "minute en cours",
+      "summary": "Requêtes par minute sur la dernière heure : {total} requêtes, {client} 4xx, {server} 5xx. Minute la plus chargée : {peak} à {time}.",
+      "summary_empty": "Aucune requête sur la dernière heure."
+    },
+    "live_mode": {
+      "verdict": {
+        "title": "Santé de l'API : {verdict}",
+        "description": "Avant : {previous}.",
+        "tab": "● {verdict} · {page}"
+      },
+      "new_requests": "{count} nouvelle requête | {count} nouvelles requêtes",
+      "server_errors": "{count} en 5xx",
+      "typing_in_tester": "saisie dans le testeur"
+    },
+    "logs": {
+      "title": "Journaux des requêtes",
+      "description": "Chaque requête capturée, la plus récente en premier. Filtrez, puis ouvrez-en une pour voir en-têtes, corps et erreur.",
+      "table": "Table des requêtes",
+      "search": "Chemin, ID de requête, erreur…",
+      "count": "{count} requête | {count} requêtes",
+      "keys_hint": "/ rechercher · J / K requête suivante / précédente · Échap fermer le panneau · L direct / pause · ? raccourcis",
+      "toolbar": "Barre d'outils des journaux",
+      "drawer_title": "Requête",
+      "open_request": "Ouvrir la requête",
+      "filters": {
+        "method": "Méthode",
+        "method_value": "Méthode : {method}",
+        "method_aria": "Méthode : {value}",
+        "all_methods": "Toutes les méthodes",
+        "method_locked": "Le filtre de route {route} fixe la méthode",
+        "slow": "Lentes uniquement",
+        "slow_threshold": "Lentes (≥ {threshold})",
+        "slow_hint": "Seulement les requêtes qui atteignent le seuil de lenteur réglé dans les paramètres"
+      },
+      "windows": {
+        "last-hour": "Dernière heure",
+        "last-24h": "Dernières 24 heures",
+        "last-7-days": "7 derniers jours",
+        "last-30-days": "30 derniers jours"
+      },
+      "linked": {
+        "title": "Filtres du lien :",
+        "origin": "Depuis {page}",
+        "origin_window": "{window} · depuis {page}",
+        "pages": {
+          "overview": "la vue d'ensemble",
+          "routes": "les routes"
+        },
+        "route": "Route = {value}",
+        "route_unknown": "Route inconnue : {value}",
+        "route_unknown_hint": "Le lien ne nomme aucune route (MÉTHODE /chemin) : aucune requête n'y correspond.",
+        "path": "Chemin = {value}",
+        "error": "Erreur contient « {value} »",
+        "incident": "Incident {since} → {until}",
+        "remove": "Retirer le filtre {label}",
+        "clear": "Retirer les filtres du lien"
+      },
+      "shortcuts": {
+        "title": "Raccourcis clavier",
+        "open": "Raccourcis clavier (?)",
+        "search": "Rechercher dans les requêtes",
+        "steps": "Requête suivante / précédente dans le panneau",
+        "close": "Fermer le panneau",
+        "live": "En direct ou Pause pour toute la page",
+        "help": "Afficher ces raccourcis",
+        "group": "Journaux des requêtes"
+      },
+      "columns": {
+        "time": "Heure",
+        "method": "Méthode",
+        "path": "Chemin",
+        "status": "Statut",
+        "duration": "Durée",
+        "request_id": "ID de requête",
+        "status_class": "Classe de statut",
+        "slow": "Lente",
+        "route": "Route",
+        "error": "Erreur"
+      },
+      "empty": {
+        "first_run_title": "Aucune requête pour l'instant",
+        "first_run_description": "Les appels apparaissent ici dès que votre API les reçoit. Un onglet de statut ne liste que sa propre classe.",
+        "browse_routes": "Parcourir les routes",
+        "filtered_title": "Aucune requête ne correspond à ces filtres",
+        "narrowed": "Filtré par : {filters}.",
+        "period_hint": "Les requêtes sont peut-être hors de cette période.",
+        "widen": "Afficher toute la période",
+        "search_title": "Aucune requête ne contient « {search} »",
+        "search_description": "La recherche porte sur les chemins, les ID de requête et les messages d'erreur.",
+        "route_title": "Aucune requête pour {route}",
+        "error_filter_title": "Aucune requête ne porte cette erreur",
+        "incident_title": "Aucune requête pendant cet incident",
+        "link_description": "Le filtre apporté par le lien ne correspond à aucune requête capturée.",
+        "remove_link": "Retirer le filtre du lien",
+        "path": "Chemin {path}",
+        "error_title": "Impossible de charger les journaux",
+        "error_description": "Le stockage des journaux n'a pas répondu. Réessayez."
+      }
+    },
+    "request": {
+      "tabs": {
+        "overview": "Résumé",
+        "request": "Requête",
+        "response": "Réponse"
+      },
+      "replay": "Rejouer dans le testeur",
+      "copy_curl": "Copier en cURL",
+      "copy_url": "Copier l'URL",
+      "copy_message": "Copier le message",
+      "open_route": "Ouvrir la route",
+      "same_error": "Même erreur",
+      "see_also": "Voir aussi",
+      "same_route": "Requêtes de cette route",
+      "same_path": "Requêtes vers ce chemin",
+      "slow_route": "Requêtes lentes de cette route",
+      "curl_copied": "cURL copié",
+      "copy_failed": "Impossible de copier dans le presse-papiers",
+      "error": "Erreur",
+      "show_all": "Afficher tout",
+      "show_less": "Réduire",
+      "general": "Général",
+      "fields": {
+        "url": "URL",
+        "date": "Date",
+        "route": "Route",
+        "ip": "IP du client",
+        "user_agent": "User-agent",
+        "request_id": "ID de requête",
+        "source": "Origine"
+      },
+      "tester": "Testeur",
+      "source_tester": "Envoyée depuis le testeur de la console : gardée dans les journaux, hors des statistiques et de la santé.",
+      "timing": "Durée",
+      "slow": "lente",
+      "slow_ratio": "Lente · {ratio}× le seuil",
+      "threshold_ratio": "{ratio}× le seuil de lenteur",
+      "threshold": "Seuil de lenteur {threshold}, tel que réglé aujourd'hui.",
+      "route_latency": "Cette route, dernier jour : p50 {p50} · p95 {p95} | Cette route, {days} derniers jours : p50 {p50} · p95 {p95}",
+      "meter_label": "Durée par rapport au seuil de lenteur",
+      "not_measured": "non mesurée",
+      "not_measured_hint": "Non mesurée : la requête a été rejetée avant d'atteindre un handler.",
+      "route": "Route",
+      "unmatched": "aucune route enregistrée ne correspond",
+      "path_params": "Paramètres de chemin",
+      "no_path_params": "Aucun paramètre de chemin",
+      "headers": "En-têtes",
+      "headers_hint": "Seuls les en-têtes autorisés sont capturés.",
+      "headers_settings": "Modifier la liste dans Réglages API",
+      "query": "Paramètres de requête",
+      "body": "Corps",
+      "no_body": "Aucun corps capturé.",
+      "no_body_method": "Une requête {method} n'envoie pas de corps.",
+      "body_omitted": {
+        "disabled": "Non stocké : la capture des corps est désactivée.",
+        "too_large": "Non stocké : plus grand que la taille maximale d'un corps.",
+        "not_json": "Non stocké : seuls les corps JSON sont capturés.",
+        "malformed": "Non stocké : le JSON était invalide, ses secrets ne pouvaient pas être masqués sans risque.",
+        "empty": "Le corps était vide.",
+        "not_read": "Non stocké : la requête a reçu sa réponse avant qu'un handler lise son corps (route inconnue, refus d'un guard)."
+      },
+      "body_settings": "Capture des corps dans Réglages API",
+      "body_size_of": "{kept} sur {total}",
+      "view_tree": "Arbre",
+      "view_raw": "Brut",
+      "json_items": "{count} élément | {count} éléments",
+      "json_keys": "{count} clé | {count} clés",
+      "no_headers": "Aucun en-tête capturé",
+      "truncated": "tronqué",
+      "redacted": "{count} valeur masquée : les valeurs sous des clés qui ressemblent à des secrets, et les numéros de carte bancaire où qu'ils soient, ne sont jamais stockés. | {count} valeurs masquées : les valeurs sous des clés qui ressemblent à des secrets, et les numéros de carte bancaire où qu'ils soient, ne sont jamais stockés.",
+      "redacted_query": "{count} paramètre de requête masqué : ceux qui ressemblent à des secrets, et les numéros de carte bancaire, ne sont jamais stockés. | {count} paramètres de requête masqués : ceux qui ressemblent à des secrets, et les numéros de carte bancaire, ne sont jamais stockés.",
+      "redacted_headers": "Écartés parce que leur nom ressemble à un secret : {names}.",
+      "invalid_title": "Ce lien ne désigne aucune requête",
+      "invalid_description": "L'adresse ne contient pas un ID de requête valide. Vérifiez le lien suivi.",
+      "not_found_title": "Cette requête n'est plus conservée",
+      "not_found_description": "Elle a été supprimée par la rétention des journaux, est hors du périmètre des routes, ou le lien est erroné.",
+      "forbidden_title": "Vous ne pouvez pas ouvrir cette requête",
+      "forbidden_description": "Votre rôle affiche cette liste, mais pas le détail de ses requêtes. Demandez à un administrateur l'accès aux journaux des requêtes.",
+      "error_title": "Impossible d'ouvrir cette requête",
+      "error_description": "La console n'a pas répondu. Réessayez.",
+      "position": "Requête {index} sur {total} affichées",
+      "heading": "{method} {path}"
+    },
+    "routes": {
+      "title": "Routes",
+      "description": "Chaque route enregistrée, sa santé, son contrat et un testeur. Choisissez une route dans la liste.",
+      "toolbar": "Barre d'outils des routes",
+      "explorer": "Explorateur de routes",
+      "tabs": {
+        "name": "Onglets de la route",
+        "statistics": "Statistiques",
+        "documentation": "Documentation",
+        "beta": "Bêta",
+        "tester": "Testeur"
+      },
+      "state": {
+        "failing": "En échec · erreurs serveur",
+        "slow": "Lente",
+        "client_errors": "Taux de 4xx élevé",
+        "recovered": "Rétablie",
+        "healthy": "Saine",
+        "idle": "Aucun trafic"
+      },
+      "window": {
+        "min": "{amount} min",
+        "h": "{amount} h",
+        "d": "{amount} j"
+      },
+      "tree": {
+        "hide_idle": "Masquer les routes sans trafic",
+        "collapse_all": "Tout replier",
+        "expand_all": "Tout déplier",
+        "requests": "{count} requêtes",
+        "requests_window": "{count} requêtes · dernières {window}",
+        "window": "Santé sur les dernières {window}",
+        "folder_routes": "{n} route | {n} routes",
+        "search": "Filtrer par chemin ou handler",
+        "label": "Routes",
+        "method": "Méthode",
+        "all": "Toutes",
+        "only_attention": "Seulement les routes à surveiller",
+        "footer": "{shown} sur {total} routes · {folders} dossiers",
+        "footer_flat": "{shown} sur {total} routes",
+        "clear": "Effacer les filtres",
+        "did_you_mean": "Vouliez-vous dire",
+        "no_match": "Aucune route ne correspond à « {search} »",
+        "no_match_filters": "Aucune route ne correspond à ces filtres",
+        "empty_title": "Aucune route dans le périmètre",
+        "empty_description": "Élargissez le périmètre dans Paramètres.",
+        "error": "Impossible de charger les routes"
+      },
+      "header": {
+        "pick_title": "Choisissez une route",
+        "pick_description": "Ses statistiques, son contrat et un testeur s'ouvrent ici.",
+        "missing_title": "{route} n'est pas enregistrée",
+        "missing_description": "La route a été supprimée ou renommée depuis la création de ce lien.",
+        "clear": "Effacer la sélection",
+        "error_title": "Impossible de charger cette route",
+        "requests": "Requêtes",
+        "auth": "Utilisateurs connectés",
+        "auth_probable": "Utilisateurs connectés, probablement",
+        "auth_unknown": "Auth inconnue",
+        "own": "Code du projet",
+        "module": "Module {module}",
+        "unknown_source": "Origine inconnue",
+        "state_window": "{state} · dernières {window}",
+        "crumb": "Routes · {route}",
+        "first_seen": "Vue pour la première fois le {date}",
+        "first_seen_hint": "Premier jour avec un appel parmi les statistiques conservées",
+        "out_of_scope_title": "Cette route est hors du périmètre actif",
+        "out_of_scope_description": "Elle n'apparaît ni dans la liste ni dans les chiffres des autres pages. Le périmètre se règle dans Paramètres.",
+        "out_of_scope_action": "Ouvrir les paramètres"
+      },
+      "statistics": {
+        "title": "Statistiques de la route",
+        "charts": "Graphiques de la route",
+        "error_rate_chart": "Taux d'erreur par statut",
+        "series_p95": "p95",
+        "idle_title": "Aucun appel sur la période",
+        "requests": "Requêtes",
+        "error_rate": "Taux d'erreur",
+        "response_time": "Temps de réponse (ms)",
+        "series_average": "Moyenne",
+        "series_max": "Max",
+        "top_errors": "Erreurs principales",
+        "no_errors": "Aucune erreur sur la période",
+        "recent": "Requêtes récentes",
+        "no_calls_title": "Aucun appel sur cette route pour l’instant",
+        "no_calls_description": "Ses requêtes s’affichent ici dès qu’elle est appelée.",
+        "top_errors_description": "Erreurs regroupées par statut et message",
+        "server_error": "Erreur serveur · dernière {at}",
+        "client_error": "Erreur client · dernière {at}",
+        "average": "Latence moyenne",
+        "max": "Appel le plus lent",
+        "ms": "{value} ms",
+        "rate": "{rate}",
+        "error_split": "{client} × 4xx · {server} × 5xx",
+        "slow_line": "lent au-delà de {threshold}",
+        "no_baseline": "Pas de période précédente",
+        "vs_previous": "{delta} par rapport à la période précédente",
+        "summary": "Indicateurs de la route",
+        "p95_detail": "p95 {p95}",
+        "p95_none": "Aucune p95 conservée sur la période",
+        "idle_description": "Elle a été appelée avant cette période : choisissez-en une plus longue, ou appelez-la maintenant pour voir ses chiffres.",
+        "idle_never": "Aucun appel conservé pour elle : appelez-la maintenant pour voir ses chiffres.",
+        "idle_try": "Tester cette route"
+      },
+      "docs": {
+        "beta_title": "Bêta · déduit du trafic",
+        "beta_description": "Lu dans les requêtes capturées sur les {days} derniers jours (hors testeur) et dans le code du handler. Ce qui n'a jamais été appelé n'apparaît pas.",
+        "example": "Exemple de requête",
+        "origin_unknown": "La console ne connaît pas l'URL publique de l'API : l'exemple utilise API_URL. Renseignez apiBaseUrl dans la config du module DMS.",
+        "try": "Essayer",
+        "auth_title": "Nécessite un utilisateur connecté",
+        "auth_description": "Garde trouvée dans le code : {guards}. Les appels sans jeton valide sont refusés en 401.",
+        "probable_title": "Probablement protégée",
+        "probable_description": "Aucune garde trouvée dans le code, mais la route a répondu 401 une fois en {days} jours. | Aucune garde trouvée dans le code, mais la route a répondu 401 {count} fois en {days} jours.",
+        "unknown_title": "Authentification inconnue",
+        "unknown_description": "Aucune garde trouvée avant ou sur le handler, et aucun 401 observé. Un contrôle fait dans le handler n'apparaîtrait pas ici.",
+        "body": "Corps",
+        "inferred": "Déduit d'une requête réussie | Déduit de {count} requêtes réussies",
+        "no_body": "Aucun corps JSON dans les requêtes réussies des {days} derniers jours.",
+        "required": "requis",
+        "optional": "facultatif",
+        "parameters": "Paramètres",
+        "in_path": "Chemin",
+        "in_query": "Requête",
+        "in_header": "En-têtes lus par le handler",
+        "no_parameters": "Aucun paramètre de chemin, de requête ou d'en-tête, déclaré ou observé.",
+        "seen_only": "vu dans le trafic",
+        "example_value": "ex. {value}",
+        "no_example": "aucun appel réussi pour l'instant",
+        "responses": "Réponses",
+        "no_responses": "Rien d'observé sur les {days} derniers jours, et aucun code d'erreur trouvé dans le code du handler.",
+        "observed": "vue une fois en {days} jours | vue {count} fois en {days} jours",
+        "last_seen": "dernière : {time}",
+        "more_messages": "+{count} autre message | +{count} autres messages",
+        "latency": "p50 {p50} · p95 {p95}",
+        "response": "Réponse",
+        "example_response": "{status} · dernière réponse réussie",
+        "response_truncated": "Tronqué à la capture : le corps est plus long que ce qui est affiché.",
+        "source_assert": "assert() dans le code du handler",
+        "source_result": "HTTPResult dans le code du handler",
+        "pipeline": "Chaîne de traitement",
+        "pipeline_description": "Ce qui s'exécute, dans l'ordre, quand la route est appelée",
+        "kind_prefix": "Avant",
+        "kind_handler": "Handler",
+        "kind_postfix": "Après",
+        "kind_monitor": "Moniteur",
+        "auth": "auth",
+        "internals": "Détails du contrôleur",
+        "internals_parameters": "{count} paramètre | {count} paramètres",
+        "internals_members": "{count} membre de classe | {count} membres de classe",
+        "internal_name": "Nom",
+        "internal_source": "Source",
+        "internal_type": "Type",
+        "internal_modifiers": "Modificateurs",
+        "class_member": "membre de classe"
+      },
+      "shortcuts": {
+        "group": "Routes",
+        "filter": "Filtrer les routes"
+      }
+    },
+    "tester": {
+      "send": "Envoyer",
+      "session": "Envoyer avec ma session",
+      "auth": {
+        "session": "Votre jeton de session est envoyé",
+        "manual": "Votre en-tête Authorization remplace la session",
+        "manual_common": "Votre en-tête Authorization pour toutes les routes remplace la session",
+        "none": "Aucun identifiant n'est envoyé"
+      },
+      "auth_short": {
+        "session": "session",
+        "manual": "Authorization saisi",
+        "none": "sans identifiant"
+      },
+      "writes": "Modifie des données",
+      "writes_hint": "Appelle la vraie API. Un DELETE est toujours confirmé, et la première écriture sur chaque route une fois par session.",
+      "path_param": "Paramètre de chemin {name}",
+      "blocked": {
+        "path_missing": "Renseignez {names} pour envoyer",
+        "path_value": "{name} contient un caractère que le proxy du testeur refuse dans un chemin (/, espace ou #)",
+        "header": "« {name} » n'est pas un en-tête HTTP valide",
+        "too_large": "La requête pèse {size} : le proxy du testeur accepte au plus {limit}"
+      },
+      "tabs": {
+        "body": "Corps",
+        "headers": "En-têtes",
+        "query": "Query",
+        "captured": "Capturée"
+      },
+      "draft_modified": "Brouillon modifié",
+      "reset": "Revenir à l'exemple",
+      "body_mode": "Type de corps",
+      "body_modes": {
+        "json": "JSON",
+        "text": "Texte",
+        "form": "Formulaire",
+        "none": "Aucun"
+      },
+      "format": "Formater",
+      "json_warning": "JSON invalide : {message}. Il est envoyé tel quel.",
+      "body_redacted": "{count} valeur masquée, {names} : remplacez-la avant l'envoi. | {count} valeurs masquées, {names} : remplacez-les avant l'envoi.",
+      "body_hint": {
+        "example": "Prérempli avec la dernière requête acceptée par cette route.",
+        "no_capture": "Aucune requête capturée sur cette route ces {days} derniers jours : écrivez le corps à la main.",
+        "no_success": "La seule requête de ces {days} derniers jours a échoué : écrivez le corps à la main. | Aucune des {count} requêtes de ces {days} derniers jours n'a réussi : écrivez le corps à la main.",
+        "no_json": "La requête réussie de ces {days} derniers jours n'avait pas de corps JSON : écrivez-le à la main. | Aucun corps JSON parmi les {count} requêtes réussies de ces {days} derniers jours : écrivez-le à la main.",
+        "history": "Restauré depuis l'historique.",
+        "empty": "Aucun corps ne sera envoyé.",
+        "none": "Aucun corps n'est envoyé. Choisissez un type pour en ajouter un.",
+        "form": "Envoyé en application/x-www-form-urlencoded.",
+        "replay": "Corps de la requête rejouée {id}.",
+        "replay_missing": "Le corps de cette requête n'a pas été stocké ({reason}) : saisissez-le, ou envoyez sans corps.",
+        "replay_missing_unknown": "Le corps de cette requête n'a pas été stocké : saisissez-le, ou envoyez sans corps.",
+        "replay_truncated": "Ce corps a été tronqué à la capture : ce n'est pas la requête entière, et il est rejoué en texte. L'API n'en reçoit que cette partie.",
+        "replay_truncated_too_large": "Ce corps a été tronqué à la capture, il est donc incomplet, et avec la requête autour, il dépasse les {limit} qu'accepte le proxy du testeur : il ne peut pas être rejoué tel quel. Raccourcissez-le pour l'envoyer."
+      },
+      "body_omitted": {
+        "disabled": "capture des corps désactivée",
+        "too-large": "au-delà de la taille maximale capturée",
+        "not-json": "corps non JSON",
+        "malformed": "JSON invalide",
+        "empty": "corps vide",
+        "not-read": "réponse envoyée avant qu’un handler ne le lise"
+      },
+      "remove": "Retirer",
+      "add_header": "Ajouter un en-tête",
+      "add_query": "Ajouter un paramètre",
+      "add_field": "Ajouter un champ",
+      "redacted_value": "Masquée à la capture : remplacez-la par la vraie valeur",
+      "implied_header": "défini par le type de corps",
+      "headers_hint": "Un en-tête Authorization remplace votre session. Les identifiants ne sont jamais stockés.",
+      "marks_hint": "x-request-id et x-dms-api-source sont ajoutés pour retrouver l'appel dans les journaux.",
+      "common_headers": "En-têtes pour toutes les routes",
+      "common_headers_hint": "Envoyés à chaque route, sous les en-têtes ci-dessus. Gardés dans ce navigateur ; les identifiants seulement jusqu'au rechargement de la page.",
+      "common_secret": "{names} part vers toutes les routes, à la place de votre session, et sera oublié au rechargement de la page.",
+      "query_known": "Vus dans les requêtes capturées : {names}",
+      "query_none": "Aucun paramètre de query dans les requêtes de ces {days} derniers jours. Ceux ajoutés sont envoyés tels quels.",
+      "query_no_capture": "Aucune requête capturée sur cette route ces {days} derniers jours. Les paramètres ajoutés sont envoyés tels quels.",
+      "response": "Réponse",
+      "open_logs": "Voir dans les journaux",
+      "open_captured": "Ouvrir la requête capturée",
+      "not_captured": "Route non capturée par le module",
+      "not_captured_hint": "Les routes de la console elle-même sont exclues des journaux : il n'y a pas de requête capturée à montrer.",
+      "no_response_title": "Pas encore de réponse",
+      "no_response_description": "Envoyez la requête ({shortcut} + Entrée) pour voir ce que la route répond.",
+      "waiting_title": "En attente de l'API…",
+      "waiting_description": "Le proxy du testeur abandonne au bout de {seconds} s. Annulez pour ne plus attendre.",
+      "failed": "Échec",
+      "cancelled": "Annulée",
+      "duration_browser": "{duration} dans le navigateur",
+      "duration_server": "{duration} côté serveur",
+      "duration_tooltip": "Le temps navigateur passe par le proxy de la console ; le temps serveur est celui que le module a capturé.",
+      "truncated_in_history": "Réponse tronquée dans l'historique : {shown} sur {size}.",
+      "errors": {
+        "invalid_input": {
+          "title": "Le proxy du testeur a refusé la requête",
+          "description": "Il vérifie le chemin, les en-têtes et le corps avant d'appeler l'API : rien n'a atteint l'API."
+        },
+        "body_too_large": {
+          "title": "Requête trop grosse pour le testeur",
+          "description": "Le proxy du testeur accepte au plus {limit} de requête, corps et en-têtes compris : rien n'a atteint l'API."
+        },
+        "not_authenticated": {
+          "title": "Votre session de console a expiré",
+          "description": "Reconnectez-vous pour utiliser le testeur : rien n'a atteint l'API."
+        },
+        "not_owner": {
+          "title": "Le testeur est réservé aux propriétaires",
+          "description": "Le DMS ne laisse qu'un propriétaire appeler les routes depuis la console : rien n'a atteint l'API."
+        },
+        "cross_origin": {
+          "title": "Appel refusé : origine non reconnue",
+          "description": "Le proxy du testeur n'accepte que les appels venant de l'origine de la console : rien n'a atteint l'API."
+        },
+        "proxy_failed": {
+          "title": "Pas de réponse exploitable de l'API",
+          "description": "Soit l'API est injoignable, soit sa réponse dépasse {limit} : le proxy du testeur n'en renvoie alors ni le statut ni le corps. Si l'appel a atteint l'API, l'onglet Capturée le montre.",
+          "description_uncaptured": "Soit l'API est injoignable, soit sa réponse dépasse {limit} : le proxy du testeur n'en renvoie alors ni le statut ni le corps, et le module ne capture pas cette route."
+        },
+        "response_too_large": {
+          "title": "La route a répondu {status}, avec plus de {limit}",
+          "description": "Le proxy du testeur ne renvoie ni le statut ni le corps d'une réponse de plus de {limit}. L'onglet Capturée montre ce que le module a enregistré."
+        },
+        "timeout": {
+          "title": "Pas de réponse après {seconds} s",
+          "description": "Le proxy du testeur a cessé d'attendre. L'API a peut-être reçu l'appel : voir l'onglet Capturée.",
+          "description_uncaptured": "Le proxy du testeur a cessé d'attendre. L'API a peut-être reçu l'appel."
+        },
+        "aborted": {
+          "title": "Requête annulée",
+          "description": "L'API l'a peut-être reçue et traitée : voir l'onglet Capturée.",
+          "description_uncaptured": "L'API l'a peut-être reçue et traitée."
+        },
+        "abandoned": {
+          "title": "Annulée quand vous avez quitté la route",
+          "description": "L'appel attendait encore sa réponse. L'API l'a peut-être reçu et traité : voir l'onglet Capturée.",
+          "description_uncaptured": "L'appel attendait encore sa réponse. L'API l'a peut-être reçu et traité."
+        },
+        "network": {
+          "title": "Le serveur de la console est injoignable",
+          "description": "{message}. Vérifiez la connexion, puis renvoyez."
+        },
+        "unexpected": {
+          "title": "Le proxy du testeur a échoué",
+          "description": "{message}."
+        }
+      },
+      "unauthorized_title": "La route a refusé l'appel (401)",
+      "unauthorized": {
+        "none": "Aucun identifiant n'a été envoyé : « Envoyer avec ma session » est coupé.",
+        "manual": "Votre en-tête Authorization a été envoyé à la place de votre session. Retirez-le pour utiliser votre session.",
+        "session": "Votre jeton de session a été envoyé : cette route attend d'autres identifiants."
+      },
+      "turn_on_session": "Activer la session",
+      "captured": {
+        "loading": "Recherche de la requête capturée par le module…",
+        "missing": "Aucune requête capturée trouvée pour cet appel ({id}) : la capture est peut-être coupée pour cette route, ou l'appel n'a jamais atteint l'API.",
+        "error": "Impossible de lire les journaux de requêtes.",
+        "headers": "En-têtes capturés",
+        "body": "Corps capturé",
+        "body_omitted": "Corps non stocké : {reason}.",
+        "stack": "Pile d'appels"
+      },
+      "live": {
+        "sent": "{status} {text}, {duration}",
+        "failed": "Pas de réponse : {title}"
+      },
+      "history": "Historique",
+      "history_hint": "25 derniers appels, stockés dans ce navigateur · cliquez pour restaurer",
+      "history_empty": "Vos appels apparaissent ici.",
+      "clear": "Effacer",
+      "history_cleared": "Historique effacé ({count} appel) | Historique effacé ({count} appels)",
+      "history_abandoned": "l'API l'a peut-être reçue",
+      "undo": "Annuler",
+      "secrets_not_kept": "{names} n'a pas été conservé : saisissez-le de nouveau pour envoyer la même requête.",
+      "replayed": "Requête capturée chargée",
+      "replay_failed": "Impossible de charger la requête capturée",
+      "replay_other_route": "Cette requête capturée appartient à {route} : elle n'a pas été chargée ici.",
+      "replay_banner": {
+        "title": "Rejouée depuis {id} ({at})",
+        "headers": "{count} en-tête non restauré | {count} en-têtes non restaurés",
+        "redacted": "{count} valeur masquée à renseigner | {count} valeurs masquées à renseigner",
+        "truncated": "corps tronqué à la capture",
+        "skipped": "Non restaurés : {names}. Authorization, Cookie et X-Api-Key ne sont jamais capturés.",
+        "credentials": "Authorization, Cookie et X-Api-Key ne sont jamais capturés : ajoutez-les si la route en a besoin.",
+        "open": "Requête d'origine"
+      },
+      "confirm": {
+        "delete_title": "Envoyer ce DELETE ?",
+        "delete": "DELETE {path} appelle la vraie API et peut supprimer des données.",
+        "write_title": "Écrire dans la vraie API ?",
+        "write": "{method} {path} modifie de vraies données. La question ne sera plus posée pour cette route pendant cette session.",
+        "redacted_title": "Envoyer des valeurs masquées ?",
+        "redacted": "{count} valeur vaut encore [REDACTED] et serait envoyée telle quelle. | {count} valeurs valent encore [REDACTED] et seraient envoyées telles quelles.",
+        "truncated_title": "Envoyer un corps incomplet ?",
+        "truncated": "Le corps a été tronqué à la capture : l'API n'en reçoit que le début."
+      },
+      "source_failed": "Non envoyé : la console n'a pas pu marquer l'appel comme venant du Testeur.",
+      "replay_not_found": "Cette requête ne peut plus être rejouée : supprimée, hors du périmètre des routes, ou sans route."
+    },
+    "settings": {
+      "title": "Réglages API",
+      "description": "Les routes surveillées, la durée de conservation et ce qui est capturé. Les changements s'appliquent tout de suite, sans redémarrage.",
+      "form": "Paramètres de la console API",
+      "saved": "Paramètres enregistrés",
+      "sections": {
+        "visibility": "Visibilité des routes",
+        "visibility_description": "S'applique à la vue d'ensemble, aux routes et aux journaux",
+        "retention": "Conservation",
+        "retention_description": "Purge toutes les heures",
+        "capture": "Capture et confidentialité",
+        "capture_description": "Ce qu'un journal de requête conserve",
+        "thresholds": "Seuils de santé",
+        "thresholds_description": "Quand une route apparaît dans À surveiller"
+      },
+      "scope": {
+        "label": "Périmètre",
+        "description": "Les routes du projet viennent de votre code. Les routes des modules viennent des modules Antelope installés, comme les points d'accès de cette console. Toutes les routes réunit les deux.",
+        "own": "Routes du projet",
+        "own_description": "Le code de votre projet uniquement",
+        "modules": "Routes des modules",
+        "modules_description": "Les modules installés uniquement",
+        "all": "Toutes les routes",
+        "all_description": "Aucun filtre"
+      },
+      "retention": {
+        "logs": "Journaux des requêtes (jours)",
+        "logs_description": "Requêtes complètes avec en-têtes et corps. La réduire supprime les journaux plus anciens à la purge horaire suivante.",
+        "statistics": "Statistiques (jours)",
+        "statistics_description": "Agrégats journaliers derrière les graphiques et indicateurs. À partir de 60 jours, 30 j peut être comparé aux 30 jours d'avant.",
+        "logs_hint": "De 1 à 366 jours.",
+        "statistics_choice": "Choisissez 30, 60 ou 90 jours.",
+        "days": "{count} jour | {count} jours",
+        "choice_no_comparison": "Pas de comparaison 30 j avec la période d'avant",
+        "choice_comparison": "Garde la comparaison 30 j",
+        "choice_default": "Par défaut · garde la comparaison 30 j",
+        "logs_name": "Journaux des requêtes",
+        "statistics_name": "Statistiques",
+        "impact_pending": "Calcul de ce que la prochaine purge horaire supprime…",
+        "impact_none": "Rien de stocké n'a plus de {days} jour : la prochaine purge ne supprime rien pour l'instant. | Rien de stocké n'a plus de {days} jours : la prochaine purge ne supprime rien pour l'instant.",
+        "impact_statistics": "La prochaine purge horaire supprime {days} jour de statistiques (environ {requests} requêtes). | La prochaine purge horaire supprime {days} jours de statistiques (environ {requests} requêtes).",
+        "impact_logs": "La prochaine purge horaire supprime {days} jour de journaux ({requests} requêtes). | La prochaine purge horaire supprime {days} jours de journaux ({requests} requêtes).",
+        "confirm_title": "Supprimer des données stockées ?",
+        "confirm_description": "Une conservation plus courte supprime les données plus anciennes à la prochaine purge horaire. C'est irréversible.",
+        "confirm_save": "Enregistrer et supprimer",
+        "confirm_change": "{field} : {from} → {to} jour | {field} : {from} → {to} jours",
+        "confirm_requests": "≈ {requests} requêtes"
+      },
+      "capture": {
+        "max_body": "Taille max. du corps (Ko)",
+        "max_body_description": "Les corps plus gros sont stockés tronqués et signalés.",
+        "max_body_hint": "De 0 à 10 240 Ko. 0 désactive la capture des corps.",
+        "headers": "En-têtes capturés",
+        "headers_description": "Seuls ces en-têtes de requête sont stockés. Ajoutez-en un pour déboguer une intégration, par exemple une signature de webhook.",
+        "headers_hint": "Noms d'en-têtes, stockés en minuscules. Les en-têtes qui ressemblent à des secrets (authorization, cookies, clés d'API) ne sont jamais stockés.",
+        "headers_placeholder": "Ajouter un nom d'en-tête",
+        "invalid_header": "Ce n'est pas un nom d'en-tête : utilisez des lettres, des chiffres et des tirets.",
+        "sensitive_header": "Jamais stocké, pour votre sécurité",
+        "redacted": "Toujours masqué",
+        "redacted_description": "Les valeurs sous des clés contenant ces mots sont remplacées avant stockage, dans les corps et les paramètres de requête.",
+        "redacted_hint": "Exemple : « portal_token » : « abc » est stocké comme [REDACTED].",
+        "always": "Non modifiable"
+      },
+      "thresholds": {
+        "slow": "Requête lente (ms)",
+        "slow_description": "Les requêtes qui l'atteignent ou le dépassent sont marquées lentes ; une route dont le p95 l'atteint est listée comme lente.",
+        "slow_hint": "De 50 à 600 000 ms, par pas de 50.",
+        "slow_step": "Utilisez un multiple de 50 ms.",
+        "error_rate": "Alerte de taux d'erreur",
+        "error_rate_description": "Une route est signalée pour ses erreurs client quand les 4xx atteignent cette part de ses appels sur les dernières 24 heures, à partir de 20 appels.",
+        "down_rate": "Seuil « En panne »",
+        "down_rate_description": "La santé de l'API passe à En panne quand les erreurs serveur (5xx) atteignent cette part des appels des 5 dernières minutes, à partir de 20 appels. Dès 1 % sur les 15 dernières minutes, elle est Dégradée et la route en échec, puis Rétablie pendant 15 minutes après le retour à la normale.",
+        "fixed": "Fixe dans cette version"
+      },
+      "number": {
+        "adjusted_max": "{typed} dépasse le maximum : ramené à {value}.",
+        "adjusted_min": "{typed} est sous le minimum : ramené à {value}.",
+        "adjusted_step": "{typed} n'est pas un multiple de {step} : arrondi à {value}."
+      }
+    }
+  }
+}

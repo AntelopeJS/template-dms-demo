@@ -1,0 +1,636 @@
+{
+	"dms_ai": {
+		"module": {
+			"title": "Assistant",
+			"description": "L'assistant IA : ce qu'il a fait, ce que vous pouvez annuler, ses skills et ses réglages"
+		},
+		"pages": {
+			"overview": {
+				"title": "Vue d'ensemble",
+				"description": "Ce que l'assistant a fait, comment chaque action a été autorisée et ce que vous pouvez encore annuler"
+			},
+			"changes": {
+				"title": "Modifications",
+				"description": "Chaque tour qui a touché le projet, enregistré comme un lot de modifications à relire et annuler"
+			},
+			"activity": {
+				"title": "Activité",
+				"description": "Journal d'audit de chaque outil utilisé par l'assistant, de qui l'a autorisé et de son résultat"
+			},
+			"skills": {
+				"title": "Skills",
+				"description": "Les instructions que l'assistant charge pour des tâches précises, fournies par les modules ou cette machine"
+			},
+			"settings": {
+				"title": "Réglages",
+				"description": "Valeurs par défaut des nouvelles conversations. Les changements s'enregistrent au fur et à mesure"
+			}
+		},
+		"blocks": {
+			"overview": {
+				"period": {
+					"name": "Période",
+					"description": "Choisit la période couverte par les chiffres de la vue d'ensemble"
+				},
+				"status": {
+					"name": "État de l'assistant",
+					"description": "L'état de l'assistant, son agent, sa portée par défaut, son mode de validation, le Builder et le sidecar",
+					"title": "Assistant",
+					"settings": "Réglages"
+				},
+				"kpis": {
+					"name": "Chiffres clés",
+					"description": "Actions, lots de modifications, validations et annulations sur la période"
+				},
+				"kpis_row": {
+					"name": "Ligne des chiffres clés",
+					"description": "La ligne qui contient les quatre chiffres clés"
+				},
+				"kpi_actions": {
+					"name": "Actions",
+					"description": "Appels d'outils faits par l'assistant sur la période",
+					"title": "Actions",
+					"caption": "Appels d'outils, opérations du Builder comprises"
+				},
+				"kpi_change_sets": {
+					"name": "Lots de modifications",
+					"description": "Tours qui ont modifié le projet sur la période",
+					"title": "Lots de modifications",
+					"caption": "Tours ayant modifié des fichiers, annulés compris"
+				},
+				"kpi_approved": {
+					"name": "Autorisées par vous",
+					"description": "Demandes que vous avez autorisées sur la période",
+					"title": "Autorisées par vous",
+					"caption": "Demandes autorisées quand on vous les a posées"
+				},
+				"kpi_undone": {
+					"name": "Annulés",
+					"description": "Lots de modifications annulés sur la période",
+					"title": "Annulés",
+					"caption": "Lots de modifications annulés"
+				},
+				"activity": {
+					"name": "Activité",
+					"description": "Le graphique d'activité et la façon dont ses actions ont été autorisées"
+				},
+				"activity_row": {
+					"name": "Ligne d'activité",
+					"description": "La ligne qui contient le graphique d'activité et sa répartition"
+				},
+				"activity_chart": {
+					"name": "Graphique d'activité",
+					"description": "Actions par jour, comparées à la période précédente",
+					"title": "Activité",
+					"caption": "Actions sur la période choisie",
+					"primary": "Actions",
+					"comparison": "Période précédente"
+				},
+				"allowed": {
+					"name": "Comment les actions ont été autorisées",
+					"description": "Les actions selon leur autorisation : automatique, par vous, par une règle",
+					"title": "Comment les actions ont été autorisées",
+					"caption": "Les suppressions demandent toujours, dans tous les modes",
+					"empty": "Aucune action sur cette période"
+				},
+				"changes": {
+					"name": "Modifications",
+					"description": "Les derniers lots de modifications et les outils les plus utilisés"
+				},
+				"changes_row": {
+					"name": "Ligne des modifications",
+					"description": "La ligne qui contient les lots récents et les outils les plus utilisés"
+				},
+				"recent_changes": {
+					"name": "Lots récents",
+					"description": "Les derniers lots de modifications, chacun avec Annuler ou Rétablir",
+					"title": "Lots récents"
+				},
+				"top_tools": {
+					"name": "Outils les plus utilisés",
+					"description": "Les outils que l'assistant a le plus lancés sur la période",
+					"title": "Outils les plus utilisés",
+					"caption": "Exécutions sur la période choisie",
+					"empty": "Aucun outil lancé sur cette période"
+				},
+				"activity_chart_series": {
+					"name": "Courbe du graphique d'activité",
+					"description": "Le graphique en aires dessiné dans la carte d'activité"
+				},
+				"status_banner": {
+					"name": "Alerte de l'assistant",
+					"description": "Signale l'assistant hors ligne, l'échec de son dernier tour ou des demandes qui vous attendent"
+				},
+				"status_facts": {
+					"name": "Informations de l'assistant",
+					"description": "Une ligne par information sur l'état de l'assistant"
+				}
+			},
+			"changes": {
+				"view": {
+					"name": "Lots de modifications",
+					"description": "Les lots de modifications, leurs diffs, et l'annulation avec son aperçu"
+				}
+			},
+			"activity": {
+				"log": {
+					"name": "Journal d'audit",
+					"description": "Chaque appel d'outil, comment il a été autorisé et son résultat"
+				},
+				"detail": {
+					"name": "Détail d'une action",
+					"description": "Un appel d'outil : ses arguments, ses décisions et son diff"
+				}
+			},
+			"skills": {
+				"conflicts": {
+					"name": "Skills en double",
+					"description": "Prévient quand deux skills portent le même nom et que l'une est ignorée"
+				},
+				"catalog": {
+					"name": "Catalogue des skills",
+					"description": "Les skills chargées dans l'assistant"
+				},
+				"card": {
+					"name": "Carte d'une skill",
+					"description": "Une skill dans les cartes du catalogue"
+				},
+				"detail": {
+					"name": "Détail d'une skill",
+					"description": "Une skill : sa provenance, son utilisation et son SKILL.md"
+				}
+			},
+			"settings": {
+				"chatgpt": {
+					"name": "Compte ChatGPT",
+					"description": "Le compte ChatGPT sur lequel tourne Codex, avec connexion et déconnexion"
+				},
+				"form": {
+					"name": "Réglages de l'assistant",
+					"description": "Valeurs par défaut de l'agent, des validations, de la portée, des skills et de l'historique"
+				},
+				"usage": {
+					"name": "Consommation",
+					"description": "Les tokens utilisés par les conversations",
+					"title": "Consommation",
+					"caption": "Comptés par conversation. Votre fournisseur les facture."
+				},
+				"usage_chart": {
+					"name": "Tokens par jour",
+					"description": "Tokens utilisés par jour sur les 14 derniers jours",
+					"title": "Tokens · 14 derniers jours",
+					"caption": "Tokens utilisés par jour"
+				},
+				"usage_summary": {
+					"name": "Totaux de consommation",
+					"description": "Tokens, conversations et la conversation la plus gourmande",
+					"title": "14 derniers jours"
+				},
+				"usage_chart_series": {
+					"name": "Barres du graphique des tokens",
+					"description": "Le graphique en colonnes dessiné dans la carte des tokens"
+				}
+			}
+		},
+		"activity": {
+			"export": "Exporter en CSV",
+			"search": "Rechercher outils, fichiers, pages",
+			"count": "{count} action | {count} actions",
+			"columns": {
+				"time": "Heure",
+				"action": "Action",
+				"allowed": "Autorisation",
+				"result": "Résultat",
+				"conversation": "Conversation",
+				"duration": "Durée",
+				"category": "Catégorie",
+				"agent": "Agent",
+				"read_only": "Lecture seule"
+			},
+			"tabs": {
+				"all": "Tout",
+				"changed": "Fichiers modifiés",
+				"asked": "Demandées",
+				"denied": "Refusées ou bloquées",
+				"failed": "En échec"
+			},
+			"quick": {
+				"tool": "Outil",
+				"agent": "Agent",
+				"read_only": "Lecture seule"
+			},
+			"read_only": {
+				"hide": "Masquer la lecture seule",
+				"show": "Afficher la lecture seule"
+			},
+			"detail": {
+				"open": "Détails",
+				"title": "Détail de l'action"
+			},
+			"empty": {
+				"title": "Aucune activité pour l'instant",
+				"description": "Chaque outil utilisé par l'assistant arrive ici, avec qui l'a autorisé et son résultat."
+			},
+			"offline": {
+				"title": "Impossible de joindre l'assistant",
+				"description": "Le journal vient de l'assistant, qui ne tourne pas. Ce n'est pas un journal vide."
+			},
+			"category": {
+				"changed": "Fichiers modifiés",
+				"asked": "Demandées",
+				"denied": "Refusées ou bloquées",
+				"failed": "En échec"
+			},
+			"agent": {
+				"claude": "Claude Code",
+				"codex": "Codex"
+			},
+			"allowed_by": {
+				"read_auto": "Lecture seule, automatique",
+				"builder_auto": "Builder, automatique",
+				"approved": "Autorisée par vous",
+				"rule": "Autorisée par une règle",
+				"full_auto": "Automatique complet",
+				"blocked": "Bloquée · mode sûr",
+				"denied": "Refusée par vous",
+				"expired": "Expirée"
+			},
+			"allowed_metric": {
+				"deletions_asked": "Suppressions demandées",
+				"deletions_note": "Les suppressions demandent toujours, même en automatique complet"
+			},
+			"result": {
+				"done": "Terminée",
+				"pending": "En attente",
+				"failed": "En échec",
+				"denied": "Non exécutée",
+				"blocked": "Bloquée",
+				"stopped": "Arrêtée",
+				"expired": "Expirée"
+			},
+			"tool_source": {
+				"builder": "Builder",
+				"project": "Projet",
+				"code": "Mode code",
+				"web": "Web",
+				"assistant": "Assistant"
+			},
+			"tools": {
+				"Read": "Lire un fichier",
+				"Write": "Écrire un fichier",
+				"Edit": "Modifier un fichier",
+				"MultiEdit": "Modifier un fichier (plusieurs modifications)",
+				"NotebookEdit": "Modifier un notebook",
+				"Bash": "Lancer une commande",
+				"Glob": "Trouver des fichiers",
+				"Grep": "Chercher dans le code",
+				"LS": "Lister un dossier",
+				"WebFetch": "Lire une page web",
+				"WebSearch": "Chercher sur le web",
+				"TodoWrite": "Mettre à jour les étapes",
+				"Task": "Lancer un sous-agent",
+				"ExitPlanMode": "Proposer un plan",
+				"GetCurrentPage": "Lire la page affichée",
+				"NavigateToPage": "Ouvrir une page",
+				"FindPagesUsing": "Trouver les pages qui utilisent",
+				"ListPages": "Lister les pages",
+				"AskUser": "Vous poser une question",
+				"Typecheck": "Vérifier les types",
+				"QueryLogs": "Lire les logs",
+				"BuilderCatalog": "Lire le catalogue de blocs",
+				"BuilderListPages": "Lister les pages Builder",
+				"BuilderPageStructure": "Lire une page",
+				"BuilderCreatePage": "Créer une page",
+				"BuilderConfigurePage": "Configurer une page",
+				"BuilderDeletePage": "Supprimer une page",
+				"BuilderAddBlock": "Ajouter un bloc",
+				"BuilderConfigureBlock": "Configurer un bloc",
+				"BuilderMoveBlock": "Déplacer un bloc",
+				"BuilderRemoveBlock": "Retirer un bloc",
+				"BuilderCreateCategory": "Créer une catégorie",
+				"BuilderConfigureCategory": "Configurer une catégorie",
+				"BuilderDeleteCategory": "Supprimer une catégorie",
+				"BuilderRefresh": "Rafraîchir le Builder",
+				"BuilderCreateResource": "Créer une table",
+				"BuilderDeleteResource": "Supprimer une table",
+				"BuilderListResources": "Lister les tables",
+				"BuilderResourceStructure": "Lire une table",
+				"BuilderAddField": "Ajouter un champ",
+				"BuilderConfigureField": "Configurer un champ",
+				"BuilderRemoveField": "Retirer un champ",
+				"BuilderQueryTemplates": "Lire les modèles de requêtes",
+				"BuilderAddQuery": "Ajouter une requête",
+				"BuilderConfigureQuery": "Configurer une requête",
+				"BuilderRemoveQuery": "Retirer une requête",
+				"UndoChangeSet": "Annuler un lot de modifications",
+				"RedoChangeSet": "Rétablir un lot de modifications",
+				"ToolSearch": "Charger des outils",
+				"Skill": "Utiliser une skill",
+				"AskUserQuestion": "Vous demander (intégré)"
+			}
+		},
+		"changes_table": {
+			"columns": {
+				"number": "N°",
+				"title": "Modification",
+				"scope": "Portée",
+				"files": "Fichiers",
+				"when": "Quand",
+				"state": "État"
+			},
+			"scope": {
+				"safe": "Sûr",
+				"vibe": "Code"
+			},
+			"state": {
+				"applied": "Appliqué",
+				"undone": "Annulé"
+			},
+			"actions": {
+				"open": "Voir le diff",
+				"undo": "Annuler",
+				"redo": "Rétablir",
+				"all_changes": "Toutes les modifications"
+			},
+			"toasts": {
+				"undone": "Lot de modifications annulé",
+				"redone": "Lot de modifications rétabli"
+			},
+			"empty": {
+				"title": "Aucune modification pour l'instant",
+				"description": "Quand l'assistant modifie une page ou un fichier, le lot de modifications arrive ici avec une annulation."
+			},
+			"offline": {
+				"title": "Impossible de joindre l'assistant",
+				"description": "Les lots de modifications viennent de l'assistant, qui ne tourne pas."
+			},
+			"undo_confirm": {
+				"title": "Annuler le lot n°{number} ?",
+				"description": "Remet le fichier dans l'état d'avant ce lot, puis recharge la page. | Remet {count} fichiers dans l'état d'avant ce lot, puis recharge la page.",
+				"description_conflict": "Remet le fichier dans l'état d'avant ce lot. Un lot plus récent touche le même fichier. | Remet {count} fichiers dans l'état d'avant ce lot. Un lot plus récent touche les mêmes fichiers.",
+				"description_conflicts": "Remet le fichier dans l'état d'avant ce lot. {conflicts} lots plus récents touchent le même fichier. | Remet {count} fichiers dans l'état d'avant ce lot. {conflicts} lots plus récents touchent les mêmes fichiers.",
+				"confirm": "Annuler",
+				"include_later": "Annuler aussi les lots plus récents",
+				"include_later_hint": "Sans risque : annuler ce lot seul garde leurs lignes et peut ne plus compiler."
+			}
+		},
+		"settings": {
+			"hints": {
+				"next_turn": "S'applique aux nouveaux tours. Les conversations ouvertes perdent la mémoire de l'agent ; les transcriptions restent.",
+				"next_message": "S'applique dès le prochain message",
+				"new_conversations": "S'applique aux nouvelles conversations"
+			},
+			"sections": {
+				"agent": {
+					"label": "Agent",
+					"description": "Quel agent répond, et combien de temps il réfléchit."
+				},
+				"approvals": {
+					"label": "Validations",
+					"description": "Par défaut pour les nouvelles conversations. Chaque conversation peut le changer depuis la zone de saisie."
+				},
+				"scope": {
+					"label": "Portée",
+					"description": "Par défaut pour les nouvelles conversations. Chaque conversation peut la changer depuis la zone de saisie."
+				},
+				"skills": {
+					"label": "Skills",
+					"description": "D'où viennent les skills de l'assistant."
+				},
+				"history": {
+					"label": "Historique",
+					"description": "Combien de temps les lots de modifications restent annulables."
+				}
+			},
+			"provider": {
+				"label": "Agent de code",
+				"description": "Tourne sur cette machine, dans le dossier du projet. Votre code ne part que chez le fournisseur choisi ; un agent en panne ne bascule jamais sur l'autre.",
+				"unavailable": "Non configuré sur cette machine",
+				"claude": {
+					"label": "Claude Code",
+					"description": "Anthropic · modèle choisi par Claude Code"
+				},
+				"codex": {
+					"label": "Codex",
+					"description": "OpenAI · utilise votre forfait ChatGPT, une fois connecté ci-dessous"
+				}
+			},
+			"chatgpt": {
+				"signed_out": {
+					"title": "Utilisez Codex avec votre forfait ChatGPT",
+					"description": "Connectez-vous avec ChatGPT pour utiliser ici l'usage Codex de votre forfait, sans clé d'API. Si le DMS tourne sur une autre machine, la page où OpenAI vous renvoie ne chargera pas : collez son adresse avec « Coller l'adresse de retour ».",
+					"action": "Se connecter avec ChatGPT"
+				},
+				"signed_in": {
+					"title": "Codex utilise le forfait ChatGPT de {email}",
+					"description": "Son usage compte dans les limites de votre forfait, que vous pouvez plafonner par app dans les réglages de ChatGPT.",
+					"action": "Se déconnecter"
+				},
+				"sign_out_confirm": {
+					"title": "Se déconnecter de ChatGPT ?",
+					"description": "Codex ne fonctionnera plus sur aucun projet DMS de cette machine tant que vous ne vous reconnecterez pas. Pour retirer complètement dms-ai de votre compte ChatGPT, déconnectez-le dans les réglages de ChatGPT."
+				},
+				"signed_out_toast": "Déconnecté de ChatGPT",
+				"paste": {
+					"action": "Coller l'adresse de retour",
+					"title": "Terminer la connexion à ChatGPT",
+					"description": "Après votre autorisation, OpenAI vous a envoyé vers une adresse commençant par http://127.0.0.1 qui n'a pas pu charger. Copiez cette adresse complète depuis la barre d'adresse et collez-la ici. Elle ne sert qu'une fois, dans les 10 minutes.",
+					"field": "Adresse de retour",
+					"confirm": "Terminer la connexion",
+					"success": "Connecté avec ChatGPT"
+				}
+			},
+			"thinking": {
+				"label": "Réflexion",
+				"description": "Combien de temps l'agent réfléchit avant d'agir. Plus de réflexion est plus lent et consomme plus de tokens.",
+				"options": {
+					"off": "Désactivée",
+					"low": "Faible",
+					"medium": "Moyenne",
+					"high": "Élevée"
+				}
+			},
+			"mode": {
+				"label": "Mode de validation",
+				"description": "Ce que l'assistant peut faire sans vous demander d'abord.",
+				"normal": {
+					"label": "Demander d'abord",
+					"description": "Demande avant toute modification en dehors du Builder."
+				},
+				"acceptEdits": {
+					"label": "Accepter les modifications",
+					"description": "Applique les modifications de fichiers, demande pour le reste."
+				},
+				"plan": {
+					"label": "Plan seulement",
+					"description": "Lit et propose. Ne modifie rien."
+				},
+				"auto": {
+					"label": "Automatique complet",
+					"description": "Indisponible par défaut. Activez-le par conversation, pour une durée limitée."
+				}
+			},
+			"always_ask": {
+				"label": "Toujours demander pour",
+				"description": "Ces opérations demandent dans tous les modes, automatique complet compris."
+			},
+			"always_ask_deletions": {
+				"label": "Supprimer des pages, tables, champs ou requêtes",
+				"description": "Verrouillé : peut supprimer des données.",
+				"locked": "Supprimer des pages, tables, champs ou requêtes · verrouillé"
+			},
+			"always_ask_dependencies": {
+				"label": "Ajouter ou retirer des dépendances",
+				"description": "Installations et suppressions de paquets lancées par une commande."
+			},
+			"always_ask_block_removal": {
+				"label": "Retirer ou déplacer des blocs du Builder",
+				"description": "Même quand les autres opérations du Builder sont automatiques."
+			},
+			"unanswered": {
+				"label": "Demandes sans réponse",
+				"description": "Ce qui arrive à une demande à laquelle personne ne répond."
+			},
+			"request_timeout": {
+				"label": "Refuser après",
+				"options": {
+					"5": "5 minutes",
+					"15": "15 minutes",
+					"30": "30 minutes"
+				}
+			},
+			"notify_requests": {
+				"label": "Me prévenir dans le DMS",
+				"description": "Affiche une notification quand une demande arrive alors que le panneau de l'assistant est fermé."
+			},
+			"generation_mode": {
+				"label": "Portée",
+				"description": "Ce que l'assistant peut modifier dans le projet.",
+				"builder_missing": "Nécessite le module dms-builder, qui n'est pas chargé.",
+				"safe": {
+					"label": "Mode sûr · recommandé",
+					"description": "Modifie les pages, tables et requêtes uniquement via le Builder. Chaque modification est vérifiée avant d'être écrite ; les modifications de fichiers et les commandes sont bloquées."
+				},
+				"vibe": {
+					"label": "Mode code",
+					"description": "Peut aussi modifier n'importe quel fichier du projet et lancer des commandes, selon le mode de validation. Pour la logique sur mesure que le Builder ne sait pas exprimer."
+				}
+			},
+			"allow_local_skills": {
+				"title": "Skills de la machine",
+				"label": "Utiliser les skills de la machine",
+				"description": "Ajoute les skills de ~/.claude/skills sur cette machine. Elles ne sont partagées ni avec l'équipe ni avec les autres environnements."
+			},
+			"checkpoint_retention": {
+				"label": "Points de restauration",
+				"description": "Au-delà, les lots de modifications ne peuvent plus être annulés.",
+				"options": {
+					"7": "Garder 7 jours",
+					"30": "Garder 30 jours",
+					"90": "Garder 90 jours"
+				}
+			},
+			"usage": {
+				"series": "Tokens",
+				"total_tokens": "Tokens",
+				"conversations": "Conversations",
+				"top_conversation": "Conversation la plus gourmande",
+				"top_tokens": "{count} token | {count} tokens"
+			}
+		},
+		"skills": {
+			"search": "Rechercher un nom, un module ou un tag",
+			"count": "{count} skill | {count} skills",
+			"settings_link": "Réglages des skills",
+			"never_used": "Jamais utilisée",
+			"columns": {
+				"name": "Nom",
+				"description": "Description",
+				"source": "Provenance",
+				"uses": "Utilisations · 30 jours",
+				"last_used": "Dernière utilisation"
+			},
+			"source": {
+				"module": "Module",
+				"local": "Locale"
+			},
+			"tabs": {
+				"all": "Toutes",
+				"module": "Modules",
+				"local": "Locales"
+			},
+			"detail": {
+				"open": "Détails",
+				"title": "Détail de la skill"
+			},
+			"empty": {
+				"title": "Aucune skill chargée",
+				"description": "Les modules qui fournissent des skills les listent ici. Vous pouvez aussi ajouter celles de votre machine.",
+				"action": "Utiliser les skills de la machine"
+			},
+			"offline": {
+				"title": "Impossible de joindre l'assistant",
+				"description": "Les skills viennent de l'assistant, qui ne tourne pas. Ce n'est pas une liste vide."
+			},
+			"conflicts": {
+				"title": "{count} nom de skill est porté par plusieurs skills | {count} noms de skills sont portés par plusieurs skills",
+				"description": "{names} : une seule copie du nom est utilisée, l'autre est marquée Masquée. Renommez une copie pour utiliser les deux. | {names} : une seule copie de chaque nom est utilisée, les autres sont marquées Masquées. Renommez une copie pour toutes les utiliser.",
+				"action": "Sources des skills"
+			}
+		},
+		"status": {
+			"state": {
+				"ready": "Prêt",
+				"working": "Au travail",
+				"waiting": "En attente de vous",
+				"offline": "Hors ligne"
+			},
+			"agent": {
+				"claude": "Claude Code",
+				"codex": "Codex"
+			},
+			"scope": {
+				"safe": "Mode sûr",
+				"vibe": "Mode code"
+			},
+			"mode": {
+				"normal": "Demander d'abord",
+				"acceptEdits": "Accepter les modifications",
+				"plan": "Plan seulement",
+				"auto": "Automatique complet"
+			},
+			"facts": {
+				"state": "État",
+				"agent": "Agent",
+				"default_scope": "Portée par défaut",
+				"scope_safe_needs_builder": "Le mode sûr nécessite Builder",
+				"approvals": "Validations",
+				"builder": "Builder",
+				"builder_connected": "Connecté",
+				"builder_missing": "Non installé",
+				"sidecar": "Sidecar",
+				"sidecar_stopped": "Arrêté",
+				"working_count": "{count} conversation en cours | {count} conversations en cours",
+				"waiting_count": "{count} demande en attente de vous | {count} demandes en attente de vous"
+			},
+			"banner": {
+				"offline": {
+					"title": "L'assistant est hors ligne",
+					"description": "Son sidecar ne tourne pas. Redémarrez-le pour utiliser à nouveau l'assistant.",
+					"disabled": "Son sidecar est désactivé dans la configuration de ce module.",
+					"restart": "Redémarrer l'assistant",
+					"restarted": "Assistant redémarré"
+				},
+				"last_error": {
+					"title": "Le dernier tour de l'assistant a échoué",
+					"description": "{error}",
+					"action": "Ouvrir l'activité"
+				},
+				"waiting": {
+					"title": "{count} demande vous attend | {count} demandes vous attendent",
+					"description": "Ouvrez l'assistant pour répondre : le bouton de l'en-tête, ou ⌘⇧K."
+				}
+			}
+		}
+	}
+}
