@@ -81,24 +81,18 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-api",
-        version: ">=0.4.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-api" },
     },
     "dms-database": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-database",
-        version: ">=0.2.2 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-database" },
     },
     "dms-automation": {
+      // af/integration: the packed module vendored in vendor/.
       source: {
-        type: "package",
-        package: "@antelopejs/dms-automation",
-        version: ">=0.4.1 <1.0.0",
+        type: "local",
+        path: "node_modules/@antelopejs/dms-automation",
       },
     },
     "dms-saas": {
@@ -113,53 +107,35 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-ai",
-        version: ">=0.4.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-ai" },
       config: {
         // The sidecar runs on this host, so it reaches the API over loopback.
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-lang",
-        version: ">=0.2.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-lang" },
       config: {
         editable: true,
       },
     },
     "dms-builder": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-builder",
-        version: ">=0.4.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-builder" },
     },
     "dms-media": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-media",
-        version: ">=0.4.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-media" },
     },
     "dms-marketing": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-marketing",
-        version: ">=0.5.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-marketing" },
     },
     "dms-mailing": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-mailing",
-        version: ">=0.5.1 <1.0.0",
-      },
+      // af/integration: the packed module vendored in vendor/.
+      source: { type: "local", path: "node_modules/@antelopejs/dms-mailing" },
     },
 
     mongodb: {

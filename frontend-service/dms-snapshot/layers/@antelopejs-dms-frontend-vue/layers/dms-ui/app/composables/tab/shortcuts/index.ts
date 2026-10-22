@@ -1,3 +1,0 @@
-import { TAB_SHIFT_LETTER_METADATA } from "./tabShortcuts";
-
-export const TAB_SHORTCUTS_METADATA = [TAB_SHIFT_LETTER_METADATA];
