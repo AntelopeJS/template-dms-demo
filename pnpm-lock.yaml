@@ -80,8 +80,8 @@ importers:
         version: 0.3.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.2.5))(@antelopejs/interface-core@0.2.5)(@antelopejs/interface-dms@file:vendor/antelopejs-interface-dms-0.7.5+af.2.tgz(8538747d4467cf70feface99d6b330ed))
     devDependencies:
       '@antelopejs/dms-frontend':
-        specifier: file:vendor/antelopejs-dms-frontend-0.7.1-af.4.tgz
-        version: file:vendor/antelopejs-dms-frontend-0.7.1-af.4.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)
+        specifier: file:vendor/antelopejs-dms-frontend-0.7.1-af.5.tgz
+        version: file:vendor/antelopejs-dms-frontend-0.7.1-af.5.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)
       '@antelopejs/tooling-configs':
         specifier: ^0.0.9
         version: 0.0.9(knip@6.42.1)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
@@ -150,9 +150,9 @@ packages:
     resolution: {integrity: sha512-0UpXIIPspNOGkL0ZOj9hrFHCFamOjRAlyMfjyTbrFLEp4v2kEtf/JQ1pbox+eE8MzpeQvgfXGDSGQGmMMZrg7A==, tarball: file:vendor/antelopejs-dms-database-0.2.3-af.1.tgz}
     version: 0.2.3-af.1
 
-  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.4.tgz':
-    resolution: {integrity: sha512-2GoqRGwDaN9t/YSPR2Plbv2bf4cu9TKniZUwOzUFfGG/5ffYizMj5z+tudLOiRjbJhcD0MHSuwzQPbIEQm5BCw==, tarball: file:vendor/antelopejs-dms-frontend-0.7.1-af.4.tgz}
-    version: 0.7.1-af.4
+  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.5.tgz':
+    resolution: {integrity: sha512-aVERkeVUpwcnJQsqBy2V8un8Rm2VdL5wENT6wcEpHHHhhIJiQKsIaKDYuqOFQvOKz8hkY1IYTJbD3WjKIf9kOQ==, tarball: file:vendor/antelopejs-dms-frontend-0.7.1-af.5.tgz}
+    version: 0.7.1-af.5
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -2815,7 +2815,7 @@ snapshots:
       - '@antelopejs/interface-data-api'
       - '@antelopejs/interface-file-storage'
 
-  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.4.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)':
+  '@antelopejs/dms-frontend@file:vendor/antelopejs-dms-frontend-0.7.1-af.5.tgz(@antelopejs/core@file:vendor/antelopejs-core-1.16.0-af.1.tgz)':
     dependencies:
       '@antelopejs/core': file:vendor/antelopejs-core-1.16.0-af.1.tgz
       chokidar: 4.0.3

@@ -42,7 +42,7 @@
     "@antelopejs/interface-dms-media": "^0.3.0"
   },
   "devDependencies": {
-    "@antelopejs/dms-frontend": "file:vendor/antelopejs-dms-frontend-0.7.1-af.4.tgz",
+    "@antelopejs/dms-frontend": "file:vendor/antelopejs-dms-frontend-0.7.1-af.5.tgz",
     "@antelopejs/tooling-configs": "^0.0.9",
     "@types/node": "^26.6.5",
     "dotenv": "^18.0.8",
