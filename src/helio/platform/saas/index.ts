@@ -39,7 +39,7 @@ const MS_PER_DAY = 86_400_000;
 export async function provisionSaasShowcase(): Promise<void> {
   const now = new Date();
   const grantable = await readGrantablePermissions();
-  // Before the plans, so the default-plan backfill finds a subscription.
+  // Before the plans, so dms-saas never attaches its default plan instead.
   await attachHqPlan(now);
   await writeCatalogue(
     grantable,

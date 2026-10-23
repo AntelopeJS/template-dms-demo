@@ -65,6 +65,12 @@ The local module lives in [`src/`](./src):
   relative to the current date. The service desk and fleet monitoring are live
   pages fed by small simulators; set `HELIO_SIMULATORS=off` in the
   environment (or `.env`) before `pnpm dev` to stop them.
+- `src/helio/platform/` — Helio's data in the other modules: the SaaS
+  showcase, e-mails, media library and public website. It is written once,
+  when the DMS creates its `default` tenant on an empty database
+  (`Hook.TENANT_BEING_PROVISIONED`, see `provisioning.ts`), and belongs to the
+  tenant from then on: a later start writes none of it again. To get the demo
+  data back, start against an empty database.
 ## Prerequisites
 
 - **Node.js 24**, the version pinned in [`.nvmrc`](./.nvmrc).

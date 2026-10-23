@@ -18,7 +18,7 @@ const PUBLISHER_NAME = "Helio SRL";
 
 /**
  * Attaches Helio HQ to the default workspace: written before the plans, so the
- * default-plan backfill finds a subscription and leaves the workspace alone.
+ * workspace holds a subscription before dms-saas could attach its default plan.
  */
 export async function attachHqPlan(now: Date): Promise<void> {
   await insertMissing(
