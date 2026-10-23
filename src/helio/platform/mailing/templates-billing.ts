@@ -28,7 +28,7 @@ const TEST_INVOICE = {
 const invoiceIssued: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.invoiceIssued,
-  name: "Invoice issued",
+  name: { en: "Invoice issued", fr: "Facture émise" },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),
@@ -107,7 +107,10 @@ const FIRM_REMINDER: Condition = {
 const invoiceReminder: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.invoiceReminder,
-  name: "Invoice payment reminder",
+  name: {
+    en: "Invoice payment reminder",
+    fr: "Relance de paiement de facture",
+  },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),

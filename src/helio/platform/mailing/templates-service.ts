@@ -22,7 +22,7 @@ const TEST_TICKET = {
 const ticketReceived: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.ticketReceived,
-  name: "Service request received",
+  name: { en: "Service request received", fr: "Demande d'intervention reçue" },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),
@@ -90,7 +90,10 @@ const ticketReceived: TemplateDeclaration = {
 const ticketResolved: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.ticketResolved,
-  name: "Service request resolved",
+  name: {
+    en: "Service request resolved",
+    fr: "Demande d'intervention résolue",
+  },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),
