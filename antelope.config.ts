@@ -81,7 +81,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.10.0 <1.0.0",
+        version: ">=0.11.0 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -125,7 +125,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.8.0 <1.0.0",
+        version: ">=0.9.0 <1.0.0",
       },
       config: {
         stripe: {
@@ -170,14 +170,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: ">=0.6.0 <1.0.0",
+        version: ">=0.7.0 <1.0.0",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.7.0 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
       config: {
         // Track the dashboard itself, so Marketing shows how the demo is used.
@@ -194,7 +194,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.7.0 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
     },
 
@@ -246,7 +246,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.1.9",
+        version: "^0.1.10",
       },
       config: {
         storagePath: ".antelope/file-storage",

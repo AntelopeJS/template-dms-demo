@@ -18,10 +18,9 @@ import { renderPhoto } from "./scenes";
 import { TRAINING_DOCUMENTS } from "./training";
 
 // Helio's media library, shipped as code: folders and files declared by
-// stable keys on every boot. The media module creates each one once and
-// leaves alone whatever a member renamed, moved, edited or deleted since.
-// Files are produced lazily, one at a time, so a reload never holds the
-// event loop for long and an unchanged file costs one generation.
+// stable keys, written once when the DMS provisions the default tenant. From
+// then on they belong to the tenant's members. Files are produced one at a
+// time, so the generation never holds the event loop for long.
 
 /** The binding of the settings page's logo field (see settings/sections-company.ts). */
 const SETTINGS_LOGO_BINDING = "helio.settings.logo";
@@ -113,17 +112,6 @@ function plannedContent(): {
   };
 }
 
-/**
- * A hot reload invalidates this module's context while a loop is still
- * running: its interface calls then reject, and the new instance redoes the
- * work. Not a failure worth an error line per file.
- */
-export function isSupersededByReload(error: unknown): boolean {
-  return (
-    error instanceof Error && error.name === "ModuleContextInvalidatedError"
-  );
-}
-
 async function declare(
   tally: Tally,
   key: string,
@@ -133,7 +121,6 @@ async function declare(
     const { status } = await run();
     tally[status] = (tally[status] ?? 0) + 1;
   } catch (error) {
-    if (isSupersededByReload(error)) throw error;
     tally.failed = (tally.failed ?? 0) + 1;
     Logging.Error(
       `[helio] media declaration '${key}' failed: ${String(error)}`,
@@ -161,15 +148,8 @@ async function declareMedia(): Promise<Tally> {
   return tally;
 }
 
-/** Declares the library in the background; call it from the module's start(). */
-export function startHelioMedia(): void {
-  declareMedia()
-    .then((tally) =>
-      Logging.Info(`[helio] media library declared: ${JSON.stringify(tally)}`),
-    )
-    .catch((error: unknown) => {
-      if (isSupersededByReload(error))
-        Logging.Debug("[helio] media library: superseded by a reload");
-      else Logging.Error(`[helio] media library failed: ${String(error)}`);
-    });
+/** Writes the library; called when the DMS provisions the default tenant. */
+export async function provisionHelioMedia(): Promise<void> {
+  const tally = await declareMedia();
+  Logging.Info(`[helio] media library declared: ${JSON.stringify(tally)}`);
 }

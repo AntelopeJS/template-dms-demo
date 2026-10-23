@@ -14,11 +14,8 @@ import { DEMO_SCHEMA_NAME } from "../../../schema";
 
 const TABLE_NAME = "helio_mail_notices";
 
-/**
- * `installation`: a project's date was confirmed to its customer.
- * `history`: the send history was imported into this database (recordId: its version).
- */
-export type NoticeKind = "installation" | "history";
+/** `installation`: a project's date was confirmed to its customer. */
+export type NoticeKind = "installation";
 
 @RegisterTable(TABLE_NAME, DEMO_SCHEMA_NAME)
 export class MailNotice extends Table {

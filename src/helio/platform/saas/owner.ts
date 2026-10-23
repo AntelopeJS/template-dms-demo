@@ -1,20 +1,17 @@
 // Gives the installer workspaces to the platform owner: the person who
 // completed the onboarding, who already owns the default workspace. That
-// account does not exist when the fixtures first run (the onboarding comes
-// after the first start), so the seed writes the workspaces without anybody,
-// and they are linked as soon as the owner exists:
-//
-// - on every start and hot reload, by the seed, once the onboarding is done;
-// - right after the onboarding, which adds its new account as owner of the
-//   default workspace through the DMS membership API: `Hook.MEMBER_ADDED`
-//   fires for the default tenant with `isTenantOwner`.
+// account does not exist when the DMS provisions the default tenant (the
+// onboarding comes after the first start), so the showcase writes the
+// workspaces without anybody, and they are linked right after the onboarding,
+// which adds its new account as owner of the default workspace through the
+// DMS membership API: `Hook.MEMBER_ADDED` fires for the default tenant with
+// `isTenantOwner`.
 //
 // The owner joins through `applyTenantOwnership`, the DMS membership API, so
 // the membership hooks run: dms-saas checks the seat limit (flat plans, one
 // seat taken) and refreshes the workspace directory its back office reads
 // (owner name and e-mail, members, seats). Idempotent: a workspace that has an
-// owner is left alone, so an ownership handed over to a colleague stays, and
-// replaying it on every boot writes nothing.
+// owner is left alone, so an ownership handed over to a colleague stays.
 
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -39,7 +36,7 @@ function createdTime(user: User): number {
  *
  * @returns The owner, or undefined while the onboarding is not done
  */
-export async function findOnboardingOwner(): Promise<User | undefined> {
+async function findOnboardingOwner(): Promise<User | undefined> {
   const owners = await GetModel(UserModel).getOwners();
   return owners.sort((a, b) => createdTime(a) - createdTime(b))[0];
 }
@@ -62,7 +59,7 @@ async function claimSubscription(
  *
  * @returns Whether anything changed, so the caller refreshes its billing state
  */
-export async function linkWorkspace(
+async function linkWorkspace(
   workspaceId: string,
   owner: User,
 ): Promise<boolean> {
