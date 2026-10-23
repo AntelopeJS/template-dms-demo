@@ -5,8 +5,11 @@ import {
 } from "@antelopejs/interface-api";
 import {
   DataController,
+  type DataControllerCallback,
+  type DataControllerCallbackWithOptions,
   RegisterDataController,
 } from "@antelopejs/interface-data-api";
+import type { Parameters } from "@antelopejs/interface-data-api/components";
 import {
   Access,
   AccessMode,
@@ -82,13 +85,43 @@ class productFamilyDataAPI extends DataController(
   declare parent: string;
 }
 
+/**
+ * The `select` route without the relation joins: it answers each range's
+ * parent as its raw id, which the products' CascaderRelationType rebuilds
+ * the tree from. The list, the get and the forms read the parent joined.
+ */
+function withRawParent(
+  route: DataControllerCallbackWithOptions,
+): DataControllerCallbackWithOptions {
+  const callback: DataControllerCallback = route.callback;
+  return {
+    ...route,
+    callback: {
+      ...callback,
+      func: function (
+        this: unknown,
+        ctx: unknown,
+        params: Parameters.ListParameters | undefined,
+        ...rest: unknown[]
+      ) {
+        const select = callback.func as (...args: unknown[]) => unknown;
+        return select.call(this, ctx, { ...params, noForeign: true }, ...rest);
+      },
+    },
+  };
+}
+
 // Not exported on purpose: emitting a .d.ts for this class would require
 // naming types from the nested @antelopejs/interface-core copies (TS2742).
 @RegisterDataController()
 class productCategoryDataAPI extends DataController(
   ProductCategory,
   // Sorted by name in the caller's language (category-names.ts).
-  { ...TableViewRoutes.All, list: withNameSort(TableViewRoutes.List) },
+  {
+    ...TableViewRoutes.All,
+    list: withNameSort(TableViewRoutes.List),
+    select: withRawParent(TableViewRoutes.Select),
+  },
   Controller("/api/helio/product-categories"),
 ) {
   @ModelReference()
@@ -128,8 +161,10 @@ class productCategoryDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare name: string;
 
-  // Self-reference kept as the raw parent id (`filterOnly`: no join), which
-  // the products' CascaderRelationType needs to rebuild the tree.
+  // Self-reference: the list joins the parent family (`Foreign`), so a row
+  // names it without a read of its own; the `select` route keeps the raw id
+  // (withRawParent), which the products' CascaderRelationType rebuilds the
+  // tree from. The filter still runs on the stored id.
   @Select()
   @Listable()
   @Exported()
@@ -140,7 +175,6 @@ class productCategoryDataAPI extends DataController(
       keyMapping: { label: "name", value: "_id", parent: "parent" },
       maxDepth: 1,
       deselectable: true,
-      filterOnly: true,
       placeholder: "$helio.catalog.categories.placeholders.parent",
     }),
     filterable: true,
