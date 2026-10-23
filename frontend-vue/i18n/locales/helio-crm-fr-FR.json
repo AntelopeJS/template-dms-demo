@@ -90,8 +90,7 @@
 					"newTitle": "Nouveau client",
 					"newDescription": "Un particulier ou une entreprise : le numéro de TVA n'est demandé qu'aux entreprises.",
 					"editTitle": "Modifier le client",
-					"detailsTitle": "Fiche client",
-					"create": "Créer le client"
+					"detailsTitle": "Fiche client"
 				},
 				"quickView": {
 					"action": "Aperçu",
@@ -125,7 +124,6 @@
 					"activeDescription": "Seul un client archivé peut être supprimé : archivez-le, puis supprimez-le depuis les clients archivés."
 				},
 				"errors": {
-					"vatRequired": "Un client entreprise doit avoir un numéro de TVA.",
 					"openDeals": "Ce client a encore des affaires en cours.",
 					"notArchived": "Seuls les clients archivés peuvent être supprimés : archivez-les d'abord.",
 					"notFound": "Ce client n'existe plus.",
@@ -161,10 +159,7 @@
 					"description": "Créez le client sans quitter l'opportunité."
 				},
 				"activeNow": "À l'instant",
-				"kickoffNextStep": "Planifier l'appel de lancement (devis {number} signé)",
-				"errors": {
-					"lostReasonRequired": "Indiquez le motif de perte : ouvrez l'affaire pour la passer en Perdue."
-				}
+				"kickoffNextStep": "Planifier l'appel de lancement (devis {number} signé)"
 			},
 			"pipeline": {
 				"nav": "Pipeline",

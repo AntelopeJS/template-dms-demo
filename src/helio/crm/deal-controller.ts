@@ -267,6 +267,9 @@ class dealDataAPI extends DataController(
     filterable: true,
     defaultValue: 0.1,
     size: 110,
+    // A won or lost deal's figure is implied: the write routes store 100 %
+    // or 0 % (deal-derived.ts), so the field is locked on those stages.
+    disabledWhen: { field: "stage", in: ["won", "lost"] },
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
@@ -404,8 +407,10 @@ class dealDataAPI extends DataController(
     }),
     filterable: true,
     isVisible: false,
+    // A lost deal says why: shown, and mandatory, on that stage only.
+    visibleWhen: { field: "stage", in: ["lost"] },
   })
-  @Optional()
+  @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
   declare lostReason: string;
 

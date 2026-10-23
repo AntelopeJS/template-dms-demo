@@ -206,8 +206,10 @@ class customerDataAPI extends DataController(
     }),
     filterable: true,
     isVisible: false,
+    // A business is invoiced with VAT; a household has no number.
+    visibleWhen: { field: "kind", in: ["business"] },
   })
-  @Optional()
+  @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
   declare vatNumber: string;
 
@@ -350,6 +352,7 @@ class customerDataAPI extends DataController(
     group: "contact",
     type: new DefaultDataTypes.UrlType({ placeholder: "https://…" }),
     isVisible: false,
+    visibleWhen: { field: "kind", in: ["business"] },
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
