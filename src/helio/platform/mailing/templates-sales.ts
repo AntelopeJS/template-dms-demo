@@ -16,7 +16,7 @@ import { HELIO_MAIL_CATEGORY, HELIO_TEMPLATES } from "./format";
 const quoteSent: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.quoteSent,
-  name: "Quote sent to the customer",
+  name: { en: "Quote sent to the customer", fr: "Devis envoyé au client" },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),
@@ -92,7 +92,10 @@ const quoteSent: TemplateDeclaration = {
 const quoteAccepted: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.quoteAccepted,
-  name: "Quote accepted: thank you and next steps",
+  name: {
+    en: "Quote accepted: thank you and next steps",
+    fr: "Devis accepté : merci et prochaines étapes",
+  },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),
@@ -179,7 +182,7 @@ const quoteAccepted: TemplateDeclaration = {
 const installationScheduled: TemplateDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   slug: HELIO_TEMPLATES.installationScheduled,
-  name: "Installation scheduled",
+  name: { en: "Installation scheduled", fr: "Installation planifiée" },
   category: HELIO_MAIL_CATEGORY,
   variables: [
     variable("customer.name", "string"),

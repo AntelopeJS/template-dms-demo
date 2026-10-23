@@ -10,7 +10,7 @@ import type {
   PlanInterval,
 } from "@antelopejs/interface-dms-saas/db";
 import { PLAN_UNLIMITED } from "@antelopejs/interface-dms-saas/db";
-import { FEATURE_IDS } from "./features";
+import { FEATURE_IDS, type LocalizedText } from "./features";
 
 export const PLAN_IDS = {
   starter: "helio-plan-starter",
@@ -32,8 +32,8 @@ export type PlanGrant =
 export interface SeedPlan {
   id: string;
   slug: string;
-  name: string;
-  description: string;
+  name: LocalizedText;
+  description: LocalizedText;
   audience: PlanAudience;
   /** In major units of `currency`, as the plan editor stores it. */
   price: number;
@@ -44,7 +44,7 @@ export interface SeedPlan {
   maxMembers: number;
   isPublic: boolean;
   order: number;
-  borderLabel: string | null;
+  borderLabel: LocalizedText | null;
   inheritsFromPlanId: string | null;
   grant: PlanGrant;
   features: Record<string, boolean | number>;
@@ -78,8 +78,11 @@ export const PLANS: SeedPlan[] = [
   {
     id: PLAN_IDS.starter,
     slug: "starter",
-    name: "Starter",
-    description: "$helio.platform.saas.plans.starter.description",
+    name: { en: "Starter", fr: "Starter" },
+    description: {
+      en: "For independent installers: customers, catalogue, quotes, installation projects and invoices.",
+      fr: "Pour les installateurs indépendants : clients, catalogue, devis, chantiers et factures.",
+    },
     audience: "individual",
     price: 0,
     currency: EUR,
@@ -109,8 +112,11 @@ export const PLANS: SeedPlan[] = [
   {
     id: PLAN_IDS.pro,
     slug: "pro",
-    name: "Pro",
-    description: "$helio.platform.saas.plans.pro.description",
+    name: { en: "Pro", fr: "Pro" },
+    description: {
+      en: "For growing installer teams: sales pipeline, service desk with SLA and team planning.",
+      fr: "Pour les équipes d'installateurs en croissance : pipeline commercial, SAV avec SLA et planning d'équipe.",
+    },
     audience: "any",
     price: 89,
     currency: EUR,
@@ -134,8 +140,11 @@ export const PLANS: SeedPlan[] = [
   {
     id: PLAN_IDS.business,
     slug: "business",
-    name: "Business",
-    description: "$helio.platform.saas.plans.business.description",
+    name: { en: "Business", fr: "Business" },
+    description: {
+      en: "For established installers with a fleet to maintain: live monitoring of every installed site, automation and API.",
+      fr: "Pour les installateurs établis qui entretiennent un parc : supervision en direct de chaque installation, automatisations et API.",
+    },
     audience: "business",
     price: 219,
     currency: EUR,
@@ -145,7 +154,7 @@ export const PLANS: SeedPlan[] = [
     maxMembers: 15,
     isPublic: true,
     order: 3,
-    borderLabel: "$helio.platform.saas.plans.business.badge",
+    borderLabel: { en: "Most popular", fr: "Le plus choisi" },
     inheritsFromPlanId: PLAN_IDS.pro,
     grant: { kind: "subtrees", prefixes: BUSINESS_SUBTREES },
     features: {
@@ -161,8 +170,11 @@ export const PLANS: SeedPlan[] = [
   {
     id: PLAN_IDS.enterprise,
     slug: "enterprise",
-    name: "Enterprise",
-    description: "$helio.platform.saas.plans.enterprise.description",
+    name: { en: "Enterprise", fr: "Enterprise" },
+    description: {
+      en: "For multi-branch installers and franchise networks: unlimited users and sites, SSO and a dedicated success manager. Billed yearly.",
+      fr: "Pour les installateurs multi-agences et les réseaux de franchise : utilisateurs et sites illimités, SSO et un responsable dédié. Facturé à l'année.",
+    },
     audience: "business",
     price: 4990,
     currency: EUR,
@@ -190,8 +202,11 @@ export const PLANS: SeedPlan[] = [
     // so dms-saas never picks it as the default plan of a sign-up.
     id: PLAN_IDS.hq,
     slug: "helio-hq",
-    name: "Helio HQ",
-    description: "$helio.platform.saas.plans.hq.description",
+    name: { en: "Helio HQ", fr: "Helio HQ" },
+    description: {
+      en: "Internal workspace of Helio SRL, the publisher of Helio. Every module, not for sale.",
+      fr: "Espace interne de Helio SRL, l'éditeur de Helio. Tous les modules, hors vente.",
+    },
     audience: "business",
     price: 0,
     currency: EUR,

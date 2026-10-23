@@ -37,7 +37,7 @@ async function declareTemplates(): Promise<void> {
   await DeclareTemplateCategory({
     tenantId: DEFAULT_TENANT_ID,
     id: HELIO_MAIL_CATEGORY,
-    label: "Helio",
+    label: { en: "Helio", fr: "Helio" },
     icon: "i-ph-sun",
   });
   const outcomes: string[] = [];

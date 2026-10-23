@@ -37,7 +37,7 @@ export function invoiceIdOf(
 
 function lineDescription(workspace: SeedWorkspace): string {
   const plan = findPlan(workspace.planId);
-  return `1 × Helio ${plan.name} (at €${plan.price.toFixed(2)} / ${plan.interval})`;
+  return `1 × Helio ${plan.name.en} (at €${plan.price.toFixed(2)} / ${plan.interval})`;
 }
 
 function toLines(
@@ -95,7 +95,7 @@ function toInvoiceRow(
     memo: null,
     hostedInvoiceUrl: null,
     invoicePdfUrl: null,
-    metadata: { planId: plan.id, planName: plan.name },
+    metadata: { planId: plan.id, planName: plan.name.en },
     paidAt: isOpen ? null : period.start,
     voidedAt: null,
     issuedAt: period.start,
