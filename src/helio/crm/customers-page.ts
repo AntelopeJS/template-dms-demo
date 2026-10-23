@@ -1,6 +1,5 @@
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
-import type { AfterWrite } from "@antelopejs/interface-dms/base/types/guards";
 import type { Action } from "@antelopejs/interface-dms/component";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import {
@@ -14,7 +13,7 @@ import { helioQuickActions } from "../shared/quick-actions";
 import { CUSTOMER_KINDS, customerController } from "./customer-controller";
 import { countCustomerDeals } from "./customer-deals";
 import { afterCustomerEdit } from "./customer-names";
-import { type Customer, CustomerModel } from "./database";
+import { CustomerModel } from "./database";
 import { isValidVatNumber } from "./vat-number";
 import {
   CUSTOMER_DELETE_CONFIRM_URL,
@@ -25,8 +24,9 @@ import {
 } from "./links";
 
 // A business is invoiced with VAT: the column shows the number, mandatory,
-// for a business only (customer-controller.ts), and the write routes refuse
-// one that is not valid, whichever client sent it.
+// for a business only (customer-controller.ts; turned household, a customer
+// loses the number and website it stored), and the write routes refuse a
+// number that is not valid, whichever client sent it.
 function assertVatFormat(vatNumber: unknown): void {
   if (typeof vatNumber !== "string" || vatNumber.trim() === "") return;
   if (!isValidVatNumber(vatNumber)) {
@@ -35,30 +35,6 @@ function assertVatFormat(vatNumber: unknown): void {
       field: "vatNumber",
     });
   }
-}
-
-// The fields only a company fills in (VAT number, website) are hidden for a
-// household, and the write routes ignore them there: a business turned
-// residential would keep the ones it held, shown on its sheet and found by
-// the search. They are cleared once the customer is a household.
-const BUSINESS_ONLY_CLEARED = { vatNumber: null, website: null };
-
-const holdsBusinessFields = (customer: Partial<Customer>): boolean =>
-  customer.kind !== "business" && !!(customer.vatNumber || customer.website);
-
-async function clearBusinessFields(ids: string[]): Promise<void> {
-  const model = GetModel(CustomerModel);
-  await Promise.all(ids.map((id) => model.update(id, BUSINESS_ONLY_CLEARED)));
-}
-
-function afterWrites(
-  ...writes: (AfterWrite | undefined)[]
-): AfterWrite | undefined {
-  const pending = writes.filter((write) => write !== undefined);
-  if (pending.length === 0) return undefined;
-  return async () => {
-    for (const write of pending) await write();
-  };
 }
 
 async function refuseActiveCustomers(ids: string[]): Promise<void> {
@@ -250,18 +226,11 @@ export class PageHelioCustomers extends PageController(
       new: (_ctx, { body }) => {
         assertVatFormat(body.vatNumber);
       },
-      // An edit only sends what changed: the stored row fills the rest.
       // A new name reaches the deals and quotes that carry it for the search.
-      edit: (_ctx, { id, body, current }) => {
-        const row = { ...current, ...body };
+      edit: (_ctx, { body, current }) => {
         assertVatFormat(body.vatNumber);
         const renamed = body.name !== undefined && body.name !== current.name;
-        return afterWrites(
-          holdsBusinessFields(row)
-            ? () => clearBusinessFields([id])
-            : undefined,
-          renamed ? afterCustomerEdit : undefined,
-        );
+        return renamed ? afterCustomerEdit : undefined;
       },
       // An active customer, or one with deals still in play, is not deleted:
       // the dialog says so (blocked), and a bare API call is refused the same
