@@ -66,6 +66,30 @@
 					"title": "GitHub",
 					"description": "The source code of the DMS and its modules, to contribute."
 				}
+			},
+			"prose": {
+				"anchor": "Link to this section",
+				"task_done": "Done",
+				"task_todo": "To do",
+				"error": "This section could not be loaded.",
+				"retry": "Try again",
+				"callout": {
+					"note": "Note",
+					"tip": "Tip",
+					"important": "Important",
+					"warning": "Warning",
+					"caution": "Caution"
+				}
+			},
+			"blocks": {
+				"hero": {
+					"name": "Home hero",
+					"description": "The opening of the home page: headline, lead and links."
+				},
+				"prose": {
+					"name": "Home section",
+					"description": "A long-form section of the home page, in Markdown."
+				}
 			}
 		}
 	}

@@ -66,6 +66,30 @@
 					"title": "GitHub",
 					"description": "Le code source du DMS et de ses modules, pour contribuer."
 				}
+			},
+			"prose": {
+				"anchor": "Lien vers cette section",
+				"task_done": "Fait",
+				"task_todo": "À faire",
+				"error": "Cette section n’a pas pu être chargée.",
+				"retry": "Réessayer",
+				"callout": {
+					"note": "Remarque",
+					"tip": "Astuce",
+					"important": "Important",
+					"warning": "Attention",
+					"caution": "Prudence"
+				}
+			},
+			"blocks": {
+				"hero": {
+					"name": "En-tête de l’accueil",
+					"description": "L’ouverture de la page d’accueil : titre, introduction et liens."
+				},
+				"prose": {
+					"name": "Section de l’accueil",
+					"description": "Une section de texte long de la page d’accueil, en Markdown."
+				}
 			}
 		}
 	}

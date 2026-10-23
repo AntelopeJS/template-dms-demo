@@ -12,11 +12,10 @@ import {
   Card,
   Grid,
   GridRow,
-  Hero,
   NavCardGrid,
-  Prose,
   StatGroup,
 } from "@antelopejs/interface-dms/base";
+import { CustomComponent } from "@antelopejs/interface-dms/base/custom";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import { type HomeFigures, homeFigures } from "./home-figures";
 
@@ -95,15 +94,31 @@ function figureItems(figures: HomeFigures): StatGroupItem[] {
   ];
 }
 
+// The hero and the long-form sections are the demo's own Vue components
+// (frontend-vue/app/components/HomeHero.vue and HomeProse.vue): editorial
+// blocks are not part of the DMS.
+const HOME_BLOCKS = {
+  hero: {
+    name: "$demo.home.blocks.hero.name",
+    description: "$demo.home.blocks.hero.description",
+    icon: "i-ph-flag-banner",
+  },
+  prose: {
+    name: "$demo.home.blocks.prose.name",
+    description: "$demo.home.blocks.prose.description",
+    icon: "i-ph-article",
+  },
+};
+
 // Each section is a card filling its grid cell; a row of one spans both
-// columns (the modules table, the AI section).
+// columns (the modules table, the AI section). HomeProse draws the Markdown
+// the section's route answers.
 const section = (id: Section) =>
   Card({ padded: true }).child(
     "text",
-    Prose({
-      fetchUrl: pageRoutePath(HOME_SLUG, `/sections/${id}`),
-      width: "wide",
-    }),
+    CustomComponent("DemoHomeProse")
+      .options({ fetchUrl: pageRoutePath(HOME_SLUG, `/sections/${id}`) })
+      .meta(HOME_BLOCKS.prose),
   );
 const pair = (left: Section, right: Section) =>
   GridRow().child(left, section(left)).child(right, section(right));
@@ -123,29 +138,29 @@ export class PageHome extends PageController(
   },
   DefaultLayout({ hideHeader: true }),
 ) {
-  static hero = Hero({
-    eyebrow: "$demo.home.hero.eyebrow",
-    title: "$demo.home.hero.title",
-    highlight: "$demo.home.hero.highlight",
-    lead: "$demo.home.hero.lead",
-    size: "lg",
-    background: "gradient",
-    icons: ["i-ph-sun", "i-ph-squares-four", "i-ph-lightning"],
-    actions: [
-      {
-        label: "$demo.home.hero.open",
-        to: "/helio/dashboard",
-        icon: "i-ph-arrow-right",
-        variant: "solid",
-      },
-      {
-        label: "$demo.home.hero.docs",
-        to: `${DOCS}/getting-started/introduction`,
-        icon: "i-ph-book-open",
-        variant: "outline",
-      },
-    ],
-  });
+  static hero = CustomComponent("DemoHomeHero")
+    .options({
+      eyebrow: "$demo.home.hero.eyebrow",
+      title: "$demo.home.hero.title",
+      highlight: "$demo.home.hero.highlight",
+      lead: "$demo.home.hero.lead",
+      icons: ["i-ph-sun", "i-ph-squares-four", "i-ph-lightning"],
+      actions: [
+        {
+          label: "$demo.home.hero.open",
+          to: "/helio/dashboard",
+          icon: "i-ph-arrow-right",
+          variant: "solid",
+        },
+        {
+          label: "$demo.home.hero.docs",
+          to: `${DOCS}/getting-started/introduction`,
+          icon: "i-ph-book-open",
+          variant: "outline",
+        },
+      ],
+    })
+    .meta(HOME_BLOCKS.hero);
 
   // Counted when the page is read, from what the module registered (see
   // home-figures.ts): nothing here is typed by hand.
