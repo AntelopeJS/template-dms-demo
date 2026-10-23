@@ -125,7 +125,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.7.0 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
       config: {
         stripe: {
