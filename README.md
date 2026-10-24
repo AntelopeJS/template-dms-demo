@@ -6,14 +6,16 @@
 </div>
 
 A ready-to-run [AntelopeJS DMS](https://dms.antelopejs.com) project: every DMS
-feature module, a catalog of the built-in components, and a small demo app,
-translated in English and French.
+feature module and Helio, a complete demo business app, translated in English
+and French.
 
-- **Home**: an in-dashboard readme of what the template contains.
-- **Components**: one page per built-in DMS component, each with its most
-  complete example.
-- **Demo app**: users, projects and tasks with relations, seeded through
-  fixtures, and a kanban board for tasks.
+- **Home**: an editorial presentation of the demo (a hero and long-form
+  Markdown sections, two Vue components of this template, texts per language
+  in `content/home/`).
+- **Helio**: the back-office of a fictional solar installer (sales pipeline,
+  quotes, customers, catalog, projects, live service desk, team, invoices, live
+  fleet monitoring, settings and dashboard), made only of generic DMS blocks
+  declared on the backend: zero lines of Vue.
 - Every `dms-*` feature module installed from npm and configured in
   `antelope.config.ts`, ready to remove one by one.
 
@@ -48,36 +50,27 @@ The local module lives in [`src/`](./src):
 
 - `src/index.ts` — module lifecycle entry point; also registers the local
   frontend module via `AddFrontendModule`.
-- `src/home.ts` — the `home` page: a custom `DemoReadme` Vue component
-  (shipped by the frontend module) presenting what this template contains.
-- `src/demo-app/` — a **Demo app** sidebar category with three related
-  TableViews backed by Mongo collections seeded through fixtures:
-  **Users** (roles, avatars), **Projects** (status, budget, progress) and
-  **Tasks** (status, priority, relations to a project and an assignee).
-  Tasks open as a **kanban board** grouped by status (drag cards between
-  columns; the toolbar switches back to the table).
-- `src/components/` — a **Components** sidebar category with one page per
-  built-in DMS component, each showing its most complete example:
-
-  | Page           | Component(s)                                          |
-  | -------------- | ----------------------------------------------------- |
-  | Form           | `Form` with field groups, every `DefaultDataTypes` input and a media-library `AssetType` gallery |
-  | Dashboard      | `PeriodSelector` + `KpiCard` ×3 + `ChartCard` + `TopListCard`, all sharing one period scope |
-  | TableView      | `TableView` over a demo Mongo collection: filter tabs, CRUD, archive, export |
-  | Tab            | `Tab` (icons, badges, shortcuts, persisted state)     |
-  | Grid           | `Grid` / `GridRow` (colSpan, nested grid)             |
-  | Stack          | `HStack` / `VStack` / `Spacer` app shell              |
-  | Placeholder    | `Placeholder`                                         |
-  | CustomComponent| Project Vue component shipped by the frontend module  |
-
-  The Dashboard cards fetch deterministic demo data from
-  `src/components/demo-api.ts` (`/api/components-demo/sales`, `kpi/:metric`,
-  `top-products`), so changing the period or comparison refetches every card;
-  the TableView page seeds a `components_demo_tasks` collection through a
-  `@Fixture`, and the Form page seeds a self-referencing
-  `components_demo_topics` collection backing its cascader and relation
-  inputs.
-
+- `src/home.ts` — the `home` page: a hero (`CustomComponent("DemoHomeHero")`),
+  a `StatGroup` of figures about Helio counted at runtime, the story in
+  long-form sections (`CustomComponent("DemoHomeProse")`, each reading the
+  Markdown of `content/home/` in the reader's language from the page's
+  `sections/:id` route) and a `NavCardGrid` of links.
+- `src/helio/` — **Helio**, its own sidebar section: one folder per domain
+  (`crm`, `sales`, `catalog`, `projects`, `service`, `team`, `finance`,
+  `monitoring`, `settings`, `dashboard`), each holding its Mongo tables and
+  fixtures, its data controllers under `/api/helio/*` and its pages. Every
+  page is a `PageController` of generic blocks (`TableView` with kanban,
+  cards and grouped displays, `Form`, `Tab`, `KpiCard`, `ChartCard`,
+  `StatGroup`, `NavCardGrid`, `Meter`, …); the fixtures generate coherent data
+  relative to the current date. The service desk and fleet monitoring are live
+  pages fed by small simulators; set `HELIO_SIMULATORS=off` in the
+  environment (or `.env`) before `pnpm dev` to stop them.
+- `src/helio/platform/` — Helio's data in the other modules: the SaaS
+  showcase, e-mails, media library and public website. It is written once,
+  when the DMS creates its `default` tenant on an empty database
+  (`Hook.TENANT_BEING_PROVISIONED`, see `provisioning.ts`), and belongs to the
+  tenant from then on: a later start writes none of it again. To get the demo
+  data back, start against an empty database.
 ## Prerequisites
 
 - **Node.js 24**, the version pinned in [`.nvmrc`](./.nvmrc).
@@ -241,13 +234,13 @@ serves it.
 
 [`frontend-vue/`](./frontend-vue) is this template's own frontend module. Its
 `dms.frontend.ts` entry registers every component under `app/components/` as
-`Demo<Name>`, which is how the backend references them — `CustomComponent(
-"demo-callout")` in `src/components/custom.ts` resolves to `DemoCallout`. The
-module ships:
-
-- `app/components/Readme.vue` → `DemoReadme`, the Home page.
-- `app/components/Callout.vue` → `DemoCallout`, the CustomComponent demo.
-- `i18n/locales/demo-*.json`, merged into the dashboard's catalogs.
+`Demo<Name>`, which is how the backend references one through
+`CustomComponent("Demo<Name>")`. Helio ships none, every one of its screens
+being made of DMS blocks; the home page's hero and long-form sections are the
+template's own (`HomeHero.vue`, `HomeProse.vue`). `HomeProse` reads Markdown
+with `marked` and draws it as Vue nodes: raw HTML is dropped, and only
+`http(s)`, `mailto:`, `tel:`, paths and anchors become links (`app/prose/`). The module ships the `i18n/locales/*.json` catalogs (`demo-*`
+for the home page, `helio-*` per Helio domain), merged into the dashboard's.
 
 It is a workspace package with its own ESLint, Prettier and Vitest setup.
 The root `pnpm install` installs both packages. Each package keeps its existing
@@ -288,8 +281,9 @@ Every backend-declared text (page names, descriptions, form labels, card
 titles, column headers, select items…) uses the `$key` convention: a string
 starting with `$` is resolved against the i18n catalogs by the frontend
 (`processI18n`). Add or edit keys in
-`frontend-vue/i18n/locales/demo-en-GB.json` and `demo-fr-FR.json`; the test
-suite checks that both catalogs cover every key the backend emits. Known
+`frontend-vue/i18n/locales/demo-en-GB.json` and `demo-fr-FR.json` (Home), or in the `helio-*-en-GB.json` / `helio-*-fr-FR.json` pairs (one
+per Helio domain, merged by the loader); the test suite checks that both
+catalogs cover every key the backend emits. Known
 limitation: TableView **tab labels** are not translated by the frontend, so
 they stay in plain English.
 

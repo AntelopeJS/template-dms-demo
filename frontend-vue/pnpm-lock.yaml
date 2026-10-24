@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      entities:
+        specifier: ^8.0.0
+        version: 8.1.0
+      marked:
+        specifier: ^17.0.6
+        version: 17.0.6
       vue:
         specifier: ^3.5.44
         version: 3.5.44(@typescript/typescript6@6.0.2)
