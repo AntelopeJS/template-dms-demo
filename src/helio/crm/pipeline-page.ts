@@ -1,4 +1,3 @@
-import { HTTPResult } from "@antelopejs/interface-api";
 import {
   type FormBuilder,
   FormEvents,
@@ -11,11 +10,7 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
-import {
-  DEAL_STAGES,
-  dealController,
-  STAGE_PROBABILITY,
-} from "./deal-controller";
+import { dealController, STAGE_PROBABILITY } from "./deal-controller";
 import { afterDealEdit, afterDealNew } from "./deal-derived";
 import { CUSTOMER_QUICK_VIEW_URL } from "./links";
 import { PIPELINE_VIEWS } from "./pipeline-views";
@@ -24,68 +19,16 @@ import { PIPELINE_VIEWS } from "./pipeline-views";
 // fields, so it names the closed stages rather than the computed isOpen.
 const OPEN_DEAL = { field: "stage", notIn: ["won", "lost"] };
 
-// The loss reason belongs to a lost deal only: shown, and required, once the
-// stage is "lost", hidden before. FIELD_CHANGE also fires once with the value
-// the form starts from, so an opened form is right before any change.
-function watchLostReason(form: FormBuilder): FormBuilder {
-  for (const { value } of DEAL_STAGES) {
-    const onParam = [
-      { key: "fieldId", value: "stage" },
-      { key: "value", value },
-    ];
-    const lost = value === "lost";
-    form
-      .watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_HIDDEN, {
-        params: { targetField: "lostReason", setHidden: !lost },
-        onParam,
-      })
-      .watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_REQUIRED, {
-        params: { targetField: "lostReason", setRequired: lost },
-        onParam,
-      });
-  }
-  return form;
-}
-
 // The probability follows the stage as it is picked, before the save: each
 // stage's usual figure (100 % won, 0 % lost), which the owner may still
-// adjust on an open deal. A won or lost deal's figure is implied (the write
-// routes store 100 % or 0 % whatever is sent, see deal-derived.ts), so the
-// field is locked on those stages. Only a change writes the value: a form
-// opens with the probability the deal stored.
+// adjust on an open deal (the column locks it on a won or lost one). Only a
+// change writes the value: a form opens with the probability the deal stored.
 const PROBABILITY_BY_STAGE: Record<string, number> = { ...STAGE_PROBABILITY };
 
 function watchProbability(form: FormBuilder): FormBuilder {
-  form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_VALUE, {
+  return form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_VALUE, {
     params: { targetField: "probability", valueMap: PROBABILITY_BY_STAGE },
     onParam: { key: "fieldId", value: "stage" },
-  });
-  for (const { value } of DEAL_STAGES) {
-    form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_DISABLED, {
-      params: {
-        targetField: "probability",
-        setDisabled: value === "won" || value === "lost",
-      },
-      onParam: [
-        { key: "fieldId", value: "stage" },
-        { key: "value", value },
-      ],
-    });
-  }
-  return form;
-}
-
-const watchDealForm = (form: FormBuilder) =>
-  watchProbability(watchLostReason(form));
-
-// The write routes refuse a lost deal without its reason, whichever client
-// sent it (a card dropped on "Lost" included: the deal is opened to say why).
-function assertLostReason(stage: unknown, lostReason: unknown): void {
-  if (stage !== "lost") return;
-  if (typeof lostReason === "string" && lostReason !== "") return;
-  throw new HTTPResult(400, {
-    message: "$helio.crm.deals.errors.lostReasonRequired",
-    field: "lostReason",
   });
 }
 
@@ -238,23 +181,13 @@ export class PageHelioPipeline extends PageController(
       ],
     },
     forms: {
-      new: watchDealForm,
-      edit: watchDealForm,
-      view: watchLostReason,
+      new: watchProbability,
+      edit: watchProbability,
     },
-    // A lost deal says why; the stored derived fields follow each write (see
-    // deal-derived.ts). An edit only sends what changed: the stored row
-    // fills the rest.
+    // The stored derived fields follow each write (see deal-derived.ts).
     guards: {
-      new: (_ctx, { body }) => {
-        assertLostReason(body.stage, body.lostReason);
-        return afterDealNew(body);
-      },
-      edit: (_ctx, { id, body, current }) => {
-        const row = { ...current, ...body };
-        assertLostReason(row.stage, row.lostReason);
-        return afterDealEdit(id, body, current);
-      },
+      new: (_ctx, { body }) => afterDealNew(body),
+      edit: (_ctx, { id, body, current }) => afterDealEdit(id, body, current),
     },
   });
 }

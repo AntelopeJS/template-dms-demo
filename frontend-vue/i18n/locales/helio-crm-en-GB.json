@@ -90,8 +90,7 @@
 					"newTitle": "New customer",
 					"newDescription": "A household or a company: the VAT number is asked for companies only.",
 					"editTitle": "Edit customer",
-					"detailsTitle": "Customer details",
-					"create": "Create the customer"
+					"detailsTitle": "Customer details"
 				},
 				"quickView": {
 					"action": "Quick view",
@@ -125,7 +124,6 @@
 					"activeDescription": "Only an archived customer can be deleted: archive it, then delete it from the archived customers."
 				},
 				"errors": {
-					"vatRequired": "A business customer needs a VAT number.",
 					"openDeals": "This customer still has deals in progress.",
 					"notArchived": "Only archived customers can be deleted: archive them first.",
 					"notFound": "This customer no longer exists.",
@@ -161,10 +159,7 @@
 					"description": "Create the customer without leaving the deal."
 				},
 				"activeNow": "Just now",
-				"kickoffNextStep": "Plan the kick-off call (quote {number} signed)",
-				"errors": {
-					"lostReasonRequired": "Give the loss reason: open the deal to mark it as lost."
-				}
+				"kickoffNextStep": "Plan the kick-off call (quote {number} signed)"
 			},
 			"pipeline": {
 				"nav": "Pipeline",

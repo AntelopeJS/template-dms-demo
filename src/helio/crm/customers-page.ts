@@ -1,6 +1,5 @@
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
-import type { AfterWrite } from "@antelopejs/interface-dms/base/types/guards";
 import type { Action } from "@antelopejs/interface-dms/component";
 import { DefaultLayout } from "@antelopejs/interface-dms/base/layouts";
 import {
@@ -14,7 +13,7 @@ import { helioQuickActions } from "../shared/quick-actions";
 import { CUSTOMER_KINDS, customerController } from "./customer-controller";
 import { countCustomerDeals } from "./customer-deals";
 import { afterCustomerEdit } from "./customer-names";
-import { type Customer, CustomerModel } from "./database";
+import { CustomerModel } from "./database";
 import { isValidVatNumber } from "./vat-number";
 import {
   CUSTOMER_DELETE_CONFIRM_URL,
@@ -24,56 +23,18 @@ import {
   QUOTES_URL,
 } from "./links";
 
-// A business is invoiced with VAT: the form asks for the number (see the
-// watches of customer-form-pages.ts), and the write routes refuse a business
-// without a valid one, whichever client sent it.
-function assertBusinessVat(kind: unknown, vatNumber: unknown): void {
-  if (kind !== "business") return;
-  if (typeof vatNumber !== "string" || vatNumber.trim() === "") {
-    throw new HTTPResult(400, {
-      message: "$helio.crm.customers.errors.vatRequired",
-      field: "vatNumber",
-    });
-  }
+// A business is invoiced with VAT: the column shows the number, mandatory,
+// for a business only (customer-controller.ts; turned household, a customer
+// loses the number and website it stored), and the write routes refuse a
+// number that is not valid, whichever client sent it.
+function assertVatFormat(vatNumber: unknown): void {
+  if (typeof vatNumber !== "string" || vatNumber.trim() === "") return;
   if (!isValidVatNumber(vatNumber)) {
     throw new HTTPResult(400, {
       message: "$helio.crm.customers.errors.vatFormat",
       field: "vatNumber",
     });
   }
-}
-
-// The fields only a company fills in (VAT number, website) are hidden for a
-// household, and a hidden field keeps the value it held: a business turned
-// residential kept its VAT number, shown on its sheet and found by the
-// search. They are cleared once the customer is a household.
-const BUSINESS_ONLY_CLEARED = { vatNumber: null, website: null };
-
-const holdsBusinessFields = (customer: Partial<Customer>): boolean =>
-  customer.kind !== "business" && !!(customer.vatNumber || customer.website);
-
-async function clearBusinessFields(ids: string[]): Promise<void> {
-  const model = GetModel(CustomerModel);
-  await Promise.all(ids.map((id) => model.update(id, BUSINESS_ONLY_CLEARED)));
-}
-
-// A guard does not know a new row's id: the households holding one of these
-// fields are cleared instead (the new one among them).
-const afterResidentialNew: AfterWrite = async () => {
-  const households = await GetModel(CustomerModel).getBy("kind", "residential");
-  await clearBusinessFields(
-    households.filter(holdsBusinessFields).map(({ _id }) => _id),
-  );
-};
-
-function afterWrites(
-  ...writes: (AfterWrite | undefined)[]
-): AfterWrite | undefined {
-  const pending = writes.filter((write) => write !== undefined);
-  if (pending.length === 0) return undefined;
-  return async () => {
-    for (const write of pending) await write();
-  };
 }
 
 async function refuseActiveCustomers(ids: string[]): Promise<void> {
@@ -156,20 +117,16 @@ export class PageHelioCustomers extends PageController(
         description: "$helio.crm.customers.empty.filteredDescription",
       },
     },
-    // Page forms, written by hand (customer-form-pages.ts): a generated form
-    // takes no watch, and the VAT field follows the customer type.
+    // The generated form pages: the business fields follow the customer
+    // type through their columns (visibleWhen).
     formContainer: {
       type: "page",
       pages: {
         new: {
           displayName: "$helio.crm.customers.form.newTitle",
           description: "$helio.crm.customers.form.newDescription",
-          customPage: true,
         },
-        edit: {
-          displayName: "$helio.crm.customers.form.editTitle",
-          customPage: true,
-        },
+        edit: { displayName: "$helio.crm.customers.form.editTitle" },
         details: { displayName: "$helio.crm.customers.form.detailsTitle" },
       },
     },
@@ -267,21 +224,13 @@ export class PageHelioCustomers extends PageController(
     },
     guards: {
       new: (_ctx, { body }) => {
-        assertBusinessVat(body.kind, body.vatNumber);
-        return holdsBusinessFields(body) ? afterResidentialNew : undefined;
+        assertVatFormat(body.vatNumber);
       },
-      // An edit only sends what changed: the stored row fills the rest.
       // A new name reaches the deals and quotes that carry it for the search.
-      edit: (_ctx, { id, body, current }) => {
-        const row = { ...current, ...body };
-        assertBusinessVat(row.kind, row.vatNumber);
+      edit: (_ctx, { body, current }) => {
+        assertVatFormat(body.vatNumber);
         const renamed = body.name !== undefined && body.name !== current.name;
-        return afterWrites(
-          holdsBusinessFields(row)
-            ? () => clearBusinessFields([id])
-            : undefined,
-          renamed ? afterCustomerEdit : undefined,
-        );
+        return renamed ? afterCustomerEdit : undefined;
       },
       // An active customer, or one with deals still in play, is not deleted:
       // the dialog says so (blocked), and a bare API call is refused the same
@@ -312,7 +261,7 @@ QuickAction("helio-new-customer", {
 
 /**
  * One of the customers table's own actions (`add`, `edit`, `delete`…): the
- * form pages and routes written by hand answer to the permission of the
+ * routes written by hand answer to the permission of the
  * action they stand for.
  */
 export function customersTableAction(id: string): Action {
