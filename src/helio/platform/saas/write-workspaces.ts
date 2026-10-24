@@ -1,0 +1,185 @@
+// Creates each installer workspace once: its tenant instance, member role,
+// billing identity and subscription. Rows go straight to the tables, as the
+// dms-saas playground does: dms-saas has no API to create a workspace without
+// Stripe. No account and no membership is written here: the workspace is
+// owned by the platform owner, linked through the DMS membership API once the
+// onboarding created that account (owner.ts). The tenant row is written last,
+// so dms-saas never sees a workspace without its subscription when it
+// attaches its default plan to plan-less workspaces.
+
+import { randomUUID } from "node:crypto";
+import { Schema } from "@antelopejs/interface-database";
+import { GetModel } from "@antelopejs/interface-database-decorators";
+import { TENANT_SCHEMA_NAME } from "@antelopejs/interface-dms/constants";
+import { RoleModel, TenantModel } from "@antelopejs/interface-dms/db";
+import {
+  type PaidUsagePeriod,
+  TenantBillingInfoModel,
+  TenantSubscriptionModel,
+} from "@antelopejs/interface-dms-saas/db";
+import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/billing";
+import { addDays, addMonths, insertMissing, type SeedRow } from "./rows";
+import { findPlan } from "./plans";
+import { dunningSince, nextRenewal } from "./schedule";
+import { type SeedWorkspace, stripeSubscriptionIdOf } from "./workspaces";
+
+const MEMBER_ROLE_SUFFIX = "member";
+const VAT_VERIFIED = "verified";
+/** Billing states Stripe would hold a subscription for. */
+const BILLED_STATUSES = new Set([
+  "active",
+  "past_due",
+  "trialing",
+  "cancelled",
+]);
+
+/** When the workspace was created, relative to now. */
+export function workspaceCreatedAt(workspace: SeedWorkspace, now: Date): Date {
+  return addDays(addMonths(now, -workspace.ageMonths), -workspace.ageDays);
+}
+
+function memberRoleId(tenantId: string): string {
+  return `${tenantId}:${MEMBER_ROLE_SUFFIX}`;
+}
+
+// Invited members hold every grantable id: the plan caps what they really get.
+function memberRole(
+  tenantId: string,
+  permissions: string[],
+  at: Date,
+): SeedRow {
+  return {
+    _id: memberRoleId(tenantId),
+    name: "Member",
+    description: "Everything the workspace plan includes",
+    permissions,
+    createdAt: at,
+    updatedAt: at,
+  };
+}
+
+function paidUsagePeriods(
+  workspace: SeedWorkspace,
+  start: Date,
+): PaidUsagePeriod[] {
+  if (workspace.status === "trialing") return [];
+  return [
+    {
+      stripeSubscriptionId: stripeSubscriptionIdOf(workspace),
+      start,
+      end: null,
+    },
+  ];
+}
+
+// A churned workspace is written active first and cancelled right after, so
+// dms-saas records the revenue it took away (the churn figures read it).
+function initialStatus(workspace: SeedWorkspace): string {
+  return workspace.status === "cancelled" ? "active" : workspace.status;
+}
+
+function currentPeriodEnd(
+  workspace: SeedWorkspace,
+  createdAt: Date,
+  now: Date,
+): Date | null {
+  if (workspace.trialDaysLeft !== undefined)
+    return addDays(now, workspace.trialDaysLeft);
+  return nextRenewal(workspace, createdAt, now);
+}
+
+function toSubscriptionRow(
+  workspace: SeedWorkspace,
+  createdAt: Date,
+  now: Date,
+): SeedRow {
+  // A free plan never reaches Stripe: its workspace has no subscription there.
+  const isBilled =
+    BILLED_STATUSES.has(workspace.status) &&
+    findPlan(workspace.planId).price > 0;
+  const isPaid = isBilled && workspace.status !== "trialing";
+  return {
+    _id: workspace.id,
+    // Every compare-and-set write of dms-saas expects a revision.
+    revision: randomUUID(),
+    planId: workspace.planId,
+    status: initialStatus(workspace),
+    stripeCustomerId: null,
+    stripeSubscriptionId: isBilled ? stripeSubscriptionIdOf(workspace) : null,
+    stripeCheckoutSessionId: null,
+    completedCheckoutSessionId: null,
+    cardFingerprint: null,
+    currentPeriodEnd: isBilled
+      ? currentPeriodEnd(workspace, createdAt, now)
+      : null,
+    pendingPlanId: null,
+    pendingPlanChangeAt: null,
+    domainTransition: null,
+    deletionStartedAt: null,
+    cronNotification: null,
+    refundRequestedAt: null,
+    deletionRequestedAt: null,
+    deletionRequestedBy: null,
+    pastDueSince:
+      workspace.status === "past_due"
+        ? dunningSince(workspace, createdAt, now)
+        : null,
+    freeUntil: null,
+    isComplimentary: false,
+    paidUsageStartedAt: isPaid ? createdAt : null,
+    paidUsagePeriods: isPaid ? paidUsagePeriods(workspace, createdAt) : [],
+    // Set to the platform owner once linked (owner.ts): nobody exists yet.
+    createdBy: null,
+    createdAt,
+    updatedAt: now,
+  };
+}
+
+function toBillingInfoRow(workspace: SeedWorkspace): SeedRow {
+  return {
+    ...workspace.billing,
+    _id: workspace.id,
+    vatVerificationStatus: workspace.billing.vatNumber ? VAT_VERIFIED : null,
+  };
+}
+
+async function cancelAfterPublishing(workspace: SeedWorkspace): Promise<void> {
+  await RecomputeTenantBillingState(workspace.id);
+  await GetModel(TenantSubscriptionModel, workspace.id).update(workspace.id, {
+    status: "cancelled",
+  });
+}
+
+/**
+ * Writes one workspace when its subscription does not exist yet; a workspace
+ * already seeded is left to dms-saas and to the daily upkeep.
+ *
+ * @returns Whether the workspace was created by this call
+ */
+export async function writeWorkspace(
+  workspace: SeedWorkspace,
+  permissions: string[],
+  now: Date,
+): Promise<boolean> {
+  const { id } = workspace;
+  if (await GetModel(TenantSubscriptionModel, id).table.get(id)) return false;
+  const createdAt = workspaceCreatedAt(workspace, now);
+  await Schema.get(TENANT_SCHEMA_NAME)?.createInstance(id);
+  // The role a colleague the owner invites gets.
+  await insertMissing(RoleModel, [memberRole(id, permissions, createdAt)], id);
+  await insertMissing(
+    TenantBillingInfoModel,
+    [toBillingInfoRow(workspace)],
+    id,
+  );
+  await insertMissing(
+    TenantSubscriptionModel,
+    [toSubscriptionRow(workspace, createdAt, now)],
+    id,
+  );
+  await insertMissing(TenantModel, [
+    { _id: id, name: workspace.name, createdAt, updatedAt: createdAt },
+  ]);
+  if (workspace.status === "cancelled") await cancelAfterPublishing(workspace);
+  return true;
+}
