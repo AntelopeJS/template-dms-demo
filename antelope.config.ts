@@ -203,8 +203,9 @@ export default defineConfig({
         type: "package",
         package: "@antelopejs/mongodb",
         // 1.4.4 (mongodb#54) resolves a single row's relations next to a
-        // computed field: the products' edit form reads its range again.
-        version: "^1.4.4",
+        // computed field: the products' edit form reads its range again. 1.5.0
+        // enforces unique indexes, which dms-mailing's slug index needs.
+        version: "^1.5.0",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -227,8 +228,9 @@ export default defineConfig({
         package: "@antelopejs/api",
         // 1.3.0 publishes the API_* variables referenced above; 1.3.3 ends open
         // connections on stop, so Ctrl+C does not wait for a dashboard tab;
-        // 1.4.0 answers 503 until every module has started (core 1.17.0).
-        version: "^1.4.0",
+        // 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
+        // declares configVarsFile, which dms-frontend 0.9 reads at build.
+        version: "^1.5.0",
       },
       config: {
         servers: [
