@@ -1,15 +1,8 @@
 import { resolve } from "node:path";
 import { defineConfig } from "@antelopejs/interface-core/config";
 import { config as loadDotenv } from "dotenv";
-import { clientOrigins } from "./src/client-origin";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
-
-// The dashboard's origin: DMS_CLIENT_BASE_URL, else `ajs dms dev`'s. Read when
-// the configuration is evaluated, which a deployment does at start
-// (`--refresh-config`); production refuses to start without it.
-const CLIENT_ORIGINS = clientOrigins();
-const CLIENT_BASE_URL = CLIENT_ORIGINS[0];
 
 export default defineConfig({
   name: "template-dms-demo",
@@ -21,6 +14,7 @@ export default defineConfig({
   envOverrides: {
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
+    DMS_CLIENT_BASE_URL: "modules.dms.config.clientBaseUrl",
     DMS_HTML_RENDER_SECRET: "modules.dms.config.htmlRender.serviceSecret",
     // One secret signs and verifies the dashboard's tokens.
     JWT_SECRET: [
@@ -39,20 +33,12 @@ export default defineConfig({
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
   },
-  // `ajs project build/start -e production`: no development secret, and the
-  // module refuses to start until JWT_SECRET, DMS_HTML_RENDER_SECRET and
-  // DMS_CLIENT_BASE_URL are set.
+  // `ajs project build/start -e production`: dms refuses to start until
+  // JWT_SECRET, DMS_HTML_RENDER_SECRET and DMS_CLIENT_BASE_URL are set.
   environments: {
     production: {
       modules: {
-        "template-dms-demo": {
-          config: {
-            requireJwtSecret: true,
-            requireHtmlRenderSecret: true,
-            requireClientBaseUrl: true,
-          },
-        },
-        dms: { config: { auth: { jwtSecret: "" } } },
+        // auth-jwt has no such check: never sign with the public "dev" secret.
         "auth-jwt": { config: { secret: "" } },
         // Ethereal creates an account over the internet at every start;
         // production sends through the SMTP relay SMTP_HOST names.
@@ -70,10 +56,6 @@ export default defineConfig({
         // Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist.
         reloadCommand: ["pnpm exec tsc"],
       },
-      config: {
-        // Development signs tokens with the public "dev" secret below.
-        requireJwtSecret: false,
-      },
     },
 
     // DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy.
@@ -85,7 +67,6 @@ export default defineConfig({
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
-        clientBaseUrl: CLIENT_BASE_URL,
         homepage: "/home",
         meta: {
           title: "Template DMS Demo",
@@ -133,9 +114,6 @@ export default defineConfig({
           publishableKey: "pk_test_placeholder",
           webhookSecret: "whsec_placeholder",
         },
-        allowedRedirectHosts: CLIENT_ORIGINS.map(
-          (origin) => new URL(origin).host,
-        ),
       },
     },
     "dms-ai": {
@@ -239,9 +217,6 @@ export default defineConfig({
             port: 5010,
           },
         ],
-        cors: {
-          allowedOrigins: CLIENT_ORIGINS,
-        },
       },
     },
     "file-storage-local": {

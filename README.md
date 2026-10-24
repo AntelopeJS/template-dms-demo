@@ -174,9 +174,7 @@ For optional overrides, create a git-ignored `.env` at the repository root.
 The default development workflow does not need one. Two processes read it:
 
 - the **backend** (`pnpm dev`) only reads the variables mapped in the
-  `envOverrides` block of `antelope.config.ts`, and `DMS_CLIENT_BASE_URL`,
-  which the configuration turns into the base URL, CORS origins and redirect
-  hosts (a list `envOverrides` cannot set);
+  `envOverrides` block of `antelope.config.ts`;
 - the **frontend loader** (`ajs dms`, from
   [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend))
   reads the `DMS_*` loader variables below.
@@ -185,15 +183,15 @@ The default development workflow does not need one. Two processes read it:
 | --- | --- | --- | --- |
 | `DMS_API_BASE_URL` | loader | Backend URL the loader fetches the manifest from; discovered automatically in dev. | no |
 | `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). Ephemeral in dev; explicit for build/start. | no |
-| `DMS_CLIENT_BASE_URL` | backend + loader | The dashboard's origin, such as `https://dashboard.example.com`: the base of e-mail links and redirects, the one origin the API's CORS lets in and the one host OAuth returns to. `http://localhost:3001` (and `127.0.0.1:3001`) in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
+| `DMS_CLIENT_BASE_URL` | backend + loader | The dashboard's origin, such as `https://dashboard.example.com`: the base of e-mail links and redirects, an origin the API's CORS lets in and the host payment redirects return to; dms derives all of them from it. `http://localhost:3001` in development; **required** with `-e production`, where dms refuses to start without it or with a value that is not an http(s) origin. | production only |
 | `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
-| `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with; the loader receives it in the manifest, so set it on the frontend only to override. `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
+| `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with; the loader receives it in the manifest, so set it on the frontend only to override. `dev` in development; **required** with `-e production`, where dms refuses to start without it or with `dev`. | production only |
 | `DMS_OAUTH_RELAY_SECRET` | loader | Override for the OAuth relay secret the backend ships in the manifest. | no |
 | `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`. | no |
 | `DMS_API_PUBLIC_BASE_URL` | backend | Public origin of the API, base of asset and e-mail links. **Required** for `ajs project start`. | no |
 | `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest. Generated automatically in development; required by `ajs dms build`. | no |
 | `MONGODB_URL` | backend | MongoDB connection string. | no (`mongodb://localhost:27017`) |
-| `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where the backend refuses to start without it. | production only |
+| `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where dms refuses to start without it or with `dev`. | production only |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
 | `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. | no |
