@@ -17,9 +17,9 @@ import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/bill
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
 import { writeDefaultBilling } from "./default-billing";
-import { attachHqPlan, claimDefaultWorkspace } from "./default-workspace";
-import { findOnboardingOwner, linkWorkspace, registerOwnerLink } from "./owner";
-import { hasHelioPermissions, readGrantablePermissions } from "./permissions";
+import { attachHqPlan, nameDefaultWorkspace } from "./default-workspace";
+import { registerOwnerLink } from "./owner";
+import { readGrantablePermissions } from "./permissions";
 import { upkeepWorkspace } from "./upkeep";
 import { grantNewPermissions, writeCatalogue } from "./write-catalogue";
 import { writeWorkspace } from "./write-workspaces";
@@ -30,72 +30,56 @@ const LOG_PREFIX = "[helio:saas]";
 const CATALOGUE_AGE_DAYS = 540;
 const MS_PER_DAY = 86_400_000;
 
-interface SeedCounts {
-  created: number;
-  linked: number;
-}
-
-// The owner is looked up for each workspace: an onboarding completed while
-// the seed runs still gets the workspaces written after it.
-async function seedWorkspaces(
-  grantable: string[],
-  now: Date,
-): Promise<SeedCounts> {
-  const counts: SeedCounts = { created: 0, linked: 0 };
-  for (const workspace of WORKSPACES) {
-    if (await writeWorkspace(workspace, grantable, now)) counts.created++;
-    const owner = await findOnboardingOwner();
-    if (owner && (await linkWorkspace(workspace.id, owner))) counts.linked++;
-    await upkeepWorkspace(workspace, now);
-    await RecomputeTenantBillingState(workspace.id);
-  }
-  return counts;
-}
-
-async function seedSaasShowcase(): Promise<void> {
+/**
+ * Writes the showcase once, when the DMS provisions its default tenant: the
+ * catalogue, Helio SRL's own workspace and the installer workspaces. They
+ * have no owner yet: the onboarding comes after, and its `MEMBER_ADDED` hands
+ * them over (owner.ts).
+ */
+export async function provisionSaasShowcase(): Promise<void> {
   const now = new Date();
   const grantable = await readGrantablePermissions();
-  if (!hasHelioPermissions(grantable)) {
-    Logging.Warn(`${LOG_PREFIX} Helio pages not registered yet, seed skipped`);
-    return;
-  }
+  // Before the plans, so dms-saas never attaches its default plan instead.
   await attachHqPlan(now);
   await writeCatalogue(
     grantable,
     new Date(now.getTime() - CATALOGUE_AGE_DAYS * MS_PER_DAY),
   );
-  await grantNewPermissions(grantable);
-  await claimDefaultWorkspace();
-  const { created, linked } = await seedWorkspaces(grantable, now);
+  await nameDefaultWorkspace();
+  for (const workspace of WORKSPACES) {
+    await writeWorkspace(workspace, grantable, now);
+    await upkeepWorkspace(workspace, now);
+  }
   await writeDefaultBilling(now);
   await RecomputeTenantBillingState(DEFAULT_TENANT_ID);
-  if (created > 0)
-    Logging.Info(`${LOG_PREFIX} ${created} installer workspace(s) seeded`);
-  if (linked > 0)
-    Logging.Info(`${LOG_PREFIX} ${linked} workspace(s) given to the owner`);
+  Logging.Info(
+    `${LOG_PREFIX} ${WORKSPACES.length} installer workspace(s) seeded`,
+  );
 }
 
-async function runOnce(): Promise<void> {
+// The demo clock: each boot moves the installer workspaces' dates on, and the
+// plans pick up the pages a Helio domain added since (a sticky hook, so this
+// also runs at once after a hot reload of this module).
+async function upkeepShowcase(): Promise<void> {
   try {
-    await seedSaasShowcase();
+    await grantNewPermissions(await readGrantablePermissions());
+    const now = new Date();
+    for (const workspace of WORKSPACES) await upkeepWorkspace(workspace, now);
   } catch (error) {
     // The showcase must never keep the DMS from serving.
-    Logging.Error(`${LOG_PREFIX} seed failed`, error);
+    Logging.Error(`${LOG_PREFIX} upkeep failed`, error);
   }
 }
 
 /**
- * Seeds on `DATABASE_INITIALIZED`: a sticky hook, so registered from
- * `construct()` it runs once the DMS start provisioned its schemas, and at
- * once after a hot reload of this module. Idempotent: rows with fixed ids are
- * only written while missing, so every boot can run it again.
+ * Hands the installer workspaces to the onboarding owner, and keeps them
+ * current on every boot. Not awaited: the DMS start waits for its hook
+ * handlers, and the upkeep must not delay the dashboard.
  */
 export function registerSaasShowcase(): void {
   registerOwnerLink();
   RegisterHook(Hook.DATABASE_INITIALIZED, () => {
-    // Not awaited: the DMS start waits for its hook handlers, and the demo
-    // data must not delay the dashboard.
-    void runOnce();
+    void upkeepShowcase();
     return undefined;
   });
 }

@@ -2,7 +2,8 @@
 // declared on every boot; the automation module creates it once, refreshes it
 // while nobody touched it, and keeps whatever a user changed since. Names and
 // descriptions are shown as written (the automation pages do not translate
-// them), so they are in French, the demo's language.
+// them), so they are in French, the demo's language; so are the titles of the
+// notifications they send, written in the nodes' settings.
 
 import type { ProcedureDeclaration } from "@antelopejs/interface-dms-automation";
 import { graph, next, node, wire } from "./graph";
@@ -29,7 +30,7 @@ const urgentTicketDispatch: ProcedureDeclaration = {
       node("if", "if", undefined, [2, 0]),
       node("managers", "action", MANAGERS, [3, 0]),
       node("notify", "action", NOTIFY, [4, 0], {
-        title: "$helio.platform.automation.notifications.dispatched",
+        title: "Ticket urgent attribué",
         icon: "i-ph-siren",
       }),
     ],
@@ -69,7 +70,7 @@ const overdueInvoiceReminders: ProcedureDeclaration = {
       node("if", "if", undefined, [2, 0]),
       node("managers", "action", MANAGERS, [3, 0]),
       node("notify", "action", NOTIFY, [4, 0], {
-        title: "$helio.platform.automation.notifications.reminders",
+        title: "Rappels de paiement envoyés",
         icon: "i-ph-envelope-simple-open",
         linkTo: "/helio/invoices?table.tab=overdue",
       }),
@@ -125,7 +126,7 @@ const quoteAcceptedKickoff: ProcedureDeclaration = {
       node("kickoff", "action", "helio.plan-kickoff", [1, 0]),
       node("managers", "action", MANAGERS, [2, 0]),
       node("notify", "action", NOTIFY, [3, 0], {
-        title: "$helio.platform.automation.notifications.kickoff",
+        title: "Devis signé : lancement à planifier",
         icon: "i-ph-flag-banner",
       }),
     ],
