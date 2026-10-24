@@ -30,7 +30,6 @@ import {
   Select,
   TableViewRoutes,
 } from "@antelopejs/interface-dms/base/table-view";
-import { withNameSort } from "./category-names";
 import { countCategoryProducts } from "./category-usage";
 import { ProductCategory, ProductCategoryModel } from "./database";
 
@@ -87,8 +86,7 @@ class productFamilyDataAPI extends DataController(
 @RegisterDataController()
 class productCategoryDataAPI extends DataController(
   ProductCategory,
-  // Sorted by name in the caller's language (category-names.ts).
-  { ...TableViewRoutes.All, list: withNameSort(TableViewRoutes.List) },
+  TableViewRoutes.All,
   Controller("/api/helio/product-categories"),
 ) {
   @ModelReference()
