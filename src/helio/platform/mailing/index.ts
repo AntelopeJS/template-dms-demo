@@ -1,8 +1,8 @@
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 // Helio's transactional e-mails, shipped as code to the Mailing module: one
 // "Helio" category, seven templates in French and English, and the history of
-// the last weeks. Every declaration is idempotent and keeps what a user edited
-// in the dashboard since (the module answers "kept" and leaves it alone).
+// the last weeks. Written once, when the DMS provisions the default tenant:
+// from then on they belong to the tenant.
 
 import { Logging } from "@antelopejs/interface-core/logging";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@antelopejs/interface-dms-mailing";
 import { HELIO_MAIL_CATEGORY } from "./format";
 import { importMailHistory } from "./history";
-import { noticedRecords, recordNotice } from "./notices";
+import { recordNotice } from "./notices";
 import { BILLING_TEMPLATES } from "./templates-billing";
 import { SALES_TEMPLATES } from "./templates-sales";
 import { SERVICE_TEMPLATES } from "./templates-service";
@@ -51,30 +51,23 @@ async function declareTemplates(): Promise<void> {
   Logging.Info(`[helio] mail templates: ${outcomes.join(", ")}`);
 }
 
-// Imported once per database: afterwards the live actions write the log. A
-// second import would pick up what happened since (a quote accepted a minute
-// ago) and duplicate the e-mail the action itself sent.
-const HISTORY_VERSION = "v1";
-
 async function importHistory(): Promise<void> {
-  if ((await noticedRecords("history")).has(HISTORY_VERSION)) return;
   const history = await importMailHistory();
   // The weekly confirmation run must not write again to these customers.
   for (const { projectId, sentAt } of history.confirmedProjects) {
     await recordNotice("installation", projectId, sentAt);
   }
-  await recordNotice("history", HISTORY_VERSION, new Date());
   Logging.Info(
     `[helio] mail history: ${history.imported} imported, ${history.skipped} already there, ${history.reported} bounce/complaint event(s) reported`,
   );
 }
 
 /**
- * Declares the templates, then imports the history (which names them). Run
- * from start(), after the demo schema is provisioned: the history reads the
- * Helio collections.
+ * Declares the templates, then imports the history (which names them). Called
+ * when the DMS provisions the default tenant: the history reads the Helio
+ * collections, registered on `DATABASE_INITIALIZED` before it.
  */
-export async function startHelioMailing(): Promise<void> {
+export async function provisionHelioMailing(): Promise<void> {
   await declareTemplates();
   await importHistory();
 }

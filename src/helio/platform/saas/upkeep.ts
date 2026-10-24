@@ -10,6 +10,7 @@
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { TenantModel } from "@antelopejs/interface-dms/db";
+import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/billing";
 import {
   type TenantSubscription,
   TenantSubscriptionModel,
@@ -80,7 +81,10 @@ async function refreshSubscription(
   if (patch) await model.update(workspace.id, patch);
 }
 
-/** Brings one seeded workspace up to date; logs instead of failing the boot. */
+/**
+ * Brings one seeded workspace up to date and publishes its billing state;
+ * logs instead of failing the boot. A workspace not written yet is skipped.
+ */
 export async function upkeepWorkspace(
   workspace: SeedWorkspace,
   now: Date,
@@ -91,6 +95,7 @@ export async function upkeepWorkspace(
     const anchor = new Date(tenant.createdAt);
     await writeInvoices(workspace, anchor, now);
     await refreshSubscription(workspace, anchor, now);
+    await RecomputeTenantBillingState(workspace.id);
   } catch (error) {
     Logging.Warn(`${LOG_PREFIX} upkeep of ${workspace.id} failed`, error);
   }

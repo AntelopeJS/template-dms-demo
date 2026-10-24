@@ -4,8 +4,8 @@
 // Stripe. No account and no membership is written here: the workspace is
 // owned by the platform owner, linked through the DMS membership API once the
 // onboarding created that account (owner.ts). The tenant row is written last,
-// so the default-plan backfill dms-saas runs every 15 minutes never sees a
-// workspace without its subscription.
+// so dms-saas never sees a workspace without its subscription when it
+// attaches its default plan to plan-less workspaces.
 
 import { randomUUID } from "node:crypto";
 import { Schema } from "@antelopejs/interface-database";

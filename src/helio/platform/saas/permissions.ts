@@ -40,11 +40,3 @@ export function permissionsOf(grant: PlanGrant, grantable: string[]): string[] {
       return grantable.filter((id) => isUnderAny(id, grant.prefixes));
   }
 }
-
-/**
- * Whether the Helio pages registered their permissions yet: on a hot reload
- * the seed may run before them, and a plan written then would miss them.
- */
-export function hasHelioPermissions(grantable: string[]): boolean {
-  return grantable.some((id) => isUnder(id, "helio"));
-}
