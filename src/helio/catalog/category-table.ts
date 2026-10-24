@@ -1,5 +1,4 @@
 import type { TableViewOptions } from "@antelopejs/interface-dms/base/table-view";
-import { fillMissingNames } from "./category-names";
 import { refuseUsedCategories } from "./category-usage";
 
 // The ranges products are filed under, managed on the catalog page below the
@@ -47,11 +46,7 @@ export const categoryTableOptions: TableViewOptions = {
       },
     },
   },
-  // A name typed in one language only is given to the other one too
-  // (category-names.ts).
   guards: {
-    new: () => fillMissingNames,
-    edit: () => fillMissingNames,
     delete: (_context, { ids }) => refuseUsedCategories(ids),
   },
 };

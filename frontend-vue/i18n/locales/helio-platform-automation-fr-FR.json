@@ -65,11 +65,6 @@
 					"ticketId": "Ticket",
 					"total": "Total",
 					"userIds": "Utilisateurs"
-				},
-				"notifications": {
-					"dispatched": "Ticket urgent attribué",
-					"reminders": "Rappels de paiement envoyés",
-					"kickoff": "Devis signé : lancement à planifier"
 				}
 			}
 		}

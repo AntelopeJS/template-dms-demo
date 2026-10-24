@@ -1,8 +1,8 @@
 // Helio in the automation module: its own triggers and actions in the
 // procedure builder, and five procedures shipped as code. The node types are
 // registered from construct() (queued until the module attaches, removed with
-// this module on unload); the procedures are declared from start(), after the
-// Helio e-mail templates their first runs send.
+// this module on unload); the procedures are declared from start(). They are
+// the platform's, not a tenant's, so they are not written at provisioning.
 
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -16,7 +16,6 @@ import {
   RegisterActionType,
   RegisterTriggerType,
 } from "@antelopejs/interface-dms-automation";
-import { startHelioMailing } from "../mailing";
 import { businessActionTypes } from "./actions-business";
 import { serviceActionTypes } from "./actions-service";
 import {
@@ -105,6 +104,9 @@ function actionTypesUsed(): Set<string> {
  * the DMS added "dms.send-notification", a procedure is stored with an
  * "unknown type" warning. Gives up after a while and declares anyway (the
  * automation module tolerates a type that comes late).
+ *
+ * The DMS adds its types once it has provisioned its default tenant, so on a
+ * fresh install the Helio e-mail templates the first runs send exist by then.
  */
 async function waitForActionTypes(): Promise<void> {
   const wanted = actionTypesUsed();
@@ -145,18 +147,11 @@ async function declareProcedures(): Promise<void> {
 }
 
 /**
- * The mail templates and history first (the procedures send those e-mails),
- * then the procedures. Never throws: Helio works without either module.
+ * Declares the procedures in the background; call it from start(). Never
+ * throws: Helio works without the automation module.
  */
-export async function startHelioMessaging(): Promise<void> {
-  try {
-    await startHelioMailing();
-  } catch (error) {
-    Logging.Warn(`[helio] mailing setup failed: ${String(error)}`);
-  }
-  try {
-    await declareProcedures();
-  } catch (error) {
+export function startHelioAutomation(): void {
+  declareProcedures().catch((error: unknown) => {
     Logging.Warn(`[helio] automation setup failed: ${String(error)}`);
-  }
+  });
 }
