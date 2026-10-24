@@ -1,9 +1,0 @@
-import "./form";
-import "./dashboard";
-import "./table-view";
-import "./tab";
-import "./grid";
-import "./stack";
-import "./placeholder";
-import "./custom";
-import "./demo-api";
