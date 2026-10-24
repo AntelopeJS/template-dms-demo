@@ -8,6 +8,7 @@
     "dev": "ajs project run -w",
     "frontend:dev": "ajs dms dev",
     "frontend:build": "ajs dms build",
+    "frontend:start": "ajs dms start",
     "frontend:verify": "ajs dms verify-source",
     "lint": "oxlint && oxfmt --check . && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
@@ -58,5 +59,6 @@
         "*"
       ]
     }
-  }
+  },
+  "dmsFrontend": "dist/frontend-module.js"
 }

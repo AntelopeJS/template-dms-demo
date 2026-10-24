@@ -1,7 +1,7 @@
-import path from "node:path";
 import { RegisterSchema } from "@antelopejs/interface-database-decorators";
 import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
 import { AddFrontendModule } from "@antelopejs/interface-dms/page";
+import { frontendModule } from "./frontend-module";
 import {
   registerHelioAutomationNodes,
   startHelioAutomation,
@@ -17,13 +17,7 @@ export async function construct(): Promise<void> {
   // Declared in construct() so dms-lang, which lists the frontend modules once
   // in its own start(), finds it: `dmsI18nAppLayer` makes its language files
   // (helio-*, demo-*) the editable "Project files" of Translations.
-  await AddFrontendModule({
-    name: "template-dms-demo-frontend-vue",
-    sourcePath: path.join(__dirname, "../frontend-vue"),
-    renderer: { name: "vue", version: "3" },
-    priority: 100,
-    options: { dmsI18nAppLayer: true },
-  });
+  await AddFrontendModule(frontendModule());
 
   // Provision this template's own schema (tables tagged with DEMO_SCHEMA_NAME)
   // and run their fixtures once the DMS has registered its own: before the
