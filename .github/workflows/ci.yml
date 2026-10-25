@@ -5,43 +5,16 @@ on:
     branches:
       - main
       - stage
-  # No branch filter: the lint wave stacks the PRs on top of each other, and a
-  # filter on `main` left every intermediate step without a gate -- only the
-  # secret scanner ran.
+  # No branch filter: stacked pull requests need the gate on every step.
   pull_request:
 
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 jobs:
-  ubuntu:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      COREPACK_DEFAULT_TO_LATEST: 0
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          # .nvmrc is the version of record. oxlint needs at least 22.18 to
-          # read a TypeScript config, which every value there clears.
-          node-version-file: .nvmrc
-      # Node's bundled corepack predates the pnpm version pinned in
-      # packageManager. Pinned so a corepack release cannot break every
-      # build at once.
-      - run: npm i -g --force corepack@0.34.0 && corepack enable
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      # oxlint's type-aware pass degrades to `any` on a broken tsconfig
-      # without failing, so the typecheck is what catches it.
-      - run: pnpm typecheck
-      # Unused dependencies only. `pnpm knip:all` also reports dead files and
-      # exports, which need a human to confirm, so they stay out of the gate.
-      - run: pnpm knip
-      - run: pnpm build
-      - run: pnpm test
+  ci:
+    uses: AntelopeJS/.github/.github/workflows/ci-node.yml@v1
+    with:
+      # `pnpm run checks` typechecks but never emits; this proves `dist`
+      # still builds, the output `ajs project run` and `ajs dms build` load.
+      extra-commands: pnpm build

@@ -374,7 +374,7 @@ npx -y github:AntelopeJS/agent-skills sync --target codex
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md). Before you open a pull request, run
-`pnpm lint`, `pnpm typecheck` and `pnpm test`.
+`pnpm run checks`.
 
 ## License
 
