@@ -40,7 +40,7 @@ test`, not with the root oxlint/oxfmt.
   installed `@antelopejs/dms` and `@antelopejs/dms-frontend`) or
   `pnpm knip:all` (also reports dead files and exports; confirm each finding
   before you remove code) or
-  `pnpm --dir frontend-vue exec prettier --check .` (oxfmt ignores
+  `pnpm --dir frontend-vue exec prettier --check . '!pnpm-lock.yaml'` (oxfmt ignores
   `frontend-vue`). Run them when your change touches what they cover.
 - `guardrails.ratchet.json` records the lint findings the template already had.
   Its numbers only go down: after you remove debt, run
