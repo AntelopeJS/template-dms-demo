@@ -35,27 +35,31 @@ test`, not with the root oxlint/oxfmt.
   ratchet and sync, and prints only what failed. `pnpm lint` runs oxlint on
   the backend and ESLint on `frontend-vue`; `pnpm test` runs only the
   `frontend-vue` Vitest suite. The backend has no tests.
-- `checks` does not run `pnpm build` (CI runs it after `checks`),
-  `pnpm frontend:verify` (builds and type-checks `frontend-vue` against the
-  installed `@antelopejs/dms` and `@antelopejs/dms-frontend`) or
-  `pnpm knip:all` (also reports dead files and exports; confirm each finding
-  before you remove code) or
-  `pnpm --dir frontend-vue exec prettier --check . '!pnpm-lock.yaml'` (oxfmt ignores
-  `frontend-vue`). Run them when your change touches what they cover.
+- `checks` does not run these; run them when your change touches what they
+  cover:
+  - `pnpm build`, which CI runs after `checks`.
+  - `pnpm frontend:verify`, which builds and type-checks `frontend-vue`
+    against the installed `@antelopejs/dms` and `@antelopejs/dms-frontend`.
+  - `pnpm knip:all`, which also reports dead files and exports. Confirm each
+    finding before you remove code.
+  - `pnpm --dir frontend-vue exec prettier --check . '!pnpm-lock.yaml'`, since
+    oxfmt ignores `frontend-vue`.
 - `guardrails.ratchet.json` records the lint findings the template already had.
   Its numbers only go down: after you remove debt, run
-  `pnpm run ratchet:update` and commit the lowered file. A rule listed there is off for
-  `oxlint`; the ratchet counts it instead, and the pre-commit hook rejects it
-  on every line you add.
+  `pnpm run ratchet:update` and commit the lowered file. A rule listed there is
+  off for `oxlint`; the ratchet counts it instead, and the pre-commit hook
+  rejects it on every line you add.
+- `pnpm run checks` and the hooks need a git repository. `ajs project init`
+  installs dependencies before it runs `git init` (and skips it with
+  `--no-git-init`), so a project created from this template starts without
+  hooks: run `pnpm exec lefthook install` once after `git init`. The first
+  commit of a new repository adds every template line, which the ratchet reads
+  as new findings, so make that one commit with `LEFTHOOK=0 git commit`.
 - lefthook runs oxfmt, oxlint, the size check and the ratchet on staged files
-  before each commit, and `typecheck` before each push. `ajs project init`
-  installs dependencies before it runs `git init`, so a project created from
-  this template starts without hooks: run `pnpm exec lefthook install` once
-  after `git init`. In a new repository the first commit adds every template
-  line, which the ratchet reads as new findings, so make that one commit with
-  `LEFTHOOK=0 git commit`.
-- The ratchet hook skips `frontend-vue/`: oxlint ignores it, and the ratchet
-  fails on a commit whose files oxlint ignores entirely.
+  before each commit, and `typecheck` before each push. The ratchet hook skips
+  `frontend-vue/` and the agent folders (`.agents/`, `.claude/` and the like):
+  oxlint ignores them, and the ratchet fails on a commit whose files oxlint
+  ignores entirely.
 
 <!-- antelopejs-guardrails:start -->
 <!-- Managed by @antelopejs/tooling-configs. `antelopejs-sync` rewrites everything between these markers; write repository-specific guidance outside them. -->
