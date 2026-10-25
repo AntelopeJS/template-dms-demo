@@ -39,7 +39,9 @@ test`, not with the root oxlint/oxfmt.
   `pnpm frontend:verify` (builds and type-checks `frontend-vue` against the
   installed `@antelopejs/dms` and `@antelopejs/dms-frontend`) or
   `pnpm knip:all` (also reports dead files and exports; confirm each finding
-  before you remove code). Run them when your change touches what they cover.
+  before you remove code) or
+  `pnpm --dir frontend-vue exec prettier --check .` (oxfmt ignores
+  `frontend-vue`). Run them when your change touches what they cover.
 - `guardrails.ratchet.json` records the lint findings the template already had.
   Its numbers only go down: after you remove debt, run
   `pnpm run ratchet:update` and commit the lowered file. A rule listed there is off for
@@ -49,7 +51,11 @@ test`, not with the root oxlint/oxfmt.
   before each commit, and `typecheck` before each push. `ajs project init`
   installs dependencies before it runs `git init`, so a project created from
   this template starts without hooks: run `pnpm exec lefthook install` once
-  after `git init`.
+  after `git init`. In a new repository the first commit adds every template
+  line, which the ratchet reads as new findings, so make that one commit with
+  `LEFTHOOK=0 git commit`.
+- The ratchet hook skips `frontend-vue/`: oxlint ignores it, and the ratchet
+  fails on a commit whose files oxlint ignores entirely.
 
 <!-- antelopejs-guardrails:start -->
 <!-- Managed by @antelopejs/tooling-configs. `antelopejs-sync` rewrites everything between these markers; write repository-specific guidance outside them. -->

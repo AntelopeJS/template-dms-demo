@@ -10,6 +10,8 @@ pre-commit:
       run: pnpm exec antelopejs-check-size --staged {staged_files}
     antelopejs-ratchet:
       glob: "*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue}"
+      exclude:
+        - "frontend-vue/**"
       run: pnpm exec antelopejs-ratchet --staged {staged_files}
 pre-push:
   commands:
