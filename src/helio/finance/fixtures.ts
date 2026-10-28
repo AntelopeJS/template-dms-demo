@@ -1,8 +1,3 @@
-// Seed of helio_invoices: a year of billing. Each project bills a 30%
-// deposit when its quote is signed and the balance once installed; yearly
-// maintenance and monitoring contracts and service calls fill the rest. Most
-// are paid, a few overdue, the oldest paid ones archived.
-
 import { buildSites, type SiteSeed } from "../monitoring/fixtures";
 import { customerFacts, isBusiness } from "../projects/crm-facts";
 import { nextWorkday, previousWorkday } from "../projects/calendar";
@@ -59,6 +54,11 @@ function plusDays(date: Date, days: number): Date {
   return new Date(date.getTime() + days * DAY_MS);
 }
 
+/**
+ * The deposit invoice of a project, a 30% share issued shortly after its quote
+ * is signed, and its balance invoice once installed (still a draft while the
+ * electrical inspection is pending). Invoices go out on working days.
+ */
 function projectDrafts(plan: ProjectPlan): InvoiceDraft[] {
   const business = isBusiness(plan.customer);
   const { subtotal } = quoteTotals(plan.lines, plan.vatRate);
@@ -70,7 +70,6 @@ function projectDrafts(plan: ProjectPlan): InvoiceDraft[] {
     vatRate: plan.vatRate,
   };
   const drafts: InvoiceDraft[] = [];
-  // Invoices go out on working days.
   const depositAt = nextWorkday(plusDays(plan.signedAt, 2));
   if (daysAgo(depositAt) > 0 && daysAgo(depositAt) < YEAR_DAYS) {
     drafts.push({
@@ -102,8 +101,12 @@ function price(id: string): number {
   return PRODUCT_ROSTER.find((entry) => entry.id === id)?.price ?? 0;
 }
 
-// A contract renewal, a service call or a cleaning on a monitored site,
-// issued after the site was commissioned.
+/**
+ * A contract renewal, a service call or a cleaning on a monitored site,
+ * issued after the site was commissioned. A monitoring subscription is a
+ * service, never renovation work, so it carries the 21% rate even for a
+ * residential customer.
+ */
 function serviceDraft(rng: Rng, site: SiteSeed): InvoiceDraft {
   const business = isBusiness(customerFacts(site.customer));
   const kind = rng.weighted([
@@ -136,7 +139,6 @@ function serviceDraft(rng: Rng, site: SiteSeed): InvoiceDraft {
       },
     ],
   }[kind];
-  // A monitoring subscription is a service, never renovation work: 21%.
   const vatRate =
     business || kind === "monitoring" ? VAT_BUSINESS : VAT_RESIDENTIAL;
   const since = Math.min(
@@ -167,9 +169,11 @@ function paymentMethod(rng: Rng, business: boolean): PaymentMethod {
       ]);
 }
 
-// Payments are booked on a working day, during office hours, and never
-// later than a few hours ago; undefined when that falls before the invoice
-// (an invoice issued this morning is not paid yet).
+/**
+ * When a payment is booked: on a working day, during office hours, and never
+ * later than a few hours ago. Undefined when that falls before the invoice
+ * was issued, since an invoice issued this morning is not paid yet.
+ */
 function bookedPayment(
   rng: Rng,
   wanted: number,
@@ -185,8 +189,11 @@ function bookedPayment(
   return booked > issuedAt ? booked : undefined;
 }
 
-// Paid, waiting or overdue, from the due date: a quarter of the invoices
-// that fell due in the last two months are still unpaid.
+/**
+ * Paid, waiting or overdue, from the due date: a quarter of the invoices that
+ * fell due in the last two months are still unpaid. An invoice due today is
+ * not late yet, overdue starts the day after (see `./due`).
+ */
 function settle(
   rng: Rng,
   draft: InvoiceDraft,
@@ -194,7 +201,6 @@ function settle(
 ): { status: InvoiceStatus; paidAt?: Date } {
   if (draft.draft) return { status: "draft" };
   const issued = draft.issuedAt.getTime();
-  // Due today is not late yet: overdue starts the day after (see ./due).
   if (!isPastDue(dueAt)) {
     if (!rng.chance(0.35)) return { status: "sent" };
     const paidAt = bookedPayment(
@@ -240,8 +246,11 @@ function toSeed(rng: Rng, draft: InvoiceDraft, index: number): InvoiceSeed {
   };
 }
 
-// Three old service invoices were cancelled (a credit note replaced them);
-// numbers follow the issue date within each year: F-2026-0001, …
+/**
+ * Cancels three old paid service invoices, as if a credit note had replaced
+ * them, then numbers every invoice by issue date within its year: F-2026-0001,
+ * F-2026-0002, ...
+ */
 function finish(seeds: InvoiceSeed[]): void {
   seeds
     .filter(
@@ -267,7 +276,12 @@ function finish(seeds: InvoiceSeed[]): void {
 
 let invoices: InvoiceSeed[] | undefined;
 
-/** The 200 invoices, `inv-001` … `inv-200`. */
+/**
+ * The 200 invoices, `inv-001` ... `inv-200`: a year of billing. Each project
+ * bills its deposit and balance; yearly maintenance and monitoring contracts,
+ * service calls and cleanings fill the rest. Most are paid, a few overdue, and
+ * the oldest paid ones archived.
+ */
 export function buildInvoices(): InvoiceSeed[] {
   if (!invoices) {
     const rng = createRng(0x9e110007);

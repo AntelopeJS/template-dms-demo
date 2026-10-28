@@ -14,11 +14,6 @@ import {
   TRANSITIONS,
 } from "./site";
 
-// One visit to the website, event by event, as the tracker would have sent
-// it: pageviews along a plausible path, the custom events of the simulator,
-// the quote form and the offers, the A/B exposures of the tests running at
-// that moment, and the scroll depths and clicks of sampled page loads.
-
 /** The heatmap sampling rate the tracker applied, as declared on pageviews. */
 const HEATMAP_SAMPLE_RATE = 0.3;
 const MAX_PAGEVIEWS = 14;
@@ -266,7 +261,14 @@ function nextPage(rng: Rng, page: PageId): PageId | undefined {
   return next === "exit" ? undefined : next;
 }
 
-/** Every event of one visit, in time order, never past `now`. */
+/**
+ * Every event of one visit to the website, in time order, never past `now`,
+ * as the tracker would have sent it: pageviews along a plausible path, the
+ * custom events of the simulator, the quote form and the offers, the A/B
+ * exposures of the tests running at that moment, and the scroll depths and
+ * clicks of sampled page loads. Only the landing pageview carries the
+ * referrer, since the module reads it there.
+ */
 export function buildVisit(ctx: VisitContext): MarketingImportEvent[] {
   const { rng, acquisition } = ctx;
   const events: MarketingImportEvent[] = [];
@@ -281,7 +283,6 @@ export function buildVisit(ctx: VisitContext): MarketingImportEvent[] {
       title: PAGES[page][1],
       data: { sample: HEATMAP_SAMPLE_RATE },
     };
-    // The referrer only matters on the landing: the module reads it there.
     if (isLanding && acquisition.referrer)
       pageview.referrer = acquisition.referrer;
     events.push(pageview);

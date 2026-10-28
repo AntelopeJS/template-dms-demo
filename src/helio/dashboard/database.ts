@@ -15,7 +15,7 @@ export type { ActivityType } from "./activity-links";
 
 const TABLE_NAME = "helio_activity";
 
-// The business events the dashboard's activity feed lists, newest first.
+/** The business events the dashboard's activity feed lists, newest first. */
 @RegisterTable(TABLE_NAME, DEMO_SCHEMA_NAME)
 @Fixture(() => buildActivity())
 export class Activity extends Table {

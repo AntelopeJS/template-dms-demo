@@ -1,6 +1,3 @@
-// The activity feed (helio_activity over the period) and the offline sites
-// banner, which the server shows only while sites have stopped reporting.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type {
   ActivityFeedItem,
@@ -32,7 +29,7 @@ function feedItem(
   };
 }
 
-/** The latest business events of the period, newest first. */
+/** The latest business events of helio_activity over the period, newest first. */
 export async function activityFeed(
   period: Period,
 ): Promise<ActivityFeedResponse> {

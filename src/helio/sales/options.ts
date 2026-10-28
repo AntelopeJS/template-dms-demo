@@ -1,10 +1,9 @@
-// Option lists of the quotes, shared by the data controller, the page and
-// the document. controller.ts re-exports them: it is the import path other
-// domains rely on.
-
 import { DAY_MS } from "../shared/seed";
 
-// A quote's life, in order. Exported for the status tabs, views and actions.
+/**
+ * A quote's life, in order, with the label and colours of each status.
+ * controller.ts re-exports it: that is the import path other domains use.
+ */
 export const QUOTE_STATUSES = [
   {
     value: "draft",

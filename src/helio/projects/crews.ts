@@ -1,22 +1,22 @@
-// Who goes on which site: the lead technician is one of the customer's
-// region whenever one is free, the crew his usual partner first, and nobody is
-// booked on two sites the same day. Paused projects book nobody.
-
 import type { InstallationType } from "../sales/lines";
 import { teamIdsByRole } from "../shared/roster";
 import type { Rng } from "../shared/seed";
 import { memberRegion, regionOfProvince } from "../team/regions";
 
-// The after-sales technician runs the service desk: she joins a site only
-// when nobody else is free.
+/**
+ * The after-sales technician runs the service desk, so it joins a site only
+ * when nobody else is free.
+ */
 const AFTER_SALES = "team-09";
+/** The technicians in the order they are picked, after-sales last. */
 const TECHNICIANS = [
   ...teamIdsByRole("technician").filter((id) => id !== AFTER_SALES),
   AFTER_SALES,
 ];
+/** The technicians who lead a site by default: all but after-sales. */
 const INSTALLERS = TECHNICIANS.filter((id) => id !== AFTER_SALES);
 
-// The pairs that work together, each covering neighbouring regions.
+/** The usual partner of each team member, who joins a site first. */
 const PARTNERS: Record<string, string> = {
   "team-05": "team-06",
   "team-06": "team-05",
@@ -26,7 +26,7 @@ const PARTNERS: Record<string, string> = {
   "team-10": "team-07",
 };
 
-// Where a region's technicians go next when they are all busy.
+/** The regions a region's technicians are sent to next when all are busy. */
 const NEIGHBOURS: Record<string, string[]> = {
   liege: ["namur", "luxembourg"],
   namur: ["liege", "luxembourg", "hainaut"],
@@ -35,6 +35,7 @@ const NEIGHBOURS: Record<string, string[]> = {
   brussels: ["hainaut", "namur"],
 };
 
+/** What a site needs from the planner. */
 export interface CrewRequest {
   province: string | undefined;
   type: InstallationType;
@@ -44,6 +45,7 @@ export interface CrewRequest {
   books: boolean;
 }
 
+/** The people assigned to a site. */
 export interface Crew {
   leadTechnician: string;
   crew: string[];
@@ -54,7 +56,11 @@ interface Booking {
   to: number;
 }
 
-/** Books technicians on sites without overlaps, in the order asked. */
+/**
+ * Books technicians on sites without overlaps, in the order asked: the lead is
+ * one of the customer's region whenever one is free, the crew is the lead's
+ * usual partner first, and nobody is booked on two sites the same day.
+ */
 export class CrewPlanner {
   private readonly bookings = new Map<string, Booking[]>();
 
@@ -98,8 +104,10 @@ export class CrewPlanner {
     return [...pool].sort((a, b) => load(a) - load(b))[0] ?? "";
   }
 
-  // A free installer of the customer's region first, then of its
-  // neighbours, then anyone free (the after-sales technician last).
+  /**
+   * A free installer of the customer's region first, then of its neighbours,
+   * then anyone free (the after-sales technician last).
+   */
   private pickLead(
     province: string | undefined,
     span: Booking,
@@ -114,7 +122,7 @@ export class CrewPlanner {
     return TECHNICIANS.find((id) => this.isFree(id, span));
   }
 
-  // The lead's usual partner first, then whoever is free.
+  /** The lead's usual partner first, then whoever is free. */
   private pickCrew(lead: string, size: number, span: Booking): string[] {
     const partner = PARTNERS[lead];
     const candidates = [

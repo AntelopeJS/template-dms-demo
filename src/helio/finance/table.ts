@@ -1,8 +1,3 @@
-// The invoice list of the Invoices page: status tabs (overdue published as a
-// red badge in the sidebar), saved views, footer totals, and row rules that
-// follow accounting practice: an issued invoice is never deleted, a paid one
-// is never edited, only settled invoices are archived.
-
 import type { Action } from "@antelopejs/interface-dms/component";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import {
@@ -28,7 +23,7 @@ export const INVOICES_TOPIC = "helio.invoices";
 
 const pageRoute = (route: string) => pageRoutePath(INVOICES_PAGE_PATH, route);
 
-// One tab per status; the overdue count also becomes the sidebar badge.
+/** One tab per status; the overdue count also becomes the sidebar badge. */
 const STATUS_TABS: TableViewTab[] = INVOICE_STATUSES.map((status) => ({
   id: status.value,
   label: status.label,
@@ -39,11 +34,14 @@ const STATUS_TABS: TableViewTab[] = INVOICE_STATUSES.map((status) => ({
   navBadge: status.value === "overdue" ? { tone: "error" } : undefined,
 }));
 
-// Ways the accounts team looks at the ledger. Filter tokens are resolved by
-// the server on every request, so "this week" always means this week.
+/**
+ * Ways the accounts team looks at the ledger. Filter tokens are resolved by
+ * the server on every request, so "this week" always means this week. The
+ * "outstanding" view lists every issued invoice still to be paid, on time or
+ * late, which is what the "Outstanding" KPI adds up (drafts are not issued
+ * yet).
+ */
 const VIEWS: TableViewView[] = [
-  // Every issued invoice still to be paid, on time or late: what the
-  // "Outstanding" KPI adds up (drafts are not issued yet).
   {
     id: "outstanding",
     label: "$helio.finance.invoices.views.outstanding",
@@ -95,6 +93,7 @@ const VIEWS: TableViewView[] = [
   },
 ];
 
+/** Records a payment, for one invoice or for the whole selection. */
 const markPaidAction: CustomRowAction = {
   id: "mark-paid",
   label: "$helio.finance.invoices.markPaid.action",
@@ -103,20 +102,24 @@ const markPaidAction: CustomRowAction = {
   permission: "edit",
   bulk: true,
   rule: { field: "status", in: ["sent", "overdue"] },
-  // `{{row._id}}` is empty on the selection bar, which appends the ids.
+  /** `{{row._id}}` is empty on the selection bar, which appends the ids. */
   target: {
     type: "api",
     method: "POST",
     url: pageRoute("/mark-paid?ids={{row._id}}"),
     successMessage: "$helio.finance.invoices.markPaid.success",
   },
-  // Worded by the server so the payment date starts on today's date, the day
-  // the dialog opens rather than the day the page was declared.
+  /**
+   * Worded by the server so the payment date starts on today's date, the day
+   * the dialog opens rather than the day the page was declared.
+   */
   confirm: { from: pageRoute("/mark-paid-confirm?ids={{row._id}}") },
 };
 
-// A credit note cancels an issued invoice: nothing left to pay, the number
-// stays used, and the invoice can then be archived or deleted.
+/**
+ * A credit note cancels an issued invoice: nothing left to pay, the number
+ * stays used, and the invoice can then be archived or deleted.
+ */
 const cancelAction: CustomRowAction = {
   id: "cancel",
   label: "$helio.finance.invoices.cancel.action",
@@ -169,6 +172,7 @@ export function markPaidFields(today: Date) {
   ];
 }
 
+/** Sends a payment reminder for the overdue invoices selected. */
 const remindAction: CustomRowAction = {
   id: "remind",
   label: "$helio.finance.invoices.remind.action",
@@ -202,6 +206,7 @@ const remindAction: CustomRowAction = {
   },
 };
 
+/** Downloads the invoice document served by the page's `document` route. */
 const downloadAction: CustomRowAction = {
   id: "download",
   label: "$helio.finance.invoices.download",
@@ -213,9 +218,11 @@ const downloadAction: CustomRowAction = {
   },
 };
 
-// A click on an invoice, its "Quick view" and `?record=<invoice id>` (the
-// dashboard's activity feed, a project's invoicing tab) open the invoice
-// read-only in a right drawer; J / K walk the invoices.
+/**
+ * A click on an invoice, its "Quick view" and `?record=<invoice id>` (the
+ * dashboard's activity feed, a project's invoicing tab) open the invoice
+ * read-only in a right drawer; J / K walk the invoices.
+ */
 const quickViewAction: CustomRowAction = {
   id: "quick-view",
   label: "$helio.finance.invoices.quickView.action",
@@ -242,6 +249,19 @@ const quickViewAction: CustomRowAction = {
 
 const NOT_ARCHIVED = { field: "isArchived", notEquals: true } as const;
 
+/**
+ * The invoice list of the Invoices page: status tabs, saved views, footer
+ * totals, and row rules that follow accounting practice. An issued invoice is
+ * never deleted (a credit note corrects it, so only a draft or a cancelled
+ * invoice may go), a paid or cancelled one is never edited, and only settled
+ * invoices are archived. A `?customer=<id>` query parameter, set from the
+ * customers page, narrows the list and shows as a chip. A copy would carry
+ * the original's number, so rows are not duplicated and a new invoice starts
+ * blank; the quick view already shows an invoice, so no bottom sheet comes
+ * besides it. The guards keep numbers unique, and an invoice marked paid from
+ * its form reaches the activity feed, as one paid through the "Mark as paid"
+ * action does.
+ */
 export const invoicesTable = TableView(invoiceController, {
   caption: "$helio.finance.invoices.caption",
   searchPlaceholder: "$helio.finance.invoices.search",
@@ -254,7 +274,6 @@ export const invoicesTable = TableView(invoiceController, {
   defaultSort: { field: "issuedAt", desc: true },
   tabs: STATUS_TABS,
   views: { layout: "strip", userViews: true, items: VIEWS },
-  // "Invoices" of a customer (customers page): ?customer=<id>, as a chip.
   queryParamFilters: {
     customer: {
       field: "customer",
@@ -317,20 +336,15 @@ export const invoicesTable = TableView(invoiceController, {
   },
   rowActions: {
     add: true,
-    // A copy would carry the original's number: a new invoice starts blank.
     duplicate: false,
-    // The quick view below shows an invoice: no bottom sheet besides it.
     details: false,
     hasSelection: true,
-    // A paid or cancelled invoice is a closed accounting record: read only.
     edit: {
       isEnabled: true,
       rule: {
         and: [NOT_ARCHIVED, { field: "status", notIn: ["paid", "cancelled"] }],
       },
     },
-    // Only a draft (never sent) or a cancelled invoice may disappear: an
-    // issued invoice is corrected by a credit note, and a paid one never goes.
     delete: {
       isEnabled: true,
       rule: { field: "status", in: ["draft", "cancelled"] },
@@ -351,8 +365,6 @@ export const invoicesTable = TableView(invoiceController, {
       cancelAction,
     ],
   },
-  // Numbers are unique. An invoice marked paid from its form reaches the
-  // activity feed, as one paid through the "Mark as paid" action does.
   guards: {
     new: async (_ctx, { body }) => {
       await assertUniqueNumber(body.number);

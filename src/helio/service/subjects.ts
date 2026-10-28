@@ -1,14 +1,15 @@
-// What customers write to the service desk, by category: the subject line
-// and the first message of each seeded ticket (seed data, in French like the
-// customers of a Liège installer).
-
 import type { TicketCategory } from "./database";
 
+/** The subject line and the first message of a seeded ticket. */
 export interface TicketText {
   subject: string;
   description: string;
 }
 
+/**
+ * What customers write to the service desk, by category: seed data, in French
+ * like the customers of a Liège installer.
+ */
 export const SUBJECTS: Record<TicketCategory, TicketText[]> = {
   no_production: [
     {

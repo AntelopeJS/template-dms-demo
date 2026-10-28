@@ -1,11 +1,3 @@
-// A minimal PDF writer, enough for a one-or-two-page business document:
-// text in Helvetica and Helvetica-Bold (two of the 14 fonts every PDF reader
-// ships, so nothing is embedded), filled rectangles and lines.
-//
-// The whole file is ASCII — characters outside it are written as octal
-// escapes in the WinAnsi encoding — so it travels as a plain string through
-// the HTTP layer, with no binary body to handle and no dependency to add.
-
 export type FontStyle = "regular" | "bold";
 export type Rgb = readonly [number, number, number];
 export type Align = "left" | "right" | "center";
@@ -21,8 +13,10 @@ export interface TextStyle {
 export const PAGE_WIDTH = 595.28;
 export const PAGE_HEIGHT = 841.89;
 
-// Advance widths (1/1000 em) of the printable ASCII characters, 32 to 126,
-// from the Adobe metrics of the two fonts.
+/**
+ * Advance widths (1/1000 em) of the printable ASCII characters, 32 to 126, in
+ * Helvetica, from the Adobe metrics of the font.
+ */
 const REGULAR_WIDTHS = [
   278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278,
   278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584,
@@ -32,6 +26,7 @@ const REGULAR_WIDTHS = [
   500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500,
   500, 334, 260, 334, 584,
 ];
+/** The same widths as `REGULAR_WIDTHS`, in Helvetica-Bold. */
 const BOLD_WIDTHS = [
   278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278,
   278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584,
@@ -43,7 +38,7 @@ const BOLD_WIDTHS = [
 ];
 const DEFAULT_WIDTH = 556;
 
-// WinAnsi codes of the characters it places outside Latin-1.
+/** WinAnsi codes of the characters it places outside Latin-1. */
 const WIN_ANSI_EXTRA: Record<string, number> = {
   "€": 0x80,
   "‚": 0x82,
@@ -61,8 +56,10 @@ const WIN_ANSI_EXTRA: Record<string, number> = {
   Œ: 0x8c,
 };
 
-// Thin and narrow spaces (Intl writes "1 234,00 €" with U+202F) become
-// plain ones, which every reader draws.
+/**
+ * Thin and narrow spaces (Intl writes "1 234,00 €" with U+202F), which become
+ * plain ones, as every reader draws those.
+ */
 const SPACES = new Set([" ", " "]);
 
 function winAnsiCode(char: string): number | undefined {
@@ -75,12 +72,12 @@ function winAnsiCode(char: string): number | undefined {
   return undefined;
 }
 
+/** Width of a character in 1/1000 em. An accented letter is as wide as its base letter, close enough. */
 function charWidth(char: string, font: FontStyle): number {
   const table = font === "bold" ? BOLD_WIDTHS : REGULAR_WIDTHS;
   const code = winAnsiCode(char) ?? 63;
   if (code >= 32 && code <= 126) return table[code - 32] ?? DEFAULT_WIDTH;
   if (code === 160) return table[0] ?? DEFAULT_WIDTH;
-  // An accented letter is as wide as its base letter, close enough.
   const base = char.normalize("NFD").charAt(0);
   const baseCode = base.codePointAt(0) ?? 0;
   return baseCode >= 32 && baseCode <= 126
@@ -159,7 +156,15 @@ export class PdfPage {
   }
 }
 
-/** The pages of a document, written out as a PDF file. */
+/**
+ * The pages of a document, written out as a PDF file. A minimal writer, enough
+ * for a one-or-two-page business document: text in Helvetica and
+ * Helvetica-Bold (two of the 14 fonts every PDF reader ships, so nothing is
+ * embedded), filled rectangles and lines. The whole file is ASCII (characters
+ * outside it are written as octal escapes in the WinAnsi encoding), so it
+ * travels as a plain string through the HTTP layer, with no binary body to
+ * handle and no dependency to add.
+ */
 export class PdfDocument {
   readonly pages: PdfPage[] = [];
 
@@ -197,8 +202,10 @@ export class PdfDocument {
   }
 }
 
-// Objects numbered from 1, then the cross-reference table their byte
-// offsets fill (the file being ASCII, characters are bytes).
+/**
+ * Writes the objects, numbered from 1, then the cross-reference table filled
+ * with their byte offsets (the file being ASCII, characters are bytes).
+ */
 function serialize(objects: string[]): string {
   let out = "%PDF-1.4\n";
   const offsets: number[] = [];

@@ -1,8 +1,3 @@
-// What the period-aware charts of the fleet page answer: the production
-// curve with its comparison, the hour × day heatmap and the best producers.
-// Every figure is integrated from the solar model, so the curve, the table and
-// the headline always agree.
-
 import type { ComposedText } from "@antelopejs/interface-dms/base/types";
 import { DAY_MS } from "../shared/seed";
 import { type FleetSite, round1 } from "./fleet";
@@ -21,7 +16,7 @@ import { energyKwh } from "./solar";
 const HOUR_MS = 60 * 60 * 1000;
 const HEATMAP_DAYS = 7;
 const TOP_SITES = 5;
-// Row names of the heatmap, Sunday first as Date.getDay() counts.
+/** Row names of the heatmap, Sunday first as `Date.getDay()` counts. */
 const WEEKDAYS = [
   "$helio.monitoring.weekdays.sun",
   "$helio.monitoring.weekdays.mon",
@@ -55,8 +50,10 @@ function deltaPercent(current: number, previous: number): number | undefined {
   return Math.round(((current - previous) / previous) * 1000) / 10;
 }
 
-// One point per bucket; buckets still to come stay empty so the curve stops
-// at now.
+/**
+ * One point per bucket; buckets still to come stay empty so the curve stops at
+ * now.
+ */
 function productionPoints(
   sites: readonly FleetSite[],
   starts: number[],
@@ -77,7 +74,9 @@ function productionPoints(
  * The production card of some sites over the period: the energy per bucket,
  * the comparison period laid over the same axis, and the total compared on
  * the same elapsed time (today until now against yesterday until the same
- * hour, not against the whole of yesterday).
+ * hour, not against the whole of yesterday). Every figure of the fleet page is
+ * integrated from the solar model, so the curve, the table and the headline
+ * always agree.
  */
 export function productionCard(
   sites: readonly FleetSite[],
@@ -121,7 +120,7 @@ export function productionCard(
   };
 }
 
-// Fleet energy of each hour of one local day; hours still to come read 0.
+/** Fleet energy of each hour of one local day; hours still to come read 0. */
 function hoursOfDay(
   sites: readonly FleetSite[],
   dayStart: number,
@@ -189,7 +188,11 @@ export interface TopListItem {
   title: string;
   description: ComposedText;
   value: number;
-  /** The value as written, with its unit (the card's valueLabel). */
+  /**
+   * The value as written, with its unit (the card's valueLabel), to the kWh.
+   * The unit and the space before it belong to the message, not to a suffix
+   * glued to the number.
+   */
   valueLabel: ComposedText;
   delta: number | null;
   sparkline: number[];
@@ -218,8 +221,6 @@ export function topProducers(
         params: { city: site.city, capacity: site.capacityKwp },
       },
       value,
-      // The energy with its unit, to the kWh: the unit and the space before
-      // it belong to the message, not to a suffix glued to the number.
       valueLabel: {
         key: "$helio.monitoring.units.kwhValue",
         params: { value: { type: "number", value: Math.round(value) } },

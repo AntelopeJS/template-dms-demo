@@ -1,7 +1,3 @@
-// Helio actions about money and planning: remind the customers of invoices
-// long overdue, prepare the kick-off of a signed quote, and confirm the
-// installation dates of the coming days to their customers.
-
 import type { ActionType } from "@antelopejs/interface-dms-automation";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
@@ -67,7 +63,7 @@ function dueReminder(
   return step && late >= step.afterDays ? step : undefined;
 }
 
-// Stamps the reminder on the invoice; answers its number.
+/** Stamps a sent reminder on the invoice and returns its sequence number (1 for the first). */
 async function stampReminder(invoice: Invoice): Promise<number> {
   const reminderCount = (invoice.reminderCount ?? 0) + 1;
   await GetModel(InvoiceModel).update(invoice._id, {
@@ -77,6 +73,11 @@ async function stampReminder(invoice: Invoice): Promise<number> {
   return reminderCount;
 }
 
+/**
+ * Sends the due reminder of each overdue invoice. A step whose channel is not
+ * e-mail, such as a registered letter, is posted by the office: the step is
+ * recorded on the invoice but nothing is e-mailed.
+ */
 const remindOverdueInvoices: ActionType<
   ReminderInput,
   Record<string, unknown>
@@ -134,8 +135,6 @@ const remindOverdueInvoices: ActionType<
     let sent = 0;
     for (const { invoice, step } of due) {
       const reminderNumber = await stampReminder(invoice);
-      // A registered letter is posted by the office: the step is recorded,
-      // nothing is e-mailed.
       if (step.channel !== "email") {
         ctx.log("info", `${invoice.number}: ${step.channel} to send`);
         continue;
@@ -166,8 +165,7 @@ const remindOverdueInvoices: ActionType<
   },
 };
 
-// The project born from the quote gets a kick-off task; without one yet, the
-// deal's next step says it.
+/** Adds a kick-off call task to the project born from the quote, unless it already has one. */
 async function kickoffTask(project: Project, quoteNumber: string) {
   const tasks = GetModel(ProjectTaskModel);
   const existing = await tasks.getBy("project", project._id);
@@ -185,6 +183,12 @@ async function kickoffTask(project: Project, quoteNumber: string) {
   });
 }
 
+/**
+ * Prepares the kick-off of a signed quote: a task on its project, or, while
+ * the quote has no project yet, a kick-off next step on its deal. That step is
+ * worded in each reader's language by the deals' `nextStepLine` until one is
+ * typed again.
+ */
 const planKickoff: ActionType<{ quoteId?: string }, Record<string, unknown>> = {
   id: "helio.plan-kickoff",
   name: "$helio.platform.automation.actions.planKickoff.name",
@@ -232,8 +236,6 @@ const planKickoff: ActionType<{ quoteId?: string }, Record<string, unknown>> = {
         link: `${PROJECT_PAGE_URL}/${project._id}`,
       };
     }
-    // The deal's next step, worded in each reader's language (the deals'
-    // nextStepLine), until one is typed again.
     if (quote.deal) {
       await GetModel(DealModel).update(quote.deal, {
         kickoffQuote: quote.number,
@@ -249,7 +251,7 @@ const planKickoff: ActionType<{ quoteId?: string }, Record<string, unknown>> = {
   },
 };
 
-// Scheduled projects starting within `daysAhead` days that were not told yet.
+/** Scheduled projects starting within `daysAhead` days whose customer was not yet sent an installation notice. */
 async function projectsToConfirm(daysAhead: number): Promise<Project[]> {
   const [scheduled, noticed] = await Promise.all([
     GetModel(ProjectModel).getBy("status", "scheduled"),
@@ -317,6 +319,11 @@ const confirmInstallations: ActionType<
   },
 };
 
+/**
+ * Helio's actions about money and planning: remind customers of long-overdue
+ * invoices, prepare the kick-off of a signed quote, and confirm the coming
+ * installation dates to their customers.
+ */
 export const businessActionTypes = [
   remindOverdueInvoices,
   planKickoff,

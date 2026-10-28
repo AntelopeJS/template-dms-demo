@@ -39,7 +39,7 @@ import {
 } from "./stats";
 import { fleetTable } from "./table";
 
-// The instant a held table froze its rows at, else now.
+/** The instant a held table froze its rows at, else now. */
 function heldAt(query: URLSearchParams): number {
   const held = Date.parse(query.get("liveHeldAt") ?? "");
   return Number.isFinite(held) ? held : Date.now();
@@ -55,12 +55,14 @@ async function findSite(id: string): Promise<FleetSite> {
   return site;
 }
 
-// The operations room of the fleet: what the installed sites produce right
-// now and over the period, which inverters need someone, and every site with
-// its live reading. A live page: each round of inverter reports (the
-// simulator publishes one every 10 seconds) refreshes the blocks, at most
-// every 10 seconds, every minute once the period spans a week; L pauses.
-// Every route below sits on the page class, so it shares the page's access.
+/**
+ * The operations room of the fleet: what the installed sites produce right now
+ * and over the period, which inverters need someone, and every site with its
+ * live reading. A live page: each round of inverter reports (the simulator
+ * publishes one every 10 seconds) refreshes the blocks, at most every 10
+ * seconds, every minute once the period spans a week; the L key pauses. Every
+ * route below sits on the page class, so it shares the page's access.
+ */
 @RegisterPage()
 export class PageHelioMonitoring extends PageController(
   "monitoring",
@@ -103,6 +105,10 @@ export class PageHelioMonitoring extends PageController(
       }),
     );
 
+  /**
+   * The stat strip. Its sidebar badge warns while an inverter is silent: the
+   * count of offline sites, in the warning tone, counted on each page visit.
+   */
   static stats = StatGroup({
     label: "$helio.monitoring.stats.label",
     layout: "cards",
@@ -110,8 +116,6 @@ export class PageHelioMonitoring extends PageController(
     fetchUrl: monitoringRoute("/stats"),
     realtimeTopic: TELEMETRY_TOPIC,
   }).navBadge({
-    // The sidebar warns while an inverter is silent: the count of offline
-    // sites, in the warning tone, counted on each page visit.
     count: async () => {
       const offline = await GetModel(SiteModel).getBy(
         "inverterStatus",

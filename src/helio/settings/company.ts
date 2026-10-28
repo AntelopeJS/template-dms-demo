@@ -1,8 +1,3 @@
-// Helio's identity as its documents print it (quotes, invoices, e-mails),
-// read from the company settings: one source of truth, so a change on the
-// Settings page shows on the next quote or invoice. The defaults (defaults.ts)
-// are the fictional company the demo starts with.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { HelioSettingsModel } from "./database";
 import { buildDefaultSettings } from "./defaults";
@@ -12,7 +7,12 @@ import {
   type InvoicingSettings,
 } from "./types";
 
-/** The issuer block of a document, as printed. */
+/**
+ * The issuer block of a document, as printed (quotes, invoices, e-mails). It is
+ * read from the company settings, the one source of truth, so a change on the
+ * Settings page shows on the next quote or invoice. The defaults (defaults.ts)
+ * are the fictional company the demo starts with.
+ */
 export interface CompanyIdentity {
   name: string;
   /** "Rue de l'Énergie 12" */
@@ -48,14 +48,14 @@ type IdentitySource = Pick<
 > &
   Pick<InvoicingSettings, "iban" | "bic">;
 
-// BE0742318065 → BE 0742.318.065, the way Belgian documents write it.
+/** Formats a VAT number the way Belgian documents write it: BE0742318065 → BE 0742.318.065. */
 function formatVat(vat: string): string {
   const digits = vat.replace(/\D/g, "");
   if (!vat.toUpperCase().startsWith("BE") || digits.length !== 10) return vat;
   return `BE ${digits.slice(0, 4)}.${digits.slice(4, 7)}.${digits.slice(7)}`;
 }
 
-// +3242205050 → +32 4 220 50 50 (a Liège landline).
+/** Spaces a Belgian landline with a one-digit area code: +3242205050 → +32 4 220 50 50 (Liège). */
 function formatPhone(phone: string): string {
   const match = /^\+32(\d)(\d{3})(\d{2})(\d{2})$/.exec(
     phone.replace(/\s/g, ""),

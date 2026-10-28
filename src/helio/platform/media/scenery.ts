@@ -9,10 +9,12 @@ import {
   subQuad,
 } from "./raster";
 
-// Shared pieces of the generated site photos: sky, landscape, trees and the
-// solar arrays themselves. Every random choice comes from the photo's seeded
-// generator, so a photo is identical on every boot.
-
+/**
+ * The width in pixels of the generated site photos, which share the sky,
+ * landscape, trees and solar arrays drawn in this module. Every random choice
+ * comes from the photo's seeded generator, so a photo is identical on every
+ * boot.
+ */
 export const PHOTO_WIDTH = 960;
 export const PHOTO_HEIGHT = 640;
 
@@ -148,7 +150,6 @@ export function drawArray(
           ((y - y0) / (y1 - y0 || 1)) * 0.85 + Math.sin(x / 45) * 0.08,
         ),
       );
-      // The cell strings show as a faint line across each module.
       const mid = subQuad(glass, 0, 0.49, 1, 0.51);
       r.quad(mid, hex("#5a74a0"), 0.5);
     }

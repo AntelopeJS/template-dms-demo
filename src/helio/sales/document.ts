@@ -1,6 +1,3 @@
-// The quote as the customer receives it: an A4 PDF with Helio's header, the
-// customer, the lines, the totals, the terms and a box for the signature.
-
 import type { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import type { Customer } from "../crm/database";
 import { PRODUCT_ROSTER } from "../shared/roster";
@@ -33,13 +30,16 @@ export interface QuoteDocumentInput {
 const LEFT = 48;
 const RIGHT = PAGE_WIDTH - 48;
 const ROW_HEIGHT = 20;
-// Rows stop here; the totals, terms and signature need END_BLOCK below the
-// last row, else they move to a page of their own.
+/**
+ * Where a page's rows stop, in points from the top. The totals, terms and
+ * signature must fit above it too, else they move to a page of their own.
+ */
 const ROWS_BOTTOM = 770;
+
+/** The height the totals, terms and signature need below the last row. */
 const END_BLOCK = 200;
 
-// The brand colour of the Settings page stands in for this one when it is a
-// valid #RRGGBB.
+/** Helio's brand colour, which the one of the Settings page replaces when it is a valid #RRGGBB. */
 const ORANGE: Rgb = [0.96, 0.55, 0.11];
 const INK: Rgb = [0.11, 0.13, 0.17];
 const MUTED: Rgb = [0.42, 0.45, 0.5];
@@ -48,7 +48,7 @@ const PANEL: Rgb = [0.965, 0.969, 0.976];
 const ZEBRA: Rgb = [0.985, 0.985, 0.99];
 const WHITE: Rgb = [1, 1, 1];
 
-// Columns of the lines table: where each starts (left) or ends (right).
+/** Columns of the lines table: where each starts (left) or ends (right). */
 const COL = {
   ref: LEFT + 8,
   label: 122,
@@ -79,7 +79,7 @@ function brandRgb(color: string | undefined): Rgb {
   return [r, g, b];
 }
 
-// A tenth of the colour on white.
+/** A tenth of the colour on white. */
 const tintOf = (color: Rgb): Rgb => [
   0.9 + color[0] / 10,
   0.9 + color[1] / 10,
@@ -325,6 +325,7 @@ function drawTotals(page: PdfPage, f: Formatters, quote: Quote, top: number) {
   });
 }
 
+/** Draws the terms and the signature box. The VAT mention follows the rate the quote applies, not the customer. */
 function drawTermsAndSignature(
   page: PdfPage,
   f: Formatters,
@@ -334,7 +335,6 @@ function drawTermsAndSignature(
   const { quote } = input;
   const y = top + 96;
   page.text(LEFT, y, f.texts.terms, { size: 9, font: "bold", color: INK });
-  // The VAT mention follows the rate the quote applies, not the customer.
   const reducedVat = quote.vatRate < VAT_BUSINESS;
   f.texts.termLines(f.date(quote.validUntil), reducedVat).forEach((line, i) => {
     page.text(LEFT, y + 15 + i * 11.5, fitText(line, 270, 7.5, "regular"), {
@@ -385,7 +385,7 @@ function drawFooters(
   });
 }
 
-// A page after the first: a short header, then the table goes on.
+/** A page after the first: a short header, then the table goes on. */
 function continuationPage(
   doc: PdfDocument,
   f: Formatters,
@@ -402,7 +402,11 @@ function continuationPage(
   return page;
 }
 
-/** The quote as a PDF file (an ASCII string). */
+/**
+ * The quote as the customer receives it, as a PDF file (an ASCII string): an A4
+ * page with Helio's header, the customer, the lines, the totals, the terms and
+ * a box for the signature, continued on further pages when the lines need them.
+ */
 export function renderQuoteDocument(input: QuoteDocumentInput): string {
   const f = formatters(input.language, input.company);
   const { quote } = input;

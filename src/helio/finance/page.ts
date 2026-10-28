@@ -70,8 +70,10 @@ export class PageHelioInvoices extends PageController(
   },
   DefaultLayout({ fullWidth: true }),
 ) {
-  // Read from the page's own route and again whenever invoices are paid or
-  // reminded, so the strip follows the table.
+  /**
+   * The KPI strip above the table. It reads the page's own `kpis` route and
+   * again whenever invoices are paid or reminded, so it follows the table.
+   */
   static kpis = StatGroup({
     label: "$helio.finance.kpis.label",
     layout: "cards",
@@ -83,6 +85,11 @@ export class PageHelioInvoices extends PageController(
 
   static table = invoicesTable;
 
+  /**
+   * Computes the strip's cells. Each link names the "all" tab as well as the
+   * view, since a tab remembered from an earlier visit would otherwise narrow
+   * the list the card counts.
+   */
   @Get("kpis")
   async kpis(
     @AuthUserWithPermission(invoiceListAction) _user: User,
@@ -90,8 +97,6 @@ export class PageHelioInvoices extends PageController(
     await sweepOverdueInvoices();
     const link = (target: { tab?: string; view?: string }) =>
       tableViewLink(PageHelioInvoices, "table", target);
-    // A view link names the "all" tab too: a tab remembered from an earlier
-    // visit would otherwise narrow the list the card counts.
     const items = await invoiceKpis({
       overdue: link({ tab: "overdue" }),
       outstanding: link({ tab: "all", view: "outstanding" }),
@@ -119,10 +124,13 @@ export class PageHelioInvoices extends PageController(
     );
   }
 
-  // Noon of today: a date-only field reads the same day in every time zone.
-  // Worded for one invoice or for the selection (`?ids=`: the row's own id
-  // from its menu; on the selection bar, the ids besides the row token, left
-  // empty or unresolved there).
+  /**
+   * The confirmation dialog of the payment form, worded for one invoice or for
+   * the selection: `?ids=` holds the row's own id from its menu, but on the
+   * selection bar it is empty or an unresolved row token, which is ignored.
+   * The payment date defaults to noon of today, so a date-only field reads the
+   * same day in every time zone.
+   */
   @Get("mark-paid-confirm")
   markPaidConfirm(
     @MultiParameter("ids") ids: string[],
@@ -178,8 +186,11 @@ export class PageHelioInvoices extends PageController(
   }
 }
 
-// The KPI strip and other viewers' tables read the invoices again; the
-// sidebar badge and the overdue banner follow on the next site layout.
+/**
+ * Tells the other viewers that invoices changed: the KPI strip and their
+ * tables read the invoices again, while the sidebar badge and the overdue
+ * banner follow on the next site layout.
+ */
 async function announceChange(
   ctx: RequestContext,
   type: string,

@@ -21,16 +21,21 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { Product, ProductModel } from "./database";
 
-// The products on sale, for the "Product" picker of the quote lines: the same
-// helio_products rows, but its select route only ever lists the active ones
-// (a mandatory route filter), so a product added to the catalog shows up
-// there at once and a discontinued one can no longer be quoted.
+/**
+ * The route filter of the products on sale: it is mandatory, so the select
+ * route only ever lists the active products.
+ */
 const ON_SALE_ONLY: Record<string, FilterValue> = {
-  // The column type's "is" mode; the data API passes the mode through.
+  /** The column type's "is" mode; the data API passes the mode through. */
   isActive: ["true", "is" as FilterValue[1]],
 };
 
-// Not exported on purpose (TS2742, see product-controller.ts).
+/**
+ * The products on sale, for the "Product" picker of the quote lines: the same
+ * helio_products rows, so a product added to the catalog shows up there at
+ * once and a discontinued one can no longer be quoted. Not exported on
+ * purpose (TS2742, see product-controller.ts).
+ */
 @RegisterDataController()
 class onSaleProductDataAPI extends DataController(
   Product,
@@ -83,5 +88,5 @@ class onSaleProductDataAPI extends DataController(
   declare isActive: boolean;
 }
 
-// ControllerClass-typed alias for the quote lines (see the TS2742 note).
+/** ControllerClass-typed alias of `onSaleProductDataAPI` for the quote lines (see the TS2742 note). */
 export const onSaleProductController: ControllerClass = onSaleProductDataAPI;

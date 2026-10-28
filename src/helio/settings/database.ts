@@ -28,7 +28,6 @@ const TABLE_NAME = "helio_settings";
 export class HelioSettings extends Table {
   @Field("string") declare _id: string;
 
-  // Company
   @Field("string") declare companyName: string;
   @Field("string") declare legalForm: string;
   @Field("string") declare enterpriseNumber: string;
@@ -44,7 +43,6 @@ export class HelioSettings extends Table {
   @Field("any") declare signature?: unknown;
   @Field("any") declare termsDocument?: unknown;
 
-  // Invoicing and collections
   @Field("number") declare paymentTermsDays: number;
   @Field("number") declare defaultVatRate: number;
   @Field("number") declare reducedVatRate: number;
@@ -58,7 +56,6 @@ export class HelioSettings extends Table {
   @Field("number") declare recoveryFee: number;
   @Field("any") declare reminders: ReminderStep[];
 
-  // Operations
   @Field("number") declare workdayStart: number;
   @Field("number") declare workdayEnd: number;
   @Field(["string"]) declare workingDays: string[];
@@ -72,7 +69,6 @@ export class HelioSettings extends Table {
   @Field(["string"]) declare interventionZones: string[];
   @Field("number") declare travelRadiusKm: number;
 
-  // Integrations
   @Field("string") declare apiKey: string;
   @Field("string") declare monitoringEndpoint: string;
   @Field("any") declare webhooks: WebhookSubscription[];
@@ -85,7 +81,6 @@ export class HelioSettings extends Table {
   @Field("string") declare smtpPassword: string | null;
   @Field("string") declare accountingSoftware: string;
 
-  // Notifications (the instant-save form)
   @Field(["string"]) declare alertChannels: string[];
   @Field("string") declare digestFrequency: string;
   @Field("boolean") declare notifyUrgentTickets: boolean;

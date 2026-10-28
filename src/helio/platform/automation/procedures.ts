@@ -1,10 +1,3 @@
-// The procedures Helio ships, as the builder would export them. Each one is
-// declared on every boot; the automation module creates it once, refreshes it
-// while nobody touched it, and keeps whatever a user changed since. Names and
-// descriptions are shown as written (the automation pages do not translate
-// them), so they are in French, the demo's language; so are the titles of the
-// notifications they send, written in the nodes' settings.
-
 import type { ProcedureDeclaration } from "@antelopejs/interface-dms-automation";
 import { graph, next, node, wire } from "./graph";
 import { HELIO_TRIGGERS } from "./triggers";
@@ -170,6 +163,14 @@ const installationConfirmations: ProcedureDeclaration = {
   ),
 };
 
+/**
+ * The procedures Helio ships, as the builder would export them. Each one is
+ * declared on every boot; the automation module creates it once, refreshes it
+ * while nobody touched it, and keeps whatever a user changed since. Names and
+ * descriptions are shown as written because the automation pages do not
+ * translate them, so they are in French, the demo's language, as are the
+ * titles of the notifications the nodes send.
+ */
 export const HELIO_PROCEDURES = [
   urgentTicketDispatch,
   overdueInvoiceReminders,

@@ -2,10 +2,6 @@ import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { Product, ProductCategory } from "./database";
 import { SERVICES_FAMILY } from "./options";
 
-// The figures above the catalog, computed from the products on every visit so
-// they follow each edit: what is on sale, what the warehouse is worth, what
-// must be reordered and the margin hardware leaves.
-
 const CENTS = 100;
 
 /** Views of the catalog table the figures lead to, built by the page. */
@@ -25,8 +21,10 @@ const isLow = (product: Product): boolean =>
 const marginOf = ({ price, cost }: Product): number =>
   price ? (price - cost) / price : 0;
 
-// A product's family is the parent of its range (a product filed straight
-// under a family belongs to it), the way the catalog views read it.
+/**
+ * A product's family is the parent of its range (a product filed straight
+ * under a family belongs to it), the way the catalog views read it.
+ */
 function familyOf(
   product: Product,
   parents: ReadonlyMap<string, string | undefined>,
@@ -126,6 +124,11 @@ function marginItem(products: Product[]) {
   } satisfies StatGroupItem;
 }
 
+/**
+ * The figures above the catalog, computed from the products on every visit so
+ * they follow each edit: what is on sale, what the warehouse is worth, what
+ * must be reordered and the margin hardware leaves.
+ */
 export function catalogStats(
   products: Product[],
   categories: ProductCategory[],

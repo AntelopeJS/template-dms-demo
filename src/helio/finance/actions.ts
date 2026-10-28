@@ -1,6 +1,3 @@
-// What the invoice row actions do to the stored invoices: record a payment,
-// send a reminder, and move the invoices past their due date to "overdue".
-
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { mailInvoiceReminder } from "../platform/mailing/send";
@@ -14,8 +11,10 @@ import { isPastDue } from "./due";
 const HTTP_BAD_REQUEST = 400;
 const HTTP_CONFLICT = 409;
 
-// Payments and reminders are the accounts office's: its first member signs
-// the activity feed entries.
+/**
+ * Payments and reminders are the accounts office's: its first member signs the
+ * activity feed entries.
+ */
 const ACCOUNTS = teamIdsByRole("office")[0] ?? "";
 
 /**
@@ -69,8 +68,11 @@ function isPaymentMethod(value: string): value is PaymentMethod {
   return PAYMENT_METHOD_VALUES.includes(value);
 }
 
-// A payment is dated today when the dialog leaves the date empty, and never
-// in the future: money not received yet is not a payment.
+/**
+ * A payment is dated today when the dialog leaves the date empty. An invalid
+ * date, or one more than a day ahead, is refused with a 400: money not
+ * received yet is not a payment.
+ */
 function paymentDate(raw: string | undefined): Date {
   if (!raw) return new Date();
   const date = new Date(raw);
@@ -135,7 +137,9 @@ export async function markInvoicesPaid(
 
 /**
  * Stamps a reminder on the overdue invoices among `ids` and e-mails it to
- * their customers. Answers how many were reminded.
+ * their customers. Answers how many were reminded. The e-mails go out in the
+ * background: a failed one is logged by the mailing module and the reminder
+ * stays recorded.
  */
 export async function remindInvoices(ids: string[]): Promise<number> {
   const model = GetModel(InvoiceModel);
@@ -156,8 +160,6 @@ export async function remindInvoices(ids: string[]): Promise<number> {
       }),
     ),
   );
-  // Helio platform (mailing): the reminder e-mails go out in the background;
-  // a failed one is logged and the reminder stays recorded.
   for (const invoice of invoices) {
     void mailInvoiceReminder(invoice, (invoice.reminderCount ?? 0) + 1);
   }

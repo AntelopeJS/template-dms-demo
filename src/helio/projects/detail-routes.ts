@@ -37,16 +37,20 @@ import { directionsUrl, PROJECT_DETAIL_API, PROJECTS_PAGE_URL } from "./links";
 import { PageHelioProjects } from "./list-page";
 import { PROJECTS_LOCATION, TASKS_LOCATION } from "./topics";
 
-// A project can be closed once work started on site, and only once.
+/** The statuses a project can be closed from: work has started, and it is not done. */
 const CLOSABLE_STATUSES = new Set(["in_progress", "inspection", "on_hold"]);
 
-// Marking a project done changes it like an edit from its table: only who
-// may edit projects may do it.
+/**
+ * The permission to mark a project done, which changes it like an edit from
+ * its table: only who may edit projects may do it.
+ */
 const editProjects =
   PageHelioProjects.table.getAction("edit") ?? PageHelioProjects;
 
-// Tell the tables and blocks watching projects and tasks that rows changed
-// outside their data routes, so they read them again.
+/**
+ * Tells the tables and blocks watching projects and tasks that rows changed
+ * outside their data routes, so they read them again.
+ */
 async function announceChanges(projectId: string, taskIds: string[]) {
   await PublishMessage(tableViewRowTopic(PROJECTS_LOCATION), "updated", {
     payload: { ids: [projectId] },
@@ -58,8 +62,10 @@ async function announceChanges(projectId: string, taskIds: string[]) {
   }
 }
 
-// A page that only forwards the browser to `url` (HTML-escaped for the
-// attribute and the script string).
+/**
+ * A page that only forwards the browser to `url`, escaped for the attribute and
+ * the script string.
+ */
 function redirectPage(url: string): string {
   const attribute = url.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
   return `<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${attribute}"><script>location.replace(${JSON.stringify(url)})</script>`;
@@ -128,7 +134,10 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     return invoicingMeter(await loadBundle(id));
   }
 
-  // The tab counters: tasks, history entries, invoices and the quote.
+  /**
+   * The tab counters: tasks, history entries, invoices and the quote, which
+   * counts as one or none, not as its line count.
+   */
   @Get(":id/badges")
   async badges(
     @AuthUserWithPermission(PageHelioProject) _user: User,
@@ -140,7 +149,6 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
       tasks: bundle.tasks.length,
       activity: activity.count,
       invoices: bundle.invoices.length,
-      // The signed quote: one, or none yet (not its line count).
       quote: bundle.quote ? 1 : 0,
     };
   }
@@ -162,7 +170,7 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     return { items: quoteFacts(await loadQuote(project.quote)) };
   }
 
-  // The lines of the signed quote, for a read-only source table.
+  /** The lines of the project's quote, for a read-only source table. */
   @Get(":id/quote-lines")
   async quoteLines(
     @AuthUserWithPermission(PageHelioProject) _user: User,
@@ -173,16 +181,19 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     return { results, total: results.length };
   }
 
-  // The "Route" header button opens this in a new tab: the address is only
-  // known here. The page sends the browser on to Google Maps itself, since
-  // the DMS frontend proxy follows a 302 server-side instead of relaying it.
+  /**
+   * Opened in a new tab by the "Route" header button, since the address is only
+   * known here. It answers a page that sends the browser on to Google Maps
+   * itself, because the DMS frontend proxy follows a 302 server-side instead of
+   * relaying it. The header buttons stay on a page whose project is gone (the
+   * layout cannot know the path's id), so a missing project leads back to the
+   * projects list instead of answering 404.
+   */
   @Get(":id/directions")
   async directions(
     @AuthUserWithPermission(PageHelioProject) _user: User,
     @Parameter("id", "param") id: string,
   ) {
-    // The header buttons stay on a page whose project is gone (the layout
-    // cannot know the path's id): back to the projects list then.
     const project = await GetModel(ProjectModel).get(id);
     const target = project
       ? directionsUrl(addressLine(project))
@@ -194,15 +205,16 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     );
   }
 
-  // The dialog "Mark as done" asks in, worded for this project: what it
-  // closes, or why it cannot run.
+  /**
+   * The dialog "Mark as done" asks in, worded for this project: what it closes,
+   * or why it cannot run. The header buttons stay on a page whose project is
+   * gone, so a missing project is a blocked dialog saying so, not a 404.
+   */
   @Get(":id/done-confirm")
   async doneConfirm(
     @AuthUserWithPermission(editProjects) _user: User,
     @Parameter("id", "param") id: string,
   ): Promise<ConfirmDialog> {
-    // The header buttons stay on a page whose project is gone: the dialog
-    // says so instead of failing on a 404.
     const project = await GetModel(ProjectModel).get(id);
     if (!project) {
       return {
@@ -261,10 +273,12 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     };
   }
 
-  // Closes the project: its open tasks are done and its end date becomes
-  // today, the day the installation was handed over. A start still ahead
-  // (a project put on site early) moves to today too, so the project never
-  // ends before it starts.
+  /**
+   * Closes the project: its open tasks are done and its end date becomes today,
+   * the day the installation was handed over. A start still ahead (a project
+   * put on site early) moves to today too, so the project never ends before it
+   * starts.
+   */
   @Post(":id/done")
   async markDone(
     @AuthUserWithPermission(editProjects) _user: User,
@@ -283,7 +297,6 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     );
     const now = new Date();
     const changes: Partial<Project> = { status: "done", plannedEnd: now };
-    // A project finished before its planned start started today.
     if (new Date(project.plannedStart).getTime() > now.getTime()) {
       changes.plannedStart = now;
     }

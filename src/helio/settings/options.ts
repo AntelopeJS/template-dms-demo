@@ -1,6 +1,8 @@
-// Option lists of the settings form. Values are what the settings document
-// stores; labels are i18n keys of helio-settings-*.json.
-
+/**
+ * The legal forms of the company. Like the other option lists of the settings
+ * form, `value` is what the settings document stores and `label` an i18n key of
+ * helio-settings-*.json.
+ */
 export const LEGAL_FORMS = [
   { value: "srl", label: "$helio.settings.legalForms.srl" },
   { value: "sa", label: "$helio.settings.legalForms.sa" },
@@ -9,6 +11,7 @@ export const LEGAL_FORMS = [
   { value: "sole", label: "$helio.settings.legalForms.sole" },
 ];
 
+/** The days of the week the crews can work. */
 export const WEEKDAYS = [
   { value: "mon", label: "$helio.settings.weekdays.mon" },
   { value: "tue", label: "$helio.settings.weekdays.tue" },
@@ -19,6 +22,7 @@ export const WEEKDAYS = [
   { value: "sun", label: "$helio.settings.weekdays.sun" },
 ];
 
+/** The channels an overdue-invoice reminder can go through. */
 export const REMINDER_CHANNELS = [
   { value: "email", label: "$helio.settings.reminderChannels.email" },
   { value: "sms", label: "$helio.settings.reminderChannels.sms" },
@@ -28,6 +32,7 @@ export const REMINDER_CHANNELS = [
   },
 ];
 
+/** The tones of an overdue-invoice reminder. */
 export const REMINDER_TEMPLATES = [
   { value: "friendly", label: "$helio.settings.reminderTemplates.friendly" },
   { value: "firm", label: "$helio.settings.reminderTemplates.firm" },
@@ -37,6 +42,7 @@ export const REMINDER_TEMPLATES = [
   },
 ];
 
+/** The events a webhook can subscribe to. */
 export const WEBHOOK_EVENTS = [
   {
     value: "ticket.created",
@@ -60,6 +66,7 @@ export const WEBHOOK_EVENTS = [
   },
 ];
 
+/** The accounting packages the company can connect. */
 export const ACCOUNTING_SOFTWARE = [
   {
     value: "winbooks",
@@ -83,6 +90,7 @@ export const ACCOUNTING_SOFTWARE = [
   },
 ];
 
+/** The channels alerts are sent through. */
 export const ALERT_CHANNELS = [
   {
     value: "email",
@@ -110,6 +118,7 @@ export const ALERT_CHANNELS = [
   },
 ];
 
+/** How often the notification digest is sent. */
 export const DIGEST_FREQUENCIES = [
   { value: "off", label: "$helio.settings.digest.off" },
   { value: "daily", label: "$helio.settings.digest.daily" },
@@ -128,8 +137,10 @@ export const ZONE_SUGGESTIONS = [
   "Brabant flamand",
 ];
 
-// Placeholders of the alert payload template, offered by its autocomplete.
-// The editor shows `detail` untranslated, so the entries carry none.
+/**
+ * Placeholders of the alert payload template, offered by its autocomplete. The
+ * editor shows `detail` untranslated, so the entries carry none.
+ */
 export const PAYLOAD_COMPLETIONS = [
   { label: "{{site.name}}", icon: "i-ph-solar-panel" },
   { label: "{{site.city}}", icon: "i-ph-map-pin" },

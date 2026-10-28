@@ -1,8 +1,3 @@
-// The billing calendar of a seeded workspace: a period starts on each monthly
-// (or yearly) anniversary of the workspace's creation, the date stored on its
-// tenant row. Reading the stored date keeps invoices, numbers and renewals the
-// same on every boot, while new periods keep appearing as time passes.
-
 import { findPlan } from "./plans";
 import { addDays, addMonths } from "./rows";
 import type { SeedWorkspace } from "./workspaces";
@@ -45,7 +40,14 @@ export function isInvoiced(workspace: SeedWorkspace): boolean {
   );
 }
 
-/** The periods begun by `now`, capped for a workspace that churned. */
+/**
+ * The billing calendar of a workspace: a period starts on each monthly (or
+ * yearly) anniversary of `anchor`, the workspace's creation date as stored on
+ * its tenant row. Deriving periods from a stored date keeps invoices, numbers
+ * and renewals the same on every boot, while new periods keep appearing as
+ * time passes. Returns the periods begun by `now`, capped for a workspace that
+ * churned.
+ */
 export function billingPeriods(
   workspace: SeedWorkspace,
   anchor: Date,

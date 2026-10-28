@@ -1,9 +1,3 @@
-// A warning while invoices are overdue: how many and how much, with a button
-// to the overdue tab. A block of the Helio dashboard, not a layout banner:
-// those show on every page of the platform, modules included; the invoices
-// list says it already in its overdue KPI. Resolved per request, so it goes
-// away by itself once the last one is paid.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { BannerContent } from "@antelopejs/interface-dms/base/banner";
 import { tableViewLink } from "@antelopejs/interface-dms/base/table-view";
@@ -11,9 +5,16 @@ import { sweepOverdueInvoices } from "./actions";
 import { InvoiceModel } from "./database";
 import { PageHelioInvoices } from "./page";
 
+/**
+ * A warning while invoices are overdue: how many and how much, with a button
+ * to the overdue tab, or `null` when none is. A block of the Helio dashboard,
+ * not a layout banner, since those show on every page of the platform and the
+ * invoices list already says it in its overdue KPI. Resolved per request, so
+ * it goes away by itself once the last overdue invoice is paid. Archived
+ * invoices are left out, like in the overdue tab the button opens.
+ */
 export async function overdueInvoicesBanner(): Promise<BannerContent | null> {
   await sweepOverdueInvoices();
-  // Archived rows stay out, like in the overdue tab the button opens.
   const overdue = (
     await GetModel(InvoiceModel).getBy("status", "overdue")
   ).filter((invoice) => !invoice.isArchived);

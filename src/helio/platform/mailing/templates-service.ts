@@ -1,7 +1,4 @@
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
-// The after-sales e-mails: the acknowledgement of a service request, with the
-// time Helio commits to answer by, and the notice once it is resolved.
-
 import type { TemplateDeclaration } from "@antelopejs/interface-dms-mailing";
 import {
   button,
@@ -152,4 +149,8 @@ const ticketResolved: TemplateDeclaration = {
   },
 };
 
+/**
+ * The after-sales e-mails: the acknowledgement of a service request, with the
+ * time Helio commits to answer by, and the notice once it is resolved.
+ */
 export const SERVICE_TEMPLATES = [ticketReceived, ticketResolved];

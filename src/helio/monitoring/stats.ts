@@ -1,6 +1,3 @@
-// The fleet's figures of the moment: the stat strip, the two meters and the
-// facts of one site in its drawer. They read the instant, not the period.
-
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { ComposedText } from "@antelopejs/interface-dms/base/types";
 import {
@@ -14,7 +11,7 @@ import { MONITORING_PAGE_PATH } from "./links";
 import { startOfLocalDay } from "./period";
 import { DEGRADED_OUTPUT, energyKwh } from "./solar";
 
-// A Belgian household uses about 3,500 kWh a year.
+/** A Belgian household uses about 3,500 kWh a year. */
 const HOUSEHOLD_DAILY_KWH = 9.6;
 
 const decimal = (value: number) => ({ type: "number", value }) as const;
@@ -76,7 +73,11 @@ function sitesItem(sites: readonly FleetSite[]): StatGroupItem {
   };
 }
 
-/** The stat strip: capacity, output now, energy today and the sites' state. */
+/**
+ * The stat strip: capacity, output now, energy today and the sites' state. The
+ * fleet's figures here, the meters and the site drawer read the instant, not
+ * the period.
+ */
 export function fleetStats(
   sites: readonly FleetSite[],
   now: number,

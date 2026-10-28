@@ -1,24 +1,16 @@
-// A small, deterministic photovoltaic model for the fleet page. Production is
-// a pure function of the instant: the sun's course over Liège (day length and
-// peak by season), the day's weather and passing clouds (hashed from the date,
-// so every request and every machine sees the same sky), and each site's own
-// factor (orientation, a degraded inverter, an inverter gone silent). No
-// telemetry is stored: any period can be recomputed, and the simulator only
-// has to say "new readings" for the page to move.
-
 import { DAY_MS } from "../shared/seed";
 
 const HOUR_MS = 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
 const YEAR_DAYS = 365;
 const SUMMER_SOLSTICE_DOY = 172;
-// Solar noon in Liège (5.57° E) falls around 11:40 UTC all year round.
+/** Solar noon in Liège (5.57° E) falls around 11:40 UTC all year round. */
 const SOLAR_NOON_UTC_H = 11.65;
-// Clouds are drawn on knots 20 minutes apart and blended between them.
+/** Clouds are drawn on knots 20 minutes apart and blended between them. */
 const CLOUD_KNOT_MS = 20 * MINUTE_MS;
-// The live jitter of an inverter reading changes on every 10-second report.
+/** The live jitter of an inverter reading changes on every 10-second report. */
 export const REPORT_INTERVAL_MS = 10 * 1000;
-// A degraded inverter delivers about half of what its panels could.
+/** A degraded inverter delivers about half of what its panels could. */
 export const DEGRADED_OUTPUT = 0.55;
 
 /** What the model needs to know about one site. */
@@ -35,7 +27,7 @@ export interface SiteProfile {
   activeUntil: number;
 }
 
-// A 32-bit integer hash of a few integers, folded to [0, 1).
+/** A 32-bit integer hash of a few integers, folded to [0, 1). */
 function hash01(...values: number[]): number {
   let state = 0x9e3779b9;
   for (const value of values) {
@@ -53,12 +45,14 @@ function seasonCos(ms: number): number {
   );
 }
 
-/** Clear-sky output of 1 kWp at `ms`, as a fraction of its peak power. */
+/**
+ * Clear-sky output of 1 kWp at `ms`, as a fraction of its peak power. Daylight
+ * lasts 16.4 h in June and 8 h in December, and tilted panels peak near
+ * 0.87 kW/kWp in June and 0.43 in December.
+ */
 function clearSky(ms: number): number {
   const season = seasonCos(ms);
-  // 16.4 h of daylight in June, 8 h in December.
   const daylight = 12.2 + 4.2 * season;
-  // Tilted panels peak near 0.87 kW/kWp in June, 0.43 in December.
   const peak = 0.65 + 0.22 * season;
   const hourUtc = (ms % DAY_MS) / HOUR_MS;
   const fromNoon = hourUtc - SOLAR_NOON_UTC_H;
@@ -71,7 +65,7 @@ function dayClearness(ms: number): number {
   return 0.3 + 0.7 * hash01(Math.floor(ms / DAY_MS), 17);
 }
 
-// Passing clouds: a smooth 0–1 curve shared by the whole region.
+/** Passing clouds: a smooth 0–1 curve shared by the whole region. */
 function clouds(ms: number): number {
   const knot = Math.floor(ms / CLOUD_KNOT_MS);
   const blend = (ms - knot * CLOUD_KNOT_MS) / CLOUD_KNOT_MS;
@@ -96,8 +90,10 @@ export function statusFactor(status: string): number {
   return status === "degraded" ? DEGRADED_OUTPUT : 1;
 }
 
-// Local weather: a site sees a little more or less sun than the region on a
-// given day, so two sites never move in lockstep.
+/**
+ * Local weather: a site sees a little more or less sun than the region on a
+ * given day, so two sites never move in lockstep.
+ */
 function localSky(site: SiteProfile, ms: number): number {
   return 0.88 + 0.24 * hash01(site.index, Math.floor(ms / DAY_MS), 7);
 }
@@ -106,7 +102,16 @@ function isActive(site: SiteProfile, ms: number): boolean {
   return ms >= site.activeFrom && ms <= site.activeUntil;
 }
 
-/** What a site's inverter reads at `ms`, in kW, report jitter included. */
+/**
+ * What a site's inverter reads at `ms`, in kW, report jitter included. A small,
+ * deterministic photovoltaic model: production is a pure function of the
+ * instant, made of the sun's course over Liège (day length and peak by
+ * season), the day's weather and passing clouds (hashed from the date, so
+ * every request and every machine sees the same sky), and each site's own
+ * factor (orientation, a degraded inverter, an inverter gone silent). No
+ * telemetry is stored: any period can be recomputed, and the simulator only
+ * has to say "new readings" for the page to move.
+ */
 export function sitePowerKw(site: SiteProfile, ms: number): number {
   if (!isActive(site, ms)) return 0;
   const report = Math.floor(ms / REPORT_INTERVAL_MS);
@@ -120,8 +125,10 @@ export function sitePowerKw(site: SiteProfile, ms: number): number {
   );
 }
 
-// Sampling step for integrating a bucket: fine enough for the curve, few
-// enough samples to answer a 90-day range at once.
+/**
+ * Sampling step for integrating a bucket: fine enough for the curve, few
+ * enough samples to answer a 90-day range at once.
+ */
 function sampleStep(spanMs: number): number {
   if (spanMs <= HOUR_MS) return 5 * MINUTE_MS;
   if (spanMs <= 6 * HOUR_MS) return 15 * MINUTE_MS;

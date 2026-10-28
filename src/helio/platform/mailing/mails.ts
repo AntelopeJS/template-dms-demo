@@ -1,8 +1,3 @@
-// What each Helio e-mail says about a quote, an invoice, a project or a
-// ticket: the recipient, the locale and the variables of its template. The
-// live sends and the imported history both build their e-mails here, so an
-// old send in the log reads exactly like a new one.
-
 import type { Customer } from "../../crm/database";
 import { structuredReference } from "../../finance/document";
 import type { Invoice } from "../../finance/database";
@@ -24,7 +19,12 @@ import {
   portalUrl,
 } from "./format";
 
-/** One e-mail to send: the template, who receives it and what it says. */
+/**
+ * One e-mail to send: the template, who receives it and what it says about a
+ * quote, an invoice, a project or a ticket. The live sends and the imported
+ * history both build their e-mails in this module, so an old send in the log
+ * reads exactly like a new one.
+ */
 export interface HelioMail {
   slug: HelioTemplateSlug;
   to: { email: string; name: string };
@@ -34,7 +34,7 @@ export interface HelioMail {
 
 type Person = Pick<TeamMember, "name" | "email" | "phone">;
 
-// When a customer has no account manager, the office signs.
+/** The office, who signs the e-mail when a customer has no account manager. */
 const HELIO_DESK: Person = {
   name: "Helio",
   email: "contact@helio.example",
@@ -129,14 +129,17 @@ export function invoiceIssuedMail(
   }));
 }
 
-/** The reminder number `reminderNumber`, as written on `at`. */
+/**
+ * The reminder number `reminderNumber`, as written on `at`. Days overdue are
+ * calendar days, as the invoice list counts them (`finance/due.ts`), and at
+ * least 1.
+ */
 export function invoiceReminderMail(
   invoice: Invoice,
   customer: Customer,
   reminderNumber: number,
   at: Date = new Date(),
 ): HelioMail {
-  // Calendar days, as the invoice list counts them (finance/due.ts).
   const daysOverdue = Math.max(1, daysLate(invoice.dueAt, at.getTime()));
   return mailTo(HELIO_TEMPLATES.invoiceReminder, customer, (locale) => ({
     invoice: {

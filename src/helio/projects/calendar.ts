@@ -1,10 +1,10 @@
-// The work calendar of the installation crews: they work Monday to Friday,
-// and the season drives how many installations start each month (a slow
-// winter, the spring and summer peak of a solar installer, a busy September).
-
 import { DAY_MS, type Rng } from "../shared/seed";
 
-/** Relative weight of the installations starting in each month, January first. */
+/**
+ * Relative weight of the installations starting in each month, January first:
+ * a slow winter, the spring and summer peak of a solar installer, and a busy
+ * September.
+ */
 const MONTH_WEIGHTS = [2, 4, 7, 9, 10, 10, 8, 7, 9, 7, 4, 2] as const;
 
 /** Midnight of the day `offset` days from today (negative for the past). */
@@ -14,6 +14,7 @@ export function dayAt(offset: number): Date {
   return date;
 }
 
+/** Whether the crews work that day: Monday to Friday. */
 export function isWorkday(date: Date): boolean {
   const day = date.getDay();
   return day !== 0 && day !== 6;

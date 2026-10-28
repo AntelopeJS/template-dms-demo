@@ -1,7 +1,3 @@
-// The catalog from the shared rosters: categories as they are, products with
-// the details a catalog page shows (cost, stock, image, warranty…). Fixed per
-// product so the catalog never changes between two fresh databases.
-
 import {
   PRODUCT_CATEGORY_ROSTER,
   PRODUCT_ROSTER,
@@ -28,11 +24,14 @@ export interface ProductSeed {
   category: string;
   price: number;
   cost: number;
-  /** Absent for a service. */
+  /** Absent for a service, so the table shows a dash instead of "0 W / Wh". */
   power?: number;
   unit: ProductRosterEntry["unit"];
+  /** Absent for a service: services carry no stock at all. */
   stock?: number;
+  /** Absent whenever `stock` is. */
   stockMin?: number;
+  /** Drawn by the backend (visuals.ts): no network, same on every machine. */
   image: string;
   tags: string[];
   isActive: boolean;
@@ -40,6 +39,7 @@ export interface ProductSeed {
   warrantyYears: number;
 }
 
+/** The categories of PRODUCT_CATEGORY_ROSTER, as they are. */
 export function buildProductCategories(): ProductCategorySeed[] {
   return PRODUCT_CATEGORY_ROSTER.map(({ id, name, parent }) => {
     const category: ProductCategorySeed = { _id: id, name: { ...name } };
@@ -306,6 +306,12 @@ function familyOf(categoryId: string): string {
   return leaf?.parent ?? categoryId;
 }
 
+/**
+ * The products of PRODUCT_ROSTER with the details a catalog page shows (cost,
+ * stock, image, warranty…). Every value is fixed per product so the catalog
+ * never changes between two fresh databases. Throws when a roster product has
+ * no entry in `DETAILS`.
+ */
 export function buildProducts(): ProductSeed[] {
   return PRODUCT_ROSTER.map((product, index) => {
     const detail = DETAILS[product.id];
@@ -319,17 +325,14 @@ export function buildProducts(): ProductSeed[] {
       category: product.category,
       price: product.price,
       cost: Math.round(product.price * detail.costRatio * 100) / 100,
-      // A service has no power: absent, shown "—", not "0 W / Wh".
       power: product.power > 0 ? product.power : undefined,
       unit: product.unit,
-      // Drawn by the backend (visuals.ts): no network, same on every machine.
       image: productVisualUrl(familyOf(product.category), product.sku),
       tags: detail.tags,
       isActive: detail.isActive ?? true,
       displayOrder: (index + 1) * 10,
       warrantyYears: detail.warrantyYears,
     };
-    // Services carry no stock at all.
     if (stock !== undefined) {
       seed.stock = stock;
       seed.stockMin = stockMin;

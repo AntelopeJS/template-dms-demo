@@ -1,7 +1,4 @@
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
-// The e-mails of the sales cycle: the quote a customer receives, the thank
-// you once it is signed, and the confirmation of the installation date.
-
 import type { TemplateDeclaration } from "@antelopejs/interface-dms-mailing";
 import {
   button,
@@ -265,6 +262,10 @@ const installationScheduled: TemplateDeclaration = {
   },
 };
 
+/**
+ * The e-mails of the sales cycle: the quote a customer receives, the thank you
+ * once it is signed, and the confirmation of the installation date.
+ */
 export const SALES_TEMPLATES = [
   quoteSent,
   quoteAccepted,

@@ -2,7 +2,7 @@ import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { ProjectTaskModel } from "./database";
 
-// Positions are spaced by this step so a move lands between two rows.
+/** Positions are spaced by this step so a move lands between two rows. */
 const POSITION_STEP = 1000;
 
 /**

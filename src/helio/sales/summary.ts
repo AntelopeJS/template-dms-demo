@@ -1,13 +1,11 @@
-// What the expanded row of a quote says about its lines: the first two (one
-// field, the second under the first), then the rest in one entry. A band of
-// label/value pairs draws a fixed list of fields, so each must always have
-// something to show.
-
 import type { ComposedText } from "@antelopejs/interface-dms/base/types";
 import type { QuoteLine } from "./database";
 import { linesSubtotal } from "./lines";
 
-/** The lines shown one by one before the rest is summed up. */
+/**
+ * The lines the expanded row of a quote shows one by one (the first, with the
+ * second under it) before the rest is summed up in one entry.
+ */
 export const SHOWN_LINES = 2;
 
 function money(amount: number) {
@@ -40,7 +38,8 @@ function describeLine(line: QuoteLine): ComposedText {
 
 /**
  * What follows the lines shown one by one: the next line alone, how many
- * follow and what they add up to, or that there is nothing more.
+ * follow and what they add up to, or that there is nothing more. A band of
+ * label/value pairs draws a fixed list of fields, so it never returns null.
  */
 export function otherLinesText(
   lines: readonly QuoteLine[] | undefined,

@@ -1,8 +1,3 @@
-// What the operations fixtures need to know about the CRM seed: each
-// customer's kind, name and address, and which customer every deal belongs
-// to. Read from the CRM's own generators (deterministic, cached), so quotes,
-// projects, sites, tickets and invoices always point at matching customers.
-
 import {
   buildCustomers,
   buildDeals,
@@ -10,10 +5,18 @@ import {
   type DealSeed,
 } from "../crm/fixtures";
 
+/**
+ * A seeded customer as the operations fixtures read it, from the CRM's own
+ * deterministic generators, so quotes, projects, sites, tickets and invoices
+ * point at matching customers.
+ */
 export type CustomerFacts = CustomerSeed;
+/** A seeded deal, whose `customer` is the customer it belongs to. */
 export type DealFacts = DealSeed;
 
+/** Cached customers of the CRM seed, built on first use. */
 let customers: Map<string, CustomerFacts> | undefined;
+/** Cached deals of the CRM seed, built on first use. */
 let deals: Map<string, DealFacts> | undefined;
 
 function customerMap(): Map<string, CustomerFacts> {

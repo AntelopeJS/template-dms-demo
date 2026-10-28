@@ -1,9 +1,11 @@
 import type { TableViewOptions } from "@antelopejs/interface-dms/base/table-view";
 import { SERVICES_FAMILY } from "./options";
 
-// How the catalog page shows the products. Kept apart from the page so the
-// page reads as its blocks.
-
+/**
+ * The saved views of the catalog table. The to-reorder view switches to the
+ * grid with the threshold beside the stock, which reads better than cards for
+ * that list.
+ */
 const VIEWS: TableViewOptions["views"] = {
   layout: "strip",
   defaultView: "all",
@@ -22,8 +24,6 @@ const VIEWS: TableViewOptions["views"] = {
       filters: [{ accessorKey: "isActive", mode: "is", value: "true" }],
     },
     {
-      // The reorder list reads best as a grid with the threshold beside the
-      // stock.
       id: "to-reorder",
       label: "$helio.catalog.products.views.toReorder",
       icon: "i-ph-warning",
@@ -85,24 +85,34 @@ const FORMS: TableViewOptions["formContainer"] = {
   },
 };
 
+/**
+ * How the catalog page shows the products. Kept apart from the page so the
+ * page reads as its blocks.
+ */
 export const productTableOptions: TableViewOptions = {
   caption: "$helio.catalog.products.caption",
   labelKey: "name",
   searchPlaceholder: "$helio.catalog.products.search",
-  // Cards first: a catalog is browsed by its pictures. The grid and the
-  // grouped display stay one click away.
+  /**
+   * Cards first: a catalog is browsed by its pictures. The grid and the
+   * grouped display stay one click away.
+   */
   displays: [{ id: "cards" }, { id: "table" }],
   defaultDisplay: "cards",
   card: {
     fields: ["picture", "price", "category", "stock", "margin", "stockLevel"],
   },
-  // Grouped by range and not by family: with `reorder`, the grouped display
-  // still lists the rows by position instead of by group, and a database
-  // computed field (the family) is only returned when sorted on. The seeded
-  // positions keep each range together, so the groups read right.
+  /**
+   * Grouped by range and not by family: with `reorder`, the grouped display
+   * still lists the rows by position instead of by group, and a database
+   * computed field (the family) is only returned when sorted on. The seeded
+   * positions keep each range together, so the groups read right.
+   */
   grouped: { groupByField: "category", collapsible: true, count: true },
-  // The order the sales team sets by hand, which quotes follow too. Every
-  // product fits on one page, so any product can be moved anywhere.
+  /**
+   * The order the sales team sets by hand, which quotes follow too. Every
+   * product fits on one page, so any product can be moved anywhere.
+   */
   reorder: { field: "displayOrder" },
   pageSize: 25,
   expandable: {

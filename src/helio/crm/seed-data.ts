@@ -1,6 +1,3 @@
-// Raw material of the CRM fixtures: Belgian names and real Walloon and
-// Brussels localities with their postcodes.
-
 import type { DealStage } from "./database";
 
 export interface Locality {
@@ -10,6 +7,10 @@ export interface Locality {
   streets: readonly string[];
 }
 
+/**
+ * Real Walloon and Brussels localities with their postcodes, the raw material
+ * of the CRM fixtures' addresses.
+ */
 export const LOCALITIES: readonly Locality[] = [
   {
     city: "Liège",
@@ -301,8 +302,10 @@ export const LAST_NAMES = [
   "Graindorge",
 ];
 
-// Reserved example domains only (RFC 2606): a real mail server configured
-// on the demo can never reach a real person.
+/**
+ * Reserved example domains only (RFC 2606), so a real mail server configured on
+ * the demo can never reach a real person.
+ */
 export const MAIL_DOMAINS = [
   "mail.example",
   "courriel.example",

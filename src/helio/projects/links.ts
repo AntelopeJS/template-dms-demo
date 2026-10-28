@@ -1,8 +1,8 @@
-// The URLs of the projects pages and of the routes feeding the detail page,
-// kept apart from the page classes so the routes and the pages can both read
-// them without importing each other.
-
-/** The projects list (planning, grid and board). */
+/**
+ * The projects list (planning, grid and board). The URLs of this file are kept
+ * apart from the page classes so the routes and the pages can both read them
+ * without importing each other.
+ */
 export const PROJECTS_PAGE_URL = "/helio/operations/projects";
 
 /** The detail page of one project, its `_id` in the path. */
@@ -21,8 +21,10 @@ export function projectDetailRoute(route: string): string {
   return `${PROJECT_DETAIL_API}/{{params.id}}/${route}`;
 }
 
-// The other Helio pages a project links to. They open the record through
-// `?record=<id>`, the deep link the dashboard's activity links use too.
+/**
+ * The other Helio pages a project links to. They open the record through
+ * `?record=<id>`, the deep link the dashboard's activity links use too.
+ */
 export const HELIO_RECORD_LINKS = {
   customer: "/helio/sales/customers?record=",
   quote: "/helio/sales/quotes?record=",

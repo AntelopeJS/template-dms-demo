@@ -1,8 +1,3 @@
-// Writes what users do to helio_activity, so the dashboard's activity feed
-// reflects the business as it moves: a quote sent or accepted, a deal won, a
-// project finished, a ticket resolved, an invoice paid. Every Helio domain
-// logs through here, with the same links and tones as the seeded history.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
@@ -31,7 +26,11 @@ export interface ActivityEntry {
 let sequence = 0;
 
 /**
- * Logs business events, now, and tells the open dashboards. Never fails the
+ * Writes what users do to helio_activity, so the dashboard's activity feed
+ * reflects the business as it moves: a quote sent or accepted, a deal won, a
+ * project finished, a ticket resolved, an invoice paid. Every Helio domain
+ * logs through here, with the same links and tones as the seeded history.
+ * Logs the events now and tells the open dashboards. Never fails the
  * action that logged them: the action is done, a missing feed entry is not
  * worth an error for the user.
  */

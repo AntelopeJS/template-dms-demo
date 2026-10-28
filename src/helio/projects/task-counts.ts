@@ -1,13 +1,16 @@
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { ProjectTaskModel } from "./database";
 
+/** The task counts of a project. */
 export interface ProjectTaskTally {
   done: number;
   total: number;
 }
 
-// One read per listed row, shared by the getters that need it: the row
-// object a list hands to the getters is the key.
+/**
+ * One read per listed row, shared by the getters that need it: the row object
+ * a list hands to the getters is the key.
+ */
 const tallies = new WeakMap<object, Promise<ProjectTaskTally>>();
 
 /** How many tasks a project has, and how many are done. */

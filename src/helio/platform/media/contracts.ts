@@ -1,9 +1,5 @@
 import type { DocSpec } from "./pdf-layout";
 
-// Contracts and certificates of the office: the general terms, the
-// maintenance contract template, the installer certifications and the
-// insurance certificate a customer or a network operator asks for.
-
 export interface LibraryDocument {
   /** Stable part of the declaration key. */
   slug: string;
@@ -238,7 +234,12 @@ function projectContract(project: ContractProject): LibraryDocument {
   };
 }
 
-/** Every document of the "Contracts & certificates" folder. */
+/**
+ * Every document of the "Contracts & certificates" folder: the general terms,
+ * the maintenance contract template, the installer certifications and the
+ * insurance certificate a customer or a network operator asks for, then the
+ * signed contract of each project.
+ */
 export function contractDocuments(
   projects: readonly ContractProject[],
 ): LibraryDocument[] {

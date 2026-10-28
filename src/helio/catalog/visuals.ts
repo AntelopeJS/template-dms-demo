@@ -6,17 +6,12 @@ import {
 } from "@antelopejs/interface-api";
 import type { ProductFamily } from "./options";
 
-// Product visuals drawn as SVG by the backend itself: a pictogram of the
-// product family on its colour, with the SKU underneath. Nothing is fetched
-// from the network nor stored, so the catalog shows pictures offline and the
-// same ones on every machine. Native `ImageType` values cannot be seeded (see
-// the catalog page), so products keep a plain image URL pointing here.
-
+/** Where the backend serves the product visuals from. */
 export const VISUALS_PATH = "/api/helio/catalog-visuals";
 
 const SIZE = 256;
 const MAX_LABEL_LENGTH = 16;
-// A day: the drawing only depends on the URL.
+/** A day: the drawing only depends on the URL. */
 const CACHE_CONTROL = "public, max-age=86400";
 
 interface FamilyArt {
@@ -95,8 +90,16 @@ export function productVisualUrl(family: string, sku: string): string {
   return `${VISUALS_PATH}/${family}/${encodeURIComponent(sku)}`;
 }
 
-// Public on purpose, like a product photo on a CDN: an <img> sends no token,
-// and the drawing holds nothing but a family and a SKU.
+/**
+ * Serves the product visuals, drawn as SVG by the backend itself: a pictogram
+ * of the product family on its colour, with the SKU underneath. Nothing is
+ * fetched from the network nor stored, so the catalog shows pictures offline
+ * and the same ones on every machine. Native `ImageType` values cannot be
+ * seeded, so products keep a plain image URL pointing here.
+ *
+ * Public on purpose, like a product photo on a CDN: an <img> sends no token,
+ * and the drawing holds nothing but a family and a SKU.
+ */
 export class CatalogVisualsApi extends Controller(VISUALS_PATH) {
   @Get(":family/:label")
   getVisual(

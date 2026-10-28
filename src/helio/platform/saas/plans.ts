@@ -1,9 +1,3 @@
-// The Helio price list. Helio SRL built its ERP for its own installation
-// business and now sells it to other solar and EV-charger installers: Starter
-// for independents, Pro and Business for growing teams, Enterprise for
-// networks. Each tier inherits the previous one and adds the Helio pages it
-// unlocks, so a plan's permissions really gate the dashboard.
-
 import type {
   PlanAudience,
   PlanBillingMode,
@@ -17,6 +11,12 @@ export const PLAN_IDS = {
   pro: "helio-plan-pro",
   business: "helio-plan-business",
   enterprise: "helio-plan-enterprise",
+  /**
+   * The hidden plan of the publisher's own workspace (the platform's default
+   * tenant): every page, so the owner account and any colleague invited there
+   * see the whole demo. Priced 0 and reserved to businesses, so dms-saas never
+   * picks it as the default plan of a sign-up.
+   */
   hq: "helio-plan-hq",
 } as const;
 
@@ -50,18 +50,20 @@ export interface SeedPlan {
   features: Record<string, boolean | number>;
 }
 
-// The component catalogue under Pages is the template's showcase of raw
-// blocks, not part of the product sold to installers.
+/**
+ * The component catalogue under Pages is the template's showcase of raw
+ * blocks, not part of the product sold to installers.
+ */
 const DEMO_ONLY_SUBTREES = ["pages.components"];
 
-// Unlocked by Pro: selling as a team and running after-sales service.
+/** Unlocked by Pro: selling as a team and running after-sales service. */
 export const PRO_SUBTREES = [
   "helio.sales.pipeline",
   "helio.operations.service",
   "helio.operations.team",
 ];
 
-// Unlocked by Business: live supervision of the installed fleet.
+/** Unlocked by Business: live supervision of the installed fleet. */
 export const BUSINESS_SUBTREES = ["helio.monitoring"];
 
 /** What the base plan leaves out: the add-ons and the demo-only pages. */
@@ -74,6 +76,13 @@ export const BASE_EXCLUDED_SUBTREES = [
 const F = FEATURE_IDS;
 const EUR = "EUR";
 
+/**
+ * The Helio price list. Helio SRL built its ERP for its own installation
+ * business and now sells it to other solar and EV-charger installers: Starter
+ * for independents, Pro and Business for growing teams, Enterprise for
+ * networks. Each tier inherits the previous one and adds the Helio pages it
+ * unlocks, so a plan's permissions really gate the dashboard.
+ */
 export const PLANS: SeedPlan[] = [
   {
     id: PLAN_IDS.starter,
@@ -196,10 +205,6 @@ export const PLANS: SeedPlan[] = [
     },
   },
   {
-    // The publisher's own workspace (the platform's default tenant) runs on
-    // this hidden plan: every page, so the owner account and any colleague
-    // invited there see the whole demo. Priced 0 and reserved to businesses,
-    // so dms-saas never picks it as the default plan of a sign-up.
     id: PLAN_IDS.hq,
     slug: "helio-hq",
     name: { en: "Helio HQ", fr: "Helio HQ" },

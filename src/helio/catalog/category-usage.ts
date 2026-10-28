@@ -2,18 +2,18 @@ import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { ProductCategoryModel, ProductModel } from "./database";
 
-// What hangs off a category: its products, and for a family its ranges. The
-// category list counts them, and deleting a category that still holds any
-// is refused, so no product nor range is left pointing at nothing.
-
 const CONFLICT = 409;
 
+/** The ids of the ranges whose parent is the given family. */
 async function rangesOf(familyId: string): Promise<string[]> {
   const ranges = await GetModel(ProductCategoryModel).getBy("parent", familyId);
   return ranges.map((range) => range._id);
 }
 
-/** Products filed under a range, or under every range of a family. */
+/**
+ * Counts the products filed under a range, or under every range of a family.
+ * The category list shows this count.
+ */
 export async function countCategoryProducts(
   id: string,
   isFamily: boolean,
@@ -26,7 +26,10 @@ export async function countCategoryProducts(
   return products.length;
 }
 
-/** Refuses to delete a category that still holds products or ranges. */
+/**
+ * Refuses to delete a category that still holds products or ranges, so no
+ * product nor range is left pointing at nothing.
+ */
 export async function refuseUsedCategories(ids: string[]): Promise<void> {
   const [products, ranges] = await Promise.all([
     GetModel(ProductModel).getBy("category", ...ids),

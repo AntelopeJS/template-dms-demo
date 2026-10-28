@@ -8,7 +8,7 @@ import { REMINDER_CHANNELS, REMINDER_TEMPLATES } from "./options";
 
 const NAV_GROUP = "$helio.settings.groups.finance";
 const MAX_REMINDERS = 5;
-// The highest Belgian VAT rate: no default rate can go above it.
+/** The highest Belgian VAT rate: no default rate can go above it. */
 const MAX_VAT_RATE = 0.21;
 
 const invoicingSection: FormSection = {

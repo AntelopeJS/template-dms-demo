@@ -1,8 +1,3 @@
-// The Helio business events procedures can start on. The domains fire them
-// (a ticket opened, a quote accepted); the trigger types of triggers.ts hold
-// one listener per armed procedure. Firing never fails the caller: without
-// the automation module, or with no procedure listening, nothing happens.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import type { TicketPriority } from "../../service/database";
 
@@ -28,6 +23,11 @@ export interface QuoteAcceptedEvent {
   at: string;
 }
 
+/**
+ * The Helio business events procedures can start on, with their payloads. The
+ * domains fire them (a ticket opened, a quote accepted); the trigger types of
+ * `triggers.ts` hold one listener per armed procedure.
+ */
 interface HelioEvents {
   "ticket-opened": TicketOpenedEvent;
   "quote-accepted": QuoteAcceptedEvent;
@@ -51,6 +51,11 @@ export function listen<E extends HelioEventName>(
   return () => set.delete(listener);
 }
 
+/**
+ * Calls every listener of an event. It never fails the caller: a throwing
+ * listener is logged, and without the automation module, or with no procedure
+ * listening, nothing happens.
+ */
 function fire<E extends HelioEventName>(
   event: E,
   payload: HelioEvents[E],

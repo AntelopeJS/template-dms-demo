@@ -5,7 +5,9 @@ import type { AddFrontendModuleOptions } from "@antelopejs/interface-dms/page";
  * This template's frontend module, from its configuration alone: `construct()`
  * registers it with `AddFrontendModule`, and `ajs dms build` calls this same
  * function (declared as `dmsFrontend` in package.json) to build the frontend
- * from the project, without a backend.
+ * from the project, without a backend. Its `dmsI18nAppLayer` option makes the
+ * language files (helio-*, demo-*) the editable "Project files" of dms-lang's
+ * Translations.
  */
 export function frontendModule(): AddFrontendModuleOptions {
   return {
@@ -13,8 +15,6 @@ export function frontendModule(): AddFrontendModuleOptions {
     sourcePath: path.join(__dirname, "../frontend-vue"),
     renderer: { name: "vue", version: "3" },
     priority: 100,
-    // Its language files (helio-*, demo-*) are the editable "Project files"
-    // of dms-lang's Translations.
     options: { dmsI18nAppLayer: true },
   };
 }

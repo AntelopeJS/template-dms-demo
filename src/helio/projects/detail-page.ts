@@ -25,15 +25,19 @@ import {
 import { PageHelioProjects } from "./list-page";
 import { HELIO_PROJECT_TOPICS } from "./topics";
 
-// The project the page URL names, as its routes see it.
+/** The API route of the project the page URL names, as its blocks fetch it. */
 const PROJECT_ROUTE = `${PROJECT_DETAIL_API}/{{params.id}}`;
 
-// The query key of the open tab (`?section=tasks`): the tables of the page
-// keep `?<table>.tab=` for their own tabs.
+/**
+ * The query key of the open tab (`?section=tasks`): the tables of the page keep
+ * `?<table>.tab=` for their own tabs.
+ */
 const SECTION_KEY = "section";
 
-// What a technician or a planner does from a project: drive to the site,
-// close the project, change its details.
+/**
+ * What a technician or a planner does from a project: drive to the site, close
+ * the project, change its details.
+ */
 const HEADER_ACTIONS = [
   {
     id: "route",
@@ -73,9 +77,13 @@ const HEADER_ACTIONS = [
   },
 ];
 
-// Hidden from the menu: a project is opened from the projects list, the
-// dashboard or a link, its `_id` in the URL. The breadcrumb leads back to
-// that list (Operations / Projects / <project>).
+/**
+ * The detail page of one project. It is hidden from the menu: a project is
+ * opened from the projects list, the dashboard or a link, its `_id` in the
+ * URL, and the breadcrumb leads back to that list (Operations / Projects /
+ * project). Every tab panel stays mounted, because the details form names the
+ * project in the breadcrumb from the first visit, whatever tab is open.
+ */
 @RegisterPage()
 export class PageHelioProject extends PageController(
   "project",
@@ -90,8 +98,10 @@ export class PageHelioProject extends PageController(
   },
   DefaultLayout({ fullWidth: true, headerActions: HEADER_ACTIONS }),
 ) {
-  // An unknown or deleted project answers 404: one "not found" replaces the
-  // whole page rather than every block failing on its own.
+  /**
+   * An unknown or deleted project answers 404: one "not found" replaces the
+   * whole page rather than every block failing on its own.
+   */
   static body = Guard({
     fetchUrl: PROJECT_ROUTE,
     when: "notFound",
@@ -168,8 +178,6 @@ export class PageHelioProject extends PageController(
         variant: TabVariant.link,
         persistState: true,
         stateKey: SECTION_KEY,
-        // Every panel stays mounted: the details form names the project in
-        // the breadcrumb from the first visit, whatever tab is open.
         unmountOnHide: false,
         badgesUrl: projectDetailRoute("badges"),
         realtimeTopic: HELIO_PROJECT_TOPICS,

@@ -65,8 +65,13 @@ const CLOSED: readonly string[] = ["resolved", "closed"];
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The tickets' data controller: the generated routes of the desk table, the
+ * `new` route with the ticket number filled in, and the bulk routes of the
+ * selection bar. It is not exported on purpose: emitting a .d.ts for this class
+ * would require naming types from the nested `@antelopejs/interface-core`
+ * copies (TS2742); `ticketController` is exported instead.
+ */
 @RegisterDataController()
 class ticketDataAPI extends DataController(
   Ticket,
@@ -83,6 +88,9 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare _id: string;
 
+  /**
+   * Left empty on a new ticket, it takes the next number (see numbering.ts).
+   */
   @Searchable()
   @Select()
   @Listable()
@@ -98,7 +106,6 @@ class ticketDataAPI extends DataController(
     display: new DefaultDisplays.MonoDisplay(),
     size: 90,
   })
-  // Left empty on a new ticket, it takes the next number (see numbering.ts).
   @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare number: string;
@@ -137,8 +144,10 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare customer: string;
 
-  // The picker lists the chosen customer's sites only; site-rule.ts still
-  // refuses another customer's site on save.
+  /**
+   * The picker lists the chosen customer's sites only; site-rule.ts still
+   * refuses another customer's site on save.
+   */
   @Listable()
   @Column({
     name: "$helio.service.tickets.columns.site",
@@ -156,6 +165,10 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare site: string;
 
+  /**
+   * Hidden by default so the desk fits a 1440 px screen; the quick filter and
+   * the column picker still offer it.
+   */
   @Listable()
   @Exported()
   @Column({
@@ -163,8 +176,6 @@ class ticketDataAPI extends DataController(
     type: new DefaultDataTypes.SelectType({ items: [...TICKET_CATEGORIES] }),
     filterable: true,
     defaultValue: "other",
-    // Hidden by default so the desk fits a 1440 px screen; the quick filter
-    // and the column picker still offer it.
     isVisible: false,
     size: 170,
   })
@@ -172,8 +183,10 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare category: string;
 
-  // Writing the priority (always on creation) sets the SLA from the
-  // ticket's creation time, which it stamps on a new ticket.
+  /**
+   * Writing the priority (always on creation) sets the SLA from the ticket's
+   * creation time, which it stamps on a new ticket.
+   */
   @Listable(["priority"])
   @Sortable()
   @Exported(["priority"])
@@ -204,7 +217,9 @@ class ticketDataAPI extends DataController(
     this.table.slaDueAt = slaDueAt(value, new Date(this.table.createdAt));
   }
 
-  // Resolving or closing a ticket stamps when; reopening it clears it.
+  /**
+   * Resolving or closing a ticket stamps when; reopening it clears it.
+   */
   @Listable(["status"])
   @Sortable()
   @Exported(["status"])
@@ -251,12 +266,14 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare channel: string;
 
+  /**
+   * Picked among the technicians and the office (see assignees.ts), in the form
+   * and in the desk's quick filter alike.
+   */
   @Listable()
   @Exported()
   @Column({
     name: "$helio.service.tickets.columns.assignee",
-    // Picked among the technicians and the office (see assignees.ts), in
-    // the form and in the desk's quick filter alike.
     type: new DefaultDataTypes.RelationType({
       dataApiController: ticketAssigneeController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
@@ -270,9 +287,11 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare assignee: string;
 
-  // The promised resolution time only matters while the ticket is open: a
-  // resolved or closed one shows a dash instead of a countdown ("In 3 days").
-  // Filters and sorting still read the stored date.
+  /**
+   * The promised resolution time only matters while the ticket is open: a
+   * resolved or closed one shows a dash instead of a countdown ("In 3 days").
+   * Filters and sorting still read the stored date.
+   */
   @Listable(["slaDueAt", "status"])
   @Sortable()
   @Exported(["slaDueAt", "status"])
@@ -293,6 +312,10 @@ class ticketDataAPI extends DataController(
     return CLOSED.includes(this.table.status) ? null : this.table.slaDueAt;
   }
 
+  /**
+   * Hidden by default so the desk fits a 1440 px screen: the list is sorted
+   * newest first, and the column picker brings it back.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -304,8 +327,6 @@ class ticketDataAPI extends DataController(
       nowWithinMs: 10 * 60 * 1000,
       nowLabel: "$helio.service.tickets.justNow",
     }),
-    // Hidden by default so the desk fits a 1440 px screen: the list is
-    // sorted newest first, and the column picker brings it back.
     isVisible: false,
     size: 115,
   })
@@ -325,7 +346,9 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare resolvedAt: Date;
 
-  // Listable so the desk's expanded row can show it.
+  /**
+   * Listable so the desk's expanded row can show it.
+   */
   @Listable()
   @Column({
     name: "$helio.service.tickets.columns.description",
@@ -356,8 +379,10 @@ class ticketDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare pinned: boolean;
 
-  // Under the status: an open ticket past its SLA (the promised resolution
-  // time) in red, else when a resolved one was resolved.
+  /**
+   * Shown under the status: an open ticket past its SLA (the promised resolution
+   * time) in red, else when a resolved one was resolved.
+   */
   @Listable(["status", "slaDueAt", "resolvedAt"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
@@ -381,10 +406,12 @@ class ticketDataAPI extends DataController(
     return null;
   }
 
-  // "Assign to…" on the selection bar: the selected tickets, or every ticket
-  // the filters match, go to the person picked in the confirmation (a
-  // technician or the office, read from the team as the dialog lists them).
-  // A new ticket someone took is open from then on.
+  /**
+   * "Assign to…" on the selection bar: the selected tickets, or every ticket the
+   * filters match, go to the person picked in the confirmation (a technician or
+   * the office, read from the team as the dialog lists them). A new ticket
+   * someone took is open from then on.
+   */
   @Post("bulk/assign")
   async bulkAssign(
     @Context() ctx: RequestContext,
@@ -412,8 +439,11 @@ class ticketDataAPI extends DataController(
     return this.published(tickets.map(({ _id }) => _id));
   }
 
-  // "Resolve" on the selection bar: the tickets still open are resolved now;
-  // resolved and closed ones are left as they are.
+  /**
+   * "Resolve" on the selection bar: the tickets still open are resolved now, and
+   * each customer is told by e-mail in the background; resolved and closed ones
+   * are left as they are.
+   */
   @Post("bulk/resolve")
   async bulkResolve(
     @Context() ctx: RequestContext,
@@ -430,15 +460,17 @@ class ticketDataAPI extends DataController(
         this.model.update(_id, { status: "resolved", resolvedAt }),
       ),
     );
-    // Helio platform (mailing): each customer is told, in the background.
     void mailTicketsResolved(open.map(({ _id }) => _id));
     await logTicketsResolved(open);
     return this.published(open.map(({ _id }) => _id));
   }
 
-  // "Reopen" on a resolved or closed ticket: it is open again, its
-  // resolution date cleared, and the activity feed says so. Tickets still
-  // open are left as they are.
+  /**
+   * "Reopen" on a resolved or closed ticket: it is open again, its resolution
+   * date cleared, and the activity feed says so. Tickets still open are left as
+   * they are. The date is cleared with `null`, as `undefined` would leave it in
+   * place.
+   */
   @Post("bulk/reopen")
   async bulkReopen(
     @Context() ctx: RequestContext,
@@ -449,7 +481,6 @@ class ticketDataAPI extends DataController(
     const closed = (await this.loadTickets(ids)).filter(({ status }) =>
       CLOSED.includes(status),
     );
-    // null clears the stored date (undefined would leave it in place).
     const reopened = Object.fromEntries([
       ["status", "open"],
       ["resolvedAt", null],
@@ -461,8 +492,10 @@ class ticketDataAPI extends DataController(
     return this.published(closed.map(({ _id }) => _id));
   }
 
-  // A selection-bar run also sends the row token of the actions, unresolved
-  // or empty: an id naming no ticket is skipped.
+  /**
+   * A selection-bar run also sends the row token of the actions, unresolved or
+   * empty: an id naming no ticket is skipped.
+   */
   private async loadTickets(ids: string[]): Promise<Ticket[]> {
     const rows = await Promise.all(
       ids.filter(Boolean).map((id) => this.model.get(id)),
@@ -470,8 +503,11 @@ class ticketDataAPI extends DataController(
     return rows.filter((row): row is Ticket => row !== undefined);
   }
 
-  // Written through the model, which the table's own realtime does not see:
-  // the desk's table and stats follow the topic instead.
+  /**
+   * Announces the update on the service topic. The tickets are written through
+   * the model, which the table's own realtime does not see: the desk's table and
+   * stats follow the topic instead.
+   */
   private async published(ids: string[]): Promise<{ count: number }> {
     if (ids.length > 0) {
       await PublishMessage(SERVICE_TOPIC, "tickets.updated", {
@@ -482,5 +518,5 @@ class ticketDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for relations and pages (see the TS2742 note).
+/** `ControllerClass`-typed alias of the controller above, for relations and pages (see the TS2742 note on the class). */
 export const ticketController: ControllerClass = ticketDataAPI;

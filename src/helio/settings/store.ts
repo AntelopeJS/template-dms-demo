@@ -18,9 +18,11 @@ import { isValidVatNumber, normalizeVatNumber } from "./vat";
 
 const HTTP_BAD_REQUEST = 400;
 
-// Values the form shows but only the server writes: the enterprise number is
-// fixed, the API key changes through its rotate route, and the monitoring
-// endpoint is issued by the platform. A save body naming them is ignored.
+/**
+ * Values the form shows but only the server writes: the enterprise number is
+ * fixed, the API key changes through its rotate route, and the monitoring
+ * endpoint is issued by the platform. A save body naming them is ignored.
+ */
 const SERVER_OWNED = [
   "_id",
   "enterpriseNumber",
@@ -49,8 +51,10 @@ function settingsModel(): HelioSettingsModel {
   return GetModel(HelioSettingsModel);
 }
 
-// The fixture seeds the document; a dropped collection gets it back on the
-// next read instead of answering an empty form.
+/**
+ * Reads the settings document. The fixture seeds it; a dropped collection gets
+ * it back on the next read instead of answering an empty form.
+ */
 async function readStored(): Promise<HelioSettingsValues> {
   const model = settingsModel();
   const stored = await model.get(HELIO_SETTINGS_ID);
@@ -60,25 +64,32 @@ async function readStored(): Promise<HelioSettingsValues> {
   return defaults;
 }
 
-// The whole row is written back, so a field the body does not name keeps its
-// stored value whatever the model's update does with absent keys.
+/**
+ * Writes the whole row back, so a field the body does not name keeps its stored
+ * value whatever the model's update does with absent keys.
+ */
 async function writeStored(values: HelioSettingsValues): Promise<void> {
   const { _id, ...rest } = values;
   await settingsModel().update(_id, rest);
 }
 
+/**
+ * Joins a technician id into the row the relation field shows. A member removed
+ * since keeps its id: the picker shows it as is.
+ */
 async function joinTechnician(
   id: string | null,
 ): Promise<TechnicianRef | string | null> {
   if (!id) return null;
   const member = await GetModel(TeamMemberModel).get(id);
-  // A member removed since keeps its id: the picker shows it as is.
   if (!member) return id;
   return { _id: member._id, name: member.name, avatar: member.avatar };
 }
 
-// A day already at UTC midnight is the picker's own; any other time is a day
-// stamped at local midnight by an earlier seed, moved to the day it meant.
+/**
+ * A day already at UTC midnight is the picker's own; any other time is a day
+ * stamped at local midnight by an earlier seed, moved to the day it meant.
+ */
 function asPickerDay(value: Date | string): Date {
   const date = new Date(value);
   return date.getUTCHours() === 0 && date.getUTCMinutes() === 0
@@ -112,7 +123,9 @@ async function toFormValues(
 
 /**
  * Validates a partial save against the forms' own fields: a key absent is
- * left unchanged, `null` clears a field that is not required.
+ * left unchanged, `null` clears a field that is not required. A failure answers
+ * like interface-api-util's assertValidation: the form reads the zod issues and
+ * puts each under its field.
  */
 function parseChanges(
   body: Record<string, unknown>,
@@ -122,15 +135,15 @@ function parseChanges(
     Object.entries(body).filter(([key]) => !SERVER_OWNED.includes(key)),
   );
   const result = formSchema(entries).partial().safeParse(writable);
-  // Same answer as interface-api-util's assertValidation: the form reads the
-  // zod issues and puts each under its field.
   if (!result.success)
     throw new HTTPResult(HTTP_BAD_REQUEST, String(result.error));
   return result.data;
 }
 
-// Stored the way VIES writes it (BE0123456789); anything that is not an EU
-// VAT number is refused under the field.
+/**
+ * Stores the VAT number the way VIES writes it (BE0123456789); anything that is
+ * not an EU VAT number is refused under the field.
+ */
 function checkVatNumber(changes: Partial<HelioSettingsValues>): void {
   if (typeof changes.vatNumber !== "string") return;
   const normalized = normalizeVatNumber(changes.vatNumber);
@@ -143,8 +156,10 @@ function checkVatNumber(changes: Partial<HelioSettingsValues>): void {
   changes.vatNumber = normalized;
 }
 
-// A pattern without its one sequence token, or with a token Helio does not
-// know, could not number the next invoice or quote: refused under the field.
+/**
+ * Refuses under the field a pattern without its one sequence token, or with a
+ * token Helio does not know, because it could not number the next invoice or quote.
+ */
 function checkNumberPatterns(changes: Partial<HelioSettingsValues>): void {
   for (const field of ["invoiceNumberPattern", "quoteNumberPattern"] as const) {
     const pattern = changes[field];
@@ -157,8 +172,10 @@ function checkNumberPatterns(changes: Partial<HelioSettingsValues>): void {
   }
 }
 
-// The header list keeps a blank row for the next entry: a header without a
-// name is that row, not a header to send.
+/**
+ * Drops the headers without a name: the header list keeps a blank row for the
+ * next entry, and that row is not a header to send.
+ */
 function withoutBlankHeaders(
   headers: Record<string, ToggleableValue>,
 ): Record<string, ToggleableValue> {
@@ -171,13 +188,15 @@ export async function readSettings(): Promise<SettingsFormValues> {
   return toFormValues(await readStored());
 }
 
-/** Applies a save of the settings forms; answers every value, as loaded. */
+/**
+ * Applies a save of the settings forms; answers every value, as loaded. An
+ * emptied password field means "keep the current one", not "remove it".
+ */
 export async function saveSettings(
   body: Record<string, unknown>,
   entries: FormFieldOrGroup[],
 ): Promise<SettingsFormValues> {
   const changes = parseChanges(body, entries);
-  // An emptied password field means "keep the current one", not "remove it".
   if (!changes.smtpPassword) delete changes.smtpPassword;
   checkVatNumber(changes);
   checkNumberPatterns(changes);

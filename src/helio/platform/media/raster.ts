@@ -1,7 +1,3 @@
-// A tiny software rasterizer for the generated site photos: filled polygons
-// (even-odd, so a ring is two contours), solid or computed paint, alpha
-// blending, and 2× supersampling so edges come out smooth.
-
 export type Rgb = readonly [number, number, number];
 export type Point = readonly [number, number];
 /** A colour, or one computed from the output coordinates (gradients). */
@@ -92,6 +88,11 @@ export function subQuad(
   ];
 }
 
+/**
+ * A tiny software rasterizer for the generated site photos: filled polygons
+ * (even-odd, so a ring is two contours), solid or computed paint, alpha
+ * blending, and 2× supersampling so edges come out smooth.
+ */
 export class Raster {
   private readonly pixels: Float32Array;
   private readonly innerWidth: number;

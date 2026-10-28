@@ -1,7 +1,3 @@
-// The rows of the fleet table: one per site, its live reading and what it
-// produced over the period, filtered the way the table asks (tabs and quick
-// filters send `filter_<column>=is:<value>`).
-
 import type { CellSubline } from "@antelopejs/interface-dms/base/table-view";
 import type { ComposedText } from "@antelopejs/interface-dms/base/types";
 import { sparkline } from "./charts";
@@ -35,12 +31,12 @@ export interface SiteRow {
   lastSeenAt: string;
 }
 
-// "1 712,2 kWh": grouped digits and the unit, in the reader's locale.
+/** `"1 712,2 kWh"`: grouped digits and the unit, in the reader's locale. */
 function quantity(key: string, value: number): ComposedText {
   return { key, params: { value: { type: "number", value } } };
 }
 
-// What the pill says under an inverter that needs someone.
+/** What the pill says under an inverter that needs someone. */
 function statusDetail(site: FleetSite): CellSubline | null {
   if (site.status === "degraded") {
     return { text: "$helio.monitoring.table.degradedDetail", tone: "warning" };
@@ -57,6 +53,7 @@ function statusDetail(site: FleetSite): CellSubline | null {
   return null;
 }
 
+/** The row of one site: its live reading and what it produced over the period. */
 export function siteRow(site: FleetSite, period: Period, now: number): SiteRow {
   const power = currentPowerKw(site, now);
   const periodKwh = round1(energyKwh([site], period.from, period.to, now));
@@ -96,8 +93,11 @@ export function siteRow(site: FleetSite, period: Period, now: number): SiteRow {
   };
 }
 
-// `filter_inverterStatus=is:offline` → keep the offline sites. Only `is` is
-// offered (tabs and quick filters), the column filters are off.
+/**
+ * Applies the `filter_<column>=is:<value>` parameters the table sends from its
+ * tabs and quick filters: `filter_inverterStatus=is:offline` keeps the offline
+ * sites. Only `is` is offered, the column filters are off.
+ */
 function matches(site: FleetSite, query: URLSearchParams): boolean {
   return FILTERABLE.every((field) => {
     const filter = query.get(`filter_${field}`);

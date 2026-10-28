@@ -1,8 +1,6 @@
 import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 
-// Option lists of the catalog, shared by its data controllers, its page and
-// the other domains (filters, grouping, views).
-
+/** The units a product is sold in, shared by the catalog and the other domains' filters and views. */
 export const PRODUCT_UNITS = [
   { value: "piece", label: "$helio.catalog.units.piece", icon: "i-ph-package" },
   { value: "hour", label: "$helio.catalog.units.hour", icon: "i-ph-clock" },

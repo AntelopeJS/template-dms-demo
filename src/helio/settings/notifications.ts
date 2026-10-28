@@ -66,9 +66,11 @@ const notificationFields: FormField[] = [
   },
 ];
 
-// Saved with the rest of the form, through its save bar: an instant form on
-// the same page put "Saved instantly" in the page header, which read as true
-// for every section.
+/**
+ * Saved with the rest of the form, through its save bar: an instant form on
+ * the same page put "Saved instantly" in the page header, which read as true
+ * for every section.
+ */
 export const notificationsSection: FormSection = {
   id: "notifications",
   label: "$helio.settings.sections.notifications",

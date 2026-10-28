@@ -1,7 +1,3 @@
-// Seed of helio_projects and helio_project_tasks, built from the project plan
-// (projects/plan.ts): every project carries its signed quote's customer,
-// budget and capacity, and its tasks follow the project's progress.
-
 import { teamIdsByRole } from "../shared/roster";
 import { createRng, DAY_MS, padId, type Rng } from "../shared/seed";
 import type {
@@ -15,6 +11,10 @@ import { linesSubtotal } from "../sales/lines";
 import { previousWorkday } from "./calendar";
 import { type ProjectPlan, projectPlans } from "./plan";
 
+/**
+ * A row of the helio_projects seed, built from the project plan (plan.ts):
+ * the project carries the customer, quote, budget and capacity of its plan.
+ */
 export type ProjectSeed = Pick<
   Project,
   | "_id"
@@ -34,6 +34,7 @@ export type ProjectSeed = Pick<
   | "notes"
 >;
 
+/** A row of the helio_project_tasks seed. */
 export type ProjectTaskSeed = Pick<
   ProjectTask,
   | "_id"
@@ -46,9 +47,12 @@ export type ProjectTaskSeed = Pick<
   | "position"
 >;
 
+/** The team members who take the office steps of a project. */
 const OFFICE = teamIdsByRole("office");
+/** The gap between the positions of consecutive tasks of a project. */
 const POSITION_STEP = 1000;
 
+/** The French name of each type of project, which starts its name. */
 const TYPE_NAMES: Record<ProjectType, string> = {
   residential_pv: "Installation photovoltaïque",
   commercial_pv: "Centrale photovoltaïque",
@@ -56,6 +60,7 @@ const TYPE_NAMES: Record<ProjectType, string> = {
   ev_charger: "Borne de recharge",
 };
 
+/** The notes a project in each status may carry, one picked at random. */
 const NOTES: Partial<Record<ProjectStatus, string[]>> = {
   on_hold: [
     "En attente de l'accord de raccordement du gestionnaire de réseau.",
@@ -68,6 +73,7 @@ const NOTES: Partial<Record<ProjectStatus, string[]>> = {
   in_progress: ["Échafaudage livré la veille, accès par le jardin."],
 };
 
+/** The project name: its type, its capacity if it has one, its customer. */
 function nameOf(plan: ProjectPlan): string {
   const size =
     plan.capacityKwp > 0
@@ -76,6 +82,10 @@ function nameOf(plan: ProjectPlan): string {
   return `${TYPE_NAMES[plan.type]}${size} — ${plan.customer.name}`;
 }
 
+/**
+ * The seed row of a planned project. A battery or a charger has no peak
+ * power: its capacity is absent, shown "—", not "0 kWp".
+ */
 function toProject(rng: Rng, plan: ProjectPlan): ProjectSeed {
   const notes = NOTES[plan.status];
   return {
@@ -91,13 +101,13 @@ function toProject(rng: Rng, plan: ProjectPlan): ProjectSeed {
     leadTechnician: plan.leadTechnician,
     crew: plan.crew,
     address: plan.customer.address,
-    // A battery or a charger has no peak power: absent, shown "—", not "0 kWp".
     capacityKwp: plan.capacityKwp > 0 ? plan.capacityKwp : undefined,
     budget: linesSubtotal(plan.lines),
     notes: notes && rng.chance(0.8) ? rng.pick(notes) : undefined,
   };
 }
 
+/** The projects seed, built on first use. */
 let projects: ProjectSeed[] | undefined;
 
 /** The 80 projects, `proj-001` … `proj-080`. */
@@ -109,8 +119,10 @@ export function buildProjects(): ProjectSeed[] {
   return projects;
 }
 
-// The steps of a project, in order: who does it (office or site crew), how
-// long it takes, and when it is due relative to the start (days).
+/**
+ * A step of a project: who does it (office or site crew), how long it takes,
+ * and when it is due relative to the start (days).
+ */
 interface TaskTemplate {
   title: string;
   office?: boolean;
@@ -119,11 +131,13 @@ interface TaskTemplate {
   due: number | { end: number };
 }
 
+/** The steps that open a project: the site survey and the order. */
 const COMMON_BEFORE: TaskTemplate[] = [
   { title: "Visite technique et relevé de toiture", hours: 2, due: -21 },
   { title: "Commande du matériel", office: true, hours: 1, due: -14 },
 ];
 
+/** The steps of each type of project, in order. */
 const TASKS: Record<ProjectType, TaskTemplate[]> = {
   residential_pv: [
     ...COMMON_BEFORE,
@@ -194,7 +208,7 @@ const TASKS: Record<ProjectType, TaskTemplate[]> = {
   ],
 };
 
-// Due on a working day: a step falling on a weekend is due the Friday before.
+/** The due date of a step, moved back to a working day if it is a weekend. */
 function dueDate(plan: ProjectPlan, template: TaskTemplate): Date {
   const from = typeof template.due === "number" ? plan.start : plan.end;
   const days =
@@ -202,7 +216,7 @@ function dueDate(plan: ProjectPlan, template: TaskTemplate): Date {
   return previousWorkday(new Date(from.getTime() + days * DAY_MS));
 }
 
-// How far a project has gone: the share of its tasks already done.
+/** How far a project has gone: the share of its tasks already done. */
 function doneShare(rng: Rng, status: ProjectStatus): number {
   switch (status) {
     case "done":
@@ -220,6 +234,10 @@ function doneShare(rng: Rng, status: ProjectStatus): number {
   }
 }
 
+/**
+ * The status of the task at `index`: done before `doneCount`, then, for a
+ * project on site or in inspection, one under way.
+ */
 function taskStatus(
   index: number,
   doneCount: number,
@@ -234,6 +252,10 @@ function taskStatus(
   return "todo";
 }
 
+/**
+ * The tasks of a plan, numbered from `startId`; their progress follows the
+ * project's.
+ */
 function tasksOf(
   rng: Rng,
   plan: ProjectPlan,
@@ -258,6 +280,7 @@ function tasksOf(
   }));
 }
 
+/** The tasks seed, built on first use. */
 let tasks: ProjectTaskSeed[] | undefined;
 
 /** Between 4 and 7 tasks per project, `task-0001` …, ordered by `position`. */

@@ -1,9 +1,3 @@
-// Helio in the automation module: its own triggers and actions in the
-// procedure builder, and five procedures shipped as code. The node types are
-// registered from construct() (queued until the module attaches, removed with
-// this module on unload); the procedures are declared from start(). They are
-// the platform's, not a tenant's, so they are not written at provisioning.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { UserModel } from "@antelopejs/interface-dms/auth/db";
@@ -27,7 +21,11 @@ import { helioTriggerTypes } from "./triggers";
 
 export { fireQuoteAccepted, fireTicketOpened } from "./events";
 
-/** Adds the Helio triggers and actions to the procedure builder. */
+/**
+ * Adds the Helio triggers and actions to the procedure builder. Call it from
+ * construct(): the registrations are queued until the automation module
+ * attaches and removed with this module on unload.
+ */
 export function registerHelioAutomationNodes(): void {
   for (const trigger of helioTriggerTypes) RegisterTriggerType(trigger);
   for (const action of [...serviceActionTypes, ...businessActionTypes]) {
@@ -35,8 +33,10 @@ export function registerHelioAutomationNodes(): void {
   }
 }
 
-// A procedure created just now runs once, so its run history is not empty
-// and the reminders and confirmations due today go out.
+/**
+ * Runs a procedure created just now once, so its run history is not empty and
+ * the reminders and confirmations due today go out.
+ */
 async function firstRun(id: string): Promise<void> {
   try {
     const runId = await InvokeProcedure(id, {});
@@ -46,7 +46,7 @@ async function firstRun(id: string): Promise<void> {
   }
 }
 
-// First runs held back until the platform has an owner to notify.
+/** Ids of the procedures whose first run is held back until the platform has an owner to notify. */
 const awaitingOwner = new Set<string>();
 let ownerHookRegistered = false;
 
@@ -60,7 +60,8 @@ async function hasOwner(): Promise<boolean> {
  * onboarding: run then, "Find the managers" would answer nobody and the
  * notification fail. The onboarding adds the account it creates as owner of
  * the default workspace, which fires `Hook.MEMBER_ADDED`: the held-back runs
- * go then.
+ * go then, not awaited because the onboarding request waits for its hook
+ * handlers.
  */
 async function firstRunWithOwner(id: string): Promise<void> {
   if (await hasOwner()) {
@@ -75,7 +76,6 @@ async function firstRunWithOwner(id: string): Promise<void> {
     if (tenantId !== DEFAULT_TENANT_ID || !isTenantOwner) return undefined;
     const ids = [...awaitingOwner];
     awaitingOwner.clear();
-    // Not awaited: the onboarding request waits for its hook handlers.
     void (async () => {
       for (const pending of ids) await firstRun(pending);
     })();
@@ -83,11 +83,12 @@ async function firstRunWithOwner(id: string): Promise<void> {
   });
 }
 
+/** How long to wait for the action types the procedures use before declaring anyway. */
 const TYPE_WAIT_MS = 30_000;
+/** How often the registered action types are checked while waiting. */
 const TYPE_POLL_MS = 500;
 
-// The action types the shipped procedures use: Helio's own, and those other
-// modules register (the DMS's "dms.send-notification").
+/** The action types the shipped procedures use: Helio's own, and those other modules register (the DMS's "dms.send-notification"). */
 function actionTypesUsed(): Set<string> {
   const ids = new Set<string>();
   for (const declaration of HELIO_PROCEDURES) {
@@ -123,6 +124,7 @@ async function waitForActionTypes(): Promise<void> {
   );
 }
 
+/** Declares the shipped procedures once their action types are known, and runs the first-run ones that were just created. */
 async function declareProcedures(): Promise<void> {
   await waitForActionTypes();
   const outcomes: string[] = [];
@@ -147,8 +149,10 @@ async function declareProcedures(): Promise<void> {
 }
 
 /**
- * Declares the procedures in the background; call it from start(). Never
- * throws: Helio works without the automation module.
+ * Declares the five procedures shipped as code, in the background; call it
+ * from start(). Never throws: Helio works without the automation module. The
+ * procedures are the platform's, not a tenant's, so they are not written at
+ * provisioning.
  */
 export function startHelioAutomation(): void {
   declareProcedures().catch((error: unknown) => {

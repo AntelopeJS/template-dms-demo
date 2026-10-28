@@ -12,10 +12,6 @@ import {
   vertical,
 } from "./scenery";
 
-// A Walloon house seen from the street, its south roof facing the camera:
-// before the works, during them (scaffolding, rails, first modules) and once
-// the array is installed.
-
 export type HouseStage = "before" | "during" | "after";
 
 interface HouseStyle {
@@ -81,7 +77,6 @@ function drawWalls(r: Raster, style: HouseStyle): void {
     ],
     style.side,
   );
-  // The gable end, under the ridge.
   r.polygon(
     [
       [right, top],
@@ -134,7 +129,6 @@ function drawRoof(r: Raster, style: HouseStyle): void {
     ],
     hex("#ece9e2"),
   );
-  // Chimney, drawn over the roof it rises from.
   r.rect([320, 150, 42, 78], mix(style.wall, hex("#000000"), 0.1));
   r.rect([314, 146, 54, 10], hex("#5b5b5b"));
 }
@@ -176,7 +170,11 @@ function drawStreetSide(r: Raster, rng: Rng): void {
   if (rng.chance(0.5)) drawTree(r, 890, 540, rng.int(110, 140));
 }
 
-/** A house at one stage of its solar works. */
+/**
+ * A Walloon house seen from the street, its south roof facing the camera, at
+ * one stage of its solar works: before them, during them (scaffolding, rails,
+ * first modules) or once the array is installed.
+ */
 export function drawHouse(r: Raster, rng: Rng, stage: HouseStage): void {
   const style = houseStyle(rng);
   drawSky(r, rng, HORIZON);

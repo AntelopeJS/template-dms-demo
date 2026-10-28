@@ -1,9 +1,3 @@
-// The backbone every operations fixture hangs on: one entry per installation
-// project, built from an accepted quote. Quotes (sales), projects and their
-// tasks, monitored sites, invoices and the activity feed all read this plan,
-// so a won deal, its signed quote, the project on site, the invoices and the
-// finished installation always tell the same story.
-
 import type { QuoteLine } from "../sales/database";
 import {
   buildLines,
@@ -34,6 +28,13 @@ import {
 } from "./crm-facts";
 import type { ProjectStatus } from "./database";
 
+/**
+ * The backbone every operations fixture hangs on: one entry per installation
+ * project, built from an accepted quote. Quotes (sales), projects and their
+ * tasks, monitored sites, invoices and the activity feed all read this plan,
+ * so a won deal, its signed quote, the project on site, the invoices and the
+ * finished installation always tell the same story.
+ */
 export interface ProjectPlan {
   /** 1-based, shared by the project and its accepted quote. */
   index: number;
@@ -54,11 +55,13 @@ export interface ProjectPlan {
   crew: string[];
 }
 
-// How many projects stand in each status, oldest first: the finished ones
-// spread over the past year, a few installed and waiting for the electrical
-// inspection, two sites running now (the after-sales technician stays on
-// the service desk), the coming weeks booked, the next months planned, a few
-// paused.
+/**
+ * How many projects stand in each status, oldest first: the finished ones
+ * spread over the past year, a few installed and waiting for the electrical
+ * inspection, two sites running now (the after-sales technician stays on the
+ * service desk), the coming weeks booked, the next months planned, a few
+ * paused.
+ */
 const STATUS_COUNTS: ReadonlyArray<readonly [ProjectStatus, number]> = [
   ["done", 51],
   ["inspection", 4],
@@ -67,9 +70,10 @@ const STATUS_COUNTS: ReadonlyArray<readonly [ProjectStatus, number]> = [
   ["planned", 8],
   ["on_hold", 5],
 ];
+/** The number of finished projects in `STATUS_COUNTS`. */
 const DONE_COUNT = 51;
 
-// Status by position, so the planning and the kanban have every column.
+/** The status of the project at `index`, so the planning and the kanban have every column. */
 function statusOf(index: number): ProjectStatus {
   let last = 0;
   for (const [status, count] of STATUS_COUNTS) {
@@ -79,12 +83,18 @@ function statusOf(index: number): ProjectStatus {
   return "on_hold";
 }
 
-// The first two booked projects that are direct orders (even indexes: no
-// deal pushes their start back) start within the coming working week, so
-// the planning and the "This week" view always open on a site to prepare.
+/**
+ * How many of the booked projects start soon. The first ones that are direct
+ * orders (even indexes: no deal pushes their start back) start within the
+ * coming working week, so the planning and the "This week" view always open on
+ * a site to prepare.
+ */
 const SOON_STARTS = 2;
+
+/** How many working days after the next one a project that starts soon may start. */
 const SOON_WORKDAYS = 4;
 
+/** Whether the project is one of the booked ones that start within the week. */
 function startsSoon(index: number): boolean {
   if (statusOf(index) !== "scheduled" || index % 2 === 1) return false;
   let first = 1;
@@ -93,8 +103,11 @@ function startsSoon(index: number): boolean {
   return index < evenFirst + SOON_STARTS * 2;
 }
 
-// Half of the projects come from the 40 won deals (odd indexes); the others
-// are direct orders from existing customers (a battery, a charger, a roof).
+/**
+ * The customer of the project at `index`. Half of the projects come from the 40
+ * won deals (odd indexes); the others are direct orders from existing
+ * customers (a battery, a charger, a roof).
+ */
 function customerOf(
   rng: Rng,
   index: number,
@@ -106,9 +119,13 @@ function customerOf(
   return { customer: rng.pick(activeCustomers()) };
 }
 
-// Finished projects are nearly all solar arrays, so 40 of them can become
-// monitored sites; the open ones mix in batteries and chargers. A site being
-// installed right now spans several days: a solar array.
+/**
+ * The installation type of the project at `index`. Finished projects are
+ * nearly all solar arrays, so 40 of them can become monitored sites; the open
+ * ones mix in batteries and chargers. A site being installed right now spans
+ * several days, so it is a solar array, and so is a project from a won deal,
+ * which always sold one (its title says how many kWc).
+ */
 function typeOf(
   rng: Rng,
   index: number,
@@ -123,7 +140,6 @@ function typeOf(
       ? "ev_charger"
       : rng.pick(["battery", "ev_charger"] as const);
   }
-  // A won deal always sold a solar array (its title says how many kWc).
   if (fromDeal || status === "in_progress") return pv;
   if (business) return rng.chance(0.5) ? pv : "ev_charger";
   return rng.weighted<InstallationType>([
@@ -147,25 +163,33 @@ function workdays(rng: Rng, type: InstallationType, business: boolean): number {
   }
 }
 
+/** The first and last day of an installation. */
 interface Dates {
   start: Date;
   end: Date;
 }
 
+/** The dates of an installation of `days` working days from `start`. */
 const span = (start: Date, days: number): Dates => ({
   start,
   end: addWorkdays(start, days - 1),
 });
 
-// The first working day still ahead: today on a weekday before the crews
-// leave, else the next one.
+/**
+ * The first working day still ahead: today on a weekday before the crews
+ * leave, else the next one.
+ */
 function nextWorkingDay(): Date {
   const today = dayAt(0);
   const late = new Date().getHours() >= 17;
   return isWorkday(today) && !late ? today : addWorkdays(today, 1);
 }
 
-// The dates of a project that is not one of the finished ones, by status.
+/**
+ * The dates of a project that is not one of the finished ones, by status. A
+ * project on site started before the next working day and is still running on
+ * it.
+ */
 function currentDates(
   rng: Rng,
   status: ProjectStatus,
@@ -181,7 +205,6 @@ function currentDates(
       return { start: addWorkdays(end, -(days - 1)), end };
     }
     case "in_progress": {
-      // Started before the next working day, still running on it.
       const next = nextWorkingDay();
       const start = addWorkdays(next, -rng.int(1, Math.min(days - 1, 6)));
       return span(start, days);
@@ -195,8 +218,10 @@ function currentDates(
   }
 }
 
-// A won deal's quote is signed the day the deal closed, and the work never
-// starts within a week of it.
+/**
+ * The earliest start of a project from a won deal: the deal's quote is signed
+ * the day the deal closed, and the work never starts within a week of it.
+ */
 function earliestStart(deal?: string): Date | undefined {
   if (!deal) return undefined;
   const closedDays = Math.ceil(
@@ -205,6 +230,7 @@ function earliestStart(deal?: string): Date | undefined {
   return nextWorkday(dayAt(closedDays + 7));
 }
 
+/** A project whose dates are chosen and whose crew is not yet. */
 interface Draft {
   index: number;
   status: ProjectStatus;
@@ -216,6 +242,7 @@ interface Draft {
   earliest?: Date;
 }
 
+/** The draft of the project at `index`; `doneStart` is the start of a finished one. */
 function draftProject(rng: Rng, index: number, doneStart?: Date): Draft {
   const { customer, dealId: deal } = customerOf(rng, index);
   const business = isBusiness(customer);
@@ -231,13 +258,16 @@ function draftProject(rng: Rng, index: number, doneStart?: Date): Draft {
   return { index, status, type, customer, dealId: deal, dates, days, earliest };
 }
 
+/**
+ * The plan of a draft once crewed. A direct order is signed a few weeks before
+ * its start, never today.
+ */
 function toPlan(rng: Rng, draft: Draft, crew: Crew): ProjectPlan {
   const { customer, dealId: deal, index } = draft;
   const business = isBusiness(customer);
   const { lines, capacityKwp } = deal
     ? fitPvLines(rng, business, customer.isVip, dealFacts(deal).amount)
     : buildLines(rng, draft.type, business, customer.isVip);
-  // A direct order is signed a few weeks before its start, never today.
   const signedAt = deal
     ? dealFacts(deal).expectedClose
     : new Date(
@@ -266,15 +296,18 @@ function toPlan(rng: Rng, draft: Draft, crew: Crew): ProjectPlan {
   };
 }
 
-// Projects anchored on today (installed, on site now) are staffed first; the
-// others then take their crews in the order the work starts, moving a few
-// working days later when nobody is free, so nobody is on two sites the same
-// day. A finished project never moves past the week before today; paused
-// projects book nobody.
+/**
+ * The statuses anchored on today (installed, on site now). Those projects are
+ * staffed first; the others then take their crews in the order the work
+ * starts, moving a few working days later when nobody is free, so nobody is on
+ * two sites the same day. A finished project never moves past the week before
+ * today; paused projects book nobody.
+ */
 const ANCHORED: ReadonlySet<ProjectStatus> = new Set([
   "inspection",
   "in_progress",
 ]);
+/** The most working days a project may move by to find a free crew. */
 const MAX_SHIFT_DAYS = 15;
 
 function crewRequest(draft: Draft, dates: Dates): CrewRequest {
@@ -287,8 +320,10 @@ function crewRequest(draft: Draft, dates: Dates): CrewRequest {
   };
 }
 
-// The working days a project may move by: a finished one either way (it
-// stays signed off a week before today), a coming one only later.
+/**
+ * The working days a project may move by: a finished one either way (it stays
+ * signed off a week before today), a coming one only later.
+ */
 function shifts(status: ProjectStatus): number[] {
   const later = Array.from({ length: MAX_SHIFT_DAYS }, (_, at) => at + 1);
   if (status !== "done") return [0, ...later];
@@ -330,8 +365,11 @@ function assignCrews(drafts: Draft[]): Map<number, Crew> {
   return crews;
 }
 
-// The finished projects started over the past year along the season, and
-// were all signed off (installed more than a week ago).
+/**
+ * Builds the plans in index order. The finished projects started over the past
+ * year along the season, and were all signed off (installed more than a week
+ * ago).
+ */
 function buildPlans(): ProjectPlan[] {
   const rng = createRng(0x9e110001);
   const doneStarts = seasonalWorkdays(rng, DONE_COUNT, -350, -16);
@@ -346,6 +384,7 @@ function buildPlans(): ProjectPlan[] {
   });
 }
 
+/** The plans, built on first use. */
 let plans: ProjectPlan[] | undefined;
 
 /** One plan per project, `proj-001` … `proj-080`, oldest first. */

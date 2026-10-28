@@ -1,7 +1,3 @@
-// The panels of the project detail page's tab set, one builder each. Every
-// block reads its data from a detail route scoped by `{{params.id}}`, and
-// the tables are scoped the same way through `routeParamFilters`.
-
 import {
   ActivityFeed,
   BlockFunctions,
@@ -25,7 +21,12 @@ import { HELIO_PROJECT_TOPICS } from "./topics";
 import { projectTaskController } from "./task-controller";
 import { newProjectTaskGuard } from "./task-guards";
 
-/** Facts on the left, progress and the customer contact on the right. */
+/**
+ * Facts on the left, progress and the customer contact on the right. Like the
+ * other panels of the tab set, every block reads its data from a detail route
+ * scoped by `{{params.id}}`, and the tables are scoped the same way through
+ * `routeParamFilters`.
+ */
 export function overviewPanel() {
   return Grid({ minColumnWidth: "300px" }).child(
     "row",
@@ -80,11 +81,13 @@ export function overviewPanel() {
   );
 }
 
-// Fields of a task its forms leave out on the project page: its position,
-// which the drag handle sets, and its project, the page's own (filled from
-// the URL on creation). FIELD_CHANGE fires for every field once the form
-// has loaded, so a watch keyed on the status (which always holds a value,
-// "todo" on a new task) hides them from the start.
+/**
+ * Hides the fields of a task that its forms leave out on the project page: its
+ * position, which the drag handle sets, and its project, the page's own
+ * (filled from the URL on creation). FIELD_CHANGE fires for every field once
+ * the form has loaded, so a watch keyed on the status (which always holds a
+ * value, "todo" on a new task) hides them from the start.
+ */
 function hideTaskFormFields(form: FormBuilder): void {
   for (const field of ["position", "project"]) {
     form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_HIDDEN, {

@@ -1,12 +1,10 @@
-// The signed quote of a project, for its Quote tab: its facts, and its lines
-// as the rows of a read-only source table.
-
 import type { KeyValueListItem } from "@antelopejs/interface-dms/base/key-value-list";
 import type { Tone } from "@antelopejs/interface-dms/base/types";
 import type { Quote, QuoteStatus } from "../sales/database";
 import { QUOTE_STATUSES } from "../sales/controller";
 import { recordLink } from "./links";
 
+/** The tone each quote status is shown in. */
 const QUOTE_TONES: Record<QuoteStatus, Tone> = {
   draft: "neutral",
   sent: "info",
@@ -24,8 +22,10 @@ export interface QuoteLineRow {
   lineTotal: number;
 }
 
+/** An ISO date for the facts list, or null when the quote lacks it. */
 const date = (value: Date | undefined) => value?.toISOString() ?? null;
 
+/** The facts of the quote for the Quote tab; none without a quote. */
 export function quoteFacts(quote: Quote | undefined): KeyValueListItem[] {
   if (!quote) return [];
   const status = QUOTE_STATUSES.find((item) => item.value === quote.status);
@@ -82,6 +82,10 @@ export function quoteFacts(quote: Quote | undefined): KeyValueListItem[] {
   ];
 }
 
+/**
+ * The lines of the project's quote as the rows of a read-only source table,
+ * each with its total rounded to the cent.
+ */
 export function quoteLines(quote: Quote | undefined): QuoteLineRow[] {
   return (quote?.lines ?? []).map((line, index) => ({
     _id: `${quote?._id ?? "quote"}-${index + 1}`,

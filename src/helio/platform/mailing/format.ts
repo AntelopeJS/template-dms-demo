@@ -1,11 +1,10 @@
-// How Helio writes to its customers: in their language, amounts and dates
-// spelled the Belgian way, links pointing at the (fictional) customer portal.
-// The Mailing module interpolates variables as plain text, so every value is
-// formatted here, once, for the recipient's locale.
-
 import type { Customer } from "../../crm/database";
 
-/** The template locales Helio ships: French first, English for a few businesses. */
+/**
+ * The template locales Helio ships: French first, English for a few
+ * businesses. The Mailing module interpolates variables as plain text, so
+ * this module formats every value once, for the recipient's locale.
+ */
 export type MailLocale = "fr" | "en";
 
 const INTL_LOCALE: Record<MailLocale, string> = { fr: "fr-BE", en: "en-GB" };

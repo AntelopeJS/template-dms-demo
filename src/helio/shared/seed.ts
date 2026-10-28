@@ -1,7 +1,3 @@
-// Deterministic helpers for the Helio fixtures. Every generator draws from a
-// seeded PRNG so a fresh database always holds the same demo data, while dates
-// stay relative to the boot time so the dashboard always looks current.
-
 export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface Rng {
@@ -17,7 +13,10 @@ export interface Rng {
   chance(probability: number): boolean;
 }
 
-// mulberry32: tiny, fast and good enough for demo data.
+/**
+ * A seeded mulberry32 generator, tiny, fast and good enough for demo data. Every
+ * Helio fixture draws from one, so a fresh database always holds the same demo data.
+ */
 export function createRng(seed: number): Rng {
   let state = seed >>> 0;
   const next = (): number => {
@@ -49,7 +48,10 @@ export function createRng(seed: number): Rng {
   };
 }
 
-/** A date `days` days from now (negative for the past), at a given hour. */
+/**
+ * A date `days` days from now (negative for the past), at a given hour. Fixture
+ * dates are built relative to now so the dashboard always looks current.
+ */
 export function daysFromNow(days: number, hour = 10): Date {
   const date = new Date(Date.now() + days * DAY_MS);
   date.setHours(hour, 0, 0, 0);

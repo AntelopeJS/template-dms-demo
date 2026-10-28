@@ -1,7 +1,3 @@
-// What the overview of a project says: its facts, its headline figures, the
-// progress of its tasks and of its invoicing, and the banner of a project
-// that needs attention. Pure builders over a loaded ProjectBundle.
-
 import type { BannerContent } from "@antelopejs/interface-dms/base/banner";
 import type { KeyValueListItem } from "@antelopejs/interface-dms/base/key-value-list";
 import type { MeterSegment } from "@antelopejs/interface-dms/base/meter";
@@ -19,6 +15,7 @@ import type { Project, ProjectStatus } from "./database";
 import { directionsUrl, projectPageUrl, recordLink } from "./links";
 import { PROJECT_STATUSES, PROJECT_TYPES } from "./project-controller";
 
+/** The tone each project status is shown in. */
 const STATUS_TONES: Record<ProjectStatus, Tone> = {
   planned: "neutral",
   scheduled: "info",
@@ -62,7 +59,10 @@ function crewNames(project: Project, team: Map<string, TeamMember>): string {
     .join(", ");
 }
 
-/** The project's facts: who, what, where, when, for how much. */
+/**
+ * The project's facts: who, what, where, when, for how much. A battery or a
+ * charger has no peak power, so its capacity is a dash, not "0 kWp".
+ */
 export function projectFacts(bundle: ProjectBundle): KeyValueListItem[] {
   const { project, customer, quote, team } = bundle;
   const address = addressLine(project);
@@ -120,7 +120,6 @@ export function projectFacts(bundle: ProjectBundle): KeyValueListItem[] {
       to: directionsUrl(address),
       copyValue: address,
     },
-    // A battery or a charger has no peak power: a dash, not "0 kWp".
     {
       id: "capacity",
       label: "$helio.projects.columns.capacityKwp",
@@ -189,7 +188,10 @@ export function customerContact(bundle: ProjectBundle): KeyValueListItem[] {
   ];
 }
 
-/** The figures above the tabs. */
+/**
+ * The figures above the tabs. A project without tasks says so, rather than
+ * that nothing is left to do.
+ */
 export function projectStats(bundle: ProjectBundle): StatGroupItem[] {
   const { project, tasks, invoices } = bundle;
   const counts = countTasks(tasks);
@@ -240,7 +242,6 @@ export function projectStats(bundle: ProjectBundle): StatGroupItem[] {
         params: { done: count(counts.done), total: count(counts.total) },
         plural: "total",
       },
-      // "Nothing left to do" only once there were tasks to do.
       detail:
         counts.total === 0
           ? "$helio.projects.detail.stats.noTasks"
@@ -274,7 +275,7 @@ export function projectStats(bundle: ProjectBundle): StatGroupItem[] {
   ];
 }
 
-// Composed money takes minor units (cents).
+/** A composed money value, which takes minor units (cents). */
 function money(euros: number) {
   return {
     type: "money",

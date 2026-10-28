@@ -26,7 +26,7 @@ import { customerController } from "../crm/controller";
 import { projectController } from "../projects/controller";
 import { Site, SiteModel } from "./database";
 
-// What an inverter reports. Exported for the fleet page's tabs and filters.
+/** What an inverter reports. Exported for the fleet page's tabs and filters. */
 export const INVERTER_STATUSES = [
   {
     value: "online",
@@ -51,11 +51,15 @@ export const INVERTER_STATUSES = [
   },
 ] as const;
 
-// A site heard from this recently reads "Live".
+/** A site heard from this recently reads "Live". */
 const LIVE_WITHIN_MS = 15 * 60 * 1000;
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The Data API controller of the monitored sites. Not exported on purpose:
+ * emitting a .d.ts for this class would require naming types from the nested
+ * `@antelopejs/interface-core` copies (TS2742), hence the `ControllerClass`
+ * alias below.
+ */
 @RegisterDataController()
 class siteDataAPI extends DataController(
   Site,
@@ -199,8 +203,7 @@ class siteDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare last7Days: number[];
 
-  // The week's production as a number (sortable, exported) drawn as the
-  // sparkline of its seven days.
+  /** The week's production in kWh, drawn as the sparkline of its seven days. */
   @Listable(["last7Days"])
   @Column({
     name: "$helio.monitoring.sites.columns.last7Days",
@@ -252,5 +255,5 @@ class siteDataAPI extends DataController(
   declare commissionedAt: Date;
 }
 
-// ControllerClass-typed alias for relations and pages (see the TS2742 note).
+/** `ControllerClass`-typed alias for relations and pages (see the TS2742 note). */
 export const siteController: ControllerClass = siteDataAPI;

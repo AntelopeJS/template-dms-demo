@@ -1,10 +1,7 @@
 import type { Rng } from "../../shared/seed";
 import type { PageId } from "./site";
 
-// Who visits Helio's website and where they come from: devices and browsers
-// of a Belgian audience, countries around Liège, and the acquisition
-// channels with the campaigns the team ran over the last three months.
-
+/** A kind of device and browser a visitor browses with. */
 export interface Device {
   userAgent: string;
   screens: readonly string[];
@@ -117,6 +114,10 @@ const LOCALES: ReadonlyArray<
   [["DE", "de-DE"], 1],
 ];
 
+/**
+ * A visitor to Helio's website. Devices and browsers are those of a Belgian
+ * audience, and the countries are those around Liège.
+ */
 export interface Visitor {
   key: string;
   device: Device;
@@ -159,7 +160,10 @@ export type Channel =
   | "paid"
   | "offline";
 
-/** Days (before now) of the campaigns, so traffic follows the calendar. */
+/**
+ * Days (before now) of the campaigns the team ran over the last three months,
+ * so traffic follows the calendar.
+ */
 export const CAMPAIGNS = {
   autumnBattery: { start: 24, end: 0 },
   newsletters: [

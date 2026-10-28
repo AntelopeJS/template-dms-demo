@@ -1,6 +1,3 @@
-// The option lists of a service ticket, exported for the service desk's
-// tabs, views, quick filters and bulk actions.
-
 import type { TicketPriority } from "./database";
 
 /** Where the service desk lives (the page's category chain and id). */
@@ -25,6 +22,7 @@ export const SLA_HOURS: Record<TicketPriority, number> = {
   low: 120,
 };
 
+/** The ticket statuses, with the label and the colors the desk shows them in (tabs, pills, legend). */
 export const TICKET_STATUSES = [
   {
     value: "new",
@@ -63,6 +61,7 @@ export const TICKET_STATUSES = [
   },
 ] as const;
 
+/** The ticket priorities, with the label and the colors the desk shows them in. */
 export const TICKET_PRIORITIES = [
   {
     value: "low",
@@ -94,6 +93,7 @@ export const TICKET_PRIORITIES = [
   },
 ] as const;
 
+/** The ticket categories, with the label and the colors the desk shows them in. */
 export const TICKET_CATEGORIES = [
   {
     value: "no_production",
@@ -139,6 +139,7 @@ export const TICKET_CATEGORIES = [
   },
 ] as const;
 
+/** The channels a ticket can arrive through, with the label and the colors the desk shows them in. */
 export const TICKET_CHANNELS = [
   {
     value: "phone",

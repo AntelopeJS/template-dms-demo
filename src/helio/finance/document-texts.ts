@@ -1,7 +1,8 @@
-// Wording of the invoice document, in the reader's language. The document is
-// a file the server writes, not a dashboard text: the frontend's i18n
-// catalogs never reach it, so it carries its own two languages.
-
+/**
+ * Wording of the invoice document, in the reader's language. The document is a
+ * file the server writes, not a dashboard text: the frontend's i18n catalogs
+ * never reach it, so it carries its own two languages.
+ */
 export interface DocumentTexts {
   locale: string;
   title: string;

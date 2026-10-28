@@ -36,15 +36,19 @@ import {
 import { countCategoryProducts } from "./category-usage";
 import { ProductCategory, ProductCategoryModel } from "./database";
 
-// A request without a language (a call made on the server) reads and
-// searches the English names: searching a localized field in no language
-// failed with a 500 ($getField of a null field).
+/**
+ * A request without a language (a call made on the server) reads and
+ * searches the English names: searching a localized field in no language
+ * failed with a 500 ($getField of a null field).
+ */
 function contentLanguageOf(header: string | undefined): string {
   return header || "en";
 }
 
-// The top-level families only, for the parent picker of a category: a
-// category tree stays two levels deep. Read-only, select route only.
+/**
+ * The top-level families only, for the parent picker of a category: a
+ * category tree stays two levels deep. Read-only, select route only.
+ */
 @RegisterDataController()
 class productFamilyDataAPI extends DataController(
   ProductCategory,
@@ -110,8 +114,12 @@ function withRawParent(
   };
 }
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The data API of the product categories, behind the category table and the
+ * product forms. Not exported on purpose: emitting a .d.ts for this class
+ * would require naming types from the nested @antelopejs/interface-core
+ * copies (TS2742), so `productCategoryController` is exported instead.
+ */
 @RegisterDataController()
 class productCategoryDataAPI extends DataController(
   ProductCategory,
@@ -125,8 +133,10 @@ class productCategoryDataAPI extends DataController(
   @Model(ProductCategoryModel)
   declare model: ProductCategoryModel;
 
-  // Localized names are read and written in the caller's language; forms ask
-  // with "*" and get every language at once.
+  /**
+   * Localized names are read and written in the caller's language; forms ask
+   * with "*" and get every language at once.
+   */
   @Parameter("x-content-language", "header")
   declare contentLanguage: string | undefined;
 
@@ -158,10 +168,12 @@ class productCategoryDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare name: string;
 
-  // Self-reference: the list joins the parent family (`Foreign`), so a row
-  // names it without a read of its own; the `select` route keeps the raw id
-  // (withRawParent), which the products' CascaderRelationType rebuilds the
-  // tree from. The filter still runs on the stored id.
+  /**
+   * Self-reference: the list joins the parent family (`Foreign`), so a row
+   * names it without a read of its own; the `select` route keeps the raw id
+   * (withRawParent), which the products' CascaderRelationType rebuilds the
+   * tree from. The filter still runs on the stored id.
+   */
   @Select()
   @Listable()
   @Exported()
@@ -180,9 +192,11 @@ class productCategoryDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare parent: string;
 
-  // Products filed under the category, or under the ranges of a family.
-  // Read by a getter and not a database `@Computed`: the DMS list route
-  // leaves out a computed field the request neither filters nor sorts on.
+  /**
+   * Products filed under the category, or under the ranges of a family.
+   * Read by a getter and not a database `@Computed`: the DMS list route
+   * leaves out a computed field the request neither filters nor sorts on.
+   */
   @Listable(["_id", "parent"])
   @Column({
     name: "$helio.catalog.categories.columns.productCount",
@@ -197,7 +211,6 @@ class productCategoryDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for the products' CascaderRelationType and the
-// catalog pages (see the TS2742 note above).
+/** ControllerClass-typed alias of `productCategoryDataAPI` for the products' CascaderRelationType and the catalog pages (see the TS2742 note above). */
 export const productCategoryController: ControllerClass =
   productCategoryDataAPI;

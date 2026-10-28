@@ -1,8 +1,3 @@
-// Fixed rosters shared by several Helio domains: the team, the product catalog
-// and how many rows each generated collection holds. Fixtures of different
-// domains reference each other by these ids, so they must never change shape
-// without updating every fixture that points at them.
-
 import { padId } from "./seed";
 
 export type TeamRole = "manager" | "sales" | "technician" | "office";
@@ -14,6 +9,7 @@ export interface TeamRosterEntry {
   role: TeamRole;
 }
 
+/** The Helio team, shared by several domains: fixtures of other domains reference these ids. */
 export const TEAM_ROSTER: readonly TeamRosterEntry[] = [
   {
     id: "team-01",
@@ -89,6 +85,7 @@ export const TEAM_ROSTER: readonly TeamRosterEntry[] = [
   },
 ];
 
+/** The ids of the team members holding a role. */
 export const teamIdsByRole = (role: TeamRole): string[] =>
   TEAM_ROSTER.filter((member) => member.role === role).map(({ id }) => id);
 
@@ -98,7 +95,7 @@ export interface ProductCategoryRosterEntry {
   parent?: string;
 }
 
-// Two levels, so the catalog can show a CascaderRelationType.
+/** The product categories, on two levels so the catalog can show a CascaderRelationType. */
 export const PRODUCT_CATEGORY_ROSTER: readonly ProductCategoryRosterEntry[] = [
   { id: "cat-panels", name: { en: "Solar panels", fr: "Panneaux solaires" } },
   {
@@ -165,6 +162,7 @@ export interface ProductRosterEntry {
   unit: "piece" | "hour" | "year" | "flat";
 }
 
+/** The product catalog, shared by several domains: fixtures of other domains reference these ids. */
 export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   {
     id: "prod-01",
@@ -384,8 +382,10 @@ export const PRODUCT_ROSTER: readonly ProductRosterEntry[] = [
   },
 ];
 
-// How many rows each generated collection holds. Ids are `padId(prefix, i, width)`
-// for i in 1..COUNT, e.g. cust-001 … cust-060.
+/**
+ * How many rows each generated collection holds. Ids are `padId(prefix, i, width)`
+ * for i in 1..COUNT, e.g. cust-001 … cust-060.
+ */
 export const COUNTS = {
   customers: 60,
   deals: 120,

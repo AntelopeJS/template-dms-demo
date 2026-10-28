@@ -29,7 +29,10 @@ import {
 import { Customer, type CustomerKind, CustomerModel } from "./database";
 import { salesRepController } from "./sales-rep-controller";
 
-// Option lists exported for the pages (tabs, views, quick filters).
+/**
+ * The customer kinds a row can take; the pages build their tabs, views and
+ * quick filters from it.
+ */
 export const CUSTOMER_KINDS = [
   {
     value: "residential",
@@ -105,9 +108,15 @@ const KIND_ICONS: Record<CustomerKind, string> = {
   business: "i-ph-buildings",
 };
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
-// The form's cards, in the order their first field is declared below.
+/**
+ * The customers table's data controller, served under `/api/helio/customers`.
+ * Its column groups are the form's cards, in the order their first field is
+ * declared.
+ *
+ * Not exported on purpose: emitting a `.d.ts` for this class would require
+ * naming types from the nested `@antelopejs/interface-core` copies (TS2742).
+ * Other domains use {@link customerController} instead.
+ */
 @ColumnGroup("identity", {
   label: "$helio.crm.customers.groups.identity",
   orientation: "vertical",
@@ -194,6 +203,10 @@ class customerDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare kind: string;
 
+  /**
+   * The VAT number, asked of a business only: a business is invoiced with VAT,
+   * a household has no number.
+   */
   @Searchable()
   @Listable()
   @Exported()
@@ -206,7 +219,6 @@ class customerDataAPI extends DataController(
     }),
     filterable: true,
     isVisible: false,
-    // A business is invoiced with VAT; a household has no number.
     visibleWhen: { field: "kind", in: ["business"] },
   })
   @Mandatory("new", "edit")
@@ -254,13 +266,15 @@ class customerDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare phone: string;
 
+  /**
+   * The customer's address. Helio works in Belgium, so the country starts
+   * filled in; foreign addresses stay possible.
+   */
   @Listable()
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.address",
     group: "location",
-    // Helio works in Belgium: the country is filled in, foreign addresses
-    // stay possible.
     type: new DefaultDataTypes.AddressType({
       autocomplete: { enabled: true, lang: "fr" },
       defaultCountry: "BE",
@@ -283,7 +297,6 @@ class customerDataAPI extends DataController(
       placeholder: "$helio.crm.customers.placeholders.segments",
     }),
     filterable: true,
-    // Room for two or three chips side by side.
     size: 260,
   })
   @Optional()
@@ -326,13 +339,13 @@ class customerDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare isVip: boolean;
 
+  /** The sales rep who follows the account. */
   @Listable()
   @Exported()
   @Column({
     name: "$helio.crm.customers.columns.owner",
     group: "relationship",
     type: new DefaultDataTypes.RelationType({
-      // An account is followed by a sales rep.
       dataApiController: salesRepController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
       deselectable: true,
@@ -368,6 +381,10 @@ class customerDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare notes: string;
 
+  /**
+   * When the customer was created, stamped on creation and hidden from the new
+   * form.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -377,7 +394,6 @@ class customerDataAPI extends DataController(
     filterable: true,
     display: new DefaultDisplays.RelativeDateDisplay({ style: "day" }),
     size: 180,
-    // Stamped on creation: nothing to show in the new form.
     readonlyBehavior: { new: ReadonlyBehaviorType.hidden },
   })
   @Access(AccessMode.ReadOnly)
@@ -387,16 +403,18 @@ class customerDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare isArchived: boolean;
 
-  // The tile of the identity cell: a house or a building.
+  /** The tile of the identity cell: a house or a building. */
   @Listable(["kind"])
   @Access(AccessMode.ReadOnly)
   get kindIcon(): string {
     return KIND_ICONS[this.table.kind];
   }
 
-  // The identity cell's second line: contact person and city, as written.
-  // A VIP account opens it with "VIP", in amber: a badge beside the name
-  // would squeeze the name to a few letters on a phone.
+  /**
+   * The identity cell's second line: contact person and city, as written. A VIP
+   * account opens it with "VIP", in amber: a badge beside the name would
+   * squeeze the name to a few letters on a phone.
+   */
   @Listable(["contactName", "address", "isVip"])
   @Access(AccessMode.ReadOnly)
   get locationLine(): CellSubline | string {
@@ -407,6 +425,8 @@ class customerDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for relation columns of other domains (see the
-// TS2742 note above).
+/**
+ * The customer controller, typed as `ControllerClass` for the relation columns
+ * of other domains (see the TS2742 note on the class).
+ */
 export const customerController: ControllerClass = customerDataAPI;

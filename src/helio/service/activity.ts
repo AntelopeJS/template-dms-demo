@@ -1,15 +1,16 @@
-// Resolving tickets reaches the dashboard's activity feed, in the name of
-// whoever holds each ticket (the office's dispatcher for one nobody held),
-// named like the seeded entries: "T-1042 · subject".
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { logActivity } from "../dashboard/log";
 import { teamIdsByRole } from "../shared/roster";
 import { type Ticket, TicketModel } from "./database";
 
+/** Actor of the activity entries for a ticket nobody holds: the office's first team member. */
 const DISPATCHER = teamIdsByRole("office")[0] ?? "";
 
-/** Logs the tickets just resolved or closed. */
+/**
+ * Logs the tickets just resolved or closed to the dashboard's activity feed,
+ * in the name of their holder and titled like the seeded entries
+ * ("T-1042 · subject").
+ */
 export async function logTicketsResolved(
   tickets: readonly Ticket[],
 ): Promise<void> {

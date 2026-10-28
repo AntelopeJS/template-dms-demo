@@ -14,13 +14,17 @@ import {
   assertUniqueCode,
 } from "./project-rules";
 
-// The project states still ahead of the crew: the planning leaves out what
-// is finished.
+/**
+ * The filter for projects not finished yet, those still ahead of the crew: the
+ * planning leaves out what is finished.
+ */
 const NOT_DONE = { accessorKey: "status", mode: "is_not", value: "done" };
 
-// Ways of looking at the installations. The planning groups the coming weeks
-// (and the last two, still being finished) by week of start; the others are
-// the questions an operations manager asks every morning.
+/**
+ * Ways of looking at the installations. The planning groups the coming weeks
+ * (and the last two, still being finished) by week of start; the others are
+ * the questions an operations manager asks every morning.
+ */
 const PROJECT_VIEWS: TableViewView[] = [
   {
     id: "planning",
@@ -100,6 +104,7 @@ const PROJECT_VIEWS: TableViewView[] = [
   },
 ];
 
+/** The projects list page of the Operations category. */
 @RegisterPage()
 export class PageHelioProjects extends PageController(
   "projects",
@@ -112,6 +117,17 @@ export class PageHelioProjects extends PageController(
   },
   DefaultLayout({ fullWidth: true }),
 ) {
+  /**
+   * The table of projects, which the detail page reuses for its permissions.
+   * It lists by ascending start, since the grouped display ignores a view's
+   * sort and the planning reads from this week onwards. `?customer=<id>` (a
+   * customer's "See projects") lists that customer's projects, shown as a
+   * removable chip. A project already on site or finished carries its history
+   * (tasks, invoices, a monitored site), so only one planned, scheduled or on
+   * hold may be deleted. Every write keeps one project per code and an end on
+   * or after the start (an edit may send only one of the dates), and a project
+   * moved on site or to done reaches the activity feed.
+   */
   static table = TableView(projectController, {
     caption: "$helio.projects.table.caption",
     labelKey: "name",
@@ -128,12 +144,8 @@ export class PageHelioProjects extends PageController(
     },
     kanban: { groupByField: "status" },
     card: { fields: ["customer", "plannedStart", "leadTechnician"] },
-    // Ascending: the grouped display ignores a view's sort and lists by this
-    // one, and the planning reads from this week onwards.
     defaultSort: { field: "plannedStart", desc: false },
     views: { items: PROJECT_VIEWS, defaultView: "planning", userViews: true },
-    // `?customer=<id>` (a customer's "See projects") lists that customer's
-    // projects, shown as a removable chip.
     queryParamFilters: {
       customer: {
         field: "customer",
@@ -194,8 +206,6 @@ export class PageHelioProjects extends PageController(
       edit: true,
       duplicate: true,
       hasSelection: true,
-      // A project already on site or finished carries its history (tasks,
-      // invoices, a monitored site): only one not started may be deleted.
       delete: {
         isEnabled: true,
         rule: { field: "status", in: ["planned", "scheduled", "on_hold"] },
@@ -217,9 +227,6 @@ export class PageHelioProjects extends PageController(
         },
       ],
     },
-    // Every write keeps one project per code and an end on or after the
-    // start (an edit may send only one of the dates). A project moved on site
-    // or to done reaches the activity feed.
     guards: {
       new: async (_ctx, { body }) => {
         assertEndAfterStart(body.plannedStart, body.plannedEnd);

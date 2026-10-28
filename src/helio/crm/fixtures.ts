@@ -1,8 +1,3 @@
-// Generated CRM fixtures: 60 customers and 120 deals, deterministic (a seeded
-// PRNG) with dates relative to now. Other domains read them through
-// buildCustomers() / buildDeals() / wonDeals() to stay coherent: the won deals
-// are deal-001 … deal-040, in the order they were closed.
-
 import type { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { COUNTS, customerId, dealId, teamIdsByRole } from "../shared/roster";
 import {
@@ -80,7 +75,7 @@ export const STAGE_PROBABILITY: Record<DealStage, number> = {
 };
 
 const SALES_REPS = teamIdsByRole("sales");
-// Business accounts are mostly followed by the key account manager.
+/** The key account manager, who follows most business accounts. */
 const KEY_ACCOUNT_MANAGER = "team-03";
 const VIP_RESIDENTIAL = new Set([8, 22, 44]);
 const ARCHIVED = new Set([13, 29, 41, 52, 57]);
@@ -118,8 +113,10 @@ function mobilePhone(rng: Rng): string {
   return `+32 4${rng.int(70, 99)} ${pad2(rng.int(0, 99))} ${pad2(rng.int(0, 99))} ${pad2(rng.int(0, 99))}`;
 }
 
-// Belgian area codes: one digit for Liège and Brussels (7-digit numbers), two
-// elsewhere (6-digit numbers).
+/**
+ * Belgian area codes: one digit for Liège and Brussels (7-digit numbers), two
+ * elsewhere (6-digit numbers).
+ */
 const AREA_CODES: Record<string, string> = {
   Liège: "4",
   "Bruxelles-Capitale": "2",
@@ -129,8 +126,10 @@ const AREA_CODES: Record<string, string> = {
   "Brabant wallon": "10",
 };
 
-// A company switchboard number in its area. Draws as many values whatever the
-// area, so the rest of the customer stays the same.
+/**
+ * A company switchboard number in its area. It draws as many values whatever
+ * the area, so the rest of the customer stays the same.
+ */
 function landline(rng: Rng, province: string): string {
   const area = AREA_CODES[province] ?? "4";
   const lead = rng.chance(0.5) ? "2" : "3";
@@ -141,14 +140,18 @@ function landline(rng: Rng, province: string): string {
     : `+32 ${area} ${middle} ${tail}`;
 }
 
-// The businesses' names read as Belgian domains (garage-delvaux.be); their
-// e-mail and website use the reserved .example top-level domain instead, so
-// no seeded address or link points at a real company.
+/**
+ * The businesses' names read as Belgian domains (garage-delvaux.be); their
+ * e-mail and website use the reserved `.example` top-level domain instead, so
+ * no seeded address or link points at a real company.
+ */
 function fictionalDomain(domain: string): string {
   return domain.replace(/\.[a-z]+$/, ".example");
 }
 
-// A valid Belgian VAT number: 0 + 7 digits, then 97 − (those 8 digits mod 97).
+/**
+ * A valid Belgian VAT number: 0 + 7 digits, then 97 − (those 8 digits mod 97).
+ */
 function vatNumber(index: number): string {
   const base = 4_000_000 + ((index * 137_731) % 5_999_999);
   const check = pad2(97 - (base % 97));
@@ -156,6 +159,10 @@ function vatNumber(index: number): string {
   return `BE${digits.slice(0, 4)}.${digits.slice(4, 7)}.${digits.slice(7)}`;
 }
 
+/**
+ * An address in `locality`. About 15 % of addresses get a box number, which never
+ * repeats the house number ("10 bte 10" reads as a typo).
+ */
 function address(rng: Rng, locality: Locality): DefaultDataTypes.Address {
   const result: DefaultDataTypes.Address = {
     streetName: rng.pick(locality.streets),
@@ -166,7 +173,6 @@ function address(rng: Rng, locality: Locality): DefaultDataTypes.Address {
     countryCode: "BE",
   };
   if (rng.chance(0.15)) {
-    // A box never repeats the house number ("10 bte 10" reads as a typo).
     const box = rng.int(1, 12);
     result.boxNumber = String(
       String(box) === result.houseNumber ? (box % 12) + 1 : box,
@@ -175,7 +181,7 @@ function address(rng: Rng, locality: Locality): DefaultDataTypes.Address {
   return result;
 }
 
-// Residential customers live mostly around Liège, where Helio is based.
+/** Residential customers live mostly around Liège, where Helio is based. */
 function residentialLocality(rng: Rng): Locality {
   const liegeProvince = LOCALITIES.slice(0, 12);
   return rng.chance(0.6) ? rng.pick(liegeProvince) : rng.pick(LOCALITIES);
@@ -251,7 +257,12 @@ function businessCustomer(
 
 let customerCache: CustomerSeed[] | undefined;
 
-/** The 60 customers: every third one is a business. */
+/**
+ * The 60 generated customers: every third one is a business. They are
+ * deterministic (a seeded PRNG) with dates relative to now, so other domains
+ * read them through this function, {@link buildDeals} and {@link wonDeals} to
+ * stay coherent.
+ */
 export function buildCustomers(): CustomerSeed[] {
   customerCache ??= Array.from({ length: COUNTS.customers }, (_, offset) => {
     const index = offset + 1;
@@ -262,8 +273,6 @@ export function buildCustomers(): CustomerSeed[] {
   });
   return customerCache;
 }
-
-// --- Deals ---------------------------------------------------------------
 
 const OPEN_STAGE_COUNTS: ReadonlyArray<readonly [DealStage, number]> = [
   ["lead", 14],
@@ -318,7 +327,10 @@ function dealTitle(rng: Rng, customer: CustomerSeed, amount: number): string {
   ]);
 }
 
-// Seeded Fisher–Yates, so the stages are mixed but always in the same order.
+/**
+ * A seeded Fisher–Yates shuffle, so the stages are mixed but always in the same
+ * order.
+ */
 function shuffled<T>(rng: Rng, items: T[]): T[] {
   const result = [...items];
   for (let i = result.length - 1; i > 0; i--) {
@@ -365,7 +377,7 @@ function baseDeal({ index, customer, stage, rng }: DealDraft): DealSeed {
   return deal;
 }
 
-// Won deals close one after the other over the last twelve months.
+/** Won deals close one after the other over the last twelve months. */
 function wonDeal(draft: DealDraft): DealSeed {
   const daysAgo = Math.round(
     360 - ((draft.index - 1) * 355) / (WON_DEAL_COUNT - 1),
@@ -393,8 +405,10 @@ function lostDeal(draft: DealDraft): DealSeed {
   };
 }
 
-// Open deals: closing in the coming months (a few already overdue), most
-// touched recently, about a quarter stalled for more than three weeks.
+/**
+ * Open deals: closing in the coming months (a few already overdue), most
+ * touched recently, about a quarter stalled for more than three weeks.
+ */
 function openDeal(draft: DealDraft): DealSeed {
   const { rng, stage } = draft;
   const overdue = rng.chance(0.1);
@@ -412,7 +426,12 @@ function openDeal(draft: DealDraft): DealSeed {
 
 let dealCache: DealSeed[] | undefined;
 
-/** The 120 deals: deal-001 … deal-040 won, the rest spread over the pipeline. */
+/**
+ * The 120 generated deals: deal-001 … deal-040 won, in the order they were
+ * closed, and the rest spread over the pipeline. A lost deal may belong to a
+ * customer archived since. The weighted amount is computed once the
+ * probability is final, since open deals nudge theirs.
+ */
 export function buildDeals(): DealSeed[] {
   if (dealCache) return dealCache;
   const customers = buildCustomers();
@@ -440,7 +459,6 @@ export function buildDeals(): DealSeed[] {
       });
     }
     const stage = stages[index - WON_DEAL_COUNT - 1] ?? "lead";
-    // Lost deals may belong to customers archived since.
     if (stage === "lost")
       return lostDeal({
         index,
@@ -455,7 +473,6 @@ export function buildDeals(): DealSeed[] {
       rng,
     });
   });
-  // Weighted once the probability is final: open deals nudge theirs.
   dealCache = drafts.map((deal) => ({
     ...deal,
     weightedAmount: cents(deal.amount * deal.probability),

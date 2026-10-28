@@ -57,9 +57,11 @@ export class Customer extends Table {
   @Index() @Field("boolean") declare isArchived?: boolean;
 }
 
-// Stamps the creation date of rows created from the dashboard, but keeps the
-// date a fixture provides (CreationTime would overwrite it, since fixtures go
-// through the same insert event).
+/**
+ * Stamps the creation date of rows created from the dashboard, but keeps the
+ * date a fixture provides (`CreationTime` would overwrite it, since fixtures go
+ * through the same insert event).
+ */
 class CreationTimeIfMissing extends AutoDateModifier {
   override insert(object: Record<string, unknown>, field: string): void {
     object[field] ??= new Date();

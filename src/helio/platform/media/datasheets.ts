@@ -5,10 +5,6 @@ import {
 } from "../../shared/roster";
 import type { DocBlock, DocSpec } from "./pdf-layout";
 
-// One datasheet per hardware product of the catalog roster, its figures
-// derived from the product's rated power so a sheet always matches the
-// catalog row it documents.
-
 export type HardwareFamily =
   | "cat-panels"
   | "cat-inverters"
@@ -240,7 +236,11 @@ const BLOCKS: Record<HardwareFamily, (p: ProductRosterEntry) => DocBlock[]> = {
   "cat-ev": chargerBlocks,
 };
 
-/** Datasheets of every hardware product of the catalog. */
+/**
+ * One datasheet per hardware product of the catalog roster. Its figures are
+ * derived from the product's rated power, so a sheet always matches the
+ * catalog row it documents.
+ */
 export function buildDatasheets(): Datasheet[] {
   return PRODUCT_ROSTER.flatMap((product): Datasheet[] => {
     const family = familyOf(product);

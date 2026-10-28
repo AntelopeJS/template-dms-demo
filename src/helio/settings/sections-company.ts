@@ -9,6 +9,12 @@ const NAV_GROUP = "$helio.settings.groups.company";
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const LOGO_MAX_WIDTH = 1200;
 
+/**
+ * The company's identity fields. The enterprise number is fixed at
+ * incorporation, so it is shown with its register badge and not edited here. The
+ * VAT number's length limit leaves room for "BE 0123.456.789", although it is
+ * stored without spaces or dots.
+ */
 const identitySection: FormSection = {
   id: "identity",
   label: "$helio.settings.sections.identity",
@@ -29,7 +35,6 @@ const identitySection: FormSection = {
       required: true,
     },
     {
-      // Fixed at incorporation: shown with its register, not edited here.
       id: "enterpriseNumber",
       label: "$helio.settings.fields.enterpriseNumber",
       type: new DefaultDataTypes.StringType(),
@@ -42,7 +47,6 @@ const identitySection: FormSection = {
       label: "$helio.settings.fields.vatNumber",
       type: new DefaultDataTypes.StringType({
         placeholder: "BE0123456789",
-        // Room for "BE 0123.456.789": stored without spaces or dots.
         maxLength: 17,
       }),
       hint: "$helio.settings.hints.vatNumber",
@@ -83,6 +87,11 @@ const identitySection: FormSection = {
   ],
 };
 
+/**
+ * The branding fields. The logo is a media-library asset, so the same logo is
+ * reused by every document; its folder is named in French like the other Helio
+ * media folders (platform/media).
+ */
 function brandingSection(page: ControllerClass): FormSection {
   return {
     id: "branding",
@@ -99,7 +108,6 @@ function brandingSection(page: ControllerClass): FormSection {
         hint: "$helio.settings.hints.brandColor",
       },
       {
-        // A media-library asset: the same logo is reused by every document.
         id: "logo",
         label: "$helio.settings.fields.logo",
         description: "$helio.settings.descriptions.logo",
@@ -107,7 +115,6 @@ function brandingSection(page: ControllerClass): FormSection {
           mimetypes: ["image/png", "image/svg+xml", "image/webp"],
           binding: {
             id: "helio.settings.logo",
-            // Named in French like the other Helio media folders (platform/media).
             folderName: "Logo de l'entreprise",
             permissionsFromPage: page,
           },

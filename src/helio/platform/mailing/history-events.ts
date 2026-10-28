@@ -1,8 +1,3 @@
-// What happened to each e-mail of the imported history once it left: most
-// are delivered within the minute, many are opened in the following hours,
-// some links are clicked, and a few addresses bounce. Drawn from a PRNG seeded
-// by the send's import id, so a re-import tells the same story.
-
 import { createHash } from "node:crypto";
 import type { ImportedSendEvent } from "@antelopejs/interface-dms-mailing";
 import { createRng, type Rng } from "../../shared/seed";
@@ -43,8 +38,10 @@ function bounce(rng: Rng, sentAt: Date, email: string): ImportedSendEvent {
   };
 }
 
-// Opens never happen in the future: an e-mail sent an hour ago had little
-// time to be read.
+/**
+ * The opens and clicks of a delivered e-mail. Nothing is dated in the future:
+ * an e-mail sent an hour ago had little time to be read.
+ */
 function reading(
   rng: Rng,
   delivered: Date,
@@ -69,7 +66,13 @@ function reading(
   return events;
 }
 
-/** The provider events of one imported send, in the order they happened. */
+/**
+ * The provider events of one imported send, in the order they happened: most
+ * e-mails are delivered within the minute, many are opened in the following
+ * hours, some links are clicked, and a few addresses bounce. They are drawn
+ * from a PRNG seeded by the send's import id, so a re-import tells the same
+ * story.
+ */
 export function historyEvents(
   importId: string,
   email: string,

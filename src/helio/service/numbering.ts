@@ -1,7 +1,3 @@
-// Ticket numbers follow each other: T-1001 is the oldest seeded ticket, and a
-// new ticket — from the form or the simulator — takes the next free one, so
-// nobody has to guess it.
-
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -14,7 +10,11 @@ import { notifyUrgentTicket } from "./notifications";
 
 const PREFIX = "T-";
 
-/** The next free number, after the highest one already used. */
+/**
+ * The next free number, after the highest one already used. Numbers follow
+ * each other from T-1001, the oldest seeded ticket, so a new ticket from the
+ * form or the simulator never needs its number guessed.
+ */
 export async function nextTicketNumber(): Promise<string> {
   const tickets = await GetModel(TicketModel).getAll();
   const last = tickets.reduce((highest, ticket) => {
@@ -25,16 +25,18 @@ export async function nextTicketNumber(): Promise<string> {
   return `${PREFIX}${last + 1}`;
 }
 
-// Once written, an urgent ticket warns the owners. `new` answers the created
-// row with its `_id` (interface-data-api#43).
+/**
+ * Once a ticket is written, warns the owners of an urgent one, mails the
+ * customer an acknowledgement (in the background, never failing the creation)
+ * and fires the "Ticket opened" automation trigger. It reads the `_id` from
+ * the answer of the `new` route (interface-data-api#43).
+ */
 async function afterCreate(created: unknown): Promise<void> {
   const id = (created as { _id?: unknown } | null)?._id;
   if (typeof id !== "string") return;
   const ticket = await GetModel(TicketModel).get(id);
   if (!ticket) return;
   if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);
-  // Helio platform: the customer's acknowledgement e-mail (in the background,
-  // never failing the creation) and the "Ticket opened" automation trigger.
   void mailTicketReceived(ticket);
   fireTicketOpened(ticket);
 }

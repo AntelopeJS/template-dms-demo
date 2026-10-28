@@ -28,7 +28,7 @@ import { teamController } from "../team/controller";
 import { ProjectTask, ProjectTaskModel } from "./database";
 import { projectController } from "./project-controller";
 
-// A task's state on the project board. Exported for tabs and kanban columns.
+/** A task's state on the project board. Exported for tabs and kanban columns. */
 export const PROJECT_TASK_STATUSES = [
   {
     value: "todo",
@@ -53,10 +53,14 @@ export const PROJECT_TASK_STATUSES = [
   },
 ] as const;
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
-// The due date and the estimate share one row of the form: an estimate is a
-// few digits, which a row of its own stretches across the whole form.
+/**
+ * The data controller of the tasks table. It is not exported on purpose:
+ * emitting a .d.ts for this class would require naming types from the nested
+ * @antelopejs/interface-core copies (TS2742), so `projectTaskController` is the
+ * handle other modules use. The due date and the estimate share one row of the
+ * form: an estimate is a few digits, which a row of its own stretches across
+ * the whole form.
+ */
 @RegisterDataController()
 @ColumnGroup("schedule", {
   label: "$helio.projects.tasks.groups.schedule",
@@ -77,7 +81,7 @@ class projectTaskDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare _id: string;
 
-  // Manual order within a project (`reorder: { field: "position" }`).
+  /** Manual order within a project (`reorder: { field: "position" }`). */
   @Listable()
   @Sortable()
   @Column({
@@ -107,6 +111,12 @@ class projectTaskDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare title: string;
 
+  /**
+   * The project the task belongs to. It is not mandatory in the "new" form: the
+   * project page's tasks table fills it from the URL when the form is submitted
+   * (`routeParamFilters`), after the form's own required check. Its guard
+   * refuses a task without a project.
+   */
   @Listable()
   @Exported()
   @Column({
@@ -119,9 +129,6 @@ class projectTaskDataAPI extends DataController(
     filterable: true,
     size: 240,
   })
-  // Not mandatory in the "new" form: the project page's tasks table fills it
-  // from the URL when the form is submitted (routeParamFilters), after the
-  // form's own required check. Its guard refuses a task without a project.
   @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare project: string;
@@ -201,5 +208,5 @@ class projectTaskDataAPI extends DataController(
   declare estimateHours: number;
 }
 
-// ControllerClass-typed alias for relations and pages (see the TS2742 note).
+/** The tasks controller as relations and pages reference it (see the TS2742 note on the class). */
 export const projectTaskController: ControllerClass = projectTaskDataAPI;

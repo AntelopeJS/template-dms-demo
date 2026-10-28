@@ -1,7 +1,3 @@
-// What a quote's life cycle changes beyond the quote: a signed quote wins
-// its deal (at the signed amount), and sending or signing one is logged to the
-// dashboard's activity feed, in the name of the salesperson who owns it.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { tableViewRowTopic } from "@antelopejs/interface-dms/base/table-view";
 import { PublishMessage } from "@antelopejs/interface-dms/realtime";
@@ -9,7 +5,7 @@ import { CustomerModel, type Deal, DealModel } from "../crm/database";
 import { type ActivityEntry, logActivity } from "../dashboard/log";
 import type { Quote } from "./database";
 
-// Where the pipeline table listens for rows changed outside its routes.
+/** The pipeline table's route, on which it listens for rows changed outside its own routes. */
 const PIPELINE_LOCATION = "/api/helio/deals";
 
 interface QuoteContext {
@@ -18,8 +14,10 @@ interface QuoteContext {
   subject: string;
 }
 
-// The quote's deal, its salesperson (the deal's owner, else the customer's
-// account manager) and how the feed names it: "Q-2026-0042 · Dupont".
+/**
+ * The quote's deal, its salesperson (the deal's owner, else the customer's
+ * account manager) and how the feed names it: "Q-2026-0042 · Dupont".
+ */
 async function contextOf(quote: Quote): Promise<QuoteContext> {
   const [deal, customer] = await Promise.all([
     quote.deal ? GetModel(DealModel).get(quote.deal) : undefined,
@@ -32,7 +30,10 @@ async function contextOf(quote: Quote): Promise<QuoteContext> {
   };
 }
 
-/** Logs a quote sent to its customer. */
+/**
+ * Logs a quote sent to its customer to the dashboard's activity feed, in the
+ * name of its salesperson. Nothing is logged for a quote that has none.
+ */
 export async function quoteSent(quote: Quote): Promise<void> {
   const { owner, subject } = await contextOf(quote);
   if (!owner) return;
@@ -44,7 +45,10 @@ export async function quoteSent(quote: Quote): Promise<void> {
   });
 }
 
-// A signed quote closes its deal as won, at the amount signed.
+/**
+ * Closes the deal of a signed quote as won, at the quote's subtotal, and tells
+ * the pipeline table to refresh the row.
+ */
 async function winDeal(deal: Deal, quote: Quote): Promise<void> {
   const now = new Date();
   await GetModel(DealModel).update(deal._id, {

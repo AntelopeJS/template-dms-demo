@@ -31,7 +31,7 @@ import { Deal, type DealStage, DealModel } from "./database";
 import { isKickoffNextStep, kickoffNextStep } from "./kickoff-step";
 import { salesRepController } from "./sales-rep-controller";
 
-// The pipeline, in order. Exported for the kanban columns, tabs and views.
+/** The pipeline stages, in order: the kanban columns, tabs and views read them. */
 export const DEAL_STAGES = [
   {
     value: "lead",
@@ -93,9 +93,9 @@ export const OPEN_DEAL_STAGES: readonly DealStage[] = [
   "negotiation",
 ];
 
-// The default probability of each stage lives with the fixtures that use it.
 export { STAGE_PROBABILITY } from "./fixtures";
 
+/** The reasons a lost deal can give, as the lost-reason select offers them. */
 export const LOST_REASONS = [
   {
     value: "price",
@@ -133,12 +133,17 @@ const LOST_REASON_LABELS: Record<string, string> = Object.fromEntries(
   LOST_REASONS.map(({ value, label }) => [value, label]),
 );
 
-// An open deal untouched for this long reads as stalled.
+/** Days without activity after which an open deal reads as stalled. */
 const STALLED_DAYS = 21;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The pipeline table's data controller, served under `/api/helio/deals`.
+ *
+ * Not exported on purpose: emitting a `.d.ts` for this class would require
+ * naming types from the nested `@antelopejs/interface-core` copies (TS2742).
+ * Other domains use {@link dealController} instead.
+ */
 @RegisterDataController()
 class dealDataAPI extends DataController(
   Deal,
@@ -149,7 +154,7 @@ class dealDataAPI extends DataController(
   @Model(DealModel)
   declare model: DealModel;
 
-  // Who reads: the kick-off next step is worded in their profile's language.
+  /** The signed-in reader, whose profile language words the kick-off next step. */
   @IfAuthUser()
   declare reader?: User;
 
@@ -159,6 +164,10 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare _id: string;
 
+  /**
+   * The deal's title. The deal drawer's header names the deal, so its
+   * read-only view (read through `get`) leaves the title out; the forms keep it.
+   */
   @Searchable()
   @Select()
   @Listable()
@@ -175,8 +184,6 @@ class dealDataAPI extends DataController(
     display: new DefaultDisplays.TwoLineDisplay({
       subField: "nextStepLine",
     }),
-    // The deal drawer's header names the deal: its read-only view leaves the
-    // title out (read through `get`, hidden there), the forms keep it.
     readonlyBehavior: { view: ReadonlyBehaviorType.hidden },
   })
   @Mandatory("new", "edit")
@@ -204,9 +211,11 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare customer: string;
 
-  // The customer's name, stored with the deal (deal-derived.ts keeps it in
-  // step) so the search box finds a deal by its customer: a search reads the
-  // stored fields, not the joined customer.
+  /**
+   * The customer's name, stored with the deal (`deal-derived.ts` keeps it in
+   * step) so the search box finds a deal by its customer: a search reads the
+   * stored fields, not the joined customer.
+   */
   @Searchable()
   @Column({
     name: "$helio.crm.deals.columns.customerName",
@@ -258,6 +267,11 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare amount: number;
 
+  /**
+   * The chance the deal closes. A won or lost deal's figure is implied: the
+   * write routes store 100 % or 0 % (`deal-derived.ts`), so the field is
+   * locked on those stages.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -267,17 +281,18 @@ class dealDataAPI extends DataController(
     filterable: true,
     defaultValue: 0.1,
     size: 110,
-    // A won or lost deal's figure is implied: the write routes store 100 %
-    // or 0 % (deal-derived.ts), so the field is locked on those stages.
     disabledWhen: { field: "stage", in: ["won", "lost"] },
   })
   @Optional()
   @Access(AccessMode.ReadWrite)
   declare probability: number;
 
-  // amount × probability, stored with the deal (deal-derived.ts keeps it in
-  // step on every write) so it lists, sorts and sums in the pipeline footer.
-  // Not @Computed: see deal-derived.ts.
+  /**
+   * Amount × probability, stored with the deal (`deal-derived.ts` keeps it in
+   * step on every write, and explains why it is not `@Computed`) so it lists,
+   * sorts and sums in the pipeline footer. Hidden on creation, when there is
+   * nothing to show yet, and shown read-only once the deal exists.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -286,15 +301,17 @@ class dealDataAPI extends DataController(
     type: new DefaultDataTypes.PriceType(),
     validate: false,
     size: 130,
-    // Nothing to show before the deal exists; shown, read-only, once it does.
     readonlyBehavior: { new: ReadonlyBehaviorType.hidden },
   })
   @Access(AccessMode.ReadOnly)
   declare weightedAmount: number;
 
-  // Neither won nor lost, stored with the deal (deal-derived.ts keeps it in
-  // step): a list filter takes one value per column, so the saved views
-  // ("Big deals", "Stalled"…) narrow the open deals through this flag.
+  /**
+   * Whether the deal is neither won nor lost, stored with the deal
+   * (`deal-derived.ts` keeps it in step): a list filter takes one value per
+   * column, so the saved views ("Big deals", "Stalled"…) narrow the open deals
+   * through this flag.
+   */
   @Listable()
   @Column({
     name: "$helio.crm.deals.columns.isOpen",
@@ -307,12 +324,12 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare isOpen: boolean;
 
+  /** The sales rep who owns the deal; only sales reps can be picked. */
   @Listable()
   @Exported()
   @Column({
     name: "$helio.crm.deals.columns.owner",
     type: new DefaultDataTypes.RelationType({
-      // Only the sales reps can own a deal.
       dataApiController: salesRepController,
       keyMapping: { label: "name", value: "_id", avatar: "avatar" },
       placeholder: "$helio.crm.deals.placeholders.owner",
@@ -371,9 +388,11 @@ class dealDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare lastActivityAt: Date;
 
-  // The kick-off call a signed quote planned reads in the reader's language
-  // in the form and the quick view too; a next step typed over it replaces it
-  // (afterDealEdit).
+  /**
+   * The deal's next step. The kick-off call a signed quote planned reads in
+   * the reader's language, in the form and the quick view too; a next step
+   * typed over it replaces it (`afterDealEdit`).
+   */
   @Searchable()
   @Listable(["nextStep", "kickoffQuote"])
   @Column({
@@ -397,6 +416,7 @@ class dealDataAPI extends DataController(
     this.table.nextStep = value;
   }
 
+  /** Why a lost deal was lost: shown, and mandatory, on that stage only. */
   @Listable()
   @Exported()
   @Column({
@@ -407,15 +427,17 @@ class dealDataAPI extends DataController(
     }),
     filterable: true,
     isVisible: false,
-    // A lost deal says why: shown, and mandatory, on that stage only.
     visibleWhen: { field: "stage", in: ["lost"] },
   })
   @Mandatory("new", "edit")
   @Access(AccessMode.ReadWrite)
   declare lostReason: string;
 
-  // Under the title: the next step, in orange once an open deal stalls. The
-  // kick-off call a signed quote plans is written in the reader's language.
+  /**
+   * The line under the title: the next step, in orange once an open deal
+   * stalls. The kick-off call a signed quote plans is written in the reader's
+   * language.
+   */
   @Listable(["nextStep", "kickoffQuote", "stage", "lastActivityAt"])
   @Access(AccessMode.ReadOnly)
   get nextStepLine(): CellSubline | null {
@@ -433,7 +455,7 @@ class dealDataAPI extends DataController(
     return { text, tone: stalled ? "warning" : undefined };
   }
 
-  // Under the stage pill: why a lost deal was lost.
+  /** The line under the stage pill: why a lost deal was lost. */
   @Listable(["stage", "lostReason"])
   @Access(AccessMode.ReadOnly)
   get stageDetail(): string | null {
@@ -443,6 +465,8 @@ class dealDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for relation columns of other domains (see the
-// TS2742 note above).
+/**
+ * The deal controller, typed as `ControllerClass` for the relation columns of
+ * other domains (see the TS2742 note on the class).
+ */
 export const dealController: ControllerClass = dealDataAPI;

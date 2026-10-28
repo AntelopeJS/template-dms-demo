@@ -15,16 +15,24 @@ import { afterDealEdit, afterDealNew } from "./deal-derived";
 import { CUSTOMER_QUICK_VIEW_URL } from "./links";
 import { PIPELINE_VIEWS } from "./pipeline-views";
 
-// Deals still in play, for the footer figures: a summary rule reads stored
-// fields, so it names the closed stages rather than the computed isOpen.
+/**
+ * Deals still in play, for the footer figures: a summary rule reads stored
+ * fields, so it names the closed stages rather than the computed `isOpen`.
+ */
 const OPEN_DEAL = { field: "stage", notIn: ["won", "lost"] };
 
-// The probability follows the stage as it is picked, before the save: each
-// stage's usual figure (100 % won, 0 % lost), which the owner may still
-// adjust on an open deal (the column locks it on a won or lost one). Only a
-// change writes the value: a form opens with the probability the deal stored.
+/**
+ * The probability each stage starts a deal with (100 % won, 0 % lost), which
+ * {@link watchProbability} applies as the stage is picked.
+ */
 const PROBABILITY_BY_STAGE: Record<string, number> = { ...STAGE_PROBABILITY };
 
+/**
+ * Makes the probability follow the stage as it is picked, before the save: each
+ * stage's usual figure, which the owner may still adjust on an open deal (the
+ * column locks it on a won or lost one). Only a change writes the value: a form
+ * opens with the probability the deal stored.
+ */
 function watchProbability(form: FormBuilder): FormBuilder {
   return form.watch(FormEvents.FIELD_CHANGE, FormFunctions.SET_FIELD_VALUE, {
     params: { targetField: "probability", valueMap: PROBABILITY_BY_STAGE },
@@ -44,13 +52,26 @@ export class PageHelioPipeline extends PageController(
   },
   DefaultLayout({ fullWidth: true }),
 ) {
+  /**
+   * The pipeline table.
+   *
+   * - The board comes first: one column per stage, and a card moved to another
+   *   column changes the deal's stage. The grid stays one click away.
+   * - `?customer=<id>` (a customer's "Deals" on the customers page) and
+   *   `?owner=<id>` (a sales rep on the dashboard leaderboard) filter the
+   *   deals, shown as chips.
+   * - A click on a deal (a card of the board or a row), its "Quick view" and
+   *   `?record=<deal id>` (the dashboard's activity feed, a customer's deals)
+   *   open the deal read-only in a right drawer; "Edit" from the menu opens the
+   *   form.
+   * - The guards keep the stored derived fields in step after each write (see
+   *   `deal-derived.ts`).
+   */
   static table = TableView(dealController, {
     caption: "$helio.crm.pipeline.caption",
     labelKey: "title",
     searchPlaceholder: "$helio.crm.pipeline.search",
     rowClick: "single",
-    // The board first: one column per stage, a card moved to another column
-    // changes the deal's stage. The grid stays one click away.
     kanban: { groupByField: "stage", draggable: true, columnMaxHeight: "68vh" },
     displays: [{ id: "kanban" }, { id: "table" }],
     defaultDisplay: "kanban",
@@ -61,8 +82,6 @@ export class PageHelioPipeline extends PageController(
       { field: "owner", label: "$helio.crm.pipeline.quickFilters.owner" },
       { field: "source", label: "$helio.crm.pipeline.quickFilters.source" },
     ],
-    // "Deals" of a customer (customers page): ?customer=<id>, and the deals
-    // of a sales rep (dashboard leaderboard): ?owner=<id>, as chips.
     queryParamFilters: {
       customer: {
         field: "customer",
@@ -145,10 +164,6 @@ export class PageHelioPipeline extends PageController(
         },
       },
       custom: [
-        // A click on a deal (a card of the board or a row), its "Quick view"
-        // and `?record=<deal id>` (the dashboard's activity feed, a
-        // customer's deals) open the deal read-only in a right drawer; "Edit"
-        // from the menu opens the form.
         {
           id: "quick-view",
           label: "$helio.crm.pipeline.quickView.action",
@@ -184,7 +199,6 @@ export class PageHelioPipeline extends PageController(
       new: watchProbability,
       edit: watchProbability,
     },
-    // The stored derived fields follow each write (see deal-derived.ts).
     guards: {
       new: (_ctx, { body }) => afterDealNew(body),
       edit: (_ctx, { id, body, current }) => afterDealEdit(id, body, current),

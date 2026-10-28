@@ -21,11 +21,13 @@ import { catalogStats } from "./stats";
 
 const PAGE_SLUG = "/helio/sales/catalog";
 
-// The product catalog: what Helio sells and installs, as cards with their
-// visual, grouped by family or as a grid, in the order the sales team set by
-// hand (the order quotes offer them in). The stock of each product reads
-// against its reorder threshold, and the ranges the products are filed under
-// are managed below.
+/**
+ * The product catalog: what Helio sells and installs, as cards with their
+ * visual, grouped by range or as a grid, in the order the sales team set by
+ * hand (the order quotes offer them in). The stock of each product reads
+ * against its reorder threshold, and the ranges the products are filed under
+ * are managed below.
+ */
 @RegisterPage()
 export class PageHelioCatalog extends PageController(
   "catalog",
@@ -51,7 +53,7 @@ export class PageHelioCatalog extends PageController(
     categoryTableOptions,
   );
 
-  // Read again on every visit: the figures follow the edits made below.
+  /** Read again on every visit: the figures follow the edits made below. */
   @Get("/stats")
   async catalogStats() {
     const [products, categories] = await Promise.all([

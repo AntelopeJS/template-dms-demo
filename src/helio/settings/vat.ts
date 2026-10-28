@@ -1,8 +1,9 @@
-// VAT numbers as the EU VIES service writes them: a country prefix and that
-// country's format (Belgium: BE + 10 digits, starting with 0 or 1). The
-// format only: the demo company's own number is fictitious and would fail
-// the Belgian mod-97 check.
-
+/**
+ * VAT numbers as the EU VIES service writes them: a country prefix and that
+ * country's format (Belgium: BE + 10 digits, starting with 0 or 1). It checks the
+ * format only: the demo company's own number is fictitious and would fail the
+ * Belgian mod-97 check.
+ */
 const EU_VAT_FORMATS: Record<string, RegExp> = {
   AT: /^U\d{8}$/,
   BE: /^[01]\d{9}$/,

@@ -1,16 +1,3 @@
-// The e-mails Helio sent over the last weeks, rebuilt from the business data
-// itself: every quote sent or signed, installation confirmed, invoice issued
-// or reminded and ticket opened or resolved in the window has its e-mail, at
-// the date the record says. Imported once per send (`importId` is stable), so
-// the Mailing overview shows a living send log from the first boot.
-//
-// An import delivers nothing, so dms-mailing puts no address on its
-// suppression list from one. The bounces and spam complaints of the history
-// are therefore left out of the import and reported right after, as the
-// provider's webhook would, through RecordEmailEvent: dms-mailing then
-// suppresses the hard-bounced and complaining addresses itself, and later
-// sends to them are held back.
-
 import {
   type ImportedSend,
   type ImportedSendEvent,
@@ -122,6 +109,7 @@ const inWindow = (date: Date | undefined, now: number): date is Date =>
 const later = (date: Date, minutes: number) =>
   new Date(date.getTime() + minutes * MINUTE_MS);
 
+/** The quote e-mails: each quote sent and each quote signed within the window. */
 async function salesHistory(
   customers: Map<string, Customer>,
   now: number,
@@ -197,6 +185,10 @@ async function installationHistory(
   });
 }
 
+/**
+ * The invoice e-mails: each issued invoice, and a first reminder a week after
+ * the due date for those paid later than that or still unpaid.
+ */
 async function billingHistory(
   customers: Map<string, Customer>,
   now: number,
@@ -214,7 +206,6 @@ async function billingHistory(
         source: MAIL_SOURCES.invoiceIssued,
       });
     }
-    // Paid late or still unpaid: a reminder went out a week after the due date.
     const remindedAt = later(invoice.dueAt, FIRST_REMINDER_DAYS * 24 * 60);
     const paidAfter = !invoice.paidAt || invoice.paidAt > remindedAt;
     if (
@@ -233,8 +224,11 @@ async function billingHistory(
   });
 }
 
-// Monitoring alerts open tickets with no customer e-mail behind them; the
-// simulated tickets come and go, so they stay out of the history.
+/**
+ * The ticket e-mails: receipt and resolution. Monitoring alerts open tickets
+ * with no customer e-mail behind them, and the simulated tickets come and go,
+ * so both stay out of the history.
+ */
 async function serviceHistory(
   customers: Map<string, Customer>,
   now: number,
@@ -267,16 +261,31 @@ async function serviceHistory(
   });
 }
 
+/** What an import of the send history did. */
 export interface HistoryImport {
   imported: number;
   skipped: number;
-  /** Bounces and complaints reported after the import (see the top). */
+  /** Bounces and complaints reported after the import (see `importMailHistory`). */
   reported: number;
   /** Projects whose installation date the history already confirmed. */
   confirmedProjects: Array<{ projectId: string; sentAt: Date }>;
 }
 
-/** Imports the send history (idempotent: known sends are skipped). */
+/**
+ * Imports the e-mails Helio sent over the last weeks, rebuilt from the
+ * business data itself: every quote sent or signed, installation confirmed,
+ * invoice issued or reminded and ticket opened or resolved in the window has
+ * its e-mail, at the date the record says. It is idempotent: each send has a
+ * stable `importId`, so known sends are skipped and the Mailing overview shows
+ * a living send log from the first boot.
+ *
+ * An import delivers nothing, so dms-mailing puts no address on its
+ * suppression list from one. The bounces and spam complaints of the history
+ * are therefore left out of the import and reported right after, as the
+ * provider's webhook would, through `RecordEmailEvent`: dms-mailing then
+ * suppresses the hard-bounced and complaining addresses itself, and later
+ * sends to them are held back.
+ */
 export async function importMailHistory(): Promise<HistoryImport> {
   const now = Date.now();
   const customers = new Map(
