@@ -76,7 +76,7 @@ function subjectOf(
   sites: SiteSeed[],
   category: TicketCategory,
   createdAt: Date,
-): { site?: SiteSeed; customer: string } {
+): Pick<TicketDraft, "site" | "customer"> {
   const running = sites.filter(
     (site) => site.commissionedAt.getTime() + DAY_MS < createdAt.getTime(),
   );

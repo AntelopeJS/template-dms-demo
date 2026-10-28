@@ -1,7 +1,8 @@
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
-import { readBody } from "../shared/body-defaults";
+import { readBody, textOf } from "../shared/body-defaults";
+import { isObject, isText } from "../shared/json";
 import { fireTicketOpened } from "../platform/automation/events";
 import { mailTicketReceived } from "../platform/mailing/send";
 import { defaultHolderFor } from "./assignees";
@@ -28,17 +29,23 @@ export async function nextTicketNumber(): Promise<string> {
 /**
  * Once a ticket is written, warns the owners of an urgent one, mails the
  * customer an acknowledgement (in the background, never failing the creation)
- * and fires the "Ticket opened" automation trigger. It reads the `_id` from
- * the answer of the `new` route (interface-data-api#43).
+ * and fires the "Ticket opened" automation trigger. `id` is the created
+ * ticket's, read from the answer of the `new` route.
  */
-async function afterCreate(created: unknown): Promise<void> {
-  const id = (created as { _id?: unknown } | null)?._id;
-  if (typeof id !== "string") return;
+async function afterCreate(id: string): Promise<void> {
   const ticket = await GetModel(TicketModel).get(id);
   if (!ticket) return;
   if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);
   void mailTicketReceived(ticket);
   fireTicketOpened(ticket);
+}
+
+/**
+ * Whether the `new` route's answer carries the created row's `_id`
+ * (interface-data-api#43).
+ */
+function hasCreatedId(answer: unknown): answer is { _id: string } {
+  return isObject(answer) && "_id" in answer && isText(answer._id);
 }
 
 /**
@@ -66,7 +73,7 @@ export function withTicketNumber(
       if (!body) return route.func.call(this, ctx, params, raw, ...rest);
       if (!body.number) body.number = await nextTicketNumber();
       if (!body.assignee) {
-        const holder = await defaultHolderFor(body.priority);
+        const holder = await defaultHolderFor(textOf(body.priority));
         if (holder) body.assignee = holder;
       }
       const result: unknown = await route.func.call(
@@ -76,7 +83,7 @@ export function withTicketNumber(
         body,
         ...rest,
       );
-      await afterCreate(result);
+      if (hasCreatedId(result)) await afterCreate(result._id);
       return result;
     },
   };

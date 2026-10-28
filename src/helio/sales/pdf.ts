@@ -39,22 +39,22 @@ const BOLD_WIDTHS = [
 const DEFAULT_WIDTH = 556;
 
 /** WinAnsi codes of the characters it places outside Latin-1. */
-const WIN_ANSI_EXTRA: Record<string, number> = {
-  "€": 0x80,
-  "‚": 0x82,
-  "„": 0x84,
-  "…": 0x85,
-  "‘": 0x91,
-  "’": 0x92,
-  "“": 0x93,
-  "”": 0x94,
-  "•": 0x95,
-  "–": 0x96,
-  "—": 0x97,
-  "™": 0x99,
-  œ: 0x9c,
-  Œ: 0x8c,
-};
+const WIN_ANSI_EXTRA: ReadonlyMap<string, number> = new Map([
+  ["€", 0x80],
+  ["‚", 0x82],
+  ["„", 0x84],
+  ["…", 0x85],
+  ["‘", 0x91],
+  ["’", 0x92],
+  ["“", 0x93],
+  ["”", 0x94],
+  ["•", 0x95],
+  ["–", 0x96],
+  ["—", 0x97],
+  ["™", 0x99],
+  ["œ", 0x9c],
+  ["Œ", 0x8c],
+]);
 
 /**
  * Thin and narrow spaces (Intl writes "1 234,00 €" with U+202F), which become
@@ -64,7 +64,7 @@ const SPACES = new Set([" ", " "]);
 
 function winAnsiCode(char: string): number | undefined {
   if (SPACES.has(char)) return 32;
-  const extra = WIN_ANSI_EXTRA[char];
+  const extra = WIN_ANSI_EXTRA.get(char);
   if (extra !== undefined) return extra;
   const code = char.codePointAt(0) ?? 63;
   if (code >= 32 && code <= 126) return code;

@@ -36,7 +36,10 @@ interface HelioEvents {
 type HelioEventName = keyof HelioEvents;
 type Listener<E extends HelioEventName> = (payload: HelioEvents[E]) => void;
 
-const listeners: { [E in HelioEventName]: Set<Listener<E>> } = {
+/** The listeners of each event. */
+type ListenerSets = { [E in HelioEventName]: Set<Listener<E>> };
+
+const listeners: ListenerSets = {
   "ticket-opened": new Set(),
   "quote-accepted": new Set(),
 };

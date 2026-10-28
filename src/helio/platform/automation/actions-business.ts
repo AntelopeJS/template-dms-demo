@@ -78,10 +78,27 @@ async function stampReminder(invoice: Invoice): Promise<number> {
  * e-mail, such as a registered letter, is posted by the office: the step is
  * recorded on the invoice but nothing is e-mailed.
  */
-const remindOverdueInvoices: ActionType<
-  ReminderInput,
-  Record<string, unknown>
-> = {
+/** What the overdue-invoice reminder reports to the run. */
+interface ReminderOutput {
+  reminded: number;
+  amountDue: number;
+  summary: string;
+}
+
+/** What the kick-off planning reports: where the kick-off went. */
+interface KickoffOutput {
+  target: "project" | "deal";
+  summary: string;
+  link: string;
+}
+
+/** What the installation confirmations report. */
+interface ConfirmationOutput {
+  confirmed: number;
+  summary: string;
+}
+
+const remindOverdueInvoices: ActionType<ReminderInput, ReminderOutput> = {
   id: "helio.remind-overdue-invoices",
   name: "$helio.platform.automation.actions.remindOverdue.name",
   description: "$helio.platform.automation.actions.remindOverdue.description",
@@ -189,7 +206,7 @@ async function kickoffTask(project: Project, quoteNumber: string) {
  * worded in each reader's language by the deals' `nextStepLine` until one is
  * typed again.
  */
-const planKickoff: ActionType<{ quoteId?: string }, Record<string, unknown>> = {
+const planKickoff: ActionType<{ quoteId?: string }, KickoffOutput> = {
   id: "helio.plan-kickoff",
   name: "$helio.platform.automation.actions.planKickoff.name",
   description: "$helio.platform.automation.actions.planKickoff.description",
@@ -268,7 +285,7 @@ async function projectsToConfirm(daysAhead: number): Promise<Project[]> {
 
 const confirmInstallations: ActionType<
   { daysAhead?: number },
-  Record<string, unknown>
+  ConfirmationOutput
 > = {
   id: "helio.confirm-installations",
   name: "$helio.platform.automation.actions.confirmInstallations.name",

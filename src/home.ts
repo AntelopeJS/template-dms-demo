@@ -42,6 +42,11 @@ const SECTIONS = [
 ] as const;
 type Section = (typeof SECTIONS)[number];
 
+/** Whether `id` names one of the home page's Markdown sections. */
+function isSection(id: string): id is Section {
+  return SECTIONS.some((section) => section === id);
+}
+
 function contentLocale(language: string | undefined): "fr-FR" | "en-GB" {
   return language?.toLowerCase().startsWith("fr") ? "fr-FR" : "en-GB";
 }
@@ -248,7 +253,7 @@ export class PageHome extends PageController(
     @Parameter("id") id: string,
     @Parameter("x-content-language", "header") language: string | undefined,
   ): Promise<{ markdown: string }> {
-    if (!(SECTIONS as readonly string[]).includes(id)) {
+    if (!isSection(id)) {
       throw new HTTPResult(HTTP_NOT_FOUND, { error: "Unknown section" });
     }
     const file = resolve(CONTENT_DIR, `${id}.${contentLocale(language)}.md`);

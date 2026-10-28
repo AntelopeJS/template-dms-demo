@@ -1,6 +1,7 @@
 import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
-import { ProjectTaskModel } from "./database";
+import { isNumber, isText } from "../shared/json";
+import { type ProjectTask, ProjectTaskModel } from "./database";
 
 /** Positions are spaced by this step so a move lands between two rows. */
 const POSITION_STEP = 1000;
@@ -14,10 +15,10 @@ const POSITION_STEP = 1000;
  */
 export function newProjectTaskGuard(
   _ctx: RequestContext,
-  { body }: { body: Record<string, unknown> },
+  { body }: { body: Partial<Pick<ProjectTask, "project">> },
 ): () => Promise<void> {
   const project = body.project;
-  if (typeof project !== "string" || project === "") {
+  if (!isText(project) || project === "") {
     throw new HTTPResult(400, {
       message: "$helio.projects.detail.tasks.projectRequired",
       field: "project",
@@ -29,12 +30,10 @@ export function newProjectTaskGuard(
 async function placeUnorderedTasksLast(project: string): Promise<void> {
   const model = GetModel(ProjectTaskModel);
   const tasks = await model.getBy("project", project);
-  const unordered = tasks.filter((task) => typeof task.position !== "number");
+  const unordered = tasks.filter((task) => !isNumber(task.position));
   let last = Math.max(
     0,
-    ...tasks.map((task) =>
-      typeof task.position === "number" ? task.position : 0,
-    ),
+    ...tasks.map((task) => (isNumber(task.position) ? task.position : 0)),
   );
   for (const task of unordered) {
     last += POSITION_STEP;

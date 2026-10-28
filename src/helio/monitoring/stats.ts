@@ -78,10 +78,7 @@ function sitesItem(sites: readonly FleetSite[]): StatGroupItem {
  * fleet's figures here, the meters and the site drawer read the instant, not
  * the period.
  */
-export function fleetStats(
-  sites: readonly FleetSite[],
-  now: number,
-): { items: StatGroupItem[] } {
+export function fleetStats(sites: readonly FleetSite[], now: number) {
   const capacity = capacityOf(sites);
   const power = fleetPowerKw(sites, now);
   const today = energyKwh(sites, startOfLocalDay(now), now, now);
@@ -125,7 +122,7 @@ export function fleetStats(
       },
       sitesItem(sites),
     ],
-  };
+  } satisfies { items: StatGroupItem[] };
 }
 
 export interface MeterPayload {

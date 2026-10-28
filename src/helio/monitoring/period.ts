@@ -84,8 +84,8 @@ const LOCAL_FORMAT = new Intl.DateTimeFormat("en-GB", {
   hourCycle: "h23",
 });
 
-function localFields(ms: number): Record<string, number> {
-  const fields: Record<string, number> = {};
+function localFields(ms: number) {
+  const fields: Partial<Record<Intl.DateTimeFormatPartTypes, number>> = {};
   for (const part of LOCAL_FORMAT.formatToParts(ms)) {
     if (part.type !== "literal") fields[part.type] = Number(part.value);
   }

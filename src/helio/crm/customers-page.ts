@@ -24,13 +24,17 @@ import {
 } from "./links";
 
 /**
- * Refuses a VAT number that is not valid, whichever client sent it. A blank
- * number passes: the column asks for one, mandatory, from a business only
- * (`customer-controller.ts`; a customer turned household loses the number and
- * website it stored).
+ * Whether a request body sent a VAT number to check: a non-blank string. A
+ * blank number passes unchecked: the column asks for one, mandatory, from a
+ * business only (`customer-controller.ts`; a customer turned household loses
+ * the number and website it stored).
  */
-function assertVatFormat(vatNumber: unknown): void {
-  if (typeof vatNumber !== "string" || vatNumber.trim() === "") return;
+function isFilledText(value: unknown): value is string {
+  return typeof value === "string" && value.trim() !== "";
+}
+
+/** Refuses a VAT number that is not valid, whichever client sent it. */
+function assertVatFormat(vatNumber: string): void {
   if (!isValidVatNumber(vatNumber)) {
     throw new HTTPResult(400, {
       message: "$helio.crm.customers.errors.vatFormat",
@@ -235,10 +239,10 @@ export class PageHelioCustomers extends PageController(
     },
     guards: {
       new: (_ctx, { body }) => {
-        assertVatFormat(body.vatNumber);
+        if (isFilledText(body.vatNumber)) assertVatFormat(body.vatNumber);
       },
       edit: (_ctx, { body, current }) => {
-        assertVatFormat(body.vatNumber);
+        if (isFilledText(body.vatNumber)) assertVatFormat(body.vatNumber);
         const renamed = body.name !== undefined && body.name !== current.name;
         return renamed ? afterCustomerEdit : undefined;
       },

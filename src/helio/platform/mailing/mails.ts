@@ -1,3 +1,4 @@
+import type { SendTemplateParams } from "@antelopejs/interface-dms-mailing";
 import type { Customer } from "../../crm/database";
 import { structuredReference } from "../../finance/document";
 import type { Invoice } from "../../finance/database";
@@ -29,8 +30,11 @@ export interface HelioMail {
   slug: HelioTemplateSlug;
   to: { email: string; name: string };
   locale: MailLocale;
-  variables: Record<string, unknown>;
+  variables: MailVariables;
 }
+
+/** The template variables of a mail, as dms-mailing's `SendTemplate` takes them. */
+type MailVariables = NonNullable<SendTemplateParams["variables"]>;
 
 type Person = Pick<TeamMember, "name" | "email" | "phone">;
 
@@ -44,7 +48,7 @@ const HELIO_DESK: Person = {
 function mailTo(
   slug: HelioTemplateSlug,
   customer: Customer,
-  variables: (locale: MailLocale) => Record<string, unknown>,
+  variables: (locale: MailLocale) => MailVariables,
 ): HelioMail {
   const locale = customerLocale(customer);
   return {

@@ -25,7 +25,7 @@ const OPEN_DEAL = { field: "stage", notIn: ["won", "lost"] };
  * The probability each stage starts a deal with (100 % won, 0 % lost), which
  * {@link watchProbability} applies as the stage is picked.
  */
-const PROBABILITY_BY_STAGE: Record<string, number> = { ...STAGE_PROBABILITY };
+const PROBABILITY_BY_STAGE = { ...STAGE_PROBABILITY };
 
 /**
  * Makes the probability follow the stage as it is picked, before the save: each

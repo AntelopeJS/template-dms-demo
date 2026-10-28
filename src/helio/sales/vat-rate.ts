@@ -2,6 +2,7 @@ import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { CustomerModel } from "../crm/database";
 import type { InvoicingSettings } from "../settings/types";
+import { isNumber, isText } from "../shared/json";
 import { VAT_BUSINESS } from "./lines";
 
 /**
@@ -12,10 +13,10 @@ import { VAT_BUSINESS } from "./lines";
  * 21 % too). Throws a 400 on the `vatRate` field.
  */
 export async function assertVatRate(
-  customerId: unknown,
-  vatRate: unknown,
+  customerId: string | null | undefined,
+  vatRate: number | null | undefined,
 ): Promise<void> {
-  if (typeof customerId !== "string" || typeof vatRate !== "number") return;
+  if (!isText(customerId) || !isNumber(vatRate)) return;
   if (vatRate >= VAT_BUSINESS) return;
   const customer = await GetModel(CustomerModel).get(customerId);
   if (customer?.kind !== "business") return;
@@ -30,11 +31,11 @@ export async function assertVatRate(
  * rate of the Settings page, never below the standard rate for a business.
  */
 export async function defaultVatRate(
-  customerId: unknown,
+  customerId: string | undefined,
   settings: Pick<InvoicingSettings, "defaultVatRate">,
 ): Promise<number> {
   const rate = settings.defaultVatRate;
-  if (typeof customerId !== "string" || rate >= VAT_BUSINESS) return rate;
+  if (!isText(customerId) || rate >= VAT_BUSINESS) return rate;
   const customer = await GetModel(CustomerModel).get(customerId);
   return customer?.kind === "business" ? VAT_BUSINESS : rate;
 }

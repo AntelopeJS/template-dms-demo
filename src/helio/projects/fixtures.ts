@@ -208,11 +208,16 @@ const TASKS: Record<ProjectType, TaskTemplate[]> = {
   ],
 };
 
+/** Whether a step is due relative to the planned end. */
+function isEndOffset(due: TaskTemplate["due"]): due is { end: number } {
+  return typeof due !== "number";
+}
+
 /** The due date of a step, moved back to a working day if it is a weekend. */
 function dueDate(plan: ProjectPlan, template: TaskTemplate): Date {
-  const from = typeof template.due === "number" ? plan.start : plan.end;
-  const days =
-    typeof template.due === "number" ? template.due : template.due.end;
+  const { due } = template;
+  const from = isEndOffset(due) ? plan.end : plan.start;
+  const days = isEndOffset(due) ? due.end : due;
   return previousWorkday(new Date(from.getTime() + days * DAY_MS));
 }
 

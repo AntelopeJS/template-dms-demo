@@ -70,7 +70,7 @@ export async function isTicketHolder(id: string | undefined): Promise<boolean> {
  * 3. else nobody: it waits in the desk's "Unassigned" view.
  */
 export async function defaultHolderFor(
-  priority: unknown,
+  priority: string | undefined,
 ): Promise<string | undefined> {
   if (priority === "urgent") return undefined;
   const settings = await GetModel(HelioSettingsModel).get(HELIO_SETTINGS_ID);

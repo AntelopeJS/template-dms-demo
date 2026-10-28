@@ -4,6 +4,7 @@ import {
   formSchema,
   type FormFieldOrGroup,
 } from "@antelopejs/interface-dms/base/form";
+import { isText, type JsonObject } from "../shared/json";
 import { TeamMemberModel } from "../team/database";
 import { HelioSettingsModel } from "./database";
 import { buildDefaultSettings, generateApiKey, pickerDay } from "./defaults";
@@ -128,7 +129,7 @@ async function toFormValues(
  * puts each under its field.
  */
 function parseChanges(
-  body: Record<string, unknown>,
+  body: JsonObject,
   entries: FormFieldOrGroup[],
 ): Partial<HelioSettingsValues> {
   const writable = Object.fromEntries(
@@ -145,7 +146,7 @@ function parseChanges(
  * not an EU VAT number is refused under the field.
  */
 function checkVatNumber(changes: Partial<HelioSettingsValues>): void {
-  if (typeof changes.vatNumber !== "string") return;
+  if (!isText(changes.vatNumber)) return;
   const normalized = normalizeVatNumber(changes.vatNumber);
   if (!isValidVatNumber(normalized)) {
     throw new HTTPResult(HTTP_BAD_REQUEST, {
@@ -163,7 +164,7 @@ function checkVatNumber(changes: Partial<HelioSettingsValues>): void {
 function checkNumberPatterns(changes: Partial<HelioSettingsValues>): void {
   for (const field of ["invoiceNumberPattern", "quoteNumberPattern"] as const) {
     const pattern = changes[field];
-    if (typeof pattern === "string" && !isNumberPattern(pattern)) {
+    if (isText(pattern) && !isNumberPattern(pattern)) {
       throw new HTTPResult(HTTP_BAD_REQUEST, {
         message: "$helio.settings.errors.numberPattern",
         field,
@@ -193,7 +194,7 @@ export async function readSettings(): Promise<SettingsFormValues> {
  * emptied password field means "keep the current one", not "remove it".
  */
 export async function saveSettings(
-  body: Record<string, unknown>,
+  body: JsonObject,
   entries: FormFieldOrGroup[],
 ): Promise<SettingsFormValues> {
   const changes = parseChanges(body, entries);

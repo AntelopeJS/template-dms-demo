@@ -26,9 +26,9 @@ import { TeamMember, TeamMemberModel } from "../team/database";
  * members whose role is "sales", with the column type's "is" mode (the data API
  * passes the mode through).
  */
-const SALES_ONLY: Record<string, FilterValue> = {
+const SALES_ONLY = {
   role: ["sales", "is" as FilterValue[1]],
-};
+} satisfies Record<string, FilterValue>;
 
 /**
  * The sales reps of the team, for the "Sales rep" pickers of deals and

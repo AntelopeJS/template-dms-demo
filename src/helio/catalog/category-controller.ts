@@ -2,6 +2,7 @@ import {
   Controller,
   type ControllerClass,
   Parameter,
+  type RequestContext,
 } from "@antelopejs/interface-api";
 import {
   DataController,
@@ -103,12 +104,16 @@ function withRawParent(
       ...callback,
       func: function (
         this: unknown,
-        ctx: unknown,
+        ctx: RequestContext,
         params: Parameters.ListParameters | undefined,
         ...rest: unknown[]
       ) {
-        const select = callback.func as (...args: unknown[]) => unknown;
-        return select.call(this, ctx, { ...params, noForeign: true }, ...rest);
+        return callback.func.call(
+          this,
+          ctx,
+          { ...params, noForeign: true },
+          ...rest,
+        );
       },
     },
   };

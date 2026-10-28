@@ -25,10 +25,10 @@ import { Product, ProductModel } from "./database";
  * The route filter of the products on sale: it is mandatory, so the select
  * route only ever lists the active products.
  */
-const ON_SALE_ONLY: Record<string, FilterValue> = {
+const ON_SALE_ONLY = {
   /** The column type's "is" mode; the data API passes the mode through. */
   isActive: ["true", "is" as FilterValue[1]],
-};
+} satisfies Record<string, FilterValue>;
 
 /**
  * The products on sale, for the "Product" picker of the quote lines: the same

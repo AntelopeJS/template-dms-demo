@@ -2,6 +2,11 @@ export type Rgb = readonly [number, number, number];
 export type Point = readonly [number, number];
 /** A colour, or one computed from the output coordinates (gradients). */
 export type Paint = Rgb | ((x: number, y: number) => Rgb);
+
+/** Whether `paint` is a solid colour rather than a gradient function. */
+function isSolid(paint: Paint): paint is Rgb {
+  return typeof paint !== "function";
+}
 /** Corners of a quadrilateral: top-left, top-right, bottom-right, bottom-left. */
 export type Quad = readonly [Point, Point, Point, Point];
 /** An axis-aligned box: left, top, width, height. */
@@ -212,10 +217,9 @@ export class Raster {
     const start = Math.max(Math.ceil(x0 - 0.5), 0);
     const end = Math.min(Math.floor(x1 - 0.5), this.innerWidth - 1);
     for (let x = start; x <= end; x++) {
-      const color =
-        typeof paint === "function"
-          ? paint((x + 0.5) / SUPERSAMPLING, (y + 0.5) / SUPERSAMPLING)
-          : paint;
+      const color = isSolid(paint)
+        ? paint
+        : paint((x + 0.5) / SUPERSAMPLING, (y + 0.5) / SUPERSAMPLING);
       const at = (y * this.innerWidth + x) * 3;
       for (let c = 0; c < 3; c++) {
         const previous = this.pixels[at + c] ?? 0;

@@ -117,21 +117,21 @@ function mobilePhone(rng: Rng): string {
  * Belgian area codes: one digit for Liège and Brussels (7-digit numbers), two
  * elsewhere (6-digit numbers).
  */
-const AREA_CODES: Record<string, string> = {
-  Liège: "4",
-  "Bruxelles-Capitale": "2",
-  Namur: "81",
-  Hainaut: "71",
-  Luxembourg: "84",
-  "Brabant wallon": "10",
-};
+const AREA_CODES = new Map([
+  ["Liège", "4"],
+  ["Bruxelles-Capitale", "2"],
+  ["Namur", "81"],
+  ["Hainaut", "71"],
+  ["Luxembourg", "84"],
+  ["Brabant wallon", "10"],
+]);
 
 /**
  * A company switchboard number in its area. It draws as many values whatever
  * the area, so the rest of the customer stays the same.
  */
 function landline(rng: Rng, province: string): string {
-  const area = AREA_CODES[province] ?? "4";
+  const area = AREA_CODES.get(province) ?? "4";
   const lead = rng.chance(0.5) ? "2" : "3";
   const middle = rng.int(10, 99);
   const tail = `${pad2(rng.int(0, 99))} ${pad2(rng.int(0, 99))}`;

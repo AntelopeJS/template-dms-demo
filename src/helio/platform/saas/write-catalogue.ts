@@ -30,8 +30,10 @@ function toFeatureRow(feature: SeedFeature): SeedRow {
   };
 }
 
-function localizeAll<Row extends Feature | Plan>(row: Row): Row {
-  return row.localize(ALL_LOCALES) as Row;
+function localizeAll<Row extends Pick<Feature | Plan, "localize">>(
+  row: Row,
+): Row {
+  return row.localize(ALL_LOCALES);
 }
 
 /**
