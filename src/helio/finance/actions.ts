@@ -138,8 +138,8 @@ export async function markInvoicesPaid(
 /**
  * Stamps a reminder on the overdue invoices among `ids` and e-mails it to
  * their customers. Answers how many were reminded. The e-mails go out in the
- * background: a failed one is logged by the mailing module and the reminder
- * stays recorded.
+ * background: Helio's `mailInvoiceReminder` (`platform/mailing/send.ts`)
+ * logs a failed one as a warning, and the reminder stays recorded.
  */
 export async function remindInvoices(ids: string[]): Promise<number> {
   const model = GetModel(InvoiceModel);

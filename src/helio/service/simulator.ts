@@ -62,7 +62,7 @@ function loadOf(tickets: Ticket[]): Map<string, number> {
  * A ticket from a customer whose installation Helio monitors: a technical
  * request names the site, a billing or general one only the customer. With
  * `alertOnly` (outside office hours) only the inverters write in, and
- * `urgentAllowed` downgrades an urgent draw to high.
+ * without `urgentAllowed` an urgent draw becomes high.
  */
 function draftTicket(
   rng: Rng,
@@ -249,7 +249,7 @@ export function isServiceSimulatorEnabled(): boolean {
  * then cleared, so the open, unassigned and weekday/hour counts stay steady
  * however long the instance runs, except the urgent ones: their notification
  * links to them, so they stay on the desk once resolved, like any ticket a
- * user was told about, and arrive three hours apart at most. Every change
+ * user was told about, and arrive three hours apart at least. Every change
  * reaches the open desks through the realtime topic.
  */
 export function startServiceSimulator(): void {
