@@ -102,7 +102,7 @@ export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
 
 /** The part of a select route's answer that `holdersOnly` reads and rewrites. */
 interface SelectPage {
-  results?: Array<Record<string, unknown>>;
+  results?: Array<{ role?: TeamRole }>;
   total?: number;
 }
 
@@ -129,16 +129,15 @@ function holdersOnly(
         params: { limit?: number; offset?: number } | undefined,
         ...rest: unknown[]
       ) {
-        const read = callback.func as (...args: unknown[]) => unknown;
-        const page = (await read.call(
+        const page = (await callback.func.call(
           this,
           ctx,
           { ...params, limit: WHOLE_TEAM, offset: 0 },
           ...rest,
         )) as SelectPage | undefined;
         if (!page?.results) return page;
-        const results = page.results.filter((row) =>
-          TICKET_HOLDER_ROLES.has(row.role as TeamRole),
+        const results = page.results.filter(
+          (row) => row.role !== undefined && TICKET_HOLDER_ROLES.has(row.role),
         );
         return { ...page, results, total: results.length };
       },

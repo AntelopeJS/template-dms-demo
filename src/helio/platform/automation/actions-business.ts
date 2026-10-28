@@ -73,11 +73,6 @@ async function stampReminder(invoice: Invoice): Promise<number> {
   return reminderCount;
 }
 
-/**
- * Sends the due reminder of each overdue invoice. A step whose channel is not
- * e-mail, such as a registered letter, is posted by the office: the step is
- * recorded on the invoice but nothing is e-mailed.
- */
 /** What the overdue-invoice reminder reports to the run. */
 interface ReminderOutput {
   reminded: number;
@@ -98,6 +93,11 @@ interface ConfirmationOutput {
   summary: string;
 }
 
+/**
+ * Sends the due reminder of each overdue invoice. A step whose channel is not
+ * e-mail, such as a registered letter, is posted by the office: the step is
+ * recorded on the invoice but nothing is e-mailed.
+ */
 const remindOverdueInvoices: ActionType<ReminderInput, ReminderOutput> = {
   id: "helio.remind-overdue-invoices",
   name: "$helio.platform.automation.actions.remindOverdue.name",

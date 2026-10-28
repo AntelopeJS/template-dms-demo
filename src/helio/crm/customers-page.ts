@@ -9,6 +9,7 @@ import {
 import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
+import { isText } from "../shared/json";
 import { helioQuickActions } from "../shared/quick-actions";
 import { CUSTOMER_KINDS, customerController } from "./customer-controller";
 import { countCustomerDeals } from "./customer-deals";
@@ -24,16 +25,12 @@ import {
 } from "./links";
 
 /**
- * Whether a request body sent a VAT number to check: a non-blank string. A
- * blank number passes unchecked: the column asks for one, mandatory, from a
- * business only (`customer-controller.ts`; a customer turned household loses
- * the number and website it stored).
+ * Refuses a VAT number that is not valid, whichever client sent it. The
+ * guards call it only for a non-blank string: a blank number passes, because
+ * the column asks for one, mandatory, from a business only
+ * (`customer-controller.ts`; a customer turned household loses the number and
+ * website it stored).
  */
-function isFilledText(value: unknown): value is string {
-  return typeof value === "string" && value.trim() !== "";
-}
-
-/** Refuses a VAT number that is not valid, whichever client sent it. */
 function assertVatFormat(vatNumber: string): void {
   if (!isValidVatNumber(vatNumber)) {
     throw new HTTPResult(400, {
@@ -239,10 +236,12 @@ export class PageHelioCustomers extends PageController(
     },
     guards: {
       new: (_ctx, { body }) => {
-        if (isFilledText(body.vatNumber)) assertVatFormat(body.vatNumber);
+        if (isText(body.vatNumber) && body.vatNumber.trim() !== "")
+          assertVatFormat(body.vatNumber);
       },
       edit: (_ctx, { body, current }) => {
-        if (isFilledText(body.vatNumber)) assertVatFormat(body.vatNumber);
+        if (isText(body.vatNumber) && body.vatNumber.trim() !== "")
+          assertVatFormat(body.vatNumber);
         const renamed = body.name !== undefined && body.name !== current.name;
         return renamed ? afterCustomerEdit : undefined;
       },
