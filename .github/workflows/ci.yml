@@ -8,6 +8,7 @@ on:
   # No branch filter: stacked pull requests need the gate on every step.
   pull_request:
 
+  workflow_dispatch: null
 permissions:
   contents: read
 
@@ -18,3 +19,6 @@ jobs:
       # `pnpm run checks` typechecks but never emits; this proves `dist`
       # still builds, the output `ajs project run` and `ajs dms build` load.
       extra-commands: pnpm build
+    permissions:
+      contents: write
+      actions: write

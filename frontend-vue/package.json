@@ -12,7 +12,7 @@
 		"dev": "pnpm --dir .. frontend:dev",
 		"build": "pnpm --dir .. exec ajs dms build",
 		"format": "prettier --write .",
-		"lint": "eslint .",
+		"lint": "node scripts/check-locales.mjs && eslint .",
 		"lint:fix": "eslint . --fix",
 		"test": "vitest run"
 	},
