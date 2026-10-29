@@ -1,5 +1,6 @@
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
+import type { Parameters } from "@antelopejs/interface-data-api/components";
 import {
   isBoolean,
   isNumber,
@@ -69,7 +70,7 @@ export function withBodyDefaults(
     func: async function (
       this: unknown,
       ctx: RequestContext,
-      params: unknown,
+      params: Parameters.NewParameters,
       raw: Buffer | string,
       ...rest: unknown[]
     ) {

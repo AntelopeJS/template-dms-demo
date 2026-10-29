@@ -9,6 +9,7 @@ import {
   type ConfirmDialogSerialized,
   serializeConfirmDialog,
 } from "@antelopejs/interface-dms/base/table-view";
+import type { User } from "@antelopejs/interface-dms/auth/db";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
 import { countCustomerDeals } from "./customer-deals";
 import { customersTableAction } from "./customers-page";
@@ -26,7 +27,9 @@ export class HelioCrmRoutes extends Controller(CRM_API) {
   @Get("customers/:id/delete-confirm")
   async deleteConfirm(
     @Parameter("id", "param") customerId: string,
-    @AuthUserWithPermission(customersTableAction("delete")) _user: unknown,
+    @AuthUserWithPermission(customersTableAction("delete")) _user:
+      | boolean
+      | User,
   ): Promise<ConfirmDialogSerialized> {
     const customer = await GetModel(CustomerModel).get(customerId);
     if (!customer) {

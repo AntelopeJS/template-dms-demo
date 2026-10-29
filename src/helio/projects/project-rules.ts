@@ -1,5 +1,6 @@
 import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
+import type { Parameters } from "@antelopejs/interface-data-api/components";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { QuoteModel } from "../sales/database";
 import { readBody } from "../shared/body-defaults";
@@ -48,7 +49,7 @@ export function withProjectCode(
     func: async function (
       this: unknown,
       ctx: RequestContext,
-      params: unknown,
+      params: Parameters.NewParameters,
       raw: Buffer | string,
       ...rest: unknown[]
     ) {
