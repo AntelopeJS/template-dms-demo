@@ -16,7 +16,7 @@ export function node(
   kind: NodeKind,
   typeId: string | undefined,
   at: [column: number, row: number],
-  config: Record<string, unknown> = {},
+  config: ProcedureGraphNode["config"] = {},
 ): ProcedureGraphNode {
   const [column, row] = at;
   const placed: ProcedureGraphNode = {

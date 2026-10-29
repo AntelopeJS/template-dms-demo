@@ -89,13 +89,16 @@ export function countTasks(tasks: ProjectTask[]): TaskCounts {
   return counts;
 }
 
-/** What the invoices of a project add up to, VAT included. */
-export function invoiceTotals(invoices: Invoice[]): {
+/** The sums of a project's invoices and the count of the overdue ones. */
+export interface InvoiceTotals {
   invoiced: number;
   paid: number;
   due: number;
   overdue: number;
-} {
+}
+
+/** What the invoices of a project add up to, VAT included. */
+export function invoiceTotals(invoices: Invoice[]): InvoiceTotals {
   const live = invoices.filter((invoice) => invoice.status !== "cancelled");
   const sum = (rows: Invoice[], pick: (row: Invoice) => number) =>
     Math.round(rows.reduce((total, row) => total + pick(row), 0) * 100) / 100;

@@ -114,7 +114,7 @@ export function siteRows(
   query: URLSearchParams,
   period: Period,
   now: number,
-): { results: SiteRow[]; total: number } {
+) {
   const results = sites
     .filter((site) => matches(site, query))
     .map((site) => siteRow(site, period, now));

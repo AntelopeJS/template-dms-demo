@@ -69,6 +69,24 @@ const PRIORITY_BY_SEVERITY: Record<string, TicketPriority> = {
   info: "normal",
 };
 
+/** What opening a ticket from an alert reports, whether it opened one or found it open. */
+interface CreatedTicketOutput {
+  created: boolean;
+  ticketId: string;
+  number: string;
+  priority: TicketPriority;
+  summary: string;
+}
+
+/** What the on-call assignment reports. */
+interface AssignmentOutput {
+  alertsOn: boolean;
+  assignee: string;
+  number: string;
+  summary: string;
+  link: string;
+}
+
 const deskLink = (number: string) =>
   `${SERVICE_DESK_PATH}?ticket=${encodeURIComponent(number)}`;
 
@@ -131,7 +149,7 @@ async function insertAlertTicket(
 }
 
 /** Opens a service ticket from a monitoring alert, unless that alert is already tracked by an open ticket. */
-const createTicket: ActionType<AlertInput, Record<string, unknown>> = {
+const createTicket: ActionType<AlertInput, CreatedTicketOutput> = {
   id: "helio.create-ticket",
   name: "$helio.platform.automation.actions.createTicket.name",
   description: "$helio.platform.automation.actions.createTicket.description",
@@ -234,10 +252,7 @@ async function memberName(id: string | undefined): Promise<string> {
  * the Settings page: when it is off the ticket is still assigned but nobody is
  * told, because the dispatch procedure's If node reads it.
  */
-const assignOnCall: ActionType<
-  { ticketId?: string },
-  Record<string, unknown>
-> = {
+const assignOnCall: ActionType<{ ticketId?: string }, AssignmentOutput> = {
   id: "helio.assign-on-call",
   name: "$helio.platform.automation.actions.assignOnCall.name",
   description: "$helio.platform.automation.actions.assignOnCall.description",

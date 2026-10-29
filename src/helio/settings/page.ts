@@ -8,6 +8,7 @@ import { Section } from "@antelopejs/interface-dms/base/section";
 import { AuthUserWithPermission } from "@antelopejs/interface-dms/guards";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioCategory } from "../category";
+import type { JsonObject } from "../shared/json";
 import { notificationsSection } from "./notifications";
 import {
   SETTINGS_DANGER_URL,
@@ -75,9 +76,7 @@ export class PageHelioSettings extends PageController(
 
   /** A partial save of the form: absent keys stay as they are. */
   @Put("/values")
-  putValues(
-    @JSONBody() body: Record<string, unknown>,
-  ): Promise<SettingsFormValues> {
+  putValues(@JSONBody() body: JsonObject): Promise<SettingsFormValues> {
     return saveSettings(body, PageHelioSettings.form.fields);
   }
 

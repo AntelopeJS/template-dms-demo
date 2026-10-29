@@ -284,8 +284,8 @@ function money(euros: number) {
   } as const;
 }
 
-/** The task board as one stacked bar: done, in progress, to do. */
-export function taskMeter(bundle: ProjectBundle): {
+/** The answer of the task board's meter. */
+export interface TaskMeter {
   value: number;
   max: number;
   segments: MeterSegment[];
@@ -293,7 +293,10 @@ export function taskMeter(bundle: ProjectBundle): {
     key: string;
     params: Record<string, { type: "count"; value: number }>;
   };
-} {
+}
+
+/** The task board as one stacked bar: done, in progress, to do. */
+export function taskMeter(bundle: ProjectBundle): TaskMeter {
   const counts = countTasks(bundle.tasks);
   return {
     value: counts.done,
@@ -331,12 +334,15 @@ export function taskMeter(bundle: ProjectBundle): {
   };
 }
 
-/** How much of the budget (excl. VAT) was invoiced so far. */
-export function invoicingMeter(bundle: ProjectBundle): {
+/** The answer of the invoicing meter. */
+export interface InvoicingMeter {
   value: number;
   max: number;
   hint: { key: string; params: Record<string, ReturnType<typeof money>> };
-} {
+}
+
+/** How much of the budget (excl. VAT) was invoiced so far. */
+export function invoicingMeter(bundle: ProjectBundle): InvoicingMeter {
   const invoicedExcl = bundle.invoices
     .filter((invoice) => invoice.status !== "cancelled")
     .reduce((total, invoice) => total + invoice.amountExcl, 0);

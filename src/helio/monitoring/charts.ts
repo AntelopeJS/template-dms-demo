@@ -138,10 +138,7 @@ function hoursOfDay(
  * fleet produces, and which days the clouds took. Only the hours of daylight
  * are kept, so the grid follows the season.
  */
-export function heatmapSeries(
-  sites: readonly FleetSite[],
-  now: number,
-): { series: Series[] } {
+export function heatmapSeries(sites: readonly FleetSite[], now: number) {
   const days = Array.from({ length: HEATMAP_DAYS }, (_, at) => {
     const dayStart = startOfLocalDay(now - (HEATMAP_DAYS - 1 - at) * DAY_MS);
     const weekday = WEEKDAYS[localTime(dayStart + 12 * HOUR_MS).weekday];
@@ -159,7 +156,7 @@ export function heatmapSeries(
         y,
       })),
     })),
-  };
+  } satisfies { series: Series[] };
 }
 
 /** A site's energy per sparkline bucket over the range, oldest first. */
@@ -205,7 +202,7 @@ export function topProducers(
   sites: readonly FleetSite[],
   period: Period,
   now: number,
-): { items: TopListItem[] } {
+) {
   const elapsed = Math.min(period.to, now) - period.from;
   const items = sites.map((site): TopListItem => {
     const value = round1(energyKwh([site], period.from, period.to, now));

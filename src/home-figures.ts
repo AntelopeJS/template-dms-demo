@@ -33,7 +33,7 @@ const FEATURE_LAYER = /^@antelopejs\/dms-([a-z-]+?)-frontend/;
  * record in its path (`project/:id`) and a table's generated form pages sit under
  * it (`quotes/table/new`); every other page is a menu page.
  */
-function helioPages(): { menu: number; detail: number } {
+function helioPages() {
   const slugs = new Set<string>();
   for (const route of getRegisteredRoutes()) {
     const match = HELIO_LAYOUT.exec(route.location);

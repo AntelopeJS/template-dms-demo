@@ -18,9 +18,12 @@ interface SimulatorState {
   timer?: ReturnType<typeof setInterval>;
 }
 
-const globalState = globalThis as typeof globalThis & {
+/** The slot on `globalThis` that keeps the timer across hot reloads. */
+interface SimulatorGlobal {
   [TIMER_KEY]?: SimulatorState;
-};
+}
+
+const globalState: SimulatorGlobal & typeof globalThis = globalThis;
 const state: SimulatorState = (globalState[TIMER_KEY] ??= {});
 
 let round = 0;

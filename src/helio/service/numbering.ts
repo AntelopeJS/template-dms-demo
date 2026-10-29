@@ -1,7 +1,8 @@
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
-import { readBody } from "../shared/body-defaults";
+import { readBody, textOf } from "../shared/body-defaults";
+import { isText } from "../shared/json";
 import { fireTicketOpened } from "../platform/automation/events";
 import { mailTicketReceived } from "../platform/mailing/send";
 import { defaultHolderFor } from "./assignees";
@@ -28,12 +29,10 @@ export async function nextTicketNumber(): Promise<string> {
 /**
  * Once a ticket is written, warns the owners of an urgent one, mails the
  * customer an acknowledgement (in the background, never failing the creation)
- * and fires the "Ticket opened" automation trigger. It reads the `_id` from
- * the answer of the `new` route (interface-data-api#43).
+ * and fires the "Ticket opened" automation trigger. `id` is the created
+ * ticket's, read from the answer of the `new` route.
  */
-async function afterCreate(created: unknown): Promise<void> {
-  const id = (created as { _id?: unknown } | null)?._id;
-  if (typeof id !== "string") return;
+async function afterCreate(id: string): Promise<void> {
   const ticket = await GetModel(TicketModel).get(id);
   if (!ticket) return;
   if (ticket.priority === "urgent") await notifyUrgentTicket(ticket);
@@ -66,17 +65,12 @@ export function withTicketNumber(
       if (!body) return route.func.call(this, ctx, params, raw, ...rest);
       if (!body.number) body.number = await nextTicketNumber();
       if (!body.assignee) {
-        const holder = await defaultHolderFor(body.priority);
+        const holder = await defaultHolderFor(textOf(body.priority));
         if (holder) body.assignee = holder;
       }
-      const result: unknown = await route.func.call(
-        this,
-        ctx,
-        params,
-        body,
-        ...rest,
-      );
-      await afterCreate(result);
+      const result = await route.func.call(this, ctx, params, body, ...rest);
+      const id: unknown = result?._id;
+      if (isText(id)) await afterCreate(id);
       return result;
     },
   };

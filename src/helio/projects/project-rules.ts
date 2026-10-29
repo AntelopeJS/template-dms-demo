@@ -3,6 +3,7 @@ import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { QuoteModel } from "../sales/database";
 import { readBody } from "../shared/body-defaults";
+import { isObject, isText, type JsonValue } from "../shared/json";
 import { ProjectModel } from "./database";
 
 /** The start of every project code. */
@@ -28,10 +29,10 @@ export async function nextProjectCode(): Promise<string> {
 }
 
 /** Whether a body value is missing: absent, null or a blank string. */
-const blank = (value: unknown): boolean =>
+const blank = (value: JsonValue | undefined): boolean =>
   value === undefined ||
   value === null ||
-  (typeof value === "string" && value.trim() === "");
+  (isText(value) && value.trim() === "");
 
 /**
  * The `new` route with the code filled in when the body leaves it empty. A
@@ -74,12 +75,11 @@ export function withoutCodeOnDuplicate(
     func: async function (
       this: unknown,
       ctx: RequestContext,
-      ...rest: unknown[]
+      ...rest: [params?: unknown, ...args: unknown[]]
     ) {
-      const read = route.func as (...args: unknown[]) => unknown;
-      const row: unknown = await read.call(this, ctx, ...rest);
+      const row: unknown = await route.func.call(this, ctx, ...rest);
       if (ctx.url?.searchParams.get("action") !== "duplicate") return row;
-      if (!row || typeof row !== "object") return row;
+      if (!isObject(row)) return row;
       return { ...row, code: undefined };
     },
   };
@@ -89,12 +89,14 @@ export function withoutCodeOnDuplicate(
  * The calendar day of a date, as a sortable number (20261019): a project may
  * start and end the same day, whatever hours the form and the seed store.
  */
-const dayOf = (value: unknown): number | undefined => {
-  if (blank(value)) return undefined;
-  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return Number(value.replace(/-/g, ""));
+const dayOf = (value: Date | string | null | undefined): number | undefined => {
+  if (value === undefined || value === null) return undefined;
+  if (isText(value)) {
+    if (value.trim() === "") return undefined;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value))
+      return Number(value.replace(/-/g, ""));
   }
-  const date = new Date(value as string | Date);
+  const date = new Date(value);
   if (Number.isNaN(date.getTime())) return undefined;
   return (
     date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()
@@ -106,10 +108,10 @@ const dayOf = (value: unknown): number | undefined => {
  * it: the projects table's drawer, the detail page's form or a duplicate.
  */
 export async function assertUniqueCode(
-  code: unknown,
+  code: string | null | undefined,
   ownId?: string,
 ): Promise<void> {
-  if (typeof code !== "string" || code.trim() === "") return;
+  if (!isText(code) || code.trim() === "") return;
   const taken = await GetModel(ProjectModel).getBy("code", code.trim());
   if (taken.some((project) => project._id !== ownId)) {
     throw new HTTPResult(400, {
@@ -120,7 +122,10 @@ export async function assertUniqueCode(
 }
 
 /** Refuses (400) an end before the start. */
-export function assertEndAfterStart(start: unknown, end: unknown): void {
+export function assertEndAfterStart(
+  start: Date | string | null | undefined,
+  end: Date | string | null | undefined,
+): void {
   const from = dayOf(start);
   const to = dayOf(end);
   if (from !== undefined && to !== undefined && to < from) {
@@ -137,10 +142,10 @@ export function assertEndAfterStart(start: unknown, end: unknown): void {
  * does not come from it must hold too.
  */
 export async function assertQuoteOfCustomer(
-  customer: unknown,
-  quote: unknown,
+  customer: string | null | undefined,
+  quote: string | null | undefined,
 ): Promise<void> {
-  if (blank(customer) || blank(quote) || typeof quote !== "string") return;
+  if (blank(customer) || blank(quote) || !isText(quote)) return;
   const row = await GetModel(QuoteModel).get(quote);
   if (row && row.customer !== customer) {
     throw new HTTPResult(400, {

@@ -31,7 +31,7 @@ import {
 import { onSaleProductController } from "../catalog/controller";
 import { customerController, dealController } from "../crm/controller";
 import { currentSettings } from "../settings/current";
-import { isBlank, withBodyDefaults } from "../shared/body-defaults";
+import { isBlank, textOf, withBodyDefaults } from "../shared/body-defaults";
 import { DAY_MS } from "../shared/seed";
 import { Quote, type QuoteLine, QuoteModel } from "./database";
 import { quoteTotals, VAT_RESIDENTIAL } from "./lines";
@@ -80,7 +80,7 @@ class quoteDataAPI extends DataController(
     new: withBodyDefaults(TableViewRoutes.New, async (body) => {
       if (isBlank(body.vatRate))
         body.vatRate = await defaultVatRate(
-          body.customer,
+          textOf(body.customer),
           await currentSettings(),
         );
     }),

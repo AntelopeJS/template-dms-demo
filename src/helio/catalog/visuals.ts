@@ -16,8 +16,8 @@ const CACHE_CONTROL = "public, max-age=86400";
 
 interface FamilyArt {
   color: string;
-  /** White shapes on the family colour; `{bg}` stands for that colour. */
-  shapes: string;
+  /** The family's pictogram, drawn white on the family colour; `{bg}` stands for that colour. */
+  pictogram: string;
 }
 
 const PANEL_GRID = [1 / 3, 2 / 3]
@@ -31,32 +31,32 @@ const PANEL_GRID = [1 / 3, 2 / 3]
 const ART: Record<ProductFamily, FamilyArt> = {
   "cat-panels": {
     color: "#1e3a8a",
-    shapes: `<polygon points="64,150 108,70 196,70 152,150" fill="#fff"/>
+    pictogram: `<polygon points="64,150 108,70 196,70 152,150" fill="#fff"/>
 <g stroke="{bg}" stroke-width="5">${PANEL_GRID}<line x1="86" y1="110" x2="174" y2="110"/></g>
 <rect x="104" y="150" width="8" height="26" fill="#fff"/><rect x="146" y="150" width="8" height="26" fill="#fff"/>`,
   },
   "cat-inverters": {
     color: "#065f46",
-    shapes: `<rect x="84" y="56" width="88" height="116" rx="12" fill="#fff"/>
+    pictogram: `<rect x="84" y="56" width="88" height="116" rx="12" fill="#fff"/>
 <rect x="102" y="72" width="52" height="16" rx="3" fill="{bg}"/>
 <path d="M98 128 q15 -26 30 0 t30 0" fill="none" stroke="{bg}" stroke-width="7" stroke-linecap="round"/>`,
   },
   "cat-storage": {
     color: "#9a3412",
-    shapes: `<rect x="114" y="50" width="28" height="12" rx="3" fill="#fff"/>
+    pictogram: `<rect x="114" y="50" width="28" height="12" rx="3" fill="#fff"/>
 <rect x="92" y="62" width="72" height="114" rx="10" fill="#fff"/>
 <g fill="{bg}"><rect x="104" y="144" width="48" height="18" rx="3"/><rect x="104" y="120" width="48" height="18" rx="3"/><rect x="104" y="96" width="48" height="18" rx="3" opacity=".35"/></g>`,
   },
   "cat-ev": {
     color: "#4c1d95",
-    shapes: `<rect x="80" y="54" width="68" height="100" rx="12" fill="#fff"/>
+    pictogram: `<rect x="80" y="54" width="68" height="100" rx="12" fill="#fff"/>
 <circle cx="114" cy="92" r="16" fill="{bg}"/><path d="M116 80 l-8 14 h10 l-6 12" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
 <path d="M114 154 C114 192 176 192 176 160" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
 <rect x="164" y="136" width="24" height="26" rx="5" fill="#fff"/>`,
   },
   "cat-services": {
     color: "#334155",
-    shapes: `<g transform="rotate(-45 128 112)" fill="#fff"><rect x="117" y="104" width="22" height="86" rx="11"/>
+    pictogram: `<g transform="rotate(-45 128 112)" fill="#fff"><rect x="117" y="104" width="22" height="86" rx="11"/>
 <circle cx="128" cy="82" r="34"/><rect x="118" y="40" width="20" height="40" fill="{bg}"/></g>`,
   },
 };
@@ -80,7 +80,7 @@ export function renderProductVisual(family: string, label: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}">
 <rect width="${SIZE}" height="${SIZE}" fill="${art.color}"/>
 <circle cx="214" cy="40" r="90" fill="#fff" opacity=".07"/>
-${art.shapes.replace(/\{bg\}/g, art.color)}
+${art.pictogram.replace(/\{bg\}/g, art.color)}
 <text x="128" y="224" fill="#fff" fill-opacity=".85" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19" font-weight="700" text-anchor="middle">${caption}</text>
 </svg>`;
 }

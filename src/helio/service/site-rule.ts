@@ -1,8 +1,9 @@
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { SiteModel } from "../monitoring/database";
+import { isText } from "../shared/json";
 
-const blank = (value: unknown): boolean =>
+const blank = (value: string | null | undefined): boolean =>
   value === undefined || value === null || value === "";
 
 /**
@@ -11,10 +12,10 @@ const blank = (value: unknown): boolean =>
  * only narrows what is offered, so the data routes enforce it with this check.
  */
 export async function assertSiteOfCustomer(
-  customer: unknown,
-  site: unknown,
+  customer: string | null | undefined,
+  site: string | null | undefined,
 ): Promise<void> {
-  if (blank(customer) || blank(site) || typeof site !== "string") return;
+  if (blank(customer) || blank(site) || !isText(site)) return;
   const row = await GetModel(SiteModel).get(site);
   if (row && row.customer !== customer) {
     throw new HTTPResult(400, {

@@ -49,7 +49,7 @@ const custom = (
   page: PageId,
   at: number,
   name: string,
-  data?: Record<string, unknown>,
+  data?: MarketingImportEvent["data"],
 ): MarketingImportEvent => {
   const event: MarketingImportEvent = {
     kind: "custom",

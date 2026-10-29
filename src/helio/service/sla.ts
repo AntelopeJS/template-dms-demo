@@ -2,11 +2,17 @@ import { GetModel } from "@antelopejs/interface-database-decorators";
 import { HelioSettingsModel } from "../settings/database";
 import { pickerDay } from "../settings/defaults";
 import { type DateRange, HELIO_SETTINGS_ID } from "../settings/types";
+import { isNumber } from "../shared/json";
 import type { TicketPriority } from "./database";
 import { SLA_HOURS } from "./options";
 
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
+
+interface Closure {
+  range?: DateRange;
+  workdayStart: number;
+}
 
 /**
  * The hours promised per priority, as last read from the Settings page
@@ -17,7 +23,7 @@ const DAY_MS = 24 * HOUR_MS;
 let current: Record<TicketPriority, number> = { ...SLA_HOURS };
 
 /** The winter closure and the workday start, as last read from the Settings page. */
-let closure: { range?: DateRange; workdayStart: number } = {
+let closure: Closure = {
   workdayStart: 0,
 };
 
@@ -27,7 +33,7 @@ export function slaHours(priority: TicketPriority): number {
 }
 
 const valid = (hours: number | undefined, fallback: number): number =>
-  typeof hours === "number" && hours > 0 ? hours : fallback;
+  isNumber(hours) && hours > 0 ? hours : fallback;
 
 /**
  * The moment a ticket created during the winter closure is counted from: the

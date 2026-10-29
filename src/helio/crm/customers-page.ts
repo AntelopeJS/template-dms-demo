@@ -9,6 +9,7 @@ import {
 import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
+import { isText } from "../shared/json";
 import { helioQuickActions } from "../shared/quick-actions";
 import { CUSTOMER_KINDS, customerController } from "./customer-controller";
 import { countCustomerDeals } from "./customer-deals";
@@ -24,13 +25,13 @@ import {
 } from "./links";
 
 /**
- * Refuses a VAT number that is not valid, whichever client sent it. A blank
- * number passes: the column asks for one, mandatory, from a business only
+ * Refuses a VAT number that is not valid, whichever client sent it. The
+ * guards call it only for a non-blank string: a blank number passes, because
+ * the column asks for one, mandatory, from a business only
  * (`customer-controller.ts`; a customer turned household loses the number and
  * website it stored).
  */
-function assertVatFormat(vatNumber: unknown): void {
-  if (typeof vatNumber !== "string" || vatNumber.trim() === "") return;
+function assertVatFormat(vatNumber: string): void {
   if (!isValidVatNumber(vatNumber)) {
     throw new HTTPResult(400, {
       message: "$helio.crm.customers.errors.vatFormat",
@@ -235,10 +236,12 @@ export class PageHelioCustomers extends PageController(
     },
     guards: {
       new: (_ctx, { body }) => {
-        assertVatFormat(body.vatNumber);
+        if (isText(body.vatNumber) && body.vatNumber.trim() !== "")
+          assertVatFormat(body.vatNumber);
       },
       edit: (_ctx, { body, current }) => {
-        assertVatFormat(body.vatNumber);
+        if (isText(body.vatNumber) && body.vatNumber.trim() !== "")
+          assertVatFormat(body.vatNumber);
         const renamed = body.name !== undefined && body.name !== current.name;
         return renamed ? afterCustomerEdit : undefined;
       },

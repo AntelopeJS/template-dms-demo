@@ -63,7 +63,10 @@ export class Customer extends Table {
  * through the same insert event).
  */
 class CreationTimeIfMissing extends AutoDateModifier {
-  override insert(object: Record<string, unknown>, field: string): void {
+  override insert(
+    object: Parameters<AutoDateModifier["insert"]>[0],
+    field: string,
+  ): void {
     object[field] ??= new Date();
   }
 }

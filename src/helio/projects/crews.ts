@@ -17,23 +17,23 @@ const TECHNICIANS = [
 const INSTALLERS = TECHNICIANS.filter((id) => id !== AFTER_SALES);
 
 /** The usual partner of each team member, who joins a site first. */
-const PARTNERS: Record<string, string> = {
-  "team-05": "team-06",
-  "team-06": "team-05",
-  "team-07": "team-08",
-  "team-08": "team-07",
-  "team-09": "team-10",
-  "team-10": "team-07",
-};
+const PARTNERS: ReadonlyMap<string, string> = new Map([
+  ["team-05", "team-06"],
+  ["team-06", "team-05"],
+  ["team-07", "team-08"],
+  ["team-08", "team-07"],
+  ["team-09", "team-10"],
+  ["team-10", "team-07"],
+]);
 
 /** The regions a region's technicians are sent to next when all are busy. */
-const NEIGHBOURS: Record<string, string[]> = {
-  liege: ["namur", "luxembourg"],
-  namur: ["liege", "luxembourg", "hainaut"],
-  luxembourg: ["namur", "liege"],
-  hainaut: ["brussels", "namur"],
-  brussels: ["hainaut", "namur"],
-};
+const NEIGHBOURS: ReadonlyMap<string, string[]> = new Map([
+  ["liege", ["namur", "luxembourg"]],
+  ["namur", ["liege", "luxembourg", "hainaut"]],
+  ["luxembourg", ["namur", "liege"]],
+  ["hainaut", ["brussels", "namur"]],
+  ["brussels", ["hainaut", "namur"]],
+]);
 
 /** What a site needs from the planner. */
 export interface CrewRequest {
@@ -81,7 +81,7 @@ export class CrewPlanner {
     const team =
       crew.length > 0
         ? crew
-        : [PARTNERS[leadTechnician] ?? this.leastBooked([leadTechnician])];
+        : [PARTNERS.get(leadTechnician) ?? this.leastBooked([leadTechnician])];
     if (request.books) {
       for (const id of [leadTechnician, ...team]) this.book(id, span);
     }
@@ -113,7 +113,7 @@ export class CrewPlanner {
     span: Booking,
   ): string | undefined {
     const region = regionOfProvince(province);
-    for (const area of [region, ...(NEIGHBOURS[region] ?? [])]) {
+    for (const area of [region, ...(NEIGHBOURS.get(region) ?? [])]) {
       const free = INSTALLERS.filter(
         (id) => memberRegion(id) === area && this.isFree(id, span),
       );
@@ -124,7 +124,7 @@ export class CrewPlanner {
 
   /** The lead's usual partner first, then whoever is free. */
   private pickCrew(lead: string, size: number, span: Booking): string[] {
-    const partner = PARTNERS[lead];
+    const partner = PARTNERS.get(lead);
     const candidates = [
       ...(partner ? [partner] : []),
       ...TECHNICIANS.filter((id) => id !== lead && id !== partner),

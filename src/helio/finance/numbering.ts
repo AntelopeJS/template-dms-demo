@@ -5,7 +5,8 @@ import { defaultVatRate } from "../sales/vat-rate";
 import { currentSettings } from "../settings/current";
 import { DEFAULT_INVOICE_PATTERN } from "../settings/defaults";
 import { nextNumber } from "../settings/number-pattern";
-import { isBlank, withBodyDefaults } from "../shared/body-defaults";
+import { isBlank, textOf, withBodyDefaults } from "../shared/body-defaults";
+import { isText, type JsonValue } from "../shared/json";
 import { DAY_MS } from "../shared/seed";
 import { InvoiceModel } from "./database";
 
@@ -28,11 +29,8 @@ export async function nextInvoiceNumber(date = new Date()): Promise<string> {
   );
 }
 
-function issueDate(value: unknown): Date {
-  const date =
-    typeof value === "string" || value instanceof Date
-      ? new Date(value)
-      : new Date();
+function issueDate(value: JsonValue | undefined): Date {
+  const date = isText(value) ? new Date(value) : new Date();
   return Number.isNaN(date.getTime()) ? new Date() : date;
 }
 
@@ -56,7 +54,7 @@ export function withInvoiceDefaults(
       ).toISOString();
     }
     if (isBlank(body.vatRate))
-      body.vatRate = await defaultVatRate(body.customer, settings);
+      body.vatRate = await defaultVatRate(textOf(body.customer), settings);
   });
 }
 
@@ -66,10 +64,10 @@ export function withInvoiceDefaults(
  * structured reference too.
  */
 export async function assertUniqueNumber(
-  number: unknown,
+  number: string | null | undefined,
   id?: string,
 ): Promise<void> {
-  if (typeof number !== "string" || number.trim() === "") return;
+  if (!isText(number) || number.trim() === "") return;
   const taken = await GetModel(InvoiceModel).getBy("number", number);
   if (taken.some((invoice) => invoice._id !== id)) {
     throw new HTTPResult(HTTP_BAD_REQUEST, {

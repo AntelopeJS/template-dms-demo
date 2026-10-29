@@ -73,10 +73,13 @@ function brandAssets(): PendingAsset[] {
   return assets;
 }
 
-function plannedContent(): {
+/** The media library the demo declares: its folders and the assets to upload. */
+interface PlannedContent {
   folders: MediaFolderDeclaration[];
   assets: PendingAsset[];
-} {
+}
+
+function plannedContent(): PlannedContent {
   const projects = photoProjects();
   const datasheets: PendingAsset[] = buildDatasheets().map((sheet) => ({
     key: `${FOLDER_KEYS.datasheets}.${sheet.product.sku.toLowerCase()}`,

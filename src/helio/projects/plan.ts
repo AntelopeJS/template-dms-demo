@@ -111,7 +111,7 @@ function startsSoon(index: number): boolean {
 function customerOf(
   rng: Rng,
   index: number,
-): { customer: CustomerFacts; dealId?: string } {
+): Pick<ProjectPlan, "customer" | "dealId"> {
   if (index % 2 === 1) {
     const deal = dealFacts(dealId((index + 1) / 2));
     return { customer: customerFacts(deal.customer), dealId: deal._id };

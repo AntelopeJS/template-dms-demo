@@ -6,7 +6,7 @@ import { quoteTotals, VAT_BUSINESS, VAT_RESIDENTIAL } from "../sales/lines";
 import type { QuoteLine } from "../sales/database";
 import { COUNTS, invoiceId, PRODUCT_ROSTER } from "../shared/roster";
 import { cents, createRng, DAY_MS, type Rng } from "../shared/seed";
-import type { Invoice, InvoiceStatus, PaymentMethod } from "./database";
+import type { Invoice, PaymentMethod } from "./database";
 import { isPastDue } from "./due";
 
 export type InvoiceSeed = Pick<
@@ -198,7 +198,7 @@ function settle(
   rng: Rng,
   draft: InvoiceDraft,
   dueAt: Date,
-): { status: InvoiceStatus; paidAt?: Date } {
+): Pick<Invoice, "status" | "paidAt"> {
   if (draft.draft) return { status: "draft" };
   const issued = draft.issuedAt.getTime();
   if (!isPastDue(dueAt)) {

@@ -27,10 +27,10 @@ export function kickoffNextStep(
  * Helio writes in: a form sending it back unchanged has not typed a new one.
  */
 export function isKickoffNextStep(
-  text: unknown,
+  text: string | undefined,
   quoteNumber: string | null | undefined,
 ): boolean {
-  if (!quoteNumber || typeof text !== "string") return false;
+  if (!quoteNumber) return false;
   return Object.values(KICKOFF_STEP).some(
     (sentence) => sentence(quoteNumber) === text,
   );
