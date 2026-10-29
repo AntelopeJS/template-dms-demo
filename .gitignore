@@ -4,3 +4,4 @@ dist/
 .dms-frontend
 .env
 *.log
+.claude/scheduled_tasks.lock
