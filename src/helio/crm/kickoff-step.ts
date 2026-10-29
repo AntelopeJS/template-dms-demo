@@ -1,11 +1,13 @@
-// The next step a signed quote gives its deal: plan the kick-off call. Stored
-// as the quote's number (Deal.kickoffQuote) and worded for each reader: the
-// pipeline's subline through the `$helio.crm.deals.kickoffNextStep` key, the
-// deal's form and quick view, whose text field cannot hold a key, with the
-// same sentence written here in the language of the reader's profile.
-
 import { readerLanguage } from "../dashboard/locale";
 
+/**
+ * The next step a signed quote gives its deal: plan the kick-off call, in each
+ * language Helio writes in. The deal stores the quote's number
+ * (`Deal.kickoffQuote`), and each reader sees the sentence in their language:
+ * the pipeline's subline through the `$helio.crm.deals.kickoffNextStep` key,
+ * and the deal's form and quick view, whose text field cannot hold a key,
+ * through this sentence in the language of the reader's profile.
+ */
 const KICKOFF_STEP = {
   en: (number: string) => `Plan the kick-off call (quote ${number} signed)`,
   fr: (number: string) =>

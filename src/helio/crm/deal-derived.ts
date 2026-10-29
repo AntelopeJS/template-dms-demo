@@ -11,35 +11,39 @@ import {
 import { STAGE_PROBABILITY } from "./fixtures";
 import { isKickoffNextStep } from "./kickoff-step";
 
-// Some fields of a deal derive from others: its weighted amount (amount ×
-// probability), whether it is still open (neither won nor lost), its
-// customer's name (for the search), once closed, its probability, and the
-// loss reason, kept on a lost deal only (the form hides it on the other
-// stages, and a hidden field would otherwise keep the value it held). They
-// are stored, not declared @Computed, for two reasons seen on this DMS
-// version: the data API materializes a @Computed field only while a list
-// sorts or filters on it (the grid and the footer summary would show
-// nothing), and a controller with a @Computed field answers its `get` route
-// with every relation set to null (the kanban, which saves the row it read,
-// then fails on the mandatory customer). Every write of the pipeline table
-// brings the stored values back in step.
-
-// The probability the deal form starts from (deal-controller.ts).
+/** The probability the deal form starts from (see `deal-controller.ts`). */
 const DEFAULT_PROBABILITY = STAGE_PROBABILITY.lead;
 
-// A won deal is certain and a lost one gone, whatever probability it carried
-// before; an open deal keeps the one its owner set.
+/**
+ * The probability a closed deal takes, whatever it carried before: a won deal
+ * is certain and a lost one gone. An open deal keeps the one its owner set.
+ */
 const CLOSED_PROBABILITY: Partial<Record<DealStage, number>> = {
   won: STAGE_PROBABILITY.won,
   lost: STAGE_PROBABILITY.lost,
 };
 
+/**
+ * The fields of a deal that derive from others: its probability once closed,
+ * its weighted amount (amount × probability), whether it is still open
+ * (neither won nor lost), its customer's name (for the search), and the loss
+ * reason, kept on a lost deal only (the form hides it on the other stages, and
+ * a hidden field would otherwise keep the value it held).
+ *
+ * They are stored rather than declared `@Computed`, for two reasons seen on
+ * this DMS version: the data API materializes a `@Computed` field only while a
+ * list sorts or filters on it (the grid and the footer summary would show
+ * nothing), and a controller with a `@Computed` field answers its `get` route
+ * with every relation set to null (the kanban, which saves the row it read,
+ * then fails on the mandatory customer). Every write of the pipeline table
+ * brings the stored values back in step through {@link syncDerivedFields}.
+ */
 interface DerivedFields {
   probability: number;
   weightedAmount: number;
   isOpen: boolean;
   customerName: string;
-  // null clears the stored value, as a field emptied in a form.
+  /** `null` clears the stored value, as a field emptied in a form does. */
   lostReason: string | null;
 }
 
@@ -80,8 +84,11 @@ export async function syncDerivedFields(): Promise<void> {
   );
 }
 
-// The probability a deal entering `stage` takes: the stage's default, unless
-// the same write set one of its own (`sent` differs from `before`).
+/**
+ * The probability a deal entering `stage` takes: the stage's default, unless
+ * the same write set one of its own (`sent` differs from `before`), in which
+ * case it returns `undefined` and the sent value stays.
+ */
 function stageProbability(
   stage: DealStage,
   sent: number | undefined,
@@ -134,8 +141,10 @@ export function afterDealNew(body: Partial<Deal>): AfterWrite {
   };
 }
 
-// A deal moved to "won" (across the board or from its form) reaches the
-// dashboard's activity feed, in its owner's name.
+/**
+ * Logs a deal moved to "won" (across the board or from its form) to the
+ * dashboard's activity feed, in its owner's name.
+ */
 async function logDealWon(id: string): Promise<void> {
   const deal = await GetModel(DealModel).get(id);
   if (deal?.stage !== "won") return;
@@ -150,8 +159,9 @@ async function logDealWon(id: string): Promise<void> {
 /**
  * The pipeline table's edit guard result: a deal moved to another stage
  * (across the board or from its form) takes that stage's probability unless
- * the same edit set one, a next step typed replaces the kick-off a signed
- * quote planned, the derived fields follow, and a deal just won is logged.
+ * the same edit set one, a next step typed over the kick-off a signed quote
+ * planned replaces it (the kick-off sentence sent back unchanged keeps it),
+ * the derived fields follow, and a deal just won is logged.
  */
 export function afterDealEdit(
   id: string,
@@ -160,8 +170,6 @@ export function afterDealEdit(
 ): AfterWrite {
   const { stage } = body;
   const moved = stage !== undefined && stage !== current.stage;
-  // A next step typed over the kick-off a signed quote planned replaces it;
-  // the kick-off sentence sent back unchanged keeps it.
   const retyped =
     body.nextStep !== undefined &&
     !!current.kickoffQuote &&

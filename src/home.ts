@@ -24,9 +24,11 @@ const GITHUB = "https://github.com/AntelopeJS";
 const HOME_SLUG = "/home";
 const HTTP_NOT_FOUND = 404;
 
-// The long texts live as Markdown, one file per section and language, in
-// content/home (next to dist/, read on each request): Markdown and vue-i18n
-// share `{`, `|` and `@`, so they are not i18n keys.
+/**
+ * Where the long texts live as Markdown, one file per section and language
+ * (next to dist/, read on each request). They are not i18n keys because
+ * Markdown and vue-i18n share `{`, `|` and `@`.
+ */
 const CONTENT_DIR = resolve(__dirname, "..", "content", "home");
 const SECTIONS = [
   "why",
@@ -46,7 +48,7 @@ function contentLocale(language: string | undefined): "fr-FR" | "en-GB" {
 
 const count = (value: number) => ({ type: "count", value }) as const;
 
-// The five cells, from the figures counted at runtime.
+/** The five cells of the figures group, built from the figures counted at runtime. */
 function figureItems(figures: HomeFigures): StatGroupItem[] {
   return [
     {
@@ -94,9 +96,11 @@ function figureItems(figures: HomeFigures): StatGroupItem[] {
   ];
 }
 
-// The hero and the long-form sections are the demo's own Vue components
-// (frontend-vue/app/components/HomeHero.vue and HomeProse.vue): editorial
-// blocks are not part of the DMS.
+/**
+ * Catalogue metadata of the hero and the long-form sections, which are the demo's
+ * own Vue components (frontend-vue/app/components/HomeHero.vue and HomeProse.vue)
+ * because editorial blocks are not part of the DMS.
+ */
 const HOME_BLOCKS = {
   hero: {
     name: "$demo.home.blocks.hero.name",
@@ -110,9 +114,11 @@ const HOME_BLOCKS = {
   },
 };
 
-// Each section is a card filling its grid cell; a row of one spans both
-// columns (the modules table, the AI section). HomeProse draws the Markdown
-// the section's route answers.
+/**
+ * A section is a card filling its grid cell. HomeProse draws the Markdown the
+ * section's route answers. `pair` lays two sections side by side; `full` spans
+ * both columns of a row of one (the modules table, the AI section).
+ */
 const section = (id: Section) =>
   Card({ padded: true }).child(
     "text",
@@ -124,8 +130,10 @@ const pair = (left: Section, right: Section) =>
   GridRow().child(left, section(left)).child(right, section(right));
 const full = (id: Section) => GridRow().child(id, section(id), { colSpan: 2 });
 
-// The home page tells what the demo is for and how to build the same thing:
-// a hero, the figures counted live, then the story in long-form text.
+/**
+ * The home page tells what the demo is for and how to build the same thing:
+ * a hero, the figures counted live, then the story in long-form text.
+ */
 @RegisterPage()
 export class PageHome extends PageController(
   "home",
@@ -162,8 +170,10 @@ export class PageHome extends PageController(
     })
     .meta(HOME_BLOCKS.hero);
 
-  // Counted when the page is read, from what the module registered (see
-  // home-figures.ts): nothing here is typed by hand.
+  /**
+   * Counted when the page is read, from what the module registered (see
+   * home-figures.ts): nothing here is typed by hand.
+   */
   static figures = StatGroup({
     layout: "cards",
     columns: 5,

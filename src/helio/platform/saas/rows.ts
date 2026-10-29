@@ -1,7 +1,3 @@
-// Writing helpers of the SaaS showcase seed. dms-saas offers no API to create a
-// workspace, a subscription or an invoice without Stripe, so the seed writes
-// the rows the way dms-saas itself stores them, as its own playground does.
-
 import type { Class } from "@antelopejs/interface-core/decorators";
 import type { InstanceId } from "@antelopejs/interface-database";
 import {
@@ -83,7 +79,10 @@ function toStoredRow<T extends object>(
 
 /**
  * Writes the rows whose id is not stored yet and leaves the others alone, so
- * every boot (and every hot reload) can run the seed again safely.
+ * every boot (and every hot reload) can run the seed again safely. dms-saas
+ * offers no API to create a workspace, a subscription or an invoice without
+ * Stripe, so the seed writes rows the way dms-saas itself stores them, as its
+ * own playground does.
  *
  * @param model Table model to write through
  * @param rows Rows to write, each with its `_id`

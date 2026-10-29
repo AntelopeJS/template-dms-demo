@@ -1,9 +1,4 @@
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
-// Helio's transactional e-mails, shipped as code to the Mailing module: one
-// "Helio" category, seven templates in French and English, and the history of
-// the last weeks. Written once, when the DMS provisions the default tenant:
-// from then on they belong to the tenant.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import {
   DeclareTemplate,
@@ -51,9 +46,9 @@ async function declareTemplates(): Promise<void> {
   Logging.Info(`[helio] mail templates: ${outcomes.join(", ")}`);
 }
 
+/** Imports the send history and notes the installations it confirmed, so the weekly confirmation run does not write again to those customers. */
 async function importHistory(): Promise<void> {
   const history = await importMailHistory();
-  // The weekly confirmation run must not write again to these customers.
   for (const { projectId, sentAt } of history.confirmedProjects) {
     await recordNotice("installation", projectId, sentAt);
   }
@@ -63,9 +58,12 @@ async function importHistory(): Promise<void> {
 }
 
 /**
- * Declares the templates, then imports the history (which names them). Called
- * when the DMS provisions the default tenant: the history reads the Helio
- * collections, registered on `DATABASE_INITIALIZED` before it.
+ * Ships Helio's transactional e-mails as code to the Mailing module: one
+ * "Helio" category, seven templates in French and English, and the history of
+ * the last weeks. It declares the templates, then imports the history (which
+ * names them). Called when the DMS provisions the default tenant, so the
+ * history reads the Helio collections, registered on `DATABASE_INITIALIZED`
+ * before it. They are written once: from then on they belong to the tenant.
  */
 export async function provisionHelioMailing(): Promise<void> {
   await declareTemplates();

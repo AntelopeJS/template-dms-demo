@@ -1,9 +1,5 @@
 import type { LibraryDocument } from "./contracts";
 
-// Safety procedures and training material of the technicians: what a crew
-// reads before working on a roof, isolating an array or commissioning a
-// battery, and the year's training plan.
-
 const WORK_AT_HEIGHT: LibraryDocument = {
   slug: "work-at-height",
   fileName: "Procédure - travail en hauteur sur toiture.pdf",
@@ -186,7 +182,12 @@ const TRAINING_PLAN: LibraryDocument = {
   },
 };
 
-/** Every document of the "Training & safety" folder. */
+/**
+ * Every document of the "Training & safety" folder: the safety procedures and
+ * training material of the technicians, which a crew reads before working on a
+ * roof, isolating an array, commissioning an installation or facing a battery
+ * incident, and the year's training plan.
+ */
 export const TRAINING_DOCUMENTS: readonly LibraryDocument[] = [
   WORK_AT_HEIGHT,
   ISOLATION,

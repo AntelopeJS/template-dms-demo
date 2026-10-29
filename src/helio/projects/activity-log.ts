@@ -1,16 +1,18 @@
-// A project starting on site or finished reaches the dashboard's activity
-// feed, in the name of its lead technician: "CH-0123 · name".
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { logActivity } from "../dashboard/log";
 import { ProjectModel } from "./database";
 
+/** The statuses that reach the dashboard's activity feed, with their type. */
 const LOGGED: Partial<Record<string, "project_started" | "project_done">> = {
   in_progress: "project_started",
   done: "project_done",
 };
 
-/** Logs a project that just moved to `status` (read once written). */
+/**
+ * Logs a project that just moved to `status` on the dashboard's activity feed,
+ * in the name of its lead technician and as "CH-0123 · name". The project is
+ * read back once written, and nothing is logged unless it holds `status`.
+ */
 export async function logProjectStatus(
   id: string,
   status: string,

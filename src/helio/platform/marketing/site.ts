@@ -5,19 +5,18 @@ import type {
 } from "@antelopejs/interface-dms-marketing";
 import { DAY_MS } from "../../shared/seed";
 
-// Helio's public website as the marketing module knows it: the site, its
-// pages, how visitors move between them, where they click, and the funnels
-// the team follows — one of them running an A/B test on the simulator.
-
 export const WEBSITE_ID = "helio-website";
 export const SITE_ORIGIN = "https://helio.example";
 
+/**
+ * Helio's public website as the marketing module knows it. Its domain is the
+ * company's domain in the settings; `www` and the customer portal are
+ * subdomains, so they are accepted too.
+ */
 export const HELIO_WEBSITE: MarketingWebsiteDeclaration = {
   tenantId: DEFAULT_TENANT_ID,
   id: WEBSITE_ID,
   name: "Helio — site public",
-  // The company's domain in the settings (helio.example); www and the
-  // customer portal are subdomains, so they are accepted too.
   domain: "helio.example",
 };
 
@@ -92,7 +91,11 @@ export const PAGES: Record<PageId, readonly [path: string, title: string]> = {
 
 type Next = PageId | "exit";
 
-/** Where a visitor goes after each page, with relative weights. */
+/**
+ * Where a visitor goes after each page, with relative weights. The
+ * simulator's step to the quote form is not drawn here: it is decided by the
+ * visitor's A/B arm in `journeys.ts`, and this table covers the other moves.
+ */
 export const TRANSITIONS: Record<
   PageId,
   ReadonlyArray<readonly [Next, number]>
@@ -139,7 +142,6 @@ export const TRANSITIONS: Record<
     ["quote", 8],
     ["exit", 46],
   ],
-  // The simulator's next step is decided by the A/B arm (see journeys.ts).
   simulator: [
     ["pv", 6],
     ["faq", 6],

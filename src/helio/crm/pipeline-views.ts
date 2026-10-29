@@ -1,11 +1,15 @@
 import type { TableViewViewsOptions } from "@antelopejs/interface-dms/base/table-view";
 
-// The saved views of the pipeline. A list filter takes one value per column,
-// so "open deals" is the computed `isOpen` flag of the deal controller.
+/**
+ * The "open deals" filter of the saved views. A list filter takes one value per
+ * column, so it reads the stored `isOpen` flag of the deal controller.
+ */
 const OPEN = { accessorKey: "isOpen", mode: "is", value: "true" };
 
-// A deal this big is a commercial roof or a carport: the key account manager
-// follows it closely.
+/**
+ * A deal this big is a commercial roof or a carport: the key account manager
+ * follows it closely.
+ */
 const BIG_DEAL_EUR = "50000";
 
 export const PIPELINE_VIEWS: TableViewViewsOptions = {

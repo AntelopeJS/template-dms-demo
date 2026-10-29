@@ -1,7 +1,3 @@
-// Seed of helio_quotes. Quotes 1–80 are the signed quotes behind the 80
-// projects (see projects/plan.ts); the other 70 follow the open and lost
-// deals of the pipeline, or are standalone requests, spread over the year.
-
 import {
   activeCustomers,
   type CustomerFacts,
@@ -96,8 +92,10 @@ function toSeed(rng: Rng, draft: QuoteDraft): QuoteSeed {
   };
 }
 
-// The signed quote of each planned project, issued a few days to three
-// weeks before its signature.
+/**
+ * The signed quote of each planned project, issued 4 to 21 days before its
+ * signature.
+ */
 function acceptedQuotes(rng: Rng): QuoteDraft[] {
   return projectPlans().map((plan) => {
     const issuedAt = at(plan.signedAt, -24 * rng.int(4, 21));
@@ -114,7 +112,7 @@ function acceptedQuotes(rng: Rng): QuoteDraft[] {
   });
 }
 
-// Issue date (days from now) for an open or closed quote of a given status.
+/** The issue date, in days from now (negative: in the past), of a quote of the given status. */
 function issueDay(rng: Rng, status: QuoteStatus): number {
   switch (status) {
     case "draft":
@@ -156,8 +154,11 @@ function standaloneLines(rng: Rng, customer: CustomerFacts): QuoteLine[] {
   return buildLines(rng, type, business, customer.isVip).lines;
 }
 
-// A deal's quote prices its amount; a lost deal's quote went out a few weeks
-// before the deal was lost.
+/**
+ * A quote for a pipeline deal or a standalone request. A deal's quote prices
+ * its amount; a lost deal's quote was issued 10 to 35 days before the deal's
+ * close date.
+ */
 function openQuote(
   rng: Rng,
   index: number,
@@ -183,8 +184,10 @@ function openQuote(
   };
 }
 
-// Quotes of the deals still in the pipeline (or lost), then standalone
-// requests until the collection holds COUNTS.quotes rows.
+/**
+ * Quotes of the deals still in the pipeline (or lost), then standalone
+ * requests until the collection holds COUNTS.quotes rows.
+ */
 function otherQuotes(rng: Rng, firstIndex: number): QuoteDraft[] {
   const drafts: QuoteDraft[] = [];
   for (let deal = FIRST_OPEN_DEAL; deal <= COUNTS.deals; deal++) {
@@ -213,7 +216,7 @@ function otherQuotes(rng: Rng, firstIndex: number): QuoteDraft[] {
   return drafts;
 }
 
-// Numbers follow the issue date within each year: Q-2026-0001, …
+/** Numbers the seeds by issue date within each year: Q-2026-0001, … */
 function numberQuotes(seeds: QuoteSeed[]): void {
   const counters = new Map<number, number>();
   for (const seed of [...seeds].sort(
@@ -228,7 +231,12 @@ function numberQuotes(seeds: QuoteSeed[]): void {
 
 let quotes: QuoteSeed[] | undefined;
 
-/** The 150 quotes, `quote-001` … `quote-150`. */
+/**
+ * The 150 quotes, `quote-001` … `quote-150`. Quotes 1–80 are the signed quotes
+ * behind the 80 projects (see projects/plan.ts); the other 70 follow the open
+ * and lost deals of the pipeline, or are standalone requests, spread over the
+ * year.
+ */
 export function buildQuotes(): QuoteSeed[] {
   if (!quotes) {
     const rng = createRng(0x9e110002);

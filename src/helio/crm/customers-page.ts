@@ -23,10 +23,12 @@ import {
   QUOTES_URL,
 } from "./links";
 
-// A business is invoiced with VAT: the column shows the number, mandatory,
-// for a business only (customer-controller.ts; turned household, a customer
-// loses the number and website it stored), and the write routes refuse a
-// number that is not valid, whichever client sent it.
+/**
+ * Refuses a VAT number that is not valid, whichever client sent it. A blank
+ * number passes: the column asks for one, mandatory, from a business only
+ * (`customer-controller.ts`; a customer turned household loses the number and
+ * website it stored).
+ */
 function assertVatFormat(vatNumber: unknown): void {
   if (typeof vatNumber !== "string" || vatNumber.trim() === "") return;
   if (!isValidVatNumber(vatNumber)) {
@@ -59,12 +61,31 @@ export class PageHelioCustomers extends PageController(
   },
   DefaultLayout({ fullWidth: true }),
 ) {
+  /**
+   * The customers table.
+   *
+   * - VIP accounts stay on top of their page, whatever the sort.
+   * - `?segment=<tag>` filters on a segment: the dashboard and the segment
+   *   chips link that way.
+   * - The generated form pages show the business fields through their columns'
+   *   `visibleWhen`, following the customer type.
+   * - Only archived customers can be deleted (archive mode): the rule keeps the
+   *   action off the active ones, on the selection bar too, and the dialog,
+   *   worded by the server, asks to type the customer's name. The delete guard
+   *   also refuses an active customer, or one with deals still in play: the
+   *   dialog says so, and a bare API call is refused the same way instead of
+   *   deleting nothing.
+   * - The quick view is a right drawer showing the customer's own table form,
+   *   read-only, for the row clicked or the one `?record=<id>` names.
+   * - The invoices action opens every status of the customer's invoices,
+   *   whatever tab was left open.
+   * - A rename reaches the deals and quotes that carry the name for the search.
+   */
   static table = TableView(customerController, {
     caption: "$helio.crm.customers.caption",
     labelKey: "name",
     searchPlaceholder: "$helio.crm.customers.search",
     archiveMode: true,
-    // VIP accounts stay on top of their page, whatever the sort.
     pinnedRows: { field: "isVip", equals: true },
     defaultSort: { field: "name" },
     pageSize: 25,
@@ -81,7 +102,6 @@ export class PageHelioCustomers extends PageController(
       textColor: kind.textColor,
       filter: { accessorKey: "kind", value: kind.value, mode: "is" },
     })),
-    // Links from the dashboard and the segment chips: ?segment=batterie.
     queryParamFilters: {
       segment: {
         field: "segments",
@@ -117,8 +137,6 @@ export class PageHelioCustomers extends PageController(
         description: "$helio.crm.customers.empty.filteredDescription",
       },
     },
-    // The generated form pages: the business fields follow the customer
-    // type through their columns (visibleWhen).
     formContainer: {
       type: "page",
       pages: {
@@ -148,18 +166,12 @@ export class PageHelioCustomers extends PageController(
         isEnabled: true,
         successMessage: "$helio.crm.customers.restored",
       },
-      // Only archived customers can be deleted (archive mode): the rule
-      // keeps the action off the active ones, on the selection bar too. The
-      // dialog, worded by the server, asks to type the customer's name.
       delete: {
         isEnabled: true,
         rule: { field: "isArchived", equals: true },
         confirm: { from: CUSTOMER_DELETE_CONFIRM_URL },
       },
       custom: [
-        // The quick view: a right drawer showing the customer's own table
-        // form, read-only, for the row clicked (`{{row._id}}`) or the one
-        // `?record=<id>` names.
         {
           id: "quick-view",
           label: "$helio.crm.customers.quickView.action",
@@ -208,7 +220,6 @@ export class PageHelioCustomers extends PageController(
           id: "invoices",
           label: "$helio.crm.customers.actions.invoices",
           icon: "i-ph-receipt",
-          // Every status of the customer's invoices, whatever tab was left open.
           target: {
             type: "page",
             url: `${INVOICES_URL}?customer={{row._id}}&table.tab=all`,
@@ -226,15 +237,11 @@ export class PageHelioCustomers extends PageController(
       new: (_ctx, { body }) => {
         assertVatFormat(body.vatNumber);
       },
-      // A new name reaches the deals and quotes that carry it for the search.
       edit: (_ctx, { body, current }) => {
         assertVatFormat(body.vatNumber);
         const renamed = body.name !== undefined && body.name !== current.name;
         return renamed ? afterCustomerEdit : undefined;
       },
-      // An active customer, or one with deals still in play, is not deleted:
-      // the dialog says so (blocked), and a bare API call is refused the same
-      // way instead of deleting nothing.
       delete: async (_ctx, { ids }) => {
         await refuseActiveCustomers(ids);
         const { open } = await countCustomerDeals(ids);

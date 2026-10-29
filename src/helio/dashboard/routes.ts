@@ -22,10 +22,12 @@ import {
 import { snapshot, shortcuts } from "./snapshot";
 import { topReps } from "./team-metrics";
 
-// The data routes of the dashboard. A plain controller wrapped by no page,
-// so it is gated explicitly on the dashboard page's permission: whoever may
-// open the dashboard may read its figures, nobody else. The period comes as
-// the query parameters every period-scoped block sends.
+/**
+ * The data routes of the dashboard. A plain controller wrapped by no page,
+ * so it is gated explicitly on the dashboard page's permission: whoever may
+ * open the dashboard may read its figures, nobody else. The period comes as
+ * the query parameters every period-scoped block sends.
+ */
 @AuthUserWithPermission(PageHelioDashboard)
 export class HelioDashboardApi extends Controller("/api/helio/dashboard") {
   @Parameter("from", "query") declare from?: string;
@@ -92,7 +94,7 @@ export class HelioDashboardApi extends Controller("/api/helio/dashboard") {
     return offlineSitesBanner();
   }
 
-  // Same readers as the snapshot, which already counts the overdue invoices.
+  /** Same readers as the snapshot, which already counts the overdue invoices. */
   @Get("overdue-invoices")
   overdueInvoices() {
     return overdueInvoicesBanner();

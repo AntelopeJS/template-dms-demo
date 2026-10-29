@@ -8,11 +8,6 @@ import {
   textWidth,
 } from "../../sales/pdf";
 
-// Lays out the library's business documents (datasheets, contracts,
-// procedures) on the quotes' dependency-free PDF writer: a branded header,
-// headings, wrapped paragraphs, two-column spec tables, bullet and check
-// lists, and a footer numbering the pages.
-
 /** The structured content of one document, written top to bottom. */
 export type DocBlock =
   | { kind: "heading"; text: string }
@@ -114,7 +109,6 @@ function drawMark(
     [x + size * 0.9, y + size * 0.98],
   ];
   fillPath(page, module, color);
-  // Grid lines of the module, in the background colour.
   for (const t of [0.36, 0.64]) {
     const top = x + size * (0.24 + 0.52 * t);
     const bottom = x + size * (0.1 + 0.8 * t);
@@ -347,7 +341,12 @@ class DocWriter {
   }
 }
 
-/** The document as PDF bytes. */
+/**
+ * The document as PDF bytes. It lays out the library's business documents
+ * (datasheets, contracts, procedures) on the quotes' dependency-free PDF
+ * writer: a branded header, headings, wrapped paragraphs, two-column spec
+ * tables, bullet and check lists, and a footer numbering the pages.
+ */
 export function renderDocument(spec: DocSpec): Buffer {
   const writer = new DocWriter(spec);
   for (const block of spec.blocks) writer.write(block);

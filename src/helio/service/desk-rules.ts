@@ -1,9 +1,3 @@
-// How tickets reach the desk and who takes them, shared by the seed and the
-// simulator so both tell the same story: when each channel brings tickets in,
-// which categories are technical, and who a ticket goes to (a technician of
-// the customer's region for a technical request, the office for a billing or
-// general question).
-
 import { findCustomerFacts } from "../projects/crm-facts";
 import { teamIdsByRole } from "../shared/roster";
 import type { Rng } from "../shared/seed";
@@ -12,8 +6,10 @@ import type { TicketCategory, TicketChannel, TicketPriority } from "./database";
 
 const TECHNICIANS = teamIdsByRole("technician");
 const OFFICE = teamIdsByRole("office");
-// The after-sales specialists (remote diagnostics, storage and monitoring)
-// take a larger share of the technical tickets than the roofers.
+/**
+ * The after-sales specialists (remote diagnostics, storage and monitoring),
+ * who take a larger share of the technical tickets than the roofers.
+ */
 const SERVICE_SPECIALISTS = new Set(["team-06", "team-09"]);
 
 const TECHNICAL: readonly TicketCategory[] = [
@@ -108,7 +104,10 @@ export function channelFor(rng: Rng, category: TicketCategory): TicketChannel {
   ]);
 }
 
-// A billing or general question is never urgent; a technical one can be.
+/**
+ * A priority drawn for the category. A billing or general question is never
+ * urgent; a technical one can be, except a monitoring one.
+ */
 export function priorityFor(
   rng: Rng,
   category: TicketCategory,
@@ -130,14 +129,14 @@ export function priorityFor(
 /**
  * The technician a technical ticket goes to: one of the customer's region
  * first, the after-sales specialists next. `load` (open tickets held, by
- * member) steers a live desk towards whoever holds the fewest.
+ * member) steers a live desk towards whoever holds the fewest. A customer
+ * created since the seed has no known province and gets the Liège region.
  */
 export function technicianFor(
   rng: Rng,
   customerId: string,
   load?: ReadonlyMap<string, number>,
 ): string {
-  // A customer created since the seed has no known province: Liège then.
   const province = findCustomerFacts(customerId)?.address.countrySubdivision;
   const local = new Set(techniciansOf(regionOfProvince(province)));
   return rng.weighted(
@@ -148,7 +147,11 @@ export function technicianFor(
   );
 }
 
-/** Who a ticket goes to, by its category. */
+/**
+ * Who a ticket goes to, by its category: a technician for a technical
+ * request, the office for a billing or general question. The seed and the
+ * simulator both use it, so they tell the same story.
+ */
 export function assigneeFor(
   rng: Rng,
   category: TicketCategory,

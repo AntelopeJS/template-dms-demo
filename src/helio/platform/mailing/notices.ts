@@ -1,7 +1,3 @@
-// Which one-off e-mails a record already received, so a scheduled run never
-// writes twice about the same thing (the installation date of a project is
-// confirmed once, whether by the weekly run or by the imported history).
-
 import {
   BasicDataModel,
   Field,
@@ -17,6 +13,11 @@ const TABLE_NAME = "helio_mail_notices";
 /** `installation`: a project's date was confirmed to its customer. */
 export type NoticeKind = "installation";
 
+/**
+ * Records which one-off e-mails a record already received, so a scheduled run
+ * never writes twice about the same thing: the installation date of a project
+ * is confirmed once, whether by the weekly run or by the imported history.
+ */
 @RegisterTable(TABLE_NAME, DEMO_SCHEMA_NAME)
 export class MailNotice extends Table {
   /** `<kind>:<record id>`: one notice per record and kind. */

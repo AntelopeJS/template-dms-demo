@@ -1,12 +1,3 @@
-// Creates each installer workspace once: its tenant instance, member role,
-// billing identity and subscription. Rows go straight to the tables, as the
-// dms-saas playground does: dms-saas has no API to create a workspace without
-// Stripe. No account and no membership is written here: the workspace is
-// owned by the platform owner, linked through the DMS membership API once the
-// onboarding created that account (owner.ts). The tenant row is written last,
-// so dms-saas never sees a workspace without its subscription when it
-// attaches its default plan to plan-less workspaces.
-
 import { randomUUID } from "node:crypto";
 import { Schema } from "@antelopejs/interface-database";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -42,7 +33,10 @@ function memberRoleId(tenantId: string): string {
   return `${tenantId}:${MEMBER_ROLE_SUFFIX}`;
 }
 
-// Invited members hold every grantable id: the plan caps what they really get.
+/**
+ * The role a colleague the owner invites gets. It holds every grantable id:
+ * the plan caps what the member really gets.
+ */
 function memberRole(
   tenantId: string,
   permissions: string[],
@@ -72,8 +66,10 @@ function paidUsagePeriods(
   ];
 }
 
-// A churned workspace is written active first and cancelled right after, so
-// dms-saas records the revenue it took away (the churn figures read it).
+/**
+ * A churned workspace is written active first and cancelled right after, so
+ * dms-saas records the revenue it took away (the churn figures read it).
+ */
 function initialStatus(workspace: SeedWorkspace): string {
   return workspace.status === "cancelled" ? "active" : workspace.status;
 }
@@ -88,19 +84,23 @@ function currentPeriodEnd(
   return nextRenewal(workspace, createdAt, now);
 }
 
+/**
+ * The subscription row of a workspace. A free plan never reaches Stripe, so
+ * its workspace has no subscription id there. `revision` is set because every
+ * compare-and-set write of dms-saas expects one. `createdBy` stays null: it is
+ * set to the platform owner once linked (owner.ts), as nobody exists yet.
+ */
 function toSubscriptionRow(
   workspace: SeedWorkspace,
   createdAt: Date,
   now: Date,
 ): SeedRow {
-  // A free plan never reaches Stripe: its workspace has no subscription there.
   const isBilled =
     BILLED_STATUSES.has(workspace.status) &&
     findPlan(workspace.planId).price > 0;
   const isPaid = isBilled && workspace.status !== "trialing";
   return {
     _id: workspace.id,
-    // Every compare-and-set write of dms-saas expects a revision.
     revision: randomUUID(),
     planId: workspace.planId,
     status: initialStatus(workspace),
@@ -128,7 +128,6 @@ function toSubscriptionRow(
     isComplimentary: false,
     paidUsageStartedAt: isPaid ? createdAt : null,
     paidUsagePeriods: isPaid ? paidUsagePeriods(workspace, createdAt) : [],
-    // Set to the platform owner once linked (owner.ts): nobody exists yet.
     createdBy: null,
     createdAt,
     updatedAt: now,
@@ -151,8 +150,17 @@ async function cancelAfterPublishing(workspace: SeedWorkspace): Promise<void> {
 }
 
 /**
- * Writes one workspace when its subscription does not exist yet; a workspace
- * already seeded is left to dms-saas and to the daily upkeep.
+ * Creates an installer workspace once: its tenant instance, member role,
+ * billing identity and subscription. Rows go straight to the tables, as the
+ * dms-saas playground does, because dms-saas has no API to create a workspace
+ * without Stripe. A workspace already seeded (its subscription exists) is left
+ * to dms-saas and to the upkeep.
+ *
+ * No account and no membership is written here: the workspace is owned by the
+ * platform owner, linked through the DMS membership API once the onboarding
+ * created that account (owner.ts). The tenant row is written last, so dms-saas
+ * never sees a workspace without its subscription when it attaches its default
+ * plan to plan-less workspaces.
  *
  * @returns Whether the workspace was created by this call
  */
@@ -165,7 +173,6 @@ export async function writeWorkspace(
   if (await GetModel(TenantSubscriptionModel, id).table.get(id)) return false;
   const createdAt = workspaceCreatedAt(workspace, now);
   await Schema.get(TENANT_SCHEMA_NAME)?.createInstance(id);
-  // The role a colleague the owner invites gets.
   await insertMissing(RoleModel, [memberRole(id, permissions, createdAt)], id);
   await insertMissing(
     TenantBillingInfoModel,

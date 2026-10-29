@@ -1,12 +1,3 @@
-// Keeps the seeded workspaces believable however long the demo database
-// lives. dms-saas moves billing states on with Stripe webhooks and nightly
-// crons; without Stripe, dates would only drift into the past: renewals
-// behind today, trials ended for weeks, a dunning that the 01:00 cron turns
-// into a suspension, a churned workspace hard-deleted by the 04:30 cron after
-// its retention period. Each boot moves those dates forward, and only while
-// the workspace still holds the status the seed gave it: a change an operator
-// made is never undone.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { TenantModel } from "@antelopejs/interface-dms/db";
@@ -34,7 +25,13 @@ function olderThan(date: Date | null, days: number, now: Date): boolean {
   return !date || new Date(date) < addDays(now, -days);
 }
 
-/** What the subscription needs to read as current again, if anything. */
+/**
+ * What the subscription needs to read as current again, if anything. Nothing
+ * is patched once the subscription no longer holds the status the seed gave
+ * it, so a change an operator made is never undone. A cancelled workspace is
+ * rewritten with its own status because any write moves `updatedAt`, which
+ * dates the data deletion.
+ */
 export function freshnessPatch(
   workspace: SeedWorkspace,
   subscription: TenantSubscription,
@@ -60,7 +57,6 @@ export function freshnessPatch(
         pastDueSince: dunningSince(workspace, anchor, now),
       };
     case "cancelled":
-      // Any write moves `updatedAt`, which dates the data deletion.
       return olderThan(subscription.updatedAt, CANCELLED_MAX_AGE_DAYS, now)
         ? { status: "cancelled" }
         : null;
@@ -82,8 +78,13 @@ async function refreshSubscription(
 }
 
 /**
- * Brings one seeded workspace up to date and publishes its billing state;
- * logs instead of failing the boot. A workspace not written yet is skipped.
+ * Keeps a seeded workspace believable however long the demo database lives.
+ * dms-saas moves billing states on with Stripe webhooks and nightly crons;
+ * without Stripe, dates would only drift into the past: renewals behind today,
+ * trials ended for weeks, a dunning that a cron turns into a suspension, a
+ * churned workspace hard-deleted by a cron after its retention period. Each
+ * boot moves those dates forward and publishes the billing state; logs instead
+ * of failing the boot. A workspace not written yet is skipped.
  */
 export async function upkeepWorkspace(
   workspace: SeedWorkspace,

@@ -1,8 +1,6 @@
 import { ReadonlyBehaviorType } from "@antelopejs/interface-dms/base/types";
 
-// Option lists of the catalog, shared by its data controllers, its page and
-// the other domains (filters, grouping, views).
-
+/** The units a product is sold in, shared by the catalog and the other domains' filters and views. */
 export const PRODUCT_UNITS = [
   { value: "piece", label: "$helio.catalog.units.piece", icon: "i-ph-package" },
   { value: "hour", label: "$helio.catalog.units.hour", icon: "i-ph-clock" },
@@ -13,7 +11,8 @@ export const PRODUCT_UNITS = [
 /**
  * The top-level families of the category tree (PRODUCT_CATEGORY_ROSTER). A
  * product's family is read from its category's parent, in the database, so
- * the catalog groups and filters on five families instead of eleven ranges.
+ * the catalog can filter on five families. The catalog groups by range (the
+ * product's category), not by family.
  */
 export const PRODUCT_FAMILIES = [
   {

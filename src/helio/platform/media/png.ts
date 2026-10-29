@@ -1,15 +1,11 @@
 import { deflateSync } from "node:zlib";
 
-// A minimal PNG encoder (8-bit truecolour, no alpha, no filtering): enough to
-// ship the generated site photos as real raster images the media library can
-// resize, without adding an image dependency to the project.
-
 const SIGNATURE = Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const BYTES_PER_PIXEL = 3;
 const BIT_DEPTH = 8;
 const COLOR_TYPE_RGB = 2;
 
-// CRC-32 (ISO 3309) table, as the PNG chunks need it.
+/** The CRC-32 (ISO 3309) table, as the PNG chunks need it. */
 const CRC_TABLE = (() => {
   const table = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
@@ -37,7 +33,14 @@ function chunk(type: string, body: Uint8Array): Buffer {
   return out;
 }
 
-/** Encodes `rgb` (width × height × 3 bytes, row by row) as a PNG file. */
+/**
+ * Encodes `rgb` (width × height × 3 bytes, row by row) as a PNG file. This is
+ * a minimal encoder (8-bit truecolour, no alpha, no filtering): enough to ship
+ * the generated site photos as real raster images the media library can
+ * resize, without adding an image dependency to the project. The compression,
+ * filter and interlace method bytes of the header stay 0, the only defined
+ * values, and each row starts with the filter type 0, which is none.
+ */
 export function encodePng(
   width: number,
   height: number,
@@ -48,11 +51,9 @@ export function encodePng(
   header.writeUInt32BE(height, 4);
   header[8] = BIT_DEPTH;
   header[9] = COLOR_TYPE_RGB;
-  // Compression, filter and interlace methods: all 0, the only defined ones.
   const rowLength = width * BYTES_PER_PIXEL;
   const raw = Buffer.alloc((rowLength + 1) * height);
   for (let y = 0; y < height; y++) {
-    // Each row starts with its filter type, 0 = none.
     raw[y * (rowLength + 1)] = 0;
     raw.set(
       rgb.subarray(y * rowLength, (y + 1) * rowLength),

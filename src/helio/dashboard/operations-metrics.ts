@@ -1,6 +1,3 @@
-// Operations figures of the dashboard: installations started per month by
-// project type, tickets opened and when customers call in.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { type Project, ProjectModel } from "../projects/database";
 import { PROJECT_TYPES } from "../projects/project-controller";
@@ -20,9 +17,11 @@ import type {
   KpiPayload,
 } from "./sales-metrics";
 
-// One column per calendar month the period touches, each clipped to the
-// period: the first and last columns count only the days inside it, so the
-// columns add up to the card's figure (installations over the period).
+/**
+ * One column per calendar month the period touches, each clipped to the
+ * period: the first and last columns count only the days inside it, so the
+ * columns add up to the card's figure (installations over the period).
+ */
 function monthsCovering(range: TimeRange): TimeRange[] {
   const cursor = new Date(range.from);
   cursor.setFullYear(cursor.getFullYear(), cursor.getMonth(), 1);
@@ -36,7 +35,7 @@ function monthsCovering(range: TimeRange): TimeRange[] {
   return months;
 }
 
-// Paused projects have no date to stand on.
+/** The projects that are not paused: a paused project has no date to stand on. */
 function scheduled(projects: readonly Project[]): Project[] {
   return projects.filter((project) => project.status !== "on_hold");
 }
@@ -96,7 +95,7 @@ export async function newTicketsKpi(period: Period): Promise<KpiPayload> {
   };
 }
 
-// Columns from Monday to Sunday, as a Belgian week reads.
+/** Weekday indexes (Date.getDay()) from Monday to Sunday, as a Belgian week reads. */
 const WEEK = [1, 2, 3, 4, 5, 6, 0] as const;
 const HOURS_PER_CELL = 2;
 const CELLS_PER_DAY = 24 / HOURS_PER_CELL;

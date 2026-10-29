@@ -5,11 +5,6 @@ import type { ContractProject } from "./contracts";
 import { FOLDER_KEYS } from "./folders";
 import type { PhotoKind } from "./scenes";
 
-// Site photos filed per project, for finished projects of the demo data: a
-// subfolder per project named after its code, customer and town, holding
-// the photos a crew takes on such a job (before, during, after, technical
-// room).
-
 export interface PhotoPlan {
   key: string;
   folderKey: string;
@@ -19,6 +14,11 @@ export interface PhotoPlan {
   seed: number;
 }
 
+/**
+ * The site photos filed for one finished project of the demo data: a
+ * subfolder named after its code, customer and town, holding the photos a
+ * crew takes on such a job (before, during, after, technical room).
+ */
 export interface PhotoProject {
   project: ProjectSeed;
   folder: MediaFolderDeclaration;
@@ -26,7 +26,7 @@ export interface PhotoProject {
   customerName: string;
 }
 
-// How many finished projects of each type get a photo folder.
+/** How many finished projects of each type get a photo folder. */
 const PICKS: ReadonlyArray<readonly [ProjectSeed["type"], number]> = [
   ["residential_pv", 3],
   ["commercial_pv", 1],

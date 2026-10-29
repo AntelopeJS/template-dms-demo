@@ -22,10 +22,11 @@ import {
   vertical,
 } from "./scenery";
 
-// The site photos of the media library, drawn rather than downloaded: a
-// house before, during and after its works, a commercial flat roof, a
-// wallbox and a technical room with the inverter and the battery.
-
+/**
+ * The site photos of the media library, drawn rather than downloaded: a house
+ * before, during and after its works, a commercial flat roof, rows of panels,
+ * a wallbox and a technical room with the inverter and the battery.
+ */
 export type PhotoKind =
   | "house-before"
   | "house-during"
@@ -179,6 +180,7 @@ function drawCar(r: Raster, color: Rgb): void {
   r.rect([320, 490, 40, 16], hex("#f2f2f2"));
 }
 
+/** A wallbox on a brick wall with its charging cable coiled on a hook beside the box, and a car in front of it. */
 function drawWallbox(r: Raster, rng: Rng): void {
   brickWall(r, rng);
   r.rect(
@@ -192,7 +194,6 @@ function drawWallbox(r: Raster, rng: Rng): void {
   roundedBox(r, [408, 170, 134, 150], hex("#262b31"));
   r.ring(475, 245, 30, 24, hex("#34d399"));
   r.rect([408, 340, 134, 8], hex("#ea580c"));
-  // The charging cable, coiled on its hook beside the box.
   r.rect([600, 250, 12, 30], hex("#3a3a3a"));
   for (const radius of [74, 66, 58])
     r.ring(640, 330, radius, radius - 6, hex("#1d1d1d"));
@@ -209,6 +210,11 @@ function drawWallbox(r: Raster, rng: Rng): void {
   drawCar(r, hex(rng.pick(["#1e3a5f", "#7f1d1d", "#e5e7eb", "#374151"])));
 }
 
+/**
+ * A technical room with a hybrid inverter (its display and cooling fins), a
+ * battery tower of two or three modules, and a distribution board with its DC
+ * isolator.
+ */
 function drawTechnicalRoom(r: Raster, rng: Rng): void {
   r.rect(
     [0, 0, PHOTO_WIDTH, 500],
@@ -222,13 +228,11 @@ function drawTechnicalRoom(r: Raster, rng: Rng): void {
   r.rect([782, 0, 16, 170], hex("#bdbdbd"));
   r.ellipse([250, 505, 120, 14], hex("#000000"), 0.12);
   r.ellipse([520, 505, 120, 14], hex("#000000"), 0.12);
-  // Hybrid inverter, its display and cooling fins.
   roundedBox(r, [160, 160, 180, 250], hex("#f7f7f7"));
   r.rect([200, 200, 100, 46], hex("#1f2937"));
   r.rect([212, 214, 60, 6], hex("#34d399"));
   r.ellipse([250, 280, 7, 7], hex("#22c55e"));
   for (let y = 300; y < 395; y += 12) r.rect([180, y, 140, 4], hex("#e1e1e1"));
-  // Battery tower of three modules.
   const modules = rng.int(2, 3);
   const top = 500 - modules * 105;
   for (let m = 0; m < modules; m++) {
@@ -241,7 +245,6 @@ function drawTechnicalRoom(r: Raster, rng: Rng): void {
       [470 + i * 22, top + 20, 16, 6],
       i < 4 ? hex("#22c55e") : hex("#d1d5db"),
     );
-  // Distribution board with its DC isolator.
   r.rect([690, 170, 200, 230], hex("#cfd3d6"));
   r.rect([700, 180, 180, 210], hex("#e4e7ea"));
   r.rect([860, 270, 8, 40], hex("#6b7280"));

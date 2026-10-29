@@ -1,7 +1,8 @@
-// URLs of the Helio pages the dashboard links to. Plain strings rather than
-// tableViewLink(PageClass, …): the dashboard must not import every other
-// domain's page module, and these paths are the contract of the Helio spec.
-
+/**
+ * URLs of the Helio pages the dashboard links to. Plain strings rather than
+ * tableViewLink(PageClass, …): the dashboard must not import every other
+ * domain's page module, and these paths are the contract of the Helio spec.
+ */
 export const HELIO_PAGES = {
   dashboard: "/helio/dashboard",
   pipeline: "/helio/sales/pipeline",

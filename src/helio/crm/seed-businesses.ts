@@ -1,6 +1,3 @@
-// The business customers of the CRM fixtures, written out by hand so the
-// companies read like a real installer's portfolio.
-
 export interface BusinessSeed {
   name: string;
   contactName: string;
@@ -12,6 +9,10 @@ export interface BusinessSeed {
   notes: string;
 }
 
+/**
+ * The business customers of the CRM fixtures, written out by hand so the
+ * companies read like a real installer's portfolio.
+ */
 export const BUSINESSES: readonly BusinessSeed[] = [
   {
     name: "Boulangerie Lejeune SRL",

@@ -6,12 +6,6 @@ import type {
 } from "@antelopejs/interface-dms-media";
 import { HARDWARE_FAMILIES, type HardwareFamily } from "./datasheets";
 
-// The folder tree of Helio's media library. Each folder's ACL follows the
-// page whose people need it: a role granted the catalog page reads the
-// datasheets, one granted the projects page files the site photos, and so
-// on. Only the owner manages the structure. The datasheets and the brand
-// assets are public, since the website links to them.
-
 /** Page permission ids, as the DMS derives them from the Helio page URLs. */
 export const HELIO_PAGE_PERMISSIONS = {
   catalog: "helio.sales.catalog",
@@ -53,7 +47,14 @@ const DATASHEET_FOLDER_NAMES: Record<HardwareFamily, string> = {
 
 const P = HELIO_PAGE_PERMISSIONS;
 
-/** The top-level folders, then the datasheet families (children inherit the ACL). */
+/**
+ * The folder tree of Helio's media library: the top-level folders, then the
+ * datasheet families (children inherit the ACL). Each folder's ACL follows the
+ * page whose people need it: a role granted the catalog page maintains the
+ * datasheets, one granted the projects page files the site photos, and so on.
+ * Only the owner manages the structure. The datasheets and the brand assets
+ * are public, since the website links to them.
+ */
 export function libraryFolders(): MediaFolderDeclaration[] {
   const roots: MediaFolderDeclaration[] = [
     {

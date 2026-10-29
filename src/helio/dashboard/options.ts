@@ -1,6 +1,7 @@
-// The kinds of event the activity feed lists, with the icon and tone each
-// is drawn in. Exported for the dashboard's ActivityFeed route.
-
+/**
+ * The kinds of event the activity feed lists, with the label and icon each is
+ * drawn with.
+ */
 export const ACTIVITY_TYPES = [
   {
     value: "deal_won",

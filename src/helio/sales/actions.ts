@@ -1,7 +1,3 @@
-// The row actions of the quotes table: the life cycle of a quote (send,
-// accept, reject), what a salesperson hands the customer (the document, the
-// portal link), and the way to the customer and the deal.
-
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import {
   ResourceForm,
@@ -15,8 +11,10 @@ import { quoteActionUrl } from "./links";
 const isDraft = { field: "status", equals: "draft" };
 const isSent = { field: "status", equals: "sent" };
 
-// Opened by a click on the row, its "Quick view" and `?record=<id>`, the
-// link other Helio pages (projects, dashboard) use to show one quote.
+/**
+ * Opened by a click on the row, its "Quick view" and `?record=<id>`, the link
+ * other Helio pages (projects, dashboard) use to show one quote.
+ */
 const quickView: CustomRowAction = {
   id: "quick-view",
   label: "$helio.sales.quotes.actions.quickView",
@@ -41,8 +39,11 @@ const quickView: CustomRowAction = {
   },
 };
 
-// The server words the dialog: it names the customer, the address the quote
-// goes to and what changes once it is sent.
+/**
+ * Sends a draft to its customer. The server words the confirmation dialog: it
+ * names the customer, the address the quote goes to and what changes once it
+ * is sent.
+ */
 const send: CustomRowAction = {
   id: "send",
   label: "$helio.sales.quotes.actions.send",
@@ -81,7 +82,7 @@ const accept: CustomRowAction = {
   },
 };
 
-// The reason, when given, is kept with the quote (its own field).
+/** Marks a sent quote rejected. The reason, when given, is kept with the quote (its own field). */
 const reject: CustomRowAction = {
   id: "reject",
   label: "$helio.sales.quotes.actions.reject",
@@ -114,7 +115,7 @@ const reject: CustomRowAction = {
   },
 };
 
-// A draft has no portal link yet: the customer receives it when it is sent.
+/** Copies the portal link. A draft has none yet: the customer receives it when the quote is sent. */
 const copyPortalLink: CustomRowAction = {
   id: "portal-link",
   label: "$helio.sales.quotes.actions.portalLink",
@@ -140,8 +141,10 @@ const downloadPdf: CustomRowAction = {
   },
 };
 
-// A relation column lists the related row (`{ _id, name }`), not its id:
-// the links name its `_id`.
+/**
+ * Opens the customers page on the quote's customer. A relation column lists
+ * the related row (`{ _id, name }`), not its id, so the link names its `_id`.
+ */
 const openCustomer: CustomRowAction = {
   id: "customer",
   label: "$helio.sales.quotes.actions.customer",
@@ -149,7 +152,7 @@ const openCustomer: CustomRowAction = {
   target: { type: "page", url: `${CUSTOMERS_URL}?record={{row.customer._id}}` },
 };
 
-// The pipeline narrowed to the customer's deals (its `?customer=` filter).
+/** Opens the pipeline narrowed to the customer's deals (its `?customer=` filter). */
 const openDeals: CustomRowAction = {
   id: "deals",
   label: "$helio.sales.quotes.actions.deals",
@@ -160,15 +163,20 @@ const openDeals: CustomRowAction = {
   },
 };
 
+/**
+ * The row actions of the quotes table: the life cycle of a quote (send,
+ * accept, reject), what a salesperson hands the customer (the document, the
+ * portal link), and the way to the customer and the deal. Only a draft can be
+ * edited or deleted: a sent quote is what the customer holds. The quick view
+ * shows a quote, so there is no details page besides it.
+ */
 export const quoteRowActions: TableViewRowActionOptions = {
   add: {
     placement: "header",
     label: "$helio.sales.quotes.actions.new",
     icon: "i-ph-file-plus",
   },
-  // Only a draft changes: a sent quote is what the customer holds.
   edit: { isEnabled: true, rule: isDraft },
-  // The quick view shows a quote: no details page besides it.
   details: false,
   duplicate: { label: "$helio.sales.quotes.actions.duplicate" },
   delete: {

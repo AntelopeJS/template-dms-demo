@@ -19,15 +19,17 @@ import { helioCategory } from "../category";
 import { HELIO_PAGES } from "./links";
 import { ACTIVITY_TOPIC } from "./log";
 
-// One scope for the whole page: every card follows the period selector.
+/** One scope for the whole page: every card follows the period selector. */
 const SCOPE = "helio";
 const API = "/api/helio/dashboard";
 const COMPARE_LABEL = "$helio.dashboard.compareLabel";
 
-// The manager's cockpit: what was sold, installed and billed over the
-// period, what is happening right now, and where to act. Every block reads
-// its own route under /api/helio/dashboard, computed from the collections
-// the other Helio pages list.
+/**
+ * The manager's cockpit: what was sold, installed and billed over the
+ * period, what is happening right now, and where to act. Every block reads
+ * its own route under /api/helio/dashboard, computed from the collections
+ * the other Helio pages list.
+ */
 @RegisterPage()
 export class PageHelioDashboard extends PageController(
   "dashboard",
@@ -60,7 +62,7 @@ export class PageHelioDashboard extends PageController(
     rememberKey: "helio",
   });
 
-  // Shown by the server only while installed sites are offline.
+  /** Shown by the server only while installed sites are offline. */
   static alerts = Banner({ fetchUrl: `${API}/offline-sites` });
   static overdue = Banner({ fetchUrl: `${API}/overdue-invoices` });
 
@@ -71,6 +73,10 @@ export class PageHelioDashboard extends PageController(
     fetchUrl: `${API}/snapshot`,
   });
 
+  /**
+   * The period KPIs. The tickets card inverts its delta, since fewer new
+   * tickets is the good direction.
+   */
   static kpis = Grid({ gap: "1rem", minColumnWidth: "220px" }).child(
     "row",
     GridRow()
@@ -127,7 +133,6 @@ export class PageHelioDashboard extends PageController(
           fetchUrl: `${API}/kpi/tickets`,
           periodScope: SCOPE,
           valueFormat: "number",
-          // Fewer open tickets is the good direction.
           invert: true,
           showDelta: true,
           showSparkline: true,
@@ -136,6 +141,14 @@ export class PageHelioDashboard extends PageController(
       ),
   );
 
+  /**
+   * The period charts. The ticket heatmap shows no delta, since more tickets
+   * is not good news and the card cannot invert. Its single colour is shaded
+   * by value: given several, the heatmap would colour its value ranges with a
+   * multi-hue palette. The activity feed also refreshes on `ACTIVITY_TOPIC`,
+   * so what users do elsewhere (a quote accepted, a ticket resolved) shows up
+   * without a reload.
+   */
   static charts = Grid({ gap: "1rem", minColumnWidth: "300px" })
     .child(
       "sales",
@@ -243,11 +256,8 @@ export class PageHelioDashboard extends PageController(
             fetchUrl: `${API}/ticket-heatmap`,
             periodScope: SCOPE,
             valueFormat: "number",
-            // More tickets is not good news, and the card cannot invert.
             showDelta: false,
             showLegend: false,
-            // One colour shaded by value: given several, the heatmap would
-            // colour its value ranges with a multi-hue palette.
             chart: ChartHeatmap({
               height: "320px",
               color: "primary",
@@ -261,8 +271,6 @@ export class PageHelioDashboard extends PageController(
           ActivityFeed({
             title: "$helio.dashboard.activity.title",
             fetchUrl: `${API}/activity`,
-            // What users do elsewhere (a quote accepted, a ticket resolved)
-            // shows up without a reload.
             realtimeTopic: ACTIVITY_TOPIC,
             periodScope: SCOPE,
             groupByDay: true,

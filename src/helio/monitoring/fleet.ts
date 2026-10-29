@@ -1,7 +1,3 @@
-// The monitored fleet as the telemetry routes see it: the helio_sites rows
-// turned into model profiles, with the customer's name for display and the
-// live fields (power, last report) computed for a given instant.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { CustomerModel } from "../crm/database";
 import { type InverterStatus, SiteModel } from "./database";
@@ -15,6 +11,11 @@ import {
 
 const MINUTE_MS = 60 * 1000;
 
+/**
+ * A helio_sites row as the telemetry routes see it: a model profile with the
+ * customer's name for display. The live fields (power, last report) are not
+ * stored here, they are computed for a given instant.
+ */
 export interface FleetSite extends SiteProfile {
   name: string;
   city: string;
@@ -26,7 +27,7 @@ export interface FleetSite extends SiteProfile {
   storedLastSeen: number;
 }
 
-// "site-07" → 7: the roster index seeds the site's own randomness.
+/** `"site-07"` gives 7: the roster index seeds the site's own randomness. */
 function rosterIndex(id: string): number {
   const digits = Number(id.replace(/\D/g, ""));
   return Number.isFinite(digits) ? digits : 0;

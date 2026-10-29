@@ -1,10 +1,3 @@
-// The bulk routes of the tickets live on their data controller (they find
-// their rows with resolveBulkRowIds, which needs it), but the permission they
-// require — the desk table's `edit` — only exists once the page registered
-// its table, and the page imports the controller. The page hands the action
-// over here, and the routes check it per request, as @AuthUserWithPermission
-// would.
-
 import type { RequestContext } from "@antelopejs/interface-api";
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -17,6 +10,12 @@ import {
 } from "@antelopejs/interface-dms/permissions";
 import { getRequestTenantId } from "@antelopejs/interface-dms/request-tenant";
 
+/**
+ * The desk table's `edit` action, which the bulk ticket routes require. It only
+ * exists once the page has registered its table, and the page imports the
+ * controller, so the page hands it over through `setTicketWriteAction` instead
+ * of the controller importing it.
+ */
 let writeAction: Action | undefined;
 
 /** Called by the page once its table registered its actions. */
@@ -24,7 +23,11 @@ export function setTicketWriteAction(action: Action | undefined): void {
   writeAction = action;
 }
 
-/** Refuses (403) a caller who may not edit tickets on the desk. */
+/**
+ * Refuses (403) a caller who may not edit tickets on the desk. The ticket
+ * routes call it on every request, in the place of `@AuthUserWithPermission`,
+ * because the permission is not known when the controller is declared.
+ */
 export async function assertCanWriteTickets(
   ctx: RequestContext,
   user: User,

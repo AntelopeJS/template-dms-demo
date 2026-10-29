@@ -1,5 +1,3 @@
-// Where the fleet page lives and the names its blocks share.
-
 import { pageRoutePath } from "@antelopejs/interface-dms/page";
 
 /** The page URL, as in the Helio contract. */

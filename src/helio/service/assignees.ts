@@ -1,10 +1,3 @@
-// Who may hold a ticket: the technicians, and the office for the billing
-// questions — never the manager or the sales reps. The ticket's assignee
-// column picks from this controller rather than the whole team, and the bulk
-// "Assign to…" action reads the same team rows (ticketHolders), so the form
-// picker, the desk's quick filter and the action offer the same people,
-// newcomers included.
-
 import {
   Controller,
   type ControllerClass,
@@ -37,13 +30,21 @@ import { TeamMember, TeamMemberModel } from "../team/database";
 import { TicketModel } from "./database";
 import { SERVICE_TOPIC } from "./options";
 
-/** The roles a ticket can be assigned to. */
+/**
+ * The roles a ticket can be assigned to: the technicians, and the office for
+ * the billing questions, never the manager or the sales reps.
+ */
 export const TICKET_HOLDER_ROLES: ReadonlySet<TeamRole> = new Set([
   "technician",
   "office",
 ]);
 
-/** The team members who may hold a ticket, by name. */
+/**
+ * The team members who may hold a ticket, by name. The bulk "Assign to…"
+ * action reads them, like the ticket's assignee column reads the controller
+ * below, so the form picker, the desk's quick filter and the action offer the
+ * same people, newcomers included.
+ */
 export async function ticketHolders(): Promise<TeamMember[]> {
   const members = await GetModel(TeamMemberModel).getAll();
   return members
@@ -80,7 +81,8 @@ export async function defaultHolderFor(
 /**
  * Hands the open tickets of members leaving the team back to nobody: they
  * show in the desk's "Unassigned" view and every unassigned count, ready
- * for a new holder. Resolved and closed tickets keep who held them.
+ * for a new holder. Resolved and closed tickets keep who held them. The
+ * holder is cleared with `null`, as `undefined` would leave it in place.
  */
 export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
   const leaving = new Set(memberIds);
@@ -89,7 +91,6 @@ export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
     (ticket) =>
       !ticket.resolvedAt && ticket.assignee && leaving.has(ticket.assignee),
   );
-  // null clears the stored holder (undefined would leave it in place).
   const nobody = Object.fromEntries([["assignee", null]]);
   await Promise.all(held.map(({ _id }) => model.update(_id, nobody)));
   if (held.length > 0) {
@@ -99,17 +100,21 @@ export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
   }
 }
 
+/** The part of a select route's answer that `holdersOnly` reads and rewrites. */
 interface SelectPage {
   results?: Array<Record<string, unknown>>;
   total?: number;
 }
 
-// The team's select route, keeping the people who may hold a ticket. The
-// data API has no "one of" route filter, so the rows are kept after the read:
-// the whole team (a dozen people) is read in one page, whatever page size
-// the picker asks for, and the total is the kept count.
+/** Page size used to read the whole team (a dozen people) in one go. */
 const WHOLE_TEAM = 200;
 
+/**
+ * The team's select route, keeping the people who may hold a ticket. The
+ * data API has no "one of" route filter, so the rows are kept after the read:
+ * the whole team is read in one page, whatever page size the picker asks for,
+ * and the total is the kept count.
+ */
 function holdersOnly(
   route: DataControllerCallbackWithOptions,
 ): DataControllerCallbackWithOptions {
@@ -141,7 +146,13 @@ function holdersOnly(
   };
 }
 
-// Not exported on purpose (see the TS2742 note of the other controllers).
+/**
+ * The team members a ticket can be assigned to, read by the ticket's assignee
+ * column instead of the whole team. It is not exported on purpose: emitting a
+ * .d.ts for it would require naming types from the nested
+ * `@antelopejs/interface-core` copies (TS2742); `ticketAssigneeController` is
+ * exported instead.
+ */
 @RegisterDataController()
 class ticketAssigneeDataAPI extends DataController(
   TeamMember,

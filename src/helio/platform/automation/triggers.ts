@@ -1,7 +1,3 @@
-// The Helio triggers of the procedure builder. Both are in-process events
-// fired by the domain actions, so every instance arms them ("replicated"):
-// the instance that handled the request is the one that fires.
-
 import type { TriggerType } from "@antelopejs/interface-dms-automation";
 import {
   listen,
@@ -18,7 +14,7 @@ interface TicketOpenedConfig {
   priority?: string;
 }
 
-// The handle an armed trigger hands back, so deactivate() knows its own.
+/** The handle an armed trigger hands back, so `deactivate()` can recognise its own. */
 class Subscription {
   constructor(readonly stop: () => void) {}
 }
@@ -28,8 +24,11 @@ function stopListening(handle: Subscription | undefined): Promise<void> {
   return Promise.resolve();
 }
 
-// The priority filter lives on the trigger, not in an If node: a procedure
-// about urgent tickets then starts no run at all for the others.
+/**
+ * Starts a procedure when a ticket is opened. The optional priority filter
+ * lives on the trigger rather than in an If node, so a procedure about urgent
+ * tickets starts no run at all for the others.
+ */
 const ticketOpened: TriggerType<TicketOpenedConfig, TicketOpenedEvent> = {
   id: HELIO_TRIGGERS.ticketOpened,
   name: "$helio.platform.automation.triggers.ticketOpened.name",
@@ -97,6 +96,7 @@ const ticketOpened: TriggerType<TicketOpenedConfig, TicketOpenedEvent> = {
     stopListening(handle instanceof Subscription ? handle : undefined),
 };
 
+/** Starts a procedure when a customer signs a quote. */
 const quoteAccepted: TriggerType<Record<string, never>, QuoteAcceptedEvent> = {
   id: HELIO_TRIGGERS.quoteAccepted,
   name: "$helio.platform.automation.triggers.quoteAccepted.name",
@@ -141,5 +141,10 @@ const quoteAccepted: TriggerType<Record<string, never>, QuoteAcceptedEvent> = {
     stopListening(handle instanceof Subscription ? handle : undefined),
 };
 
-/** Registered in construct(); the module unregisters them when it unloads. */
+/**
+ * Registered in construct(); the module unregisters them when it unloads.
+ * Both triggers are in-process events fired by the domain actions, so every
+ * instance arms them (`cluster: "replicated"`) and the instance that handled
+ * the request is the one that fires.
+ */
 export const helioTriggerTypes = [ticketOpened, quoteAccepted];

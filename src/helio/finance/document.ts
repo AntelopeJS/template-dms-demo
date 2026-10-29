@@ -1,7 +1,3 @@
-// The invoice as a document: a self-contained, printable HTML page (A4, its
-// own styles, no script). The browser's "Print → Save as PDF" turns it into a
-// PDF; producing the PDF on the server would need a rendering dependency.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { type CustomerKind, CustomerModel } from "../crm/database";
@@ -204,7 +200,7 @@ function paymentBlock(data: DocumentData, texts: DocumentTexts): string {
 
 const BRAND_COLOR = /^#[0-9a-f]{6}$/i;
 
-// The brand colour of the Settings page draws the header rule and the dot.
+/** The brand colour of the Settings page draws the header rule and the dot. */
 const styles = (brand: string) => `
 @page { size: A4; margin: 18mm; }
 * { box-sizing: border-box; }
@@ -231,8 +227,10 @@ footer { margin-top: 36px; font-size: 11px; color: #6b7685; border-top: 1px soli
 @media print { body { background: #fff; } .sheet { margin: 0; padding: 0; box-shadow: none; min-height: auto; } }
 `;
 
-// The footer is the rich text of the Settings page: only its formatting tags
-// are kept, without attributes, so the document never runs a script.
+/**
+ * The footer is the rich text of the Settings page: only these formatting
+ * tags are kept, without attributes, so the document never runs a script.
+ */
 const FOOTER_TAGS = new Set(["p", "br", "strong", "b", "em", "i", "u", "s"]);
 
 function footerHtml(html: string | undefined): string {
@@ -258,9 +256,11 @@ function legalLine(data: DocumentData, texts: DocumentTexts): string {
   return texts.legal(interest || undefined, fee || undefined);
 }
 
-// The late-payment terms apply to overdue business invoices only (law of
-// 2 August 2002), as the Settings page says: a household's invoice leaves
-// them out.
+/**
+ * The late-payment terms apply to overdue business invoices only (law of
+ * 2 August 2002), as the Settings page says: a household's invoice leaves
+ * them out.
+ */
 function footerBlock(data: DocumentData, texts: DocumentTexts): string {
   const footer = footerHtml(data.terms.invoiceFooter);
   const legal =
@@ -271,7 +271,12 @@ function footerBlock(data: DocumentData, texts: DocumentTexts): string {
 ${legal}<p>${escapeHtml(texts.demo)}</p></footer>`;
 }
 
-/** The invoice as a complete HTML document, in the reader's language. */
+/**
+ * The invoice as a complete HTML document, in the reader's language: a
+ * self-contained, printable page (A4, its own styles, no script). The
+ * browser's "Print -> Save as PDF" turns it into a PDF, since producing the
+ * PDF on the server would need a rendering dependency.
+ */
 export function renderInvoiceDocument(
   data: DocumentData,
   language: string | undefined,

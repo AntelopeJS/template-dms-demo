@@ -1,8 +1,3 @@
-// A customer exists before anything is sold to them: the seeded creation
-// date (the first contact) moves back before the customer's first deal
-// activity or first quote, whichever came first, so no deal is won and no
-// quote issued for a customer the CRM did not know yet.
-
 import { buildQuotes } from "../sales/fixtures";
 import { createRng, DAY_MS } from "../shared/seed";
 import { buildDeals, type CustomerSeed } from "./fixtures";
@@ -22,7 +17,13 @@ function earliestByCustomer(): Map<string, number> {
   return earliest;
 }
 
-/** The customers, each created at least ten days before their first business. */
+/**
+ * The customers, each created at least ten days before their first business.
+ * A customer exists before anything is sold to them: the seeded creation date
+ * (the first contact) moves back before the customer's first deal activity or
+ * first quote, whichever came first, so no deal is won and no quote issued for
+ * a customer the CRM did not know yet.
+ */
 export function withFirstContact(customers: CustomerSeed[]): CustomerSeed[] {
   const rng = createRng(0x9e11000b);
   const earliest = earliestByCustomer();

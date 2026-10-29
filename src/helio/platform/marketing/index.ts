@@ -7,12 +7,14 @@ import {
 import { historyImports } from "./history";
 import { HELIO_WEBSITE, helioFunnels } from "./site";
 
-// Helio's public website in the marketing module, shipped as code: the site,
-// its funnels (one A/B test running on the simulator, one finished on the
-// contact form) and twelve weeks of imported traffic. Written once, when the
-// DMS provisions the default tenant: from then on they belong to the tenant.
-
-/** Writes the website content; called when the DMS provisions the default tenant. */
+/**
+ * Ships Helio's public website to the marketing module as code: the site, its
+ * funnels (one A/B test running on the simulator, one finished on the contact
+ * form) and twelve weeks of imported traffic. Called when the DMS provisions
+ * the default tenant; the content is written once, and from then on it belongs
+ * to the tenant. The traffic is imported after the funnels, because an
+ * exposure only counts once its split left draft.
+ */
 export async function provisionHelioMarketing(): Promise<void> {
   const now = Date.now();
   const site = await EnsureWebsite(HELIO_WEBSITE);
@@ -23,7 +25,6 @@ export async function provisionHelioMarketing(): Promise<void> {
   Logging.Info(
     `[helio] marketing declared: website ${site.status}, funnels ${funnels.map((f) => `${f.id} ${f.status}`).join(", ")}`,
   );
-  // After the funnels: an exposure only counts once its split left draft.
   for (const batch of historyImports(now)) {
     const result = await ImportAnalytics(batch);
     Logging.Info(

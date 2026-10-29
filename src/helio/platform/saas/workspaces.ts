@@ -1,13 +1,3 @@
-// The installer companies that subscribe to Helio. All fictional: Belgian and
-// French solar / EV-charger installers of every size, spread over the plans
-// and the billing states an operator meets in real life (paying, trialing,
-// a failed payment, a recent churn, a free independent).
-//
-// They carry no people: no fictitious account is ever created. Each one is
-// owned by the platform owner, the person who completes the onboarding, linked
-// once that account exists (see `owner.ts`). The billing e-mails below are
-// invoice contacts, not accounts.
-
 import type {
   TenantBillingAddress,
   TenantCustomerType,
@@ -54,6 +44,16 @@ function address(
   return { line1, line2: null, postalCode, city, state: null, country };
 }
 
+/**
+ * The installer companies that subscribe to Helio. All fictional: Belgian and
+ * French solar and EV-charger installers of every size, spread over the plans
+ * and the billing states an operator meets in real life (paying, trialing, a
+ * failed payment, a recent churn, a free independent).
+ *
+ * They carry no people: no fictitious account is ever created. Each one is
+ * owned by the platform owner, linked once that account exists (see
+ * `owner.ts`). The billing e-mails are invoice contacts, not accounts.
+ */
 export const WORKSPACES: SeedWorkspace[] = [
   {
     id: "helio-ws-soleil-mosan",
@@ -230,7 +230,14 @@ export const WORKSPACES: SeedWorkspace[] = [
   },
 ];
 
-/** The fake Stripe subscription id of a billed workspace. */
+/**
+ * The fake Stripe subscription id of a billed workspace. dms-saas only counts
+ * an active subscription as revenue when a subscription id backs it, so
+ * without one MRR, ARR and paying workspaces would all read zero. The
+ * workspaces carry no Stripe customer id, so their pages make no Stripe call
+ * (card, balance), and operator actions that write to Stripe (change plan,
+ * cancel, refund) fail on them by design.
+ */
 export function stripeSubscriptionIdOf(workspace: SeedWorkspace): string {
   return `sub_demo_${workspace.code.toLowerCase()}`;
 }

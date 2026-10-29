@@ -1,7 +1,3 @@
-// A compact way to write procedure graphs in the shape the builder's "Export
-// JSON" produces. Node ids and edge ids are stable: DeclareProcedure compares
-// the declaration with the last one to decide whether to refresh it.
-
 import type {
   ProcedureDataEdge,
   ProcedureGraph,
@@ -62,6 +58,12 @@ export function wire(
   };
 }
 
+/**
+ * Assembles a procedure graph in the shape the builder's "Export JSON"
+ * produces, from nodes and edges written with `node`, `next` and `wire`. Their
+ * node and edge ids are stable because `DeclareProcedure` compares the
+ * declaration with the last one to decide whether to refresh it.
+ */
 export function graph(
   nodes: ProcedureGraphNode[],
   triggerEdges: ProcedureTriggerEdge[],

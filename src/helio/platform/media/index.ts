@@ -17,11 +17,6 @@ import { contractProjects, photoProjects } from "./photos";
 import { renderPhoto } from "./scenes";
 import { TRAINING_DOCUMENTS } from "./training";
 
-// Helio's media library, shipped as code: folders and files declared by
-// stable keys, written once when the DMS provisions the default tenant. From
-// then on they belong to the tenant's members. Files are produced one at a
-// time, so the generation never holds the event loop for long.
-
 /** The binding of the settings page's logo field (see settings/sections-company.ts). */
 const SETTINGS_LOGO_BINDING = "helio.settings.logo";
 
@@ -50,6 +45,11 @@ function documentAssets(
   }));
 }
 
+/**
+ * The files of the brand folder. The logo is declared a second time in the
+ * folder of the settings logo field, so the field's picker offers it straight
+ * away.
+ */
 function brandAssets(): PendingAsset[] {
   const files = brandFiles();
   const assets = files.map((file): PendingAsset => ({
@@ -60,8 +60,6 @@ function brandAssets(): PendingAsset[] {
     alt: file.alt,
     source: () => file.source,
   }));
-  // The logo also goes to the folder of the settings logo field, so the
-  // field's picker offers it straight away.
   const logo = files.find((file) => file.slug === "logo");
   if (logo)
     assets.push({
@@ -128,10 +126,15 @@ async function declare(
   }
 }
 
+/**
+ * Declares the folders, then the files. The folders go in order, since a
+ * folder's parent must be declared before it. The files are produced one at
+ * a time, yielding to the event loop between them, so the generation never
+ * holds it for long.
+ */
 async function declareMedia(): Promise<Tally> {
   const { folders, assets } = plannedContent();
   const tally: Tally = {};
-  // In order: a folder's parent is always declared before it.
   for (const folder of folders) {
     await declare(tally, folder.key, () => EnsureMediaFolder(folder));
   }
@@ -148,7 +151,11 @@ async function declareMedia(): Promise<Tally> {
   return tally;
 }
 
-/** Writes the library; called when the DMS provisions the default tenant. */
+/**
+ * Writes Helio's media library, shipped as code: folders and files declared by
+ * stable keys. Called when the DMS provisions the default tenant; the content
+ * is written once, and from then on it belongs to the tenant's members.
+ */
 export async function provisionHelioMedia(): Promise<void> {
   const tally = await declareMedia();
   Logging.Info(`[helio] media library declared: ${JSON.stringify(tally)}`);

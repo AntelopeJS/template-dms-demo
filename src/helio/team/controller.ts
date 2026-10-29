@@ -27,8 +27,10 @@ import {
 import { TeamMember, TeamMemberModel } from "./database";
 import { SEEDED_SKILLS } from "./fixtures";
 
-// Option lists exported for the pages (tabs, views, quick filters) so the
-// values, labels and colours stay the same everywhere.
+/**
+ * The roles a member can hold, exported for the pages (tabs, views, quick
+ * filters) so the values, labels and colours stay the same everywhere.
+ */
 export const TEAM_ROLES = [
   {
     value: "manager",
@@ -60,6 +62,7 @@ export const TEAM_ROLES = [
   },
 ] as const;
 
+/** The regions a member can be assigned to, exported for the same reason as `TEAM_ROLES`. */
 export const TEAM_REGIONS = [
   { value: "liege", label: "$helio.team.regions.liege", icon: "i-ph-map-pin" },
   { value: "namur", label: "$helio.team.regions.namur", icon: "i-ph-map-pin" },
@@ -80,9 +83,10 @@ export const TEAM_REGIONS = [
   },
 ] as const;
 
-// Suggested while typing: the skills the team already has, plus a few
-// common ones. Skills stay free text (one word per tag, since a space ends a
-// tag).
+/**
+ * Skills suggested while typing: the ones the team already has, plus a few
+ * common ones. Skills stay free text, one word per tag since a space ends a tag.
+ */
 const SKILL_SUGGESTIONS = [
   ...new Set([
     ...SEEDED_SKILLS,
@@ -97,8 +101,10 @@ const SKILL_SUGGESTIONS = [
   ]),
 ].sort((a, b) => a.localeCompare(b, "fr"));
 
-// The availability's labels and colours, and the text beside its box in the
-// forms (`label`, which the checkbox control reads from the same options).
+/**
+ * The availability's labels and colours, and the text beside its box in the
+ * forms (`label`, which the checkbox control reads from the same options).
+ */
 const ONLINE_STATUS = {
   onlineLabel: "$helio.team.status.online",
   offlineLabel: "$helio.team.status.offline",
@@ -110,9 +116,12 @@ const ONLINE_STATUS = {
 /** Planning colour of a new member until someone picks one. */
 const DEFAULT_COLOR = "#0284c7";
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
-// The groups split the generated add/edit form into three titled parts.
+/**
+ * The team members' data controller. Its column groups split the generated
+ * add/edit form into titled parts. It is not exported on purpose: emitting a .d.ts
+ * for this class would require naming types from the nested
+ * @antelopejs/interface-core copies (TS2742); `teamController` is exported instead.
+ */
 @RegisterDataController()
 @ColumnGroup("identity", {
   label: "$helio.team.groups.identity.label",
@@ -268,10 +277,12 @@ class teamDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare skills: string[];
 
-  // A plain URL rather than an ImageType: seeded avatars are remote images,
-  // which IdentityDisplay and relation pickers draw directly. Read-only (the
-  // member's quick view) it is drawn as the avatar; the forms edit the URL,
-  // which the hint names, as a field reads one label in every mode.
+  /**
+   * A plain URL rather than an ImageType: seeded avatars are remote images,
+   * which IdentityDisplay and relation pickers draw directly. Read-only (the
+   * member's quick view) it is drawn as the avatar; the forms edit the URL,
+   * which the hint names, as a field reads one label in every mode.
+   */
   @Select()
   @Listable()
   @Column({
@@ -300,9 +311,11 @@ class teamDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare color: string;
 
-  // The plain date format, with its year: the "day" style of
-  // RelativeDateDisplay drops the year, which reads wrong for a hire date
-  // years back.
+  /**
+   * Uses the plain date format, with its year: the "day" style of
+   * RelativeDateDisplay drops the year, which reads wrong for a hire date
+   * years back.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -316,7 +329,7 @@ class teamDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare hiredAt: Date;
 
-  // Listable so the expandable rows of the team page can show it.
+  /** Listable so the expandable rows of the team page can show it. */
   @Listable()
   @Column({
     name: "$helio.team.columns.bio",
@@ -333,6 +346,8 @@ class teamDataAPI extends DataController(
   declare bio: string;
 }
 
-// ControllerClass-typed alias for relation columns of other domains (see the
-// TS2742 note above).
+/**
+ * `teamDataAPI` typed as a `ControllerClass`, for the relation columns of other
+ * domains (see the TS2742 note on the class).
+ */
 export const teamController: ControllerClass = teamDataAPI;

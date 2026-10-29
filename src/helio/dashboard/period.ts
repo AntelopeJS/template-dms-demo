@@ -1,7 +1,3 @@
-// The period a dashboard card is asked for, as the PeriodSelector sends it
-// (`from` / `to` / `compareFrom` / `compareTo` as ISO instants, plus `preset`
-// and `comparison`), and the time buckets the charts and sparklines draw.
-
 import { DAY_MS } from "../shared/seed";
 
 export interface TimeRange {
@@ -9,6 +5,11 @@ export interface TimeRange {
   to: number;
 }
 
+/**
+ * The period a dashboard card is asked for, as the PeriodSelector sends it:
+ * `from`, `to`, `compareFrom` and `compareTo` as ISO instants. A missing or
+ * inverted range means "all time" (or no comparison).
+ */
 export interface PeriodQuery {
   from?: string;
   to?: string;
@@ -22,12 +23,17 @@ export interface Period {
   compare?: TimeRange;
 }
 
-// "All time" sends no bounds: the Helio seeds cover the last twelve months,
-// so a thirteen-month window holds every record.
+/**
+ * "All time" sends no bounds: the Helio seeds cover the last twelve months,
+ * so a thirteen-month window holds every record.
+ */
 const ALL_TIME_DAYS = 395;
-// How far back the seeds write activity: a comparison reaching before it
-// compares with an empty or partial past (a year-over-year delta of +11 000 %),
-// so it is dropped and the cards print no delta.
+
+/**
+ * How far back the Helio seeds cover records: a comparison reaching before it
+ * compares with an empty or partial past (a year-over-year delta of +11 000 %),
+ * so it is dropped and the cards print no delta.
+ */
 const HISTORY_DAYS = 365;
 const SPARKLINE_POINTS = 12;
 const DAILY_LIMIT_DAYS = 45;
@@ -46,9 +52,11 @@ function rangeOf(from?: string, to?: string): TimeRange | undefined {
   return { from: start, to: end };
 }
 
-// "This month" runs to the end of the month: the days still to come hold
-// nothing yet, so the range stops now, and its comparison keeps the same
-// length (the first days of last month, not all of it).
+/**
+ * "This month" runs to the end of the month: the days still to come hold
+ * nothing yet, so the range stops now, and its comparison keeps the same
+ * length (the first days of last month, not all of it).
+ */
 function clampToNow(
   range: TimeRange,
   compare: TimeRange | undefined,

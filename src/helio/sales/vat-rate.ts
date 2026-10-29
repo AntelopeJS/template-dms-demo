@@ -4,11 +4,13 @@ import { CustomerModel } from "../crm/database";
 import type { InvoicingSettings } from "../settings/types";
 import { VAT_BUSINESS } from "./lines";
 
-// The reduced Belgian rate (6 %) only covers renovation works in a private
-// home over ten years old: a business is invoiced at the standard 21 %. The
-// write routes refuse a business quote at a lower rate, whichever client sent
-// it; a household may be quoted at either rate (a home under ten years pays
-// 21 % too).
+/**
+ * Refuses a business quote at a rate below the standard one, whichever client
+ * sent it. The reduced Belgian rate (6 %) only covers renovation works in a
+ * private home over ten years old, so a business is invoiced at the standard
+ * 21 %; a household may be quoted at either rate (a home under ten years pays
+ * 21 % too). Throws a 400 on the `vatRate` field.
+ */
 export async function assertVatRate(
   customerId: unknown,
   vatRate: unknown,

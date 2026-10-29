@@ -1,10 +1,3 @@
-// Invoice numbers follow the pattern of the Settings page (F-{YYYY}-{SEQ:4}
-// by default: F-2026-0001, F-2026-0002, …). A new invoice created without a
-// number gets the next free one, so the form never asks the user to guess
-// it; without a due date it falls due after the payment terms, and without
-// a VAT rate it takes the default rate. Numbers are unique: a number already
-// used by another invoice is refused under the field.
-
 import { HTTPResult } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -18,7 +11,10 @@ import { InvoiceModel } from "./database";
 
 const HTTP_BAD_REQUEST = 400;
 
-/** The next free number the invoice pattern gives on `date`. */
+/**
+ * The next free number the invoice pattern of the Settings page gives on
+ * `date` (`F-{YYYY}-{SEQ:4}` by default: F-2026-0001, F-2026-0002, ...).
+ */
 export async function nextInvoiceNumber(date = new Date()): Promise<string> {
   const [settings, invoices] = await Promise.all([
     currentSettings(),

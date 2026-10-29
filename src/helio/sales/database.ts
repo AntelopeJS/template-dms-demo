@@ -39,8 +39,10 @@ export class Quote extends Table {
   @Field("string") declare customerName: string;
   @Index() @Field("string") declare deal?: string;
   @Index() @Field("string") declare status: QuoteStatus;
-  // Stored as a list of objects (an ArrayType column), so a quote reads and
-  // saves in one row; subtotal and total are kept in step with it on write.
+  /**
+   * Stored inside the row, so a quote reads and saves in one piece. `subtotal`
+   * and `total` are derived from the lines and the VAT rate on every write.
+   */
   @Field("any") declare lines: QuoteLine[];
   @Field("number") declare subtotal: number;
   /** 0.06 (residential renovation) or 0.21 (business), stored 0–1. */

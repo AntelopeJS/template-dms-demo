@@ -1,9 +1,3 @@
-// The SLA a new ticket is given comes from the Settings page (Operations ›
-// service levels), the built-in promises standing in until the settings are
-// read. A ticket created during the winter closure is counted from the
-// reopening morning: the day after the closure, at the start of the workday. The ticket's priority setter computes its due date synchronously, so
-// the hours are kept here and refreshed before every ticket write.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { HelioSettingsModel } from "../settings/database";
 import { pickerDay } from "../settings/defaults";
@@ -14,7 +8,15 @@ import { SLA_HOURS } from "./options";
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
+/**
+ * The hours promised per priority, as last read from the Settings page
+ * (Operations › service levels), the built-in `SLA_HOURS` standing in until
+ * then. The ticket's priority setter computes its due date synchronously, so
+ * the hours are kept here and refreshed before every ticket write.
+ */
 let current: Record<TicketPriority, number> = { ...SLA_HOURS };
+
+/** The winter closure and the workday start, as last read from the Settings page. */
 let closure: { range?: DateRange; workdayStart: number } = {
   workdayStart: 0,
 };
@@ -27,7 +29,11 @@ export function slaHours(priority: TicketPriority): number {
 const valid = (hours: number | undefined, fallback: number): number =>
   typeof hours === "number" && hours > 0 ? hours : fallback;
 
-// The closure days are stored at UTC midnight, the date picker's way.
+/**
+ * The moment a ticket created during the winter closure is counted from: the
+ * morning after the closure, at the start of the workday. The closure days are
+ * stored at UTC midnight, the date picker's way. Undefined outside the closure.
+ */
 function reopening(createdAt: Date): Date | undefined {
   const { range, workdayStart } = closure;
   if (!range?.start || !range.end) return undefined;
@@ -43,7 +49,10 @@ function reopening(createdAt: Date): Date | undefined {
   return new Date(morning.getTime() + workdayStart);
 }
 
-/** When a ticket of `priority` created at `createdAt` must be answered. */
+/**
+ * When a ticket of `priority` created at `createdAt` must be answered. A
+ * ticket created during the winter closure is counted from the reopening.
+ */
 export function slaDueAt(priority: TicketPriority, createdAt: Date): Date {
   const from = reopening(createdAt) ?? createdAt;
   return new Date(from.getTime() + slaHours(priority) * HOUR_MS);

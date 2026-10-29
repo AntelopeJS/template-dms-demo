@@ -1,7 +1,3 @@
-// Staffing figures of the team page, computed from the live tickets and
-// projects: who holds which open tickets, who works on which site, and who is
-// on a site today. Pure functions over loaded rows, so the routes stay thin.
-
 import type { MeterProps } from "@antelopejs/interface-dms/base/meter";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { TopListItem } from "@antelopejs/interface-dms/base/top-list-card";
@@ -10,7 +6,11 @@ import type { Project } from "../projects/database";
 import type { Ticket } from "../service/database";
 import type { TeamMember } from "./database";
 
-/** The rows every figure is computed from. */
+/**
+ * The rows every figure of the team page is computed from: who holds which open
+ * tickets, who works on which site, and who is on a site today. The figures are
+ * pure functions over these loaded rows, so the routes stay thin.
+ */
 export interface WorkloadRows {
   members: TeamMember[];
   tickets: Ticket[];
@@ -19,10 +19,14 @@ export interface WorkloadRows {
 }
 
 const OPEN_TICKET_STATUSES = new Set(["new", "open", "waiting"]);
-// A project keeps its crew busy while it runs and until the inspection is
-// signed off; a scheduled one counts once it starts within the planning
-// horizon, so a site booked for December does not weigh on this fortnight.
+
+/** A project keeps its crew busy while it runs and until the inspection is signed off. */
 const RUNNING_PROJECT_STATUSES = new Set(["in_progress", "inspection"]);
+
+/**
+ * A scheduled project counts once it starts within this horizon, so a site
+ * booked for December does not weigh on this fortnight.
+ */
 const PLANNING_HORIZON_MS = 14 * 24 * 60 * 60 * 1000;
 
 /** Where the service desk and the projects live, for the cards' links. */
@@ -34,9 +38,11 @@ const count = (value: number) => ({ type: "count", value }) as const;
 const isOpen = (ticket: Ticket): boolean =>
   OPEN_TICKET_STATUSES.has(ticket.status);
 
-// A ticket nobody holds, the rule of the desk's "Unassigned" view: removing a
-// member clears the holder of their open tickets, so none is left with a
-// holder the team no longer has.
+/**
+ * A ticket nobody holds, the rule of the desk's "Unassigned" view: removing a
+ * member clears the holder of their open tickets, so none is left with a
+ * holder the team no longer has.
+ */
 const isUnassigned = (ticket: Ticket): boolean => !ticket.assignee;
 
 const isTechnician = (member: TeamMember): boolean =>

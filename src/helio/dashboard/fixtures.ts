@@ -1,8 +1,3 @@
-// Seed of helio_activity: the last 30 days of business events, derived from
-// the other Helio seeds (quotes sent and signed, deals won, projects started
-// and finished, tickets opened and resolved, invoices paid or overdue), so
-// every entry of the feed points at a record that exists.
-
 import { buildInvoices } from "../finance/fixtures";
 import { customerFacts, dealFacts } from "../projects/crm-facts";
 import { buildProjects } from "../projects/fixtures";
@@ -22,13 +17,12 @@ const WINDOW_DAYS = 30;
 const MAX_EVENTS = 150;
 const HOUR_MS = 60 * 60 * 1000;
 
+/** Statuses of the projects that have not started on site: planned, booked or paused. */
 const NOT_STARTED = new Set(["planned", "scheduled", "on_hold"]);
 const SALES = teamIdsByRole("sales");
 const OFFICE = teamIdsByRole("office");
 const TECHNICIANS = teamIdsByRole("technician");
 
-// The links and tones are those of the live log (see log.ts), so a seeded
-// entry and one written by a user read and open the same way.
 export { HELIO_LINKS } from "./activity-links";
 
 type EventDraft = Omit<ActivitySeed, "_id" | "tone">;
@@ -79,12 +73,12 @@ function quoteEvents(rng: Rng): EventDraft[] {
   return events;
 }
 
+/** A project starts at its planned start unless it is in `NOT_STARTED`, and is done once finished or waiting for the electrical inspection. */
 function projectEvents(): EventDraft[] {
   const events: EventDraft[] = [];
   for (const project of buildProjects()) {
     const actor = project.leadTechnician ?? TECHNICIANS[0] ?? "";
     const subject = `${project.code} · ${project.name}`;
-    // Planned, booked or paused projects have not started on site.
     if (recent(project.plannedStart) && !NOT_STARTED.has(project.status)) {
       events.push({
         at: project.plannedStart,
@@ -94,7 +88,6 @@ function projectEvents(): EventDraft[] {
         link: link("project", project._id),
       });
     }
-    // Installed: finished, or waiting for the electrical inspection.
     if (
       (project.status === "done" || project.status === "inspection") &&
       recent(project.plannedEnd)
@@ -111,11 +104,10 @@ function projectEvents(): EventDraft[] {
   return events;
 }
 
+/** Only the high and urgent requests make the history: with every ticket the feed would read as the desk's log. */
 function ticketEvents(rng: Rng): EventDraft[] {
   const events: EventDraft[] = [];
   for (const ticket of buildTickets()) {
-    // Only the high and urgent requests make the history: with every ticket
-    // the feed would read as the desk's log.
     if (ticket.priority !== "high" && ticket.priority !== "urgent") continue;
     const subject = `${ticket.number} · ${ticket.subject}`;
     const actor = ticket.assignee ?? rng.pick(OFFICE);
@@ -170,7 +162,15 @@ function invoiceEvents(rng: Rng): EventDraft[] {
 
 let activity: ActivitySeed[] | undefined;
 
-/** The newest 150 events of the last 30 days, `act-001` being the latest. */
+/**
+ * Seed of helio_activity: the newest 150 events of the last 30 days,
+ * `act-001` being the latest. They are derived from the other Helio seeds
+ * (quotes sent and signed, deals won, projects started and finished, tickets
+ * opened and resolved, invoices paid or overdue), so every entry of the feed
+ * points at a record that exists. The links and tones are those of the live
+ * log (see log.ts), so a seeded entry and one written by a user read and open
+ * the same way.
+ */
 export function buildActivity(): ActivitySeed[] {
   if (!activity) {
     const rng = createRng(0x9e110008);

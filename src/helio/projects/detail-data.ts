@@ -1,7 +1,3 @@
-// Everything the detail page of one project shows, read in one go: the
-// project, its tasks, its customer, its signed quote, its invoices and the
-// team members it names. The routes of the page build their answers from it.
-
 import { HTTPResult } from "@antelopejs/interface-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { CustomerModel } from "../crm/database";
@@ -15,6 +11,11 @@ import type { TeamMember } from "../team/database";
 import { ProjectModel, ProjectTaskModel } from "./database";
 import type { Project, ProjectTask } from "./database";
 
+/**
+ * Everything the detail page of one project shows, read in one go: the
+ * project, its tasks, its customer, its quote, its invoices and the team
+ * members. The routes of the page build their answers from it.
+ */
 export interface ProjectBundle {
   project: Project;
   tasks: ProjectTask[];

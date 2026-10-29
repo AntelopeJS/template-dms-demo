@@ -18,14 +18,18 @@ export const PRODUCTS_TABLE = "helio_products";
 
 export type ProductUnit = ProductRosterEntry["unit"];
 
-// Localized fields store one value per interface language ({ en, fr }); a
-// language without a value reads the English one.
+/**
+ * Options for the localized fields: each stores one value per interface
+ * language ({ en, fr }), and a language without a value reads the English one.
+ */
 const LOCALIZED = { fallbackLocale: "en" };
 
-/** Two-level product tree (family → range), read by a CascaderRelationType. */
+/**
+ * Two-level product tree (family → range), read by a CascaderRelationType. The
+ * fixture writes the whole { en, fr } record of each localized field.
+ */
 @RegisterTable(CATEGORIES_TABLE, DEMO_SCHEMA_NAME)
 @Fixture(() =>
-  // `localize("*")` writes the whole { en, fr } record of each localized field.
   buildProductCategories().map((row) =>
     ProductCategoryModel.fromPlainData(row).localize("*"),
   ),

@@ -1,13 +1,3 @@
-// The billing page of Helio SRL's own workspace (the default tenant): its
-// invoicing identity, a year of invoices and a partial refund, so a demo shows
-// billing without switching workspace. The workspace stays on the internal
-// Helio HQ plan (priced 0, see `default-workspace.ts`); its history reads as
-// the Business tier Helio SRL paid before, which is why the invoices name
-// Business and the HQ subscription is left untouched. Written like the
-// installer workspaces' invoices (`write-invoices.ts`), and the credit note
-// the way the dms-saas playground mirrors one: the credit note row, its line
-// in the billing documents list, and the card refund behind it.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { TenantModel } from "@antelopejs/interface-dms/db";
@@ -71,7 +61,7 @@ function historyStart(installedAt: Date): Date {
   return addMonths(installedAt, -HISTORY_MONTHS);
 }
 
-// A billing identity the owner saved themselves is never overwritten.
+/** Writes the invoicing identity unless one is stored: the owner's own is never overwritten. */
 async function writeBillingInfo(): Promise<void> {
   await insertMissing(
     TenantBillingInfoModel,
@@ -97,13 +87,13 @@ function creditAmounts(): CreditAmounts {
   return { subtotal: CREDIT_SUBTOTAL, tax, total: CREDIT_SUBTOTAL + tax };
 }
 
+/** The credit note itself. Its amount includes the VAT it gives back, as Stripe's does. */
 function toCreditNoteRow(parentId: string, issuedAt: Date): SeedRow {
   return {
     _id: CREDIT_NOTE_ID,
     invoiceId: parentId,
     stripeCreditNoteId: CREDIT_NOTE_ID,
     number: CREDIT_NUMBER,
-    // Stripe's credit note amount includes the VAT it gives back.
     amount: creditAmounts().total,
     currency: "eur",
     reason: CREDIT_REASON,
@@ -208,9 +198,19 @@ async function writeCreditNote(anchor: Date, now: Date): Promise<void> {
 }
 
 /**
- * Seeds the default workspace's billing page. Idempotent: every row has a
- * fixed id and is only written while missing; a new invoice appears on each
- * monthly anniversary of the install, as for the installer workspaces.
+ * Seeds the billing page of Helio SRL's own workspace (the default tenant): its
+ * invoicing identity, a year of invoices and a partial refund, so a demo shows
+ * billing without switching workspace. The workspace stays on the internal
+ * Helio HQ plan (priced 0, see `default-workspace.ts`); its history reads as
+ * the Business tier Helio SRL paid before, which is why the invoices name
+ * Business and the HQ subscription is left untouched.
+ *
+ * Invoices are written like the installer workspaces' (`write-invoices.ts`),
+ * and the credit note the way the dms-saas playground mirrors one: the credit
+ * note row, its line in the billing documents list, and the card refund behind
+ * it. Idempotent: every row has a fixed id and is only written while missing;
+ * a new invoice appears on each monthly anniversary of the install, as for the
+ * installer workspaces.
  */
 export async function writeDefaultBilling(now: Date): Promise<void> {
   const tenant = await GetModel(TenantModel).get(DEFAULT_TENANT_ID);

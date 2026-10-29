@@ -30,10 +30,12 @@ export function generateApiKey(): string {
 const IBAN = "BE71 0961 2345 6769";
 const BIC = "GEBABEBB";
 
-// Written from the company defaults, so the footer names the same address,
-// VAT number and account as the rest of the settings. In French, the
-// language Helio invoices its Walloon customers in. The late-payment terms
-// are not repeated: the document writes them from the collection settings.
+/**
+ * The default invoice footer, written from the company defaults so it names the
+ * same address, VAT number and account as the rest of the settings. It is in
+ * French, the language Helio invoices its Walloon customers in. The late-payment
+ * terms are not repeated: the document writes them from the collection settings.
+ */
 function invoiceFooter(company: CompanySettings): string {
   const { address } = company;
   return [
@@ -60,8 +62,10 @@ export function pickerDay(date: Date): Date {
   );
 }
 
-// The winter closure runs from the next 24 December to 2 January, so the seed
-// stays in the future whatever day the demo is installed.
+/**
+ * The winter closure, from the next 24 December to 2 January, so the seed stays
+ * in the future whatever day the demo is installed.
+ */
 function nextWinterClosure(): DateRange {
   const now = new Date();
   let year = now.getFullYear();
@@ -72,6 +76,7 @@ function nextWinterClosure(): DateRange {
   };
 }
 
+/** The company defaults. The brand colour differs from the module default so the field offers "Use default". */
 function companyDefaults(): CompanySettings {
   return {
     companyName: "Helio SRL",
@@ -89,7 +94,6 @@ function companyDefaults(): CompanySettings {
     phone: "+3242205050",
     email: "contact@helio.example",
     website: "https://helio.example",
-    // Differs from the module default so the field offers "Use default".
     brandColor: "#EA580C",
     logo: null,
     tagline: {
@@ -120,18 +124,21 @@ function invoicingDefaults(): InvoicingSettings {
   };
 }
 
+/**
+ * The operations defaults. The SLA hours are the promises the service desk
+ * computes its SLAs with, and the bridge days (jours de pont) are days the crews
+ * take off, spread over the season.
+ */
 function operationsDefaults(): OperationsSettings {
   return {
     workdayStart: 7 * HOUR_MS + 30 * MINUTE_MS,
     workdayEnd: 17 * HOUR_MS,
     workingDays: ["mon", "tue", "wed", "thu", "fri"],
-    // The promises the service desk computes its SLAs with.
     slaUrgentHours: SLA_HOURS.urgent,
     slaHighHours: SLA_HOURS.high,
     slaNormalHours: SLA_HOURS.normal,
     slaLowHours: SLA_HOURS.low,
     winterClosure: nextWinterClosure(),
-    // Bridge days the crews take off (jours de pont), spread over the season.
     bridgeDays: [23, 60, 97].map((days) => pickerDay(daysFromNow(days))),
     defaultTechnician: "team-05",
     interventionZones: ["Liège", "Namur", "Bruxelles", "Hainaut", "Luxembourg"],

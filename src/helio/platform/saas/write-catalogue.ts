@@ -1,9 +1,3 @@
-// Writes the features and the plans once, then keeps each plan's permissions
-// in step with the pages registered since: a new page must not be hidden from
-// every workspace owner by a stale catalogue. Permissions are only ever
-// added, never removed, so an operator's own grants survive; the payment
-// provider references stay dms-saas's to write.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import {
   type Feature,
@@ -19,8 +13,11 @@ import { insertMissing, type SeedRow } from "./rows";
 /** Every locale of a localized field is written at once. */
 const ALL_LOCALES = "*";
 
-// A feature without a tooltip or a unit holds one empty text per language, as
-// the DMS form writes it: a localized field cannot be read back from a null.
+/**
+ * What a feature without a tooltip or a unit holds: one empty text per
+ * language, as the DMS form writes it, because a localized field cannot be
+ * read back from a null.
+ */
 const NO_TEXT: LocalizedText = { en: "", fr: "" };
 
 function toFeatureRow(feature: SeedFeature): SeedRow {
@@ -37,6 +34,10 @@ function localizeAll<Row extends Feature | Plan>(row: Row): Row {
   return row.localize(ALL_LOCALES) as Row;
 }
 
+/**
+ * A plan has no `borderLabel` field at all when it has no badge, for the same
+ * reason as `NO_TEXT`: a localized field cannot be read back from a null.
+ */
 function toPlanRow(
   plan: SeedPlan,
   grantable: string[],
@@ -58,12 +59,14 @@ function toPlanRow(
     createdAt,
     updatedAt: createdAt,
   };
-  // No badge is no text: a localized field cannot be read back from a null.
   if (borderLabel) row.borderLabel = borderLabel;
   return row;
 }
 
-/** Writes the features and plans that are not stored yet. */
+/**
+ * Writes the features and plans that are not stored yet. The payment provider
+ * references stay dms-saas's to write.
+ */
 export async function writeCatalogue(
   grantable: string[],
   createdAt: Date,
@@ -82,7 +85,12 @@ export async function writeCatalogue(
   );
 }
 
-/** Adds to each seeded plan the ids its grant covers and it lacks. */
+/**
+ * Adds to each seeded plan the ids its grant covers and it lacks, so a page
+ * registered since the plan was written is not hidden from every workspace
+ * owner by a stale catalogue. Permissions are only ever added, never removed,
+ * so an operator's own grants survive.
+ */
 export async function grantNewPermissions(grantable: string[]): Promise<void> {
   const model = GetModel(PlanModel);
   for (const seeded of PLANS) {

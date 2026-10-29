@@ -1,7 +1,3 @@
-// Builds the lines of a Helio quote from the product catalog, so every
-// generated quote (and the project and invoices that follow it) carries the
-// prices of PRODUCT_ROSTER and totals that add up.
-
 import { PRODUCT_ROSTER } from "../shared/roster";
 import { cents, type Rng } from "../shared/seed";
 import type { QuoteLine } from "./database";
@@ -42,8 +38,10 @@ function kwp(panelId: string, count: number): number {
   return Math.round((product(panelId).power * count) / 100) / 10;
 }
 
-// The options of a solar array drawn once, so its panel count can then be
-// chosen freely (randomly, or to match a won deal's amount).
+/**
+ * The options of a solar array drawn once, so its panel count can then be
+ * chosen freely (randomly, or to match a won deal's amount).
+ */
 interface PvOptions {
   panel: string;
   battery?: string;
@@ -153,7 +151,10 @@ function evCharger(rng: Rng, business: boolean): LineSet {
   return { lines, capacityKwp: 0 };
 }
 
-/** The lines of a quote for an installation of the given type. */
+/**
+ * The lines of a quote for an installation of the given type, built from the
+ * product catalog so they carry the prices of PRODUCT_ROSTER and add up.
+ */
 export function buildLines(
   rng: Rng,
   type: InstallationType,

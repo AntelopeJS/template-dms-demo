@@ -1,9 +1,3 @@
-// The figures of the home page, counted at runtime from what this module
-// really registered rather than typed by hand: the Helio pages (their layout
-// routes), the collections of the demo schema, the data controllers (their
-// generated list routes), the custom Vue blocks in the compiled Helio code,
-// and the frontend layers of the installed DMS modules.
-
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { getRegisteredRoutes } from "@antelopejs/interface-api";
@@ -25,23 +19,26 @@ export interface HomeFigures {
   modules: number;
 }
 
-// Every page serves its layout at /dms/pages/<slug>/pagelayout.
+/** Every page serves its layout at /dms/pages/<slug>/pagelayout. */
 const HELIO_LAYOUT = /^\/dms\/pages\/helio\/(.+)\/pagelayout$/;
-// Every data controller of TableViewRoutes answers /api/helio/<name>/list.
+/** Every data controller of TableViewRoutes answers /api/helio/<name>/list. */
 const HELIO_LIST = /^\/api\/helio\/([^/]+)\/list$/;
-// How a compiled module calls the CustomComponent factory.
+/** How a compiled module calls the CustomComponent factory. */
 const CUSTOM_CALL = /\.CustomComponent\)\(/g;
-// The feature modules' frontend layers: @antelopejs/dms-<feature>-frontend-*.
+/** The feature modules' frontend layers: @antelopejs/dms-<feature>-frontend-*. */
 const FEATURE_LAYER = /^@antelopejs\/dms-([a-z-]+?)-frontend/;
 
+/**
+ * Counts the Helio pages from their layout routes. A detail page takes the
+ * record in its path (`project/:id`) and a table's generated form pages sit under
+ * it (`quotes/table/new`); every other page is a menu page.
+ */
 function helioPages(): { menu: number; detail: number } {
   const slugs = new Set<string>();
   for (const route of getRegisteredRoutes()) {
     const match = HELIO_LAYOUT.exec(route.location);
     if (match?.[1]) slugs.add(match[1]);
   }
-  // A detail page takes the record in its path (`project/:id`); a table's
-  // generated form pages sit under it (`quotes/table/new`).
   const detail = [...slugs].filter(
     (slug) => slug.includes(":") || slug.includes("/table/"),
   ).length;
@@ -63,7 +60,7 @@ function collections(): number {
   ).length;
 }
 
-// The compiled Helio folder sits next to this file (dist/helio).
+/** Counts the `CustomComponent` calls in the compiled Helio folder, which sits next to this file (dist/helio). */
 function customBlocks(dir = path.join(__dirname, "helio")): number {
   let count = 0;
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -85,7 +82,13 @@ async function featureModules(): Promise<number> {
   return features.size;
 }
 
-/** The home page's figures, read from the running module. */
+/**
+ * The home page's figures, counted at runtime from what this module really
+ * registered rather than typed by hand: the Helio pages (their layout routes),
+ * the collections of the demo schema, the data controllers (their generated list
+ * routes), the custom Vue blocks in the compiled Helio code, and the frontend
+ * layers of the installed DMS modules.
+ */
 export async function homeFigures(): Promise<HomeFigures> {
   const pages = helioPages();
   return {

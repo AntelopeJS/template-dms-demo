@@ -1,12 +1,8 @@
-// The period a scoped block is asked for, and how a period is cut into
-// buckets. The PeriodSelector sends ISO instants (`from`, `to`, and
-// `compareFrom` / `compareTo` while comparing); calendar labels follow the
-// company's time zone, Liège being in Europe/Brussels.
-
 import { DAY_MS } from "../shared/seed";
 
 const HOUR_MS = 60 * 60 * 1000;
 const QUARTER_MS = 15 * 60 * 1000;
+/** Calendar labels follow the company's time zone, Liège being in Europe/Brussels. */
 const TIME_ZONE = "Europe/Brussels";
 
 export interface TimeRange {
@@ -26,8 +22,9 @@ function instant(value: string | null): number | undefined {
 }
 
 /**
- * The period of a request. Without bounds (`all`, or a block outside the
- * scope) it is the last 24 hours.
+ * The period of a request. The PeriodSelector sends ISO instants (`from`,
+ * `to`, and `compareFrom` / `compareTo` while comparing). Without bounds
+ * (`all`, or a block outside the scope) it is the last 24 hours.
  */
 export function readPeriod(query: URLSearchParams, now: number): Period {
   const from = instant(query.get("from"));
@@ -55,10 +52,12 @@ export function sparklineBucket(range: TimeRange): number {
   return range.to - range.from <= 2 * DAY_MS ? HOUR_MS : DAY_MS;
 }
 
-/** The starts of the buckets of `size` covering the range. */
+/**
+ * The starts of the buckets of `size` covering the range. Day buckets keep
+ * the period's own (local) midnight as their edge.
+ */
 export function bucketStarts(range: TimeRange, size: number): number[] {
   const first = Math.floor(range.from / size) * size;
-  // Day buckets keep the period's own (local) midnight as their edge.
   const start = size === DAY_MS ? range.from : first;
   const starts: number[] = [];
   for (let at = start; at < range.to; at += size) starts.push(at);

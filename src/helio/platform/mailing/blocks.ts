@@ -1,7 +1,3 @@
-// Small builders for the blocks of the Helio templates. Every block gets an
-// explicit, stable id: the Mailing module fingerprints a declaration to tell
-// "unchanged" from "updated", so generated ids would republish on each boot.
-
 import type {
   Block,
   ButtonBlock,
@@ -18,6 +14,11 @@ import type { MailLocale } from "./format";
 
 const HEADING_SIZE = 22;
 
+/**
+ * A heading block. This and the other block builders take an explicit, stable
+ * id: the Mailing module fingerprints a declaration to tell "unchanged" from
+ * "updated", so generated ids would republish on each boot.
+ */
 export function heading(id: string, text: string): HeadingBlock {
   return {
     id,
@@ -46,13 +47,17 @@ export function button(id: string, text: string, href: string): ButtonBlock {
   return { id, type: "button", text, href, align: "left", visibleIf: null };
 }
 
+/** The footer sentence of each locale. */
 const FOOTER_TEXT: Record<MailLocale, string> = {
   fr: "Helio SRL · Rue de l'Énergie 12, 4040 Herstal · TVA BE0742.318.065 · Vous recevez cet e-mail dans le cadre de votre installation Helio.",
   en: "Helio SRL · Rue de l'Énergie 12, 4040 Herstal · VAT BE0742.318.065 · You receive this e-mail about your Helio installation.",
 };
 
-// Transactional e-mails: the footer says why it was sent, and carries no
-// unsubscribe link (the Mailing module only requires one for marketing).
+/**
+ * The footer of a transactional e-mail: it says why the e-mail was sent and
+ * carries no unsubscribe link, since the Mailing module only requires one for
+ * marketing.
+ */
 function footer(locale: MailLocale): FooterBlock {
   return {
     id: "footer",

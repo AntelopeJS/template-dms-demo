@@ -45,29 +45,36 @@ export { QUOTE_STATUSES } from "./options";
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
 
-// Fields the system writes (number, status, dates of the life cycle): absent
-// from the creation form, shown read-only afterwards.
+/**
+ * For the fields the system writes (number, status, dates of the life cycle):
+ * absent from the creation form, shown read-only afterwards.
+ */
 const HIDDEN_ON_NEW = { new: ReadonlyBehaviorType.hidden };
 
-// A line slot of the expanded row: hidden from the grid and the forms, read
-// for the band only.
+/**
+ * A line slot of the expanded row: hidden from the grid and the forms, read for
+ * the band only. It displays the line's composed text ("12 × … · €2,268.00"),
+ * and the next line under it when `subField` names it.
+ */
 const lineSlot = (name: string, subField?: string) => ({
   name,
   type: new DefaultDataTypes.StringType(),
   isVisible: false,
   validate: false,
   readonlyBehavior: ReadonlyBehaviorType.hidden,
-  // Writes the line's composed text ("12 × … · €2,268.00"), and the next
-  // line under it when `subField` names it.
   display: new DefaultDisplays.TwoLineDisplay({ subField }),
 });
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The data API of the quotes. Not exported on purpose: emitting a .d.ts for
+ * this class would require naming types from the nested
+ * @antelopejs/interface-core copies (TS2742); `quoteController` is the typed
+ * alias to import. Left empty, the VAT rate of a new quote is the default one
+ * of the Settings page.
+ */
 @RegisterDataController()
 class quoteDataAPI extends DataController(
   Quote,
-  // Left empty, the VAT rate is the default one of the Settings page.
   {
     ...TableViewRoutes.All,
     new: withBodyDefaults(TableViewRoutes.New, async (body) => {
@@ -90,7 +97,7 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare _id: string;
 
-  // Given on creation (see `creation`), never typed in.
+  /** Given on creation (see `creation`), never typed in. */
   @Searchable()
   @Select()
   @Listable()
@@ -128,9 +135,11 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare customer: string;
 
-  // The customer's name, stored with the quote (customer-names.ts keeps it
-  // in step) so the search box finds a quote by its customer: a search reads
-  // the stored fields, not the joined customer.
+  /**
+   * The customer's name, stored with the quote (customer-names.ts keeps it in
+   * step) so the search box finds a quote by its customer: a search reads the
+   * stored fields, not the joined customer.
+   */
   @Searchable()
   @Column({
     name: "$helio.sales.quotes.columns.customerName",
@@ -158,8 +167,10 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare deal: string;
 
-  // Moved by the row actions (send, accept, reject), which also stamp the
-  // matching date: a form editing it would leave those dates behind.
+  /**
+   * Moved by the row actions (send, accept, reject), which also stamp the
+   * matching date: a form editing it would leave those dates behind.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -185,16 +196,18 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare status: string;
 
-  // The lines are the source of truth: writing them (or the VAT rate)
-  // recomputes subtotal and total, so the stored amounts always add up.
+  /**
+   * The lines are the source of truth: writing them (or the VAT rate)
+   * recomputes subtotal and total, so the stored amounts always add up. The
+   * products offered are the catalog's products on sale, read live: a new
+   * product can be quoted at once, a discontinued one no longer.
+   */
   @Listable(["lines"])
   @Column({
     name: "$helio.sales.quotes.columns.lines",
     type: new DefaultDataTypes.ArrayType({
       of: {
         product: {
-          // The catalog's products on sale, read live: a new product can be
-          // quoted at once, a discontinued one no longer.
           type: new DefaultDataTypes.RelationType({
             dataApiController: onSaleProductController,
             keyMapping: { label: "name", value: "_id" },
@@ -280,10 +293,12 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare total: number;
 
-  // A new quote is issued today and holds VALIDITY_DAYS (see `creation`);
-  // sending it renews a validity that ran out. Read-only in the forms: they
-  // only read a field's default access mode, not its per-action overrides,
-  // so "writable on edit only" cannot be shown.
+  /**
+   * A new quote is issued today and holds VALIDITY_DAYS (see `creation`);
+   * sending it renews a validity that ran out. Read-only in the forms: they
+   * only read a field's default access mode, not its per-action overrides, so
+   * "writable on edit only" cannot be shown.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -356,13 +371,15 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare notes: string;
 
-  // Given by the "Mark as rejected" action, apart from the notes so it reads
-  // the same in any language: only the reason itself is the user's text.
+  /**
+   * Given by the "Mark as rejected" action, apart from the notes so it reads
+   * the same in any language: only the reason itself is the user's text. Read
+   * on the details only: no form writes it.
+   */
   @Listable()
   @Column({
     name: "$helio.sales.quotes.columns.rejectionReason",
     type: new DefaultDataTypes.StringType({ maxLength: 200, fallback: "—" }),
-    // Read on the details only: no form writes it.
     readonlyBehavior: {
       new: ReadonlyBehaviorType.hidden,
       edit: ReadonlyBehaviorType.hidden,
@@ -372,7 +389,7 @@ class quoteDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare rejectionReason: string;
 
-  // VAT of the quote, for the expanded row and the document.
+  /** VAT of the quote, for the expanded row and the document. */
   @Listable(["subtotal", "total"])
   @Column({
     name: "$helio.sales.quotes.columns.vatAmount",
@@ -389,8 +406,11 @@ class quoteDataAPI extends DataController(
     );
   }
 
-  // The expanded row's lines, in two slots that always have something to
-  // say: the first line with the second under it, then the rest.
+  /**
+   * The expanded row's lines, in two slots that always have something to say:
+   * the first line with the second under it (`secondLine`), then the rest
+   * (`otherLines`).
+   */
   @Listable(["lines"])
   @Column(lineSlot("$helio.sales.quotes.columns.firstLines", "secondLine"))
   @Access(AccessMode.ReadOnly)
@@ -411,7 +431,7 @@ class quoteDataAPI extends DataController(
     return otherLinesText(this.table.lines);
   }
 
-  // Under the number: the first line and how many follow.
+  /** Under the number: the first line and how many follow. */
   @Listable(["lines"])
   @Access(AccessMode.ReadOnly)
   get linesSummary(): ComposedText | null {
@@ -426,8 +446,10 @@ class quoteDataAPI extends DataController(
     };
   }
 
-  // Under the status pill: when it was signed, why it was turned down, or
-  // until when it holds (orange in its last week).
+  /**
+   * Under the status pill: when it was signed, why it was turned down, or until
+   * when it holds (orange in its last week).
+   */
   @Listable(["status", "validUntil", "signedAt", "rejectionReason"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
@@ -461,10 +483,12 @@ class quoteDataAPI extends DataController(
     return null;
   }
 
-  // Not a column, so no form shows it; writable on "new" only, so the data
-  // API calls this setter once per creation, whatever the body holds. It
-  // gives the quote what the system owns: its number, a draft status, its
-  // dates and the secret of its portal link.
+  /**
+   * Not a column, so no form shows it; writable on "new" only, so the data API
+   * calls this setter once per creation, whatever the body holds. It gives the
+   * quote what the system owns: its number, a draft status, its dates and the
+   * secret of its portal link.
+   */
   @Access(AccessMode.ReadOnly, { new: AccessMode.ReadWrite })
   get creation(): undefined {
     return undefined;
@@ -490,5 +514,5 @@ class quoteDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for relations and pages (see the TS2742 note).
+/** The quotes data API typed as a `ControllerClass`, for relations and pages (see the TS2742 note on the class). */
 export const quoteController: ControllerClass = quoteDataAPI;

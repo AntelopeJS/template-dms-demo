@@ -1,15 +1,17 @@
 import type { TableViewOptions } from "@antelopejs/interface-dms/base/table-view";
 import { refuseUsedCategories } from "./category-usage";
 
-// The ranges products are filed under, managed on the catalog page below the
-// products: a compact list, edited in a small modal.
-
+/**
+ * The ranges products are filed under, managed on the catalog page below the
+ * products: a compact list sorted by name and edited in a small modal. The
+ * family quick filter narrows it to one family, and deleting a category goes
+ * through `refuseUsedCategories`.
+ */
 export const categoryTableOptions: TableViewOptions = {
   caption: "$helio.catalog.categories.caption",
   labelKey: "name",
   layout: "compact",
   searchPlaceholder: "$helio.catalog.categories.search",
-  // Alphabetical; the Family quick filter narrows to one family.
   defaultSort: { field: "name" },
   pageSize: 15,
   quickFilters: [{ field: "parent", icon: "i-ph-tree-structure" }],

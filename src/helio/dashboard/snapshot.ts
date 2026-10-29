@@ -1,8 +1,3 @@
-// What stands right now, whatever the period: the "Right now" strip and the
-// live state of each shortcut card. Read from the same collections as the
-// pages they link to, and linked to the saved view listing the same rows,
-// so a figure and the list behind it always agree.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { NavCardItem } from "@antelopejs/interface-dms/base/nav-card-grid";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
@@ -39,13 +34,13 @@ function money(amount: number): ComposedText {
   };
 }
 
+/** The open deals: their total amount, and the amount weighted by each deal's probability (stored 0–1). */
 async function pipelineItem(): Promise<StatGroupItem> {
   const open = (await GetModel(DealModel).getAll()).filter((deal) =>
     OPEN_DEAL_STAGES.includes(deal.stage),
   );
   const total = open.reduce((sum, deal) => sum + deal.amount, 0);
   const weighted = open.reduce(
-    // Probabilities are stored 0–1.
     (sum, deal) => sum + deal.amount * deal.probability,
     0,
   );
@@ -140,7 +135,12 @@ async function serviceItem(): Promise<StatGroupItem> {
   };
 }
 
-/** The "Right now" strip: pipeline, worksites, fleet and service desk. */
+/**
+ * The "Right now" strip: pipeline, worksites, fleet and service desk. It
+ * shows what stands now, whatever the period. Each figure is read from the
+ * same collection as the page it links to, and links to the saved view
+ * listing the same rows, so a figure and the list behind it agree.
+ */
 export async function snapshot(): Promise<{ items: StatGroupItem[] }> {
   return {
     items: await Promise.all([
@@ -156,13 +156,13 @@ function countState(key: string, value: number): ComposedText {
   return { key, params: { count: { type: "count", value } } };
 }
 
+/** The sales cards. The pipeline card counts the open deals expected to close by `CLOSING_DAYS` from now, the same window as the pipeline's "Closing soon" view it opens. */
 async function salesCards(): Promise<NavCardItem[]> {
   const [deals, quotes, customers] = await Promise.all([
     GetModel(DealModel).getAll(),
     GetModel(QuoteModel).getAll(),
     GetModel(CustomerModel).getAll(),
   ]);
-  // The same window as the pipeline's "Closing soon" view the card opens.
   const horizon = Date.now() + CLOSING_DAYS * DAY_MS;
   const closing = deals.filter(
     (deal) =>
@@ -253,13 +253,13 @@ async function operationsCards(): Promise<NavCardItem[]> {
   ];
 }
 
+/** The finance cards. The invoices card sums the invoices' "Outstanding" figure: sent or overdue, archived rows stay out of it. */
 async function financeCards(): Promise<NavCardItem[]> {
   const [invoices, sites] = await Promise.all([
     GetModel(InvoiceModel).getAll(),
     GetModel(SiteModel).getAll(),
   ]);
   const toCollect = invoices
-    // The invoices' "Outstanding" figure: archived rows stay out of it.
     .filter(
       (invoice) =>
         !invoice.isArchived &&
@@ -301,7 +301,11 @@ async function financeCards(): Promise<NavCardItem[]> {
   ];
 }
 
-/** One card per Helio workspace, each with the figure that matters there. */
+/**
+ * One card per Helio workspace, each with the figure that matters there as
+ * its live state. Like the "Right now" strip, each state is read from the
+ * collection of the page its card links to.
+ */
 export async function shortcuts(): Promise<{ items: NavCardItem[] }> {
   const groups = await Promise.all([
     salesCards(),

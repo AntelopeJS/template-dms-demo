@@ -10,6 +10,10 @@ import { SETTINGS_ROTATE_URL } from "./paths";
 const NAV_GROUP = "$helio.settings.groups.integrations";
 const MAX_WEBHOOKS = 10;
 
+/**
+ * The API fields. The API key is written only by the rotate route: the save
+ * route ignores it.
+ */
 const apiSection: FormSection = {
   id: "api",
   label: "$helio.settings.sections.api",
@@ -21,7 +25,6 @@ const apiSection: FormSection = {
       id: "apiKey",
       label: "$helio.settings.fields.apiKey",
       description: "$helio.settings.descriptions.apiKey",
-      // Only the rotate route writes it: the save route ignores it.
       type: new DefaultDataTypes.SecretType({ rotateUrl: SETTINGS_ROTATE_URL }),
     },
     {
@@ -81,6 +84,10 @@ const apiSection: FormSection = {
   ],
 };
 
+/**
+ * The outgoing e-mail fields. The SMTP password is write-only: the GET route
+ * never serves it, so the field starts empty.
+ */
 const emailSection: FormSection = {
   id: "email",
   label: "$helio.settings.sections.email",
@@ -116,7 +123,6 @@ const emailSection: FormSection = {
       required: true,
     },
     {
-      // Write-only: the GET route never serves it, so the field starts empty.
       id: "smtpPassword",
       label: "$helio.settings.fields.smtpPassword",
       type: new DefaultDataTypes.PasswordType({ minLength: 8 }),

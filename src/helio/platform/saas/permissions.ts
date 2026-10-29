@@ -1,8 +1,3 @@
-// Plan permissions computed from the permission tree the DMS holds now. The
-// DMS counts a granted id only with every id above it, so a plan lists whole
-// subtrees rather than single pages; and listing "everything except" keeps a
-// page another domain adds later inside the plans by default.
-
 import {
   GetPermissions,
   type PermissionTree,
@@ -29,7 +24,13 @@ function isUnderAny(id: string, prefixes: readonly string[]): boolean {
   return prefixes.some((prefix) => isUnder(id, prefix));
 }
 
-/** The ids a plan holds itself, out of the grantable ones. */
+/**
+ * The ids a plan holds itself, out of the grantable ones. The DMS counts a
+ * granted id only together with every id above it, so a plan lists whole
+ * subtrees rather than single pages. The base grant lists everything except
+ * some subtrees, which keeps a page another domain adds later inside the plans
+ * by default.
+ */
 export function permissionsOf(grant: PlanGrant, grantable: string[]): string[] {
   switch (grant.kind) {
     case "all":

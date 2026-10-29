@@ -1,9 +1,13 @@
-// The words of the quote document. It is drawn on the server, outside the
-// dashboard's i18n, in the reader's language: French (Helio's customers are
-// mostly French-speaking Belgians) or English.
-
+/**
+ * The language of the quote document: French (Helio's customers are mostly
+ * French-speaking Belgians) or English.
+ */
 export type DocumentLanguage = "fr" | "en";
 
+/**
+ * The words of the quote document. It is drawn on the server, outside the
+ * dashboard's i18n, in the reader's language.
+ */
 export interface DocumentTexts {
   locale: string;
   title: string;

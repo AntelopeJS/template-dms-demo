@@ -1,7 +1,3 @@
-// Helio actions about the service desk: open a ticket from a monitoring alert
-// (the webhook procedure), hand an urgent ticket to the technician on call,
-// and find who manages the instance (the people automation notifies).
-
 import type { ActionType } from "@antelopejs/interface-dms-automation";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { UserModel } from "@antelopejs/interface-dms/auth/db";
@@ -82,8 +78,11 @@ async function findSite(siteId: string | undefined): Promise<Site> {
   return site;
 }
 
-// One open alert ticket per site and problem: a monitoring platform repeats
-// its alert until the problem is fixed.
+/**
+ * The still-open monitoring-alert ticket of a site for a category, if any. It
+ * keeps the action to one open alert ticket per site and problem, since a
+ * monitoring platform repeats its alert until the problem is fixed.
+ */
 async function openAlertTicket(
   site: Site,
   category: TicketCategory,
@@ -97,6 +96,10 @@ async function openAlertTicket(
   );
 }
 
+/**
+ * Inserts the ticket of a monitoring alert. An urgent one is left unassigned
+ * for the "urgent ticket" procedure to hand out (see `defaultHolderFor`).
+ */
 async function insertAlertTicket(
   site: Site,
   kind: AlertKind,
@@ -117,8 +120,6 @@ async function insertAlertTicket(
     slaDueAt: new Date(createdAt.getTime() + SLA_HOURS[priority] * HOUR_MS),
     createdAt,
     resolvedAt: undefined,
-    // An urgent one is left to the "urgent ticket" procedure (see
-    // defaultHolderFor).
     assignee: await defaultHolderFor(priority),
     description:
       message ||
@@ -129,6 +130,7 @@ async function insertAlertTicket(
   return ticket;
 }
 
+/** Opens a service ticket from a monitoring alert, unless that alert is already tracked by an open ticket. */
 const createTicket: ActionType<AlertInput, Record<string, unknown>> = {
   id: "helio.create-ticket",
   name: "$helio.platform.automation.actions.createTicket.name",
@@ -201,8 +203,11 @@ const createTicket: ActionType<AlertInput, Record<string, unknown>> = {
   },
 };
 
-// The technician with the fewest open tickets takes the urgent one: one the
-// team has now, so a member removed since is never picked.
+/**
+ * The technician with the fewest open tickets, who takes the urgent one. Only
+ * technicians the team has now are considered, so a member removed since is
+ * never picked.
+ */
 async function onCallTechnician(): Promise<string | undefined> {
   const technicians = (await GetModel(TeamMemberModel).getAll())
     .filter((member) => member.role === "technician")
@@ -223,6 +228,12 @@ async function memberName(id: string | undefined): Promise<string> {
   return member?.name ?? "—";
 }
 
+/**
+ * Gives an unassigned ticket to the on-call technician (an assigned one keeps
+ * its holder). The `alertsOn` output carries the "Urgent tickets" switch of
+ * the Settings page: when it is off the ticket is still assigned but nobody is
+ * told, because the dispatch procedure's If node reads it.
+ */
 const assignOnCall: ActionType<
   { ticketId?: string },
   Record<string, unknown>
@@ -284,8 +295,6 @@ const assignOnCall: ActionType<
     ]);
     ctx.log("info", `${ticket.number} handled by ${name}`);
     return {
-      // The "Urgent tickets" switch of the Settings page: off, the ticket is
-      // still assigned but nobody is told (the dispatch procedure's If).
       alertsOn: settings.notifyUrgentTickets !== false,
       assignee: name,
       number: ticket.number,
@@ -295,6 +304,7 @@ const assignOnCall: ActionType<
   },
 };
 
+/** Finds the owners of the instance, the people automation notifies. */
 const findManagers: ActionType<Record<string, never>, { userIds: string[] }> = {
   id: "helio.find-managers",
   name: "$helio.platform.automation.actions.findManagers.name",
@@ -317,4 +327,9 @@ const findManagers: ActionType<Record<string, never>, { userIds: string[] }> = {
   },
 };
 
+/**
+ * Helio's actions about the service desk: open a ticket from a monitoring
+ * alert (the webhook procedure), hand an urgent ticket to the technician on
+ * call, and find who manages the instance.
+ */
 export const serviceActionTypes = [createTicket, assignOnCall, findManagers];

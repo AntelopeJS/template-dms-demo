@@ -1,6 +1,3 @@
-// The sales leaderboard: what each rep signed over the period, credited
-// through the quote's deal (or, without a deal, the customer's account owner).
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { ComposedText } from "@antelopejs/interface-dms/base/types/composed-text";
 import { CustomerModel, DealModel } from "../crm/database";
@@ -51,6 +48,10 @@ function signedIn(quotes: readonly Quote[], range: TimeRange): number {
   );
 }
 
+/**
+ * One leaderboard row. It links to the pipeline filtered on the rep (its
+ * `owner` query filter).
+ */
 function repItem(
   member: TeamMember,
   quotes: readonly Quote[],
@@ -81,12 +82,15 @@ function repItem(
     avatar: member.avatar
       ? { src: member.avatar, alt: member.name }
       : undefined,
-    // The pipeline filtered on the rep (its `owner` query filter).
     to: `${HELIO_PAGES.pipeline}?owner=${encodeURIComponent(member._id)}`,
   };
 }
 
-/** Every sales rep, best first, with what they signed in the period. */
+/**
+ * The sales leaderboard: every sales rep, best first, with what they signed
+ * in the period. A quote is credited to its deal's owner or, without a deal,
+ * to the customer's account owner.
+ */
 export async function topReps(
   period: Period,
 ): Promise<{ items: TopListItemPayload[] }> {

@@ -95,6 +95,10 @@ const hoursSection: FormSection = {
   ],
 };
 
+/**
+ * The fieldwork fields. The default technician is picked among the people a
+ * ticket can go to, as in the desk's Assignee picker.
+ */
 const fieldworkSection: FormSection = {
   id: "fieldwork",
   label: "$helio.settings.sections.fieldwork",
@@ -107,7 +111,6 @@ const fieldworkSection: FormSection = {
       label: "$helio.settings.fields.defaultTechnician",
       description: "$helio.settings.descriptions.defaultTechnician",
       type: new DefaultDataTypes.RelationType({
-        // The people a ticket can go to, as the desk's Assignee picker.
         dataApiController: ticketAssigneeController,
         keyMapping: { label: "name", value: "_id", avatar: "avatar" },
         deselectable: true,

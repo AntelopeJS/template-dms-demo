@@ -13,38 +13,44 @@ import { DEMO_SCHEMA_NAME } from "./schema";
 import "./home";
 import "./helio";
 
+/**
+ * Registers the frontend module, the template's schema and Helio's extensions.
+ *
+ * The frontend module is added here, not in `start()`, so dms-lang, which lists
+ * the frontend modules once in its own `start()`, finds it. The schema is
+ * provisioned and its fixtures run in a `DATABASE_INITIALIZED` hook, once the DMS
+ * has registered its own and before it provisions its default tenant, whose Helio
+ * data reads these tables. The service desk simulator writes tickets, so it
+ * starts in that hook, only once the schema exists. Helio's triggers and actions
+ * are registered with the automation builder.
+ */
 export async function construct(): Promise<void> {
-  // Declared in construct() so dms-lang, which lists the frontend modules once
-  // in its own start(), finds it: `dmsI18nAppLayer` makes its language files
-  // (helio-*, demo-*) the editable "Project files" of Translations.
   await AddFrontendModule(frontendModule());
 
-  // Provision this template's own schema (tables tagged with DEMO_SCHEMA_NAME)
-  // and run their fixtures once the DMS has registered its own: before the
-  // DMS provisions its default tenant, whose Helio data reads these tables.
   RegisterHook(Hook.DATABASE_INITIALIZED, async () => {
     await RegisterSchema(DEMO_SCHEMA_NAME);
-    // The service desk simulator writes tickets: only once the schema exists.
     startServiceSimulator();
     return undefined;
   });
   registerSaasShowcase();
   registerHelioProvisioning();
-  // Helio's triggers and actions in the automation builder.
   registerHelioAutomationNodes();
 }
 
+/** Declares Helio's automation procedures in the background; this never fails startup. */
 export async function start(): Promise<void> {
-  // Helio's procedures, in the background, never failing.
   startHelioAutomation();
 }
 
-// The service desk simulator runs on a timer started in start(); stop it with
-// the module so no ticket is created afterwards.
+/**
+ * Stops the service desk simulator, which runs on a timer started in the
+ * `DATABASE_INITIALIZED` hook, so no ticket is created after the module is gone.
+ */
 export function destroy(): void {
   stopServiceSimulator();
 }
 
+/** Stops the service desk simulator, like `destroy()`. */
 export function stop(): void {
   stopServiceSimulator();
 }

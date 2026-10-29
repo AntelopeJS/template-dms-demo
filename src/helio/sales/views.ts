@@ -1,8 +1,13 @@
-// The saved ways of looking at the quotes, drawn as a strip above the status
-// tabs and opened from the URL (`?table.view=<id>`).
-
 import type { TableViewViewsOptions } from "@antelopejs/interface-dms/base/table-view";
 
+/**
+ * The saved ways of looking at the quotes, drawn as a strip above the status
+ * tabs and opened from the URL (`?table.view=<id>`). "Awaiting" is the sent
+ * quotes not answered yet, the closest end of validity first. "Expiring" is
+ * the sent quotes whose validity ends within a week: time to call. "Accepted"
+ * is the quotes signed in the last 30 days: filter tokens move by whole days
+ * only (`{{now-30d}}`), so that is the closest they can say to "this month".
+ */
 export const quoteViews: TableViewViewsOptions = {
   layout: "strip",
   defaultView: "all",
@@ -13,7 +18,6 @@ export const quoteViews: TableViewViewsOptions = {
       label: "$helio.sales.quotes.views.all",
       icon: "i-ph-squares-four",
     },
-    // Sent and not answered yet, the closest end of validity first.
     {
       id: "awaiting",
       label: "$helio.sales.quotes.views.awaiting",
@@ -23,7 +27,6 @@ export const quoteViews: TableViewViewsOptions = {
       filters: [{ accessorKey: "status", mode: "is", value: "sent" }],
       sort: [{ field: "validUntil" }],
     },
-    // Still unsigned, and no longer valid in a week: time to call.
     {
       id: "expiring",
       label: "$helio.sales.quotes.views.expiring",
@@ -40,8 +43,6 @@ export const quoteViews: TableViewViewsOptions = {
       ],
       sort: [{ field: "validUntil" }],
     },
-    // Filter tokens move by whole days only ({{now-30d}}): "signed in the
-    // last 30 days" is the closest to "this month" they can say.
     {
       id: "accepted",
       label: "$helio.sales.quotes.views.accepted",

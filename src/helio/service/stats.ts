@@ -1,7 +1,3 @@
-// The figures above the desk: how many tickets are open, how many are urgent
-// or past their SLA, and how fast the last month's tickets were resolved.
-// Computed from the tickets on each read (a few hundred rows).
-
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { Ticket } from "./database";
 
@@ -16,8 +12,10 @@ export interface ServiceStatLinks {
   resolved: string;
 }
 
+/** A count cell value, formatted by the stat group. */
 const count = (value: number) => ({ type: "count", value }) as const;
 
+/** Average hours from creation to resolution of the tickets resolved in the last 30 days, or 0 when there are none. */
 function averageResolutionHours(tickets: Ticket[], now: number): number {
   const durations = tickets
     .filter(
@@ -33,7 +31,13 @@ function averageResolutionHours(tickets: Ticket[], now: number): number {
   return total / durations.length / HOUR_MS;
 }
 
-/** The four cells of the desk's stat group. */
+/**
+ * The four cells of the desk's stat group: how many tickets are open, how many
+ * are urgent or past their SLA, and how fast the last month's tickets were
+ * resolved. The SLA is the promised resolution time: an open ticket past it
+ * breaches it, assigned or not. Computed from the tickets on each read, which
+ * is fine for the few hundred rows of the demo.
+ */
 export function serviceStats(
   tickets: Ticket[],
   links: ServiceStatLinks,
@@ -43,8 +47,6 @@ export function serviceStats(
   const open = tickets.filter((ticket) => !ticket.resolvedAt);
   const unassigned = open.filter((ticket) => !ticket.assignee).length;
   const urgent = open.filter((ticket) => ticket.priority === "urgent");
-  // The SLA is the promised resolution time: an open ticket past it
-  // breaches it, assigned or not.
   const breaching = open.filter((ticket) => ticket.slaDueAt.getTime() < now);
   const fresh = open.filter((ticket) => ticket.status === "new").length;
   const hours = averageResolutionHours(tickets, now);

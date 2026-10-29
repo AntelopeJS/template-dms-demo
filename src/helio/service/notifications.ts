@@ -1,9 +1,3 @@
-// An urgent ticket cannot wait for someone to look at the desk: the owners of
-// the instance, the default technician and the alert recipients of the
-// Settings page who have an account get a notification linking straight to
-// it (the desk filters on `?ticket=<number>`), unless the Settings page turns
-// urgent ticket alerts off.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { UserModel } from "@antelopejs/interface-dms/auth/db";
@@ -18,8 +12,10 @@ import { TeamMemberModel } from "../team/database";
 import type { Ticket } from "./database";
 import { SERVICE_DESK_PATH } from "./options";
 
-// Declared at import time, the category before its subject, so the subject
-// is registered before the first urgent ticket arrives.
+/**
+ * Declared at import time, before the subject that belongs to it, so the
+ * subject is registered before the first urgent ticket arrives.
+ */
 const serviceCategory = NotificationCategory("helio-service", {
   labelKey: "helio.service.notifications.category",
   descriptionKey: "helio.service.notifications.categoryDescription",
@@ -56,8 +52,10 @@ async function urgentTicketReaders(): Promise<string[]> {
 
 /**
  * Tells the owners and the people the Settings page names that an urgent
- * ticket arrived. Best effort: a failure is logged and never fails the write
- * that created the ticket.
+ * ticket arrived, with a notification linking straight to it (the desk
+ * filters on `?ticket=<number>`). Nothing is sent when the Settings page turns
+ * urgent ticket alerts off. Best effort: a failure is logged and never fails
+ * the write that created the ticket.
  */
 export async function notifyUrgentTicket(
   ticket: Pick<Ticket, "number" | "subject" | "customer">,

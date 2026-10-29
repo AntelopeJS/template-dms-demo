@@ -1,7 +1,4 @@
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
-// The billing e-mails: an invoice issued, and the reminder of an unpaid one.
-// Both carry the Belgian structured reference the bank transfer quotes.
-
 import type {
   Condition,
   TemplateDeclaration,
@@ -97,7 +94,7 @@ const invoiceIssued: TemplateDeclaration = {
   },
 };
 
-// From the second reminder on, the e-mail states what follows a non-payment.
+/** Shows the block that states what follows a non-payment, from the second reminder on. */
 const FIRM_REMINDER: Condition = {
   path: "invoice.reminderNumber",
   operator: "gt",
@@ -194,4 +191,8 @@ const invoiceReminder: TemplateDeclaration = {
   },
 };
 
+/**
+ * The billing e-mails: an invoice issued, and the reminder of an unpaid one.
+ * Both carry the Belgian structured reference the bank transfer quotes.
+ */
 export const BILLING_TEMPLATES = [invoiceIssued, invoiceReminder];

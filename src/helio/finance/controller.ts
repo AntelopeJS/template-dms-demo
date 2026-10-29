@@ -33,7 +33,7 @@ import { Invoice, InvoiceModel, type InvoiceStatus } from "./database";
 import { daysLate } from "./due";
 import { withInvoiceDefaults } from "./numbering";
 
-// An invoice's life. Exported for the status tabs, nav badge and row rules.
+/** An invoice's life. Exported for the status tabs, nav badge and row rules. */
 export const INVOICE_STATUSES = [
   {
     value: "draft",
@@ -96,8 +96,12 @@ const SETTLED: readonly string[] = ["paid", "cancelled"];
 const day = (date: Date) =>
   ({ type: "date", value: date.toISOString(), format: "day" }) as const;
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The Data API controller of the invoices. Not exported on purpose: emitting a
+ * .d.ts for this class would require naming types from the nested
+ * `@antelopejs/interface-core` copies (TS2742), hence the `ControllerClass`
+ * alias below.
+ */
 @RegisterDataController()
 class invoiceDataAPI extends DataController(
   Invoice,
@@ -114,6 +118,7 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare _id: string;
 
+  /** Left empty on a new invoice, it takes the next number (see numbering.ts). */
   @Searchable()
   @Select()
   @Listable()
@@ -129,7 +134,6 @@ class invoiceDataAPI extends DataController(
     display: new DefaultDisplays.MonoDisplay({ copy: true }),
     size: 140,
   })
-  // Left empty on a new invoice, it takes the next number (see numbering.ts).
   @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare number: string;
@@ -182,8 +186,10 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare quote: string;
 
-  // Marking an invoice paid (or cancelling it) clears what is due and stamps
-  // the payment; any other status leaves the total to pay.
+  /**
+   * Marking an invoice paid (or cancelling it) clears what is due, and paid
+   * also stamps the payment date; any other status leaves the total to pay.
+   */
   @Listable(["status"])
   @Sortable()
   @Exported(["status"])
@@ -231,6 +237,7 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare issuedAt: Date;
 
+  /** Left empty on a new invoice, the payment terms set it (see numbering.ts). */
   @Listable()
   @Sortable()
   @Exported()
@@ -246,7 +253,6 @@ class invoiceDataAPI extends DataController(
     }),
     size: 140,
   })
-  // Left empty on a new invoice, the payment terms set it (see numbering.ts).
   @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   declare dueAt: Date;
@@ -264,8 +270,10 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare paidAt: Date;
 
-  // Excluding VAT and the VAT rate are typed in; the VAT, the total and
-  // what is due follow.
+  /**
+   * Excluding VAT and the VAT rate are typed in; the VAT, the total and what
+   * is due follow.
+   */
   @Listable(["amountExcl"])
   @Sortable()
   @Exported(["amountExcl"])
@@ -285,6 +293,7 @@ class invoiceDataAPI extends DataController(
     this.applyAmounts();
   }
 
+  /** Left empty on a new invoice, the default rate of the settings applies. */
   @Listable(["vatRate"])
   @Exported(["vatRate"])
   @Column({
@@ -294,7 +303,6 @@ class invoiceDataAPI extends DataController(
     filterable: true,
     isVisible: false,
   })
-  // Left empty on a new invoice, the default rate of the settings applies.
   @Mandatory("edit")
   @Access(AccessMode.ReadWrite)
   get vatRate(): number {
@@ -354,7 +362,7 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare paymentMethod: string;
 
-  // Stamped by the "Send reminder" action; shown under an overdue status.
+  /** Stamped by the "Send reminder" action; shown under an overdue status. */
   @Listable()
   @Sortable()
   @Exported()
@@ -368,14 +376,16 @@ class invoiceDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare remindedAt: Date;
 
-  // Listed so the row rules (edit, archive) can read it in the browser.
+  /** Listed so the row rules (edit, archive) can read it in the browser. */
   @Listable()
   @ArchiveField()
   @Access(AccessMode.ReadOnly)
   declare isArchived: boolean;
 
-  // Under the status: when a sent invoice falls due, how late an overdue one
-  // is (in red), when a paid one was paid.
+  /**
+   * Shown under the status: when a sent invoice falls due, how late an overdue
+   * one is (in red), when a paid one was paid.
+   */
   @Listable(["status", "dueAt", "paidAt", "remindedAt"])
   @Access(AccessMode.ReadOnly)
   get statusDetail(): CellSubline | null {
@@ -423,5 +433,5 @@ class invoiceDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for relations and pages (see the TS2742 note).
+/** `ControllerClass`-typed alias for relations and pages (see the TS2742 note). */
 export const invoiceController: ControllerClass = invoiceDataAPI;

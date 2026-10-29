@@ -1,8 +1,3 @@
-// Sends the Helio e-mails from the business actions. A mail is a side effect
-// of the action, never its condition: a send that fails (no SMTP account, the
-// Mailing module not loaded, an address on the suppression list) is logged and
-// the action carries on. The callers fire these without awaiting them.
-
 import { Logging } from "@antelopejs/interface-core/logging";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
@@ -42,7 +37,11 @@ const SENT_STATUSES = new Set(["queued", "sent", "delivered"]);
 
 /**
  * Sends one e-mail through the Mailing module. Never throws: the outcome is
- * returned when there is one, and a refusal or a provider error is logged.
+ * returned when there is one, and a refusal or a provider error is logged. A
+ * mail is a side effect of the business action, never its condition: a send
+ * that fails (no SMTP account, the Mailing module not loaded, an address on
+ * the suppression list) is logged and the action carries on. The domain
+ * callers of the `mail*` functions fire them without awaiting.
  */
 export async function sendHelioMail(
   mail: HelioMail,
@@ -70,7 +69,10 @@ export async function sendHelioMail(
   }
 }
 
-// The rows an e-mail is built from; any failure to read them only skips it.
+/**
+ * The customer an e-mail is addressed to. Most callers log a read failure and
+ * skip the e-mail; `mailInstallation` lets it propagate to its caller.
+ */
 async function customerOf(id: string) {
   return GetModel(CustomerModel).get(id);
 }

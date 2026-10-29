@@ -1,9 +1,3 @@
-// The numbering patterns of the Settings page (Invoicing › Numbering):
-// literal text and tokens between braces. {YYYY}, {YY} and {MM} write the
-// issue date; {SEQ:n} the sequence on n digits (4 without a width), which
-// follows on from the highest one already used for the same date tokens, so
-// "F-{YYYY}-{SEQ:4}" starts again at F-2027-0001 on the first invoice of 2027.
-
 const TOKEN = /\{([A-Z]+)(?::(\d+))?\}/g;
 const DEFAULT_WIDTH = 4;
 const MAX_WIDTH = 10;
@@ -19,7 +13,11 @@ function isDateToken(token: string): token is "YYYY" | "YY" | "MM" {
   return DATE_TOKENS.includes(token);
 }
 
-// undefined when a token is unknown or the sequence is missing or repeated.
+/**
+ * Splits a pattern into text, date and sequence parts. It returns undefined when
+ * a token is unknown or the sequence is missing or repeated, or when a brace is
+ * left in the text, which is a token typed wrong.
+ */
 function parse(pattern: string): Part[] | undefined {
   const parts: Part[] = [];
   let index = 0;
@@ -42,7 +40,6 @@ function parse(pattern: string): Part[] | undefined {
   }
   if (index < pattern.length)
     parts.push({ kind: "text", value: pattern.slice(index) });
-  // A brace left in the text is a token typed wrong.
   const stray = parts.some(
     (part) => part.kind === "text" && /[{}]/.test(part.value),
   );
@@ -65,7 +62,12 @@ const escapeRegExp = (text: string) =>
 
 /**
  * The number after the highest one of `used` that `pattern` writes for
- * `date`. A pattern that cannot number (see isNumberPattern) falls back to
+ * `date`. A pattern of the Settings page (Invoicing › Numbering) is literal text
+ * and tokens between braces: {YYYY}, {YY} and {MM} write the issue date and
+ * {SEQ:n} the sequence on n digits (4 without a width). The sequence follows on
+ * from the highest one already used for the same date tokens, so
+ * "F-{YYYY}-{SEQ:4}" starts again at F-2027-0001 on the first invoice of 2027.
+ * A pattern that cannot number (see isNumberPattern) falls back to
  * `fallback`, so a document is never left without a number.
  */
 export function nextNumber(

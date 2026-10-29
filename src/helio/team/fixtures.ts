@@ -1,7 +1,3 @@
-// The twelve members of TEAM_ROSTER with the details a team page shows. Ids,
-// names, e-mails and roles come from the shared roster, which other domains
-// reference; the rest is fixed here so the cards always look the same.
-
 import { TEAM_ROSTER, type TeamRole } from "../shared/roster";
 import { daysFromNow } from "../shared/seed";
 
@@ -161,6 +157,11 @@ export const SEEDED_SKILLS: readonly string[] = [
   ...new Set(Object.values(DETAILS).flatMap((detail) => detail.skills)),
 ];
 
+/**
+ * The members of TEAM_ROSTER with the details a team page shows. Ids, names,
+ * e-mails and roles come from the shared roster, which other domains reference;
+ * the rest is fixed here so the cards always look the same.
+ */
 export function buildTeamMembers(): TeamMemberSeed[] {
   return TEAM_ROSTER.map((member) => {
     const detail = DETAILS[member.id];

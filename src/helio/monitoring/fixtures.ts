@@ -1,8 +1,3 @@
-// Seed of helio_sites: the solar installations Helio monitors, one per
-// finished solar project (the first 40). Production follows a shared
-// autumn weather pattern, so the sparklines of the fleet move together, with
-// a few degraded inverters and two sites gone offline.
-
 import { addWorkdays } from "../projects/calendar";
 import { type ProjectPlan, projectPlans } from "../projects/plan";
 import { COUNTS, siteId } from "../shared/roster";
@@ -26,14 +21,21 @@ export type SiteSeed = Pick<
 
 const MINUTE_MS = 60 * 1000;
 
-// Sites 7 and 23 are down, four more run degraded: the fleet page and the
-// service desk both have something to show.
+/**
+ * Sites 7 and 23 are down, so the fleet page and the service desk both have
+ * something to show.
+ */
 const OFFLINE = new Set([7, 23]);
+/** Four more sites run degraded. */
 const DEGRADED = new Set([3, 12, 19, 31]);
 
-// kWh per kWp over the last seven days (oldest first) and so far today: a
-// grey Belgian October with one sunny spell.
+/**
+ * kWh per kWp over the last seven days, oldest first: a grey Belgian October
+ * with one sunny spell, shared by every site so the sparklines of the fleet
+ * move together.
+ */
 const WEATHER = [1.4, 0.9, 2.1, 2.6, 1.7, 0.6, 1.9];
+/** kWh per kWp so far today. */
 const TODAY = 1.2;
 
 function statusOf(index: number): InverterStatus {
@@ -45,8 +47,10 @@ function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }
 
-// A degraded inverter loses output over the week; an offline one stopped
-// reporting one to three days ago.
+/**
+ * A degraded inverter loses output over the week; an offline one stopped
+ * reporting one to three days ago.
+ */
 function production(rng: Rng, capacity: number, status: InverterStatus) {
   const silentDays = status === "offline" ? rng.int(1, 3) : 0;
   const last7Days = WEATHER.map((factor, day) => {
@@ -77,6 +81,10 @@ function siteName(plan: ProjectPlan): string {
   return `${kind} ${plan.customer.name}`;
 }
 
+/**
+ * The seed of one site. It is commissioned with the grid operator a few
+ * working days after the work.
+ */
 function toSite(rng: Rng, plan: ProjectPlan, index: number): SiteSeed {
   const status = statusOf(index);
   const { last7Days, todayKwh, silentDays } = production(
@@ -92,7 +100,6 @@ function toSite(rng: Rng, plan: ProjectPlan, index: number): SiteSeed {
     city: plan.customer.address.city,
     capacityKwp: plan.capacityKwp,
     inverterStatus: status,
-    // Commissioned with the grid operator a few working days after the work.
     commissionedAt: addWorkdays(plan.end, rng.int(1, 3)),
     todayKwh,
     last7Days,
@@ -109,7 +116,12 @@ export function monitoredProjects(): ProjectPlan[] {
 
 let sites: SiteSeed[] | undefined;
 
-/** The 40 sites, `site-01` … `site-40`. */
+/**
+ * The 40 sites, `site-01` ... `site-40`: the solar installations Helio
+ * monitors, one per finished solar project. Production follows a shared
+ * autumn weather pattern, with a few degraded inverters and two sites gone
+ * offline.
+ */
 export function buildSites(): SiteSeed[] {
   if (!sites) {
     const rng = createRng(0x9e110005);
@@ -120,8 +132,10 @@ export function buildSites(): SiteSeed[] {
   return sites;
 }
 
-// A customer with a second installation (another building, an annex) must
-// not show two identical lines in the fleet table.
+/**
+ * A customer with a second installation (another building, an annex) must not
+ * show two identical lines in the fleet table.
+ */
 function distinctNames(seeds: SiteSeed[]): SiteSeed[] {
   const seen = new Map<string, number>();
   return seeds.map((site) => {

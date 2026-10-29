@@ -1,9 +1,3 @@
-// The history of one project for its Activity tab: the business events of
-// helio_activity about the project, its quote or its invoices (they name who
-// acted), completed by the milestones its records carry themselves (quote
-// sent and signed, start on site, invoices issued and paid) so every project
-// tells its story, not only the recent ones.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { ActivityFeedItem } from "@antelopejs/interface-dms/base/activity-feed";
 import type { Tone } from "@antelopejs/interface-dms/base/types";
@@ -12,6 +6,7 @@ import type { Activity } from "../dashboard/database";
 import type { ProjectBundle } from "./detail-data";
 import { recordLink } from "./links";
 
+/** The kinds of event in a project's history. */
 type MilestoneType =
   | "quote_issued"
   | "quote_sent"
@@ -22,6 +17,7 @@ type MilestoneType =
   | "invoice_paid"
   | "invoice_overdue";
 
+/** One event of a project's history, before it becomes a feed item. */
 interface Milestone {
   type: MilestoneType;
   /** `_id` of the record the event is about. */
@@ -34,7 +30,10 @@ interface Milestone {
   link?: string;
 }
 
-// One entry per kind of event, written whole for the i18n check.
+/**
+ * The title, icon and tone of each kind of event, written whole for the i18n
+ * check.
+ */
 const MILESTONE_TEXTS: Record<
   MilestoneType,
   { title: string; icon: string; tone: Tone }
@@ -81,6 +80,7 @@ const MILESTONE_TEXTS: Record<
   },
 };
 
+/** The statuses of a project that has started on site at some point. */
 const STARTED_STATUSES = new Set([
   "in_progress",
   "inspection",
@@ -140,8 +140,10 @@ function invoiceMilestones(bundle: ProjectBundle): Milestone[] {
   });
 }
 
-// The helio_activity rows about this project's records, by `${type}:${ref}`:
-// they lend their actor and date to the matching milestone.
+/**
+ * The helio_activity rows about this project's records, by `${type}:${ref}`:
+ * they lend their actor and date to the matching milestone.
+ */
 function loggedEvents(
   bundle: ProjectBundle,
   rows: Activity[],
@@ -200,7 +202,13 @@ function toItem(
   };
 }
 
-/** The project's history, newest first, up to today. */
+/**
+ * The project's history for its Activity tab, newest first, up to today. It is
+ * made of milestones that the project, its quote and its invoices carry
+ * themselves (quote sent and signed, start on site, invoices issued and paid),
+ * so every project tells its story, not only the recent ones. The matching
+ * helio_activity rows, which name who acted, lend their actor and date.
+ */
 export async function projectActivity(
   bundle: ProjectBundle,
 ): Promise<{ items: ActivityFeedItem[]; count: number }> {

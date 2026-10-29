@@ -1,7 +1,3 @@
-// What the Helio plans are compared on, on the pricing page and in the plan
-// editor. dms-saas stores feature texts localized in the row itself (one text
-// per language), not as i18n keys, so both languages are written here.
-
 import type { FeatureValueType } from "@antelopejs/interface-dms-saas/db";
 
 /** One text per locale, e.g. `{ en: "Users", fr: "Utilisateurs" }`. */
@@ -36,6 +32,11 @@ export const FEATURE_IDS = {
 
 const F = FEATURE_IDS;
 
+/**
+ * What the Helio plans are compared on, on the pricing page and in the plan
+ * editor. dms-saas stores feature texts localized in the row itself (one text
+ * per language), not as i18n keys, so both languages are written here.
+ */
 export const FEATURES: SeedFeature[] = [
   {
     id: F.users,

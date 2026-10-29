@@ -21,17 +21,25 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { TeamMember, TeamMemberModel } from "../team/database";
 
-// The sales reps of the team, for the "Sales rep" pickers of deals and
-// customers: the same helio_team rows, but its select route only ever lists
-// the members whose role is "sales" (a mandatory route filter), so a
-// technician or the office cannot be picked. The cells keep reading the
-// member through the relation join, whatever their role.
+/**
+ * The route filter of the sales reps' select route: it only ever lists the team
+ * members whose role is "sales", with the column type's "is" mode (the data API
+ * passes the mode through).
+ */
 const SALES_ONLY: Record<string, FilterValue> = {
-  // The column type's "is" mode; the data API passes the mode through.
   role: ["sales", "is" as FilterValue[1]],
 };
 
-// Not exported on purpose (TS2742, see customer-controller.ts).
+/**
+ * The sales reps of the team, for the "Sales rep" pickers of deals and
+ * customers: the same `helio_team` rows, but the select route only lists sales
+ * reps (a mandatory route filter), so a technician or the office cannot be
+ * picked. The cells keep reading the member through the relation join, whatever
+ * their role.
+ *
+ * Not exported on purpose (TS2742, see `customer-controller.ts`); other domains
+ * use {@link salesRepController}.
+ */
 @RegisterDataController()
 class salesRepDataAPI extends DataController(
   TeamMember,
@@ -83,5 +91,8 @@ class salesRepDataAPI extends DataController(
   declare role: string;
 }
 
-// ControllerClass-typed alias for the relation columns (see the TS2742 note).
+/**
+ * The sales rep controller, typed as `ControllerClass` for the relation columns
+ * (see the TS2742 note on the class).
+ */
 export const salesRepController: ControllerClass = salesRepDataAPI;

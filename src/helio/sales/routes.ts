@@ -31,8 +31,11 @@ interface RejectBody {
   reason?: string;
 }
 
-// The quotes table's own permissions: reading a quote (its document, its
-// link) takes `list`, moving it along its life cycle takes `edit`.
+/**
+ * An action of the quotes table, whose permissions guard these routes: reading
+ * a quote (its document, its link) takes `list`, moving it along its life cycle
+ * takes `edit`.
+ */
 function tableAction(id: string): Action {
   const action = PageHelioQuotes.table.getAction(id);
   if (!action) throw new Error(`The quotes table has no '${id}' action`);
@@ -51,8 +54,10 @@ async function findQuote(id: string): Promise<Quote> {
   return quote;
 }
 
-// What a status change says when the quote no longer stands where it must:
-// a stale table (another user just sent it) gets a clear message.
+/**
+ * What a status change says when the quote no longer stands in the status it
+ * needs: a stale table (another user just sent it) gets a clear message.
+ */
 const NOT_IN_STATUS: Partial<Record<QuoteStatus, string>> = {
   draft: "$helio.sales.quotes.errors.notDraft",
   sent: "$helio.sales.quotes.errors.notSent",
@@ -71,8 +76,11 @@ async function quoteIn(id: string, status: QuoteStatus): Promise<Quote> {
 
 /** The row actions of the quotes table that no data route covers. */
 export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
-  // The "Send to customer" dialog, worded for the quote: who receives it,
-  // where, and what changes once it is sent.
+  /**
+   * The "Send to customer" dialog, worded for the quote: who receives it,
+   * where, and what changes once it is sent. A quote that is no longer a draft
+   * gets a blocked dialog.
+   */
   @Get("send-confirm")
   async sendConfirm(
     @Parameter("id", "query") id: string,
@@ -123,8 +131,12 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     });
   }
 
-  // A draft goes out: sent now, and valid for VALIDITY_DAYS more if its
-  // validity ran out while it waited.
+  /**
+   * A draft goes out: sent now, and valid for VALIDITY_DAYS more if its
+   * validity ran out while it waited. The customer is then e-mailed the quote
+   * and its portal link (Helio platform, mailing) without the route waiting for
+   * it; a failed e-mail is logged and the quote stays sent.
+   */
   @Post("send")
   async send(
     @Parameter("id", "query") id: string,
@@ -141,13 +153,17 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
       sentAt: now,
       validUntil,
     });
-    // Helio platform (mailing): the customer receives the quote and its
-    // portal link; a failed e-mail is logged, the quote stays sent.
     void mailQuoteSent(id);
     await quoteSent(quote);
     return { ok: true };
   }
 
+  /**
+   * A sent quote the customer signed. Its deal is won at the quote's subtotal
+   * and the activity feed logs it (see `quoteAccepted`). The thank-you e-mail
+   * and the "Quote accepted" automation trigger (kick-off procedure) are fired
+   * without the route waiting for them, and neither can fail the accept.
+   */
   @Post("accept")
   async accept(
     @Parameter("id", "query") id: string,
@@ -158,17 +174,17 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
       status: "accepted",
       signedAt: new Date(),
     });
-    // Its deal is won at the signed amount; both reach the activity feed.
     await quoteAccepted(quote);
-    // Helio platform: the thank-you e-mail, and the "Quote accepted"
-    // automation trigger (kick-off procedure). Neither can fail the accept.
     void mailQuoteAccepted(id);
     fireQuoteAccepted(quote);
     return { ok: true };
   }
 
-  // The reason, when given, is kept in a field of its own: the notes stay
-  // the team's, and no wording is stored in one language.
+  /**
+   * A sent quote the customer turned down. The reason, when given, is kept in a
+   * field of its own: the notes stay the team's, and no wording is stored in
+   * one language.
+   */
   @Post("reject")
   async reject(
     @Parameter("id", "query") id: string,
@@ -183,7 +199,10 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     return { ok: true };
   }
 
-  // The link the customer opens the quote with (copied by the action).
+  /**
+   * The link the customer opens the quote with (copied by the action). A draft,
+   * or a quote without a token, is refused with a 409.
+   */
   @Post("portal-link")
   async portalLink(
     @Parameter("id", "query") id: string,
@@ -198,7 +217,7 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     };
   }
 
-  // The quote as a PDF, in the reader's language.
+  /** The quote as a PDF, in the reader's language. */
   @Get("document")
   async document(
     @Parameter("id", "query") id: string,

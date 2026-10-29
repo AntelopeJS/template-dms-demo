@@ -1,10 +1,6 @@
 import path from "node:path";
 import { type DocSpec, renderDocument } from "./pdf-layout";
 
-// Brand assets: the logo files are hand-written SVG shipped in the content
-// folder (tsc copies no asset, so they live outside src and are read from
-// disk); the campaign banner and the brand guide are generated here.
-
 /** `content/helio` at the project root, from src/ or dist/ alike. */
 export const CONTENT_DIR = path.join(__dirname, "../../../../content/helio");
 
@@ -16,12 +12,15 @@ export interface BrandFile {
   source: { filePath: string } | { bytes: Uint8Array };
 }
 
+/** A logo file shipped in the content folder: tsc copies no asset, so the hand-written SVGs live outside src and are read from disk. */
 const brandFile = (fileName: string) => ({
   filePath: path.join(CONTENT_DIR, "brand", fileName),
 });
 
-// The banner of the autumn battery campaign the website runs (see the
-// marketing content: its landing page and UTM campaign carry the same name).
+/**
+ * The banner of the autumn battery campaign the website runs; its landing
+ * page and UTM campaign in the marketing content carry the same name.
+ */
 const AUTUMN_BANNER = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 628" width="1200" height="628">
 <defs><linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C2D12"/><stop offset="1" stop-color="#EA580C"/></linearGradient></defs>
 <rect width="1200" height="628" fill="url(#sky)"/>
@@ -74,7 +73,10 @@ const BRAND_GUIDE: DocSpec = {
   ],
 };
 
-/** Every file of the "Brand & marketing" folder. */
+/**
+ * Every file of the "Brand & marketing" folder: the logo files, then the
+ * campaign banner and the brand guide, which are generated here.
+ */
 export function brandFiles(): BrandFile[] {
   return [
     {

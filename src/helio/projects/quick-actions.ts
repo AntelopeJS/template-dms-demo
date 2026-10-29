@@ -2,8 +2,6 @@ import { QuickAction } from "@antelopejs/interface-dms/quick-actions";
 import { helioQuickActions } from "../shared/quick-actions";
 import { PageHelioProjects } from "./list-page";
 
-// Command palette (Ctrl/Cmd+K): plan a new installation, or open the week's
-// planning straight away.
 QuickAction("helio-new-project", {
   category: helioQuickActions,
   displayName: "$helio.projects.quickActions.newProject",

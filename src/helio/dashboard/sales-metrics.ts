@@ -1,7 +1,3 @@
-// Sales figures of the dashboard, computed from the real Helio collections so
-// they match what the Invoices and Quotes pages list: revenue invoiced,
-// order intake (signed quotes), quote conversion and the product mix.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { type Invoice, InvoiceModel } from "../finance/database";
 import { type Quote, QuoteModel } from "../sales/database";
@@ -46,26 +42,32 @@ export interface ChartCardPayload {
   comparisonSeries?: ChartSeriesPayload[];
 }
 
-// Drafts are not sent yet and cancelled invoices were credited: neither is
-// revenue.
+/** Drafts are not sent yet and cancelled invoices were credited: neither is revenue. */
 const BILLED_STATUSES: ReadonlySet<Invoice["status"]> = new Set([
   "sent",
   "overdue",
   "paid",
 ]);
-// A quote still "sent" awaits the customer: only decided quotes count in the
-// conversion rate.
+/** A quote still "sent" awaits the customer: only decided quotes count in the conversion rate. */
 const DECIDED_STATUSES: ReadonlySet<Quote["status"]> = new Set([
   "accepted",
   "rejected",
   "expired",
 ]);
 
+/**
+ * The invoices that count as revenue, read from the real collection the
+ * Invoices page lists so the dashboard figures match it.
+ */
 export async function billedInvoices(): Promise<Invoice[]> {
   const invoices = await GetModel(InvoiceModel).getAll();
   return invoices.filter((invoice) => BILLED_STATUSES.has(invoice.status));
 }
 
+/**
+ * The signed quotes (order intake), read from the real collection the Quotes
+ * page lists so the dashboard figures match it.
+ */
 export async function acceptedQuotes(): Promise<Quote[]> {
   const quotes = await GetModel(QuoteModel).getAll();
   return quotes.filter((quote) => quote.status === "accepted");
@@ -139,8 +141,10 @@ export async function conversionKpi(period: Period): Promise<KpiPayload> {
   };
 }
 
-// Running total in cents, rounded to the euro once per point: its last point
-// is the revenue KPI to the euro (see sumByRange).
+/**
+ * Running total in cents, rounded to the euro once per point: its last point
+ * is the revenue KPI to the euro (see sumByRange).
+ */
 function cumulative(values: readonly number[]): number[] {
   let cents = 0;
   return values.map((value) => {
@@ -206,8 +210,10 @@ const PRODUCT_FAMILY = new Map(
   ]),
 );
 
-// Slice labels are printed as sent (see ./locale): the family names are
-// written in the reader's language here.
+/**
+ * Slice labels are printed as sent (see ./locale): the family names are
+ * written in the reader's language here.
+ */
 function familyName(familyId: string, language: ReaderLanguage): string {
   const entry = PRODUCT_CATEGORY_ROSTER.find((row) => row.id === familyId);
   return entry ? entry.name[language] : familyId;

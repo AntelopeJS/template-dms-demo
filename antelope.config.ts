@@ -15,16 +15,16 @@ export default defineConfig({
     DMS_API_PUBLIC_BASE_URL: "modules.api.config.publicBaseUrl",
     DMS_BOOTSTRAP_SECRET: "modules.dms.config.frontend.bootstrapSecret",
     DMS_CLIENT_BASE_URL: "modules.dms.config.clientBaseUrl",
-    // Set by AntelopeJS Cloud (X-Client-IP): the header its gateway overwrites with the client address.
+    /** Set by AntelopeJS Cloud (X-Client-IP): the header its gateway overwrites with the client address. */
     DMS_CLIENT_IP_HEADER: "modules.dms.config.auth.clientIpHeader",
     DMS_HTML_RENDER_SECRET: "modules.dms.config.htmlRender.serviceSecret",
-    // One secret signs and verifies the dashboard's tokens.
+    /** One secret signs and verifies the dashboard's tokens, so it feeds both modules. */
     JWT_SECRET: [
       "modules.dms.config.auth.jwtSecret",
       "modules.auth-jwt.config.secret",
     ],
     MONGODB_URL: "modules.mongodb.config.url",
-    // Where uploaded files live; a read-only container needs a writable path.
+    /** Where uploaded files live; a read-only container needs a writable path. */
     FILE_STORAGE_PATH: "modules.file-storage-local.config.storagePath",
     SMTP_HOST: "modules.nodemailer.config.host",
     SMTP_USER: "modules.nodemailer.config.auth.user",
@@ -35,15 +35,19 @@ export default defineConfig({
     STRIPE_PUBLISHABLE_KEY: "modules.dms-saas.config.stripe.publishableKey",
     STRIPE_WEBHOOK_SECRET: "modules.dms-saas.config.stripe.webhookSecret",
   },
-  // `ajs project build/start -e production`: dms refuses to start until
-  // JWT_SECRET, DMS_HTML_RENDER_SECRET and DMS_CLIENT_BASE_URL are set.
+  /**
+   * Overrides applied by `ajs project build/start -e production`: dms refuses to start until
+   * JWT_SECRET, DMS_HTML_RENDER_SECRET and DMS_CLIENT_BASE_URL are set.
+   */
   environments: {
     production: {
       modules: {
-        // auth-jwt has no such check: never sign with the public "dev" secret.
+        /** auth-jwt has no such check, so the public "dev" secret is blanked: never sign with it. */
         "auth-jwt": { config: { secret: "" } },
-        // Ethereal creates an account over the internet at every start;
-        // production sends through the SMTP relay SMTP_HOST names.
+        /**
+         * Ethereal creates an account over the internet at every start, so production turns it off
+         * and sends through the SMTP relay SMTP_HOST names.
+         */
         nodemailer: { config: { ethereal: false, port: 587 } },
       },
     },
@@ -55,12 +59,12 @@ export default defineConfig({
         path: ".",
         watchDir: ["src"],
         installCommand: ["pnpm install", "pnpm run build"],
-        // Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist.
+        /** Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist. */
         reloadCommand: ["pnpm exec tsc"],
       },
     },
 
-    // DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy.
+    /** DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy. */
     dms: {
       source: {
         type: "package",
@@ -78,7 +82,7 @@ export default defineConfig({
           jwtSecret: "dev",
         },
         frontend: {
-          // Generated in .antelope/dms-dev.json in development; set DMS_BOOTSTRAP_SECRET for builds.
+          /** Generated in .antelope/dms-dev.json in development; set DMS_BOOTSTRAP_SECRET for builds. */
           bootstrapSecret: "",
         },
       },
@@ -125,7 +129,7 @@ export default defineConfig({
         version: ">=0.6.1 <1.0.0",
       },
       config: {
-        // The sidecar runs on this host, so it reaches the API over loopback.
+        /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
@@ -160,13 +164,13 @@ export default defineConfig({
         version: ">=0.7.1 <1.0.0",
       },
       config: {
-        // Track the dashboard itself, so Marketing shows how the demo is used.
+        /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
         dashboardTracking: {
           enabled: true,
-          // Draw the click heatmaps over snapshots of the dashboard pages.
+          /** Draws the click heatmaps over snapshots of the dashboard pages. */
           snapshots: true,
         },
-        // Every visit records its clicks and scrolls, so the demo heatmaps fill quickly.
+        /** Every visit records its clicks and scrolls, so the demo heatmaps fill quickly. */
         heatmapSampleRate: 1,
       },
     },
@@ -182,9 +186,11 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        // 1.4.4 (mongodb#54) resolves a single row's relations next to a
-        // computed field: the products' edit form reads its range again. 1.5.0
-        // enforces unique indexes, which dms-mailing's slug index needs.
+        /**
+         * 1.4.4 (mongodb#54) resolves a single row's relations next to a
+         * computed field: the products' edit form reads its range again. 1.5.0
+         * enforces unique indexes, which dms-mailing's slug index needs.
+         */
         version: "^1.5.0",
       },
       config: {
@@ -206,10 +212,12 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/api",
-        // 1.3.0 publishes the API_* variables referenced above; 1.3.3 ends open
-        // connections on stop, so Ctrl+C does not wait for a dashboard tab;
-        // 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
-        // declares configVarsFile, which dms-frontend 0.9 reads at build.
+        /**
+         * 1.3.0 publishes the API_* variables the config references; 1.3.3 ends open
+         * connections on stop, so Ctrl+C does not wait for a dashboard tab;
+         * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
+         * declares configVarsFile, which dms-frontend 0.9 reads at build.
+         */
         version: "^1.5.0",
       },
       config: {

@@ -1,11 +1,11 @@
-// Where each member works: the region of the team table, and the province of
-// a customer's address mapped onto those regions. The project and ticket
-// fixtures send the technicians of the customer's region first, so a crew from
-// Liège does not drive to Tournai while the Hainaut technician stays idle.
-
 import { teamIdsByRole } from "../shared/roster";
 import { buildTeamMembers } from "./fixtures";
 
+/**
+ * Where a member works: the region of the team table. The project and ticket
+ * fixtures send the technicians of the customer's region first, so a crew from
+ * Liège does not drive to Tournai while the Hainaut technician stays idle.
+ */
 export type TeamRegion =
   | "liege"
   | "namur"
@@ -13,7 +13,10 @@ export type TeamRegion =
   | "hainaut"
   | "luxembourg";
 
-// Walloon Brabant has no technician of its own: Brussels covers it.
+/**
+ * The region of each province of a customer's address. Walloon Brabant has no
+ * technician of its own: Brussels covers it.
+ */
 const PROVINCE_REGION: Record<string, TeamRegion> = {
   Liège: "liege",
   Namur: "namur",

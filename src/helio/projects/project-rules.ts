@@ -1,15 +1,3 @@
-// What the projects data routes enforce whatever form writes to them (the
-// projects table's drawer, the detail page's form, a duplicate):
-//
-// - the code follows the others: CH-0101 is the oldest seeded project, and a
-//   new project left without a code takes the next free one, like a ticket's
-//   number; a duplicate starts without the code of the project it copies;
-// - a code names one project only;
-// - a project never ends before it starts;
-// - the quote a project carries out is one of its customer's (the form's
-//   quote picker lists the chosen customer's quotes only, but a write that
-//   does not come from it must hold too).
-
 import { HTTPResult, type RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import { GetModel } from "@antelopejs/interface-database-decorators";
@@ -17,10 +5,18 @@ import { QuoteModel } from "../sales/database";
 import { readBody } from "../shared/body-defaults";
 import { ProjectModel } from "./database";
 
+/** The start of every project code. */
 const PREFIX = "CH-";
+
+/** The width of the sequence number of a project code, zero-padded. */
 const DIGITS = 4;
 
-/** The next free code, after the highest one already used. */
+/**
+ * The next free code, after the highest one already used: the code follows the
+ * others, CH-0101 being the oldest seeded project. A new project left without
+ * a code takes it, and a duplicate starts without the code of the project it
+ * copies.
+ */
 export async function nextProjectCode(): Promise<string> {
   const projects = await GetModel(ProjectModel).getAll();
   const last = projects.reduce((highest, project) => {
@@ -31,6 +27,7 @@ export async function nextProjectCode(): Promise<string> {
   return `${PREFIX}${String(last + 1).padStart(DIGITS, "0")}`;
 }
 
+/** Whether a body value is missing: absent, null or a blank string. */
 const blank = (value: unknown): boolean =>
   value === undefined ||
   value === null ||
@@ -88,8 +85,10 @@ export function withoutCodeOnDuplicate(
   };
 }
 
-// The calendar day of a date, as a sortable number (20261019): a project may
-// start and end the same day, whatever hours the form and the seed store.
+/**
+ * The calendar day of a date, as a sortable number (20261019): a project may
+ * start and end the same day, whatever hours the form and the seed store.
+ */
 const dayOf = (value: unknown): number | undefined => {
   if (blank(value)) return undefined;
   if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -102,7 +101,10 @@ const dayOf = (value: unknown): number | undefined => {
   );
 };
 
-/** Refuses (400) a code another project already carries. */
+/**
+ * Refuses (400) a code another project already carries, whatever form writes
+ * it: the projects table's drawer, the detail page's form or a duplicate.
+ */
 export async function assertUniqueCode(
   code: unknown,
   ownId?: string,
@@ -129,7 +131,11 @@ export function assertEndAfterStart(start: unknown, end: unknown): void {
   }
 }
 
-/** Refuses (400) a quote made out to another customer than the project's. */
+/**
+ * Refuses (400) a quote made out to another customer than the project's. The
+ * form's quote picker lists the chosen customer's quotes only, but a write that
+ * does not come from it must hold too.
+ */
 export async function assertQuoteOfCustomer(
   customer: unknown,
   quote: unknown,

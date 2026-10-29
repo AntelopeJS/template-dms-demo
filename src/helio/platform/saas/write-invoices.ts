@@ -1,8 +1,3 @@
-// The invoice history of each paying workspace, as the Stripe webhooks would
-// have mirrored it: one invoice per billing period, paid by card on the day it
-// was issued. A workspace in dunning has its latest invoice still open, which
-// is what puts it in the operator's "needs attention" queue.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import {
   type InvoiceLine,
@@ -126,7 +121,12 @@ async function settleOlderOpenInvoices(
   }
 }
 
-/** Writes the invoices of the periods begun since the last boot. */
+/**
+ * Writes the invoices of the periods begun since the last boot, as the Stripe
+ * webhooks would have mirrored them: one invoice per billing period, paid by
+ * card on the day it was issued. A workspace in dunning has its latest invoice
+ * still open, which is what puts it in the operator's "needs attention" queue.
+ */
 export async function writeInvoices(
   workspace: SeedWorkspace,
   anchor: Date,

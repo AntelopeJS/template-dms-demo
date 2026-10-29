@@ -1,8 +1,3 @@
-// The fleet table: every site with its live reading, read from the telemetry
-// route of the page (a source table, no data controller: the readings are
-// computed, not stored). Offline sites stay pinned on top, a click opens the
-// site in a right drawer made of blocks, and a paused page holds the rows.
-
 import type { DataType } from "@antelopejs/interface-dms/base/data-types";
 import { DefaultDataTypes } from "@antelopejs/interface-dms/base/data-types/default-types";
 import { Form } from "@antelopejs/interface-dms/base/form";
@@ -14,10 +9,10 @@ import { LOCALITIES } from "../crm/seed-data";
 import { INVERTER_STATUSES } from "./controller";
 import { monitoringRoute, PERIOD_SCOPE, TELEMETRY_TOPIC } from "./links";
 
-// A report within the last minute reads "Live".
+/** A report within the last minute reads "Live". */
 const LIVE_WITHIN_MS = 60 * 1000;
 
-// One tab per inverter state, worded and coloured as the status column.
+/** One tab per inverter state, worded and coloured as the status column. */
 const statusTabs = INVERTER_STATUSES.map((status) => ({
   id: status.value,
   label: status.label,
@@ -26,19 +21,16 @@ const statusTabs = INVERTER_STATUSES.map((status) => ({
   filter: { accessorKey: "inverterStatus", mode: "is", value: status.value },
 }));
 
-/// The towns Helio installs in, offered by the city quick filter: a quick
-// filter lists the options of a select, which a free-text column has none
-// of. A site whose customer lives elsewhere still shows its city, drawn as
-// written; it is only missing from the filter.
+/**
+ * The towns Helio installs in, offered by the city quick filter: a quick
+ * filter lists the options of a select, which a free-text column has none of.
+ * A site whose customer lives elsewhere still shows its city, drawn as
+ * written; it is only missing from the filter.
+ */
 const CITIES = [...new Set(LOCALITIES.map(({ city }) => city))]
   .sort((a, b) => a.localeCompare(b, "fr"))
   .map((city) => ({ value: city, label: city }));
 
-// The drawer of a site: its facts, read for the row it opens on (clicked,
-// or named by ?record=<site id>) and shown as the other Helio drawers show a record, a
-// read-only form in titled parts. The drawer mounts one block: a container's
-// children are not rendered there (see the report), so the site's own
-// production chart stays out of it.
 const fact = (id: string, label: string, type: DataType) => ({
   id,
   label,
@@ -53,6 +45,13 @@ const factGroup = (
   fields: ReturnType<typeof fact>[],
 ) => ({ id, label, description, orientation: "vertical" as const, fields });
 
+/**
+ * The drawer of a site: its facts, read for the row it opens on (clicked, or
+ * named by `?record=<site id>`) and shown as the other Helio drawers show a
+ * record, a read-only form in titled parts. The drawer mounts one block and a
+ * container's children are not rendered there, so the site's own production
+ * chart stays out of it.
+ */
 const sitePanel = Form({
   fetchUrl: monitoringRoute("/sites/{{row.id}}/facts"),
   saveMode: "none",
@@ -140,11 +139,13 @@ const sitePanel = Form({
   ],
 });
 
-// Sized to fit a 1440 px screen with the sidebar open: figures are written
-// by the server as composed texts ("1 712,2 kWh"), grouped and with their
-// unit, so a narrow cell never cuts a number, and headers are one short word
-// (their description says the rest). The city (a quick filter) and the last
-// report (under the pill of an offline inverter) start hidden.
+/**
+ * Sized to fit a 1440 px screen with the sidebar open: figures are written by
+ * the server as composed texts (`"1 712,2 kWh"`), grouped and with their unit,
+ * so a narrow cell never cuts a number, and headers are one short word (their
+ * description says the rest). The city (a quick filter) and the last report
+ * (under the pill of an offline inverter) start hidden.
+ */
 const columns = {
   name: {
     name: "$helio.monitoring.table.columns.site",
@@ -249,6 +250,12 @@ const columns = {
   },
 };
 
+/**
+ * The fleet table: every site with its live reading, read from the telemetry
+ * route of the page (a source table, no data controller: the readings are
+ * computed, not stored). Offline sites stay pinned on top, a click opens the
+ * site in a right drawer made of blocks, and a paused page holds the rows.
+ */
 export const fleetTable = TableView.fromSource({
   caption: "$helio.monitoring.table.caption",
   fetchUrl: monitoringRoute("/sites"),

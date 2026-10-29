@@ -1,8 +1,3 @@
-// The figures above the invoice list: what customers still owe, what is late,
-// what came in over the last 30 days and how long payment takes (DSO).
-// Computed from the stored invoices on every read, so they follow each
-// payment recorded.
-
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { ComposedText } from "@antelopejs/interface-dms/base/types/composed-text";
@@ -104,9 +99,13 @@ function collectedCell(invoices: Invoice[], to: string): StatGroupItem {
   };
 }
 
-// DSO = receivables / sales of the window × days of the window. The detail
-// names the two amounts of that division, so the figure can be checked; an
-// average of payment delays would read as a second, contradicting figure.
+/**
+ * Days sales outstanding: receivables over the sales of the window, times the
+ * days of the window. The detail names the two amounts of that division, so
+ * the figure can be checked, where an average of payment delays would read as
+ * a second, contradicting figure. The receivable is written like the cards'
+ * amounts and reads the same as "Outstanding".
+ */
 function dsoCell(invoices: Invoice[]): StatGroupItem {
   const since = Date.now() - DSO_WINDOW_DAYS * DAY_MS;
   const billed = invoices.filter(
@@ -133,8 +132,6 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
     detail: {
       key: "$helio.finance.kpis.dso.detail",
       params: {
-        // Written like the cards' amounts: the receivable reads the same
-        // figure as "Outstanding".
         receivable: money(receivable),
         sales: money(sales),
         days: { type: "number", value: DSO_WINDOW_DAYS },
@@ -144,9 +141,12 @@ function dsoCell(invoices: Invoice[]): StatGroupItem {
 }
 
 /**
- * The four cells of the invoice KPI strip. Archived invoices are left out:
- * the list the cells open hides them (archive mode), so a card counting one
- * would announce a row the list never shows.
+ * The four cells of the invoice KPI strip: what customers still owe, what is
+ * late, what came in over the last 30 days and how long payment takes (DSO).
+ * They are computed from the stored invoices on every read, so they follow
+ * each payment recorded. Archived invoices are left out: the list the cells
+ * open hides them (archive mode), so a card counting one would announce a row
+ * the list never shows.
  */
 export async function invoiceKpis(links: KpiLinks): Promise<StatGroupItem[]> {
   const invoices = (await GetModel(InvoiceModel).getAll()).filter(

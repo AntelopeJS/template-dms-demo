@@ -11,7 +11,7 @@ import { QUOTE_STATUSES, quoteController } from "./controller";
 import { loadQuoteNumbers } from "./numbering";
 import { quoteViews } from "./views";
 
-// One tab per status, each counting its quotes.
+/** One tab per status, each counting its quotes. */
 const statusTabs = QUOTE_STATUSES.map((status) => ({
   id: status.value,
   label: status.label,
@@ -21,8 +21,10 @@ const statusTabs = QUOTE_STATUSES.map((status) => ({
   filter: { accessorKey: "status", value: status.value, mode: "is" },
 }));
 
-// The quotes Helio sends its customers: drafted with their lines, sent for
-// signature, then accepted (the start of a project) or lost.
+/**
+ * The quotes Helio sends its customers: drafted with their lines, sent for
+ * signature, then accepted (the start of a project) or lost.
+ */
 @RegisterPage()
 export class PageHelioQuotes extends PageController(
   "quotes",
@@ -35,6 +37,16 @@ export class PageHelioQuotes extends PageController(
   },
   DefaultLayout({ fullWidth: true }),
 ) {
+  /**
+   * The quotes table. `?customer=<id>` and `?deal=<id>` filter it, for the links
+   * from the customers and the pipeline. The expanded row shows the lines on
+   * the left and the amounts on the right (two columns, filled row by row).
+   * Before a new quote is written, the guard checks the VAT rate (a business
+   * pays the standard rate) and reads the numbers already used, as the write
+   * cannot wait for the database; after it, the stored customer name follows.
+   * An edit only sends what changed, so the stored row fills the rest before
+   * the same check.
+   */
   static table = TableView(quoteController, {
     caption: "$helio.sales.quotes.table.caption",
     labelKey: "number",
@@ -47,7 +59,6 @@ export class PageHelioQuotes extends PageController(
     quickFilters: [
       { field: "customer", label: "$helio.sales.quotes.quickFilters.customer" },
     ],
-    // Links from the customers and the pipeline: `?customer=<id>`, `?deal=<id>`.
     queryParamFilters: {
       customer: {
         field: "customer",
@@ -60,8 +71,6 @@ export class PageHelioQuotes extends PageController(
         label: "$helio.sales.quotes.chips.deal",
       },
     },
-    // The lines on the left, the amounts on the right (two columns, filled
-    // row by row).
     expandable: {
       fieldsLabel: "$helio.sales.quotes.expand.label",
       fields: [
@@ -124,15 +133,11 @@ export class PageHelioQuotes extends PageController(
     },
     rowActions: quoteRowActions,
     guards: {
-      // The number a new quote takes follows the last one of its year: read
-      // them before the write, which cannot wait for the database. A
-      // business pays the standard rate; the stored customer name follows.
       new: async (_ctx, { body }) => {
         await assertVatRate(body.customer, body.vatRate);
         await loadQuoteNumbers();
         return afterQuoteWrite;
       },
-      // An edit only sends what changed: the stored row fills the rest.
       edit: async (_ctx, { body, current }) => {
         const row = { ...current, ...body };
         await assertVatRate(row.customer, row.vatRate);

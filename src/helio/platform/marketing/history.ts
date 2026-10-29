@@ -14,12 +14,6 @@ import {
 import { buildVisit } from "./journeys";
 import { WEBSITE_ID } from "./site";
 
-// Twelve weeks of traffic history for the website, dated back from the boot
-// that first imports it: a weekly rhythm, a slow seasonal rise, peaks on the
-// newsletter days and at the Namur fair, and the autumn battery campaign
-// lifting paid traffic over the last weeks. Split into imports of four weeks
-// each, well under the 10,000 sessions a call accepts.
-
 const HISTORY_DAYS = 84;
 const DAYS_PER_IMPORT = 28;
 const HOUR_MS = 60 * 60 * 1000;
@@ -29,7 +23,7 @@ const RETURNING_SHARE = 0.24;
 const RECENT_VISITORS = 600;
 const SEED = 20_261_017;
 
-// Visits by local hour: a lunch peak, then evenings after work.
+/** Relative weight of each local hour of the day: a lunch peak, then evenings after work. */
 const HOUR_WEIGHTS: ReadonlyArray<readonly [number, number]> = [
   [0, 1],
   [1, 0.5],
@@ -90,6 +84,10 @@ function startOfUtcDay(at: number): number {
   return Math.floor(at / DAY_MS) * DAY_MS;
 }
 
+/**
+ * The sessions of one day before now. Today stops at the boot, so no visit is
+ * dated in the future.
+ */
 function sessionsOfDay(
   rng: Rng,
   pool: VisitorPool,
@@ -105,7 +103,6 @@ function sessionsOfDay(
       midnight +
       (hour - BRUSSELS_OFFSET_HOURS) * HOUR_MS +
       rng.int(0, 3599) * 1000;
-    // Today stops at the boot: no visit is dated in the future.
     if (start >= now - 5 * 60 * 1000) continue;
     const visitor = pool.next();
     const acquisition = acquire(rng, rng.weighted(channelWeights(day)), day);
@@ -123,7 +120,14 @@ function sessionsOfDay(
   return sessions;
 }
 
-/** The whole history, as the imports to send in order. */
+/**
+ * Twelve weeks of traffic history for the website, dated back from the boot
+ * that first imports it, as the imports to send in order: a weekly rhythm, a
+ * slow seasonal rise, peaks on the newsletter days and at the Namur fair, and
+ * the autumn battery campaign lifting paid traffic over the last weeks. It is
+ * split into imports of four weeks each, well under the 10,000 sessions a call
+ * accepts.
+ */
 export function historyImports(now: number): MarketingAnalyticsImport[] {
   const rng = createRng(SEED);
   const pool = new VisitorPool(rng);

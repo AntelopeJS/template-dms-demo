@@ -45,8 +45,12 @@ import {
   type StockLevel,
 } from "./options";
 
-// Not exported on purpose: emitting a .d.ts for this class would require
-// naming types from the nested @antelopejs/interface-core copies (TS2742).
+/**
+ * The data API of the products, behind every table, picker and form that
+ * reads them. Not exported on purpose: emitting a .d.ts for this class would
+ * require naming types from the nested @antelopejs/interface-core copies
+ * (TS2742), so `productController` is exported instead.
+ */
 @RegisterDataController()
 class productDataAPI extends DataController(
   Product,
@@ -57,8 +61,10 @@ class productDataAPI extends DataController(
   @Model(ProductModel)
   declare model: ProductModel;
 
-  // The description is localized: read in the caller's language, every
-  // language at once for forms ("*").
+  /**
+   * The language the localized description is read and written in. Forms
+   * ask for "*" and get every language at once.
+   */
   @Parameter("x-content-language", "header")
   @ModifierKey(LocalizationModifier)
   declare language: string;
@@ -136,11 +142,13 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare category: string;
 
-  // The family is the parent of the product's range, read in the database
-  // from helio_product_categories: the views and the quick filter narrow on
-  // five families instead of eleven ranges, without a stored copy that could
-  // drift when a range moves. Hidden by default: the list route answers it
-  // whenever the Columns menu shows it (Query.ListPage, interface-data-api#43).
+  /**
+   * The family is the parent of the product's range, read in the database
+   * from helio_product_categories: the views and the quick filter narrow on
+   * the families instead of every range, without a stored copy that could
+   * drift when a range moves. Hidden by default: the list route answers it
+   * whenever the Columns menu shows it (Query.ListPage, interface-data-api#43).
+   */
   @Listable()
   @Sortable()
   @Computed(
@@ -200,7 +208,10 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare cost: number;
 
-  // Gross margin on the price; drawn, not stored.
+  /**
+   * Gross margin on the price, computed on read and not stored. It is null
+   * without a price or a cost.
+   */
   @Listable(["price", "cost"])
   @Column({
     name: "$helio.catalog.products.columns.margin",
@@ -216,6 +227,10 @@ class productDataAPI extends DataController(
     return Math.round(((price - cost) / price) * 1000) / 1000;
   }
 
+  /**
+   * Peak power (W) or capacity (Wh). A service has none, so the column shows a
+   * dash instead of a number.
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -226,7 +241,6 @@ class productDataAPI extends DataController(
       step: 1,
       suffix: "$helio.catalog.products.powerSuffix",
       width: "compact",
-      // A service has no power (left empty): a dash.
       fallback: "—",
     }),
     filterable: true,
@@ -251,6 +265,10 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare unit: string;
 
+  /**
+   * Units in the warehouse. The grid shows them over the reorder threshold,
+   * toned by how close the stock is to it (`stockStatus`).
+   */
   @Listable()
   @Sortable()
   @Exported()
@@ -263,8 +281,6 @@ class productDataAPI extends DataController(
       width: "compact",
     }),
     filterable: true,
-    // The units in stock over the reorder threshold, toned by how close the
-    // stock is to it.
     display: new DefaultDisplays.TwoLineDisplay({
       subField: "stockStatus",
       emptyLabel: "$helio.catalog.products.stock.notStocked",
@@ -289,9 +305,12 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare stockMin: number;
 
-  // Below the reorder threshold, computed in the database so a view or a
-  // quick filter can list the products to reorder. Hidden: `stockLevel`
-  // says the same with more nuance, in the grid and on the cards.
+  /**
+   * Whether the stock is below the reorder threshold, computed in the
+   * database so a view or a quick filter can list the products to reorder.
+   * Hidden: `stockLevel` says the same with more nuance, in the grid and on
+   * the cards.
+   */
   @Listable()
   @Computed(
     (row) => {
@@ -320,10 +339,12 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadOnly)
   declare lowStock: boolean;
 
-  // A plain text and not a UrlType: the seeded visuals are paths on the
-  // dashboard's own origin (/api/helio/catalog-visuals/…), which a URL check
-  // refuses. Not an ImageType either: its values are uploads the DMS tracks,
-  // which a fixture cannot create.
+  /**
+   * A plain text and not a UrlType: the seeded visuals are paths on the
+   * dashboard's own origin (/api/helio/catalog-visuals/…), which a URL check
+   * refuses. Not an ImageType either: its values are uploads the DMS tracks,
+   * which a fixture cannot create.
+   */
   @Select()
   @Listable()
   @Column({
@@ -339,10 +360,12 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare image: string;
 
-  // The same picture typed as an image, for the cards display: a card field
-  // renders through its column's data type and ignores `display`, so the
-  // name column's avatar never reaches a card. The image type draws a URL
-  // string as an avatar. Read-only: forms keep editing `image`.
+  /**
+   * The same picture typed as an image, for the cards display: a card field
+   * renders through its column's data type and ignores `display`, so the
+   * name column's avatar never reaches a card. The image type draws a URL
+   * string as an avatar. Read-only: forms keep editing `image`.
+   */
   @Listable(["image"])
   @Column({
     name: "$helio.catalog.products.columns.picture",
@@ -407,7 +430,7 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare isActive: boolean;
 
-  // The position a hand-ordered catalog (`reorder`) saves.
+  /** The position a hand-ordered catalog (`reorder`) saves. */
   @Listable()
   @Sortable()
   @Column({
@@ -424,9 +447,12 @@ class productDataAPI extends DataController(
   @Access(AccessMode.ReadWrite)
   declare displayOrder: number;
 
-  // Where the stock stands against its threshold, as a select so it reads
-  // the same on the cards (which draw a column's data type, not its
-  // display) as in the grid (a toned pill).
+  /**
+   * Where the stock stands against its threshold, as a select so it reads the
+   * same on the cards (which draw a column's data type, not its display) as
+   * in the grid (a toned pill). A stock at or above the threshold but under
+   * `LOW_STOCK_MARGIN` times it reads "running_low".
+   */
   @Listable(["stock", "stockMin"])
   @Column({
     name: "$helio.catalog.products.columns.stockLevel",
@@ -452,8 +478,11 @@ class productDataAPI extends DataController(
     return stock < stockMin * LOW_STOCK_MARGIN ? "running_low" : "in_stock";
   }
 
-  // The line under the stock: the reorder threshold, in red once the stock
-  // fell below it, in orange when it gets close (less than 1.5 times it).
+  /**
+   * The line under the stock: the reorder threshold, with the error tone once
+   * the stock fell below it and the warning tone when it is under
+   * `LOW_STOCK_MARGIN` times it. It is null for a product without a stock or a threshold.
+   */
   @Listable(["stock", "stockMin"])
   @Access(AccessMode.ReadOnly)
   get stockStatus(): CellSubline | null {
@@ -473,6 +502,5 @@ class productDataAPI extends DataController(
   }
 }
 
-// ControllerClass-typed alias for quote lines, project pages and the catalog
-// (see the TS2742 note above).
+/** ControllerClass-typed alias of `productDataAPI` for quote lines, project pages and the catalog (see the TS2742 note above). */
 export const productController: ControllerClass = productDataAPI;

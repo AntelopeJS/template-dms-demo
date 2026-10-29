@@ -46,9 +46,11 @@ async function loadRows(): Promise<WorkloadRows> {
   return { members, tickets, projects, now: new Date() };
 }
 
-// The team directory: who works at Helio, in which role and region, who can
-// be reached now, and how loaded each technician is with open tickets and
-// active sites. Every figure is computed from the tickets and projects.
+/**
+ * The team directory: who works at Helio, in which role and region, who can
+ * be reached now, and how loaded each technician is with open tickets and
+ * active sites. Every figure is computed from the tickets and projects.
+ */
 @RegisterPage()
 export class PageHelioTeam extends PageController(
   "team",
@@ -150,6 +152,16 @@ export class PageHelioTeam extends PageController(
       ),
   );
 
+  /**
+   * The member directory, as cards or a table grouped by role. Availability is
+   * the "Available" view rather than a quick filter, because a quick filter on a
+   * status column reads "Yes / No", not its labels. Removing a member leaves
+   * their open tickets unassigned, as the removal dialog says, so the desk and
+   * the counts above find them again. A click on a member (a card or a row),
+   * their "Quick view" and `?record=<member id>` (a project's crew) open the
+   * member read-only in a right drawer, so there is no details modal besides it;
+   * "Edit" from the menu opens the form.
+   */
   static table = TableView(teamController, {
     caption: "$helio.team.table.caption",
     labelKey: "name",
@@ -161,8 +173,6 @@ export class PageHelioTeam extends PageController(
     grouped: { groupByField: "role", collapsible: true, count: true },
     card: { fields: ["role", "region", "online", "skills"] },
     defaultSort: { field: "name" },
-    // Availability is the "Available" view rather than a quick filter: a
-    // quick filter on a status column reads "Yes / No", not its labels.
     quickFilters: [{ field: "region", label: "$helio.team.columns.region" }],
     expandable: {
       fields: [
@@ -256,8 +266,6 @@ export class PageHelioTeam extends PageController(
         description: "$helio.team.empty.filtered_description",
       },
     },
-    // A member removed leaves their open tickets unassigned, as the removal
-    // dialog says, so the desk and the counts above find them again.
     guards: {
       delete:
         (_ctx, { ids }) =>
@@ -282,7 +290,6 @@ export class PageHelioTeam extends PageController(
     rowActions: {
       add: true,
       edit: true,
-      // The quick view below shows a member: no details modal besides it.
       details: false,
       copyLink: true,
       hasSelection: true,
@@ -296,9 +303,6 @@ export class PageHelioTeam extends PageController(
           confirmLabel: "$helio.team.delete.confirm",
         },
       },
-      // A click on a member (a card or a row), their "Quick view" and
-      // `?record=<member id>` (a project's crew) open the member read-only in
-      // a right drawer; "Edit" from the menu opens the form.
       custom: [
         {
           id: "quick-view",
@@ -327,8 +331,11 @@ export class PageHelioTeam extends PageController(
     },
   });
 
-  // Figures of the blocks above, read again on every visit: they follow the
-  // tickets and projects as the other pages change them.
+  /**
+   * Figures of the blocks above, read again on every visit by this and the other
+   * `/workload/*` routes: they follow the tickets and projects as the other
+   * pages change them.
+   */
   @Get("/workload/stats")
   async workloadStats() {
     return { items: teamStats(await loadRows()) };

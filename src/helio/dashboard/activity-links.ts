@@ -1,6 +1,3 @@
-// How an activity entry links to its record and which tone it is drawn in,
-// shared by the seeded history (fixtures.ts) and the live log (log.ts).
-
 import type { Tone } from "@antelopejs/interface-dms/base/types";
 import { HELIO_PAGES } from "./links";
 
@@ -30,6 +27,7 @@ export const HELIO_LINKS = {
 
 export type ActivityRecordKind = keyof typeof HELIO_LINKS;
 
+/** The tone each kind of event is drawn in, shared by the seeded history (fixtures.ts) and the live log (log.ts). */
 export const ACTIVITY_TONES: Record<ActivityType, Tone> = {
   deal_won: "success",
   quote_sent: "info",
@@ -43,7 +41,7 @@ export const ACTIVITY_TONES: Record<ActivityType, Tone> = {
   invoice_overdue: "error",
 };
 
-/** The dashboard path of one record. */
+/** The dashboard path of one record, as the seeded history (fixtures.ts) and the live log (log.ts) link it. */
 export function activityLink(kind: ActivityRecordKind, id: string): string {
   return HELIO_LINKS[kind].replace("{id}", encodeURIComponent(id));
 }
