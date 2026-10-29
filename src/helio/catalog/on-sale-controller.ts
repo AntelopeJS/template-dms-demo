@@ -27,6 +27,9 @@ import { Product, ProductModel } from "./database";
  */
 const ON_SALE_ONLY = {
   /** The column type's "is" mode; the data API passes the mode through. */
+  // SAFETY: interface-data-api types the mode as a comparison ("eq", "ne", "gt",
+  // "ge", "lt", "le"), but the list route hands the route filter's mode to the
+  // column's filter unchanged, and BooleanType resolves "is" among its modes.
   isActive: ["true", "is" as FilterValue[1]],
 } satisfies Record<string, FilterValue>;
 

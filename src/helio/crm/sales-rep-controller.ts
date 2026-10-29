@@ -27,6 +27,9 @@ import { TeamMember, TeamMemberModel } from "../team/database";
  * passes the mode through).
  */
 const SALES_ONLY = {
+  // SAFETY: interface-data-api types the mode as a comparison ("eq", "ne", "gt",
+  // "ge", "lt", "le"), but the list route hands the route filter's mode to the
+  // column's filter unchanged, and StringType resolves "is" among its modes.
   role: ["sales", "is" as FilterValue[1]],
 } satisfies Record<string, FilterValue>;
 
