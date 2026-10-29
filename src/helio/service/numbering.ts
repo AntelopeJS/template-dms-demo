@@ -1,5 +1,6 @@
 import type { RequestContext } from "@antelopejs/interface-api";
 import type { DataControllerCallback } from "@antelopejs/interface-data-api";
+import type { Parameters } from "@antelopejs/interface-data-api/components";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { readBody, textOf } from "../shared/body-defaults";
 import { isText } from "../shared/json";
@@ -57,7 +58,7 @@ export function withTicketNumber(
     func: async function (
       this: unknown,
       ctx: RequestContext,
-      params: unknown,
+      params: Parameters.NewParameters,
       raw: Buffer | string,
       ...rest: unknown[]
     ) {

@@ -24,12 +24,12 @@ export function addMonths(from: Date, months: number): Date {
 type StoredRow = Record<string, unknown>;
 
 interface Runnable {
-  run(): PromiseLike<unknown>;
+  run(): PromiseLike<string[]>;
 }
 
 /** The part of a model's table the seed uses: read a row, write a row. */
 interface SeedTableHandle {
-  get(id: string): PromiseLike<unknown>;
+  get(id: string): PromiseLike<object | null | undefined>;
   insert(row: StoredRow): Runnable;
 }
 
