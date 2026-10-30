@@ -1,0 +1,53 @@
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { alertKindOf, priorityOf } from "./alert-kinds";
+
+const INHERITED_NAMES = [
+  "constructor",
+  "toString",
+  "valueOf",
+  "hasOwnProperty",
+  "__proto__",
+];
+
+void describe("alertKindOf", () => {
+  void it("reads the kind of each known alert", () => {
+    assert.strictEqual(
+      alertKindOf("inverter_offline").category,
+      "inverter_error",
+    );
+    assert.strictEqual(alertKindOf("low_production").category, "no_production");
+  });
+
+  void it("opens a generic monitoring ticket for a missing or unknown alert", () => {
+    const generic = { category: "monitoring", subject: "anomalie détectée" };
+    assert.deepStrictEqual(alertKindOf(undefined), generic);
+    assert.deepStrictEqual(alertKindOf("unknown_alert"), generic);
+  });
+
+  void it("opens the generic ticket for an alert named like an Object member", () => {
+    const generic = alertKindOf(undefined);
+    for (const name of INHERITED_NAMES) {
+      assert.deepStrictEqual(alertKindOf(name), generic, name);
+    }
+  });
+});
+
+void describe("priorityOf", () => {
+  void it("maps each known severity", () => {
+    assert.strictEqual(priorityOf("critical"), "urgent");
+    assert.strictEqual(priorityOf("warning"), "high");
+    assert.strictEqual(priorityOf("info"), "normal");
+  });
+
+  void it("answers normal for a missing or unknown severity", () => {
+    assert.strictEqual(priorityOf(undefined), "normal");
+    assert.strictEqual(priorityOf("severe"), "normal");
+  });
+
+  void it("answers normal for a severity named like an Object member", () => {
+    for (const name of INHERITED_NAMES) {
+      assert.strictEqual(priorityOf(name), "normal", name);
+    }
+  });
+});
