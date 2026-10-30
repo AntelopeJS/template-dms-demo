@@ -62,7 +62,7 @@ function keepInstance<T>(instance: T): T {
   return instance;
 }
 
-function readDates<T>(row: SeedRow<T>): [string, Date][] {
+function readDates(row: { _id: string }): [string, Date][] {
   return Object.entries<unknown>(row).filter(
     (entry): entry is [string, Date] => entry[1] instanceof Date,
   );
