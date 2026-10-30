@@ -1,9 +1,7 @@
 {
   "pack": "0.2.17",
   "rules": {
-    "antelopejs/no-inherited-key-lookup": 3,
-    "antelopejs/no-presence-only-type-guard": 1,
-    "anti-slop/no-known-value-widening": 3
+    "antelopejs/no-presence-only-type-guard": 1
   },
   "oversizeFiles": {}
 }
