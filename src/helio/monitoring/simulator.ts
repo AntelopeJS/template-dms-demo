@@ -92,7 +92,7 @@ export function startMonitoringSimulator(): void {
   if (!simulatorsEnabled()) return;
   round = 0;
   state.timer = setInterval(() => {
-    runRound().catch((error) =>
+    runRound().catch((error: unknown) =>
       Logging.Error(`[helio] telemetry simulator: ${String(error)}`),
     );
   }, REPORT_INTERVAL_MS);
