@@ -19,6 +19,13 @@ jobs:
       # `pnpm run checks` typechecks but never emits; this proves `dist`
       # still builds, the output `ajs project run` and `ajs dms build` load.
       extra-commands: pnpm build
+      renovate-sync: false
+    permissions:
+      contents: read
+  renovate-sync:
+    if: >-
+      github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/') && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       actions: write
+    uses: AntelopeJS/.github/.github/workflows/ci-renovate-sync.yml@v1
