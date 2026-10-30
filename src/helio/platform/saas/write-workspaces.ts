@@ -9,7 +9,13 @@ import {
   TenantSubscriptionModel,
 } from "@antelopejs/interface-dms-saas/db";
 import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/billing";
-import { addDays, addMonths, insertMissing, type SeedRow } from "./rows";
+import {
+  addDays,
+  addMonths,
+  insertMissing,
+  type RowOf,
+  type SeedRow,
+} from "./rows";
 import { findPlan } from "./plans";
 import { dunningSince, nextRenewal } from "./schedule";
 import { type SeedWorkspace, stripeSubscriptionIdOf } from "./workspaces";
@@ -41,7 +47,7 @@ function memberRole(
   tenantId: string,
   permissions: string[],
   at: Date,
-): SeedRow {
+): SeedRow<RowOf<typeof RoleModel>> {
   return {
     _id: memberRoleId(tenantId),
     name: "Member",
@@ -70,7 +76,7 @@ function paidUsagePeriods(
  * A churned workspace is written active first and cancelled right after, so
  * dms-saas records the revenue it took away (the churn figures read it).
  */
-function initialStatus(workspace: SeedWorkspace): string {
+function initialStatus(workspace: SeedWorkspace): SeedWorkspace["status"] {
   return workspace.status === "cancelled" ? "active" : workspace.status;
 }
 
@@ -94,7 +100,7 @@ function toSubscriptionRow(
   workspace: SeedWorkspace,
   createdAt: Date,
   now: Date,
-): SeedRow {
+): SeedRow<RowOf<typeof TenantSubscriptionModel>> {
   const isBilled =
     BILLED_STATUSES.has(workspace.status) &&
     findPlan(workspace.planId).price > 0;
@@ -134,7 +140,9 @@ function toSubscriptionRow(
   };
 }
 
-function toBillingInfoRow(workspace: SeedWorkspace): SeedRow {
+function toBillingInfoRow(
+  workspace: SeedWorkspace,
+): SeedRow<RowOf<typeof TenantBillingInfoModel>> {
   return {
     ...workspace.billing,
     _id: workspace.id,

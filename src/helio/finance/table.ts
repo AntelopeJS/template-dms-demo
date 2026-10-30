@@ -12,6 +12,7 @@ import { logInvoicePaid } from "./actions";
 import {
   INVOICE_STATUSES,
   invoiceController,
+  type InvoiceRow,
   PAYMENT_METHODS,
 } from "./controller";
 import { assertUniqueNumber } from "./numbering";
@@ -94,7 +95,7 @@ const VIEWS: TableViewView[] = [
 ];
 
 /** Records a payment, for one invoice or for the whole selection. */
-const markPaidAction: CustomRowAction = {
+const markPaidAction: CustomRowAction<InvoiceRow> = {
   id: "mark-paid",
   label: "$helio.finance.invoices.markPaid.action",
   icon: "i-ph-check-circle",
@@ -120,7 +121,7 @@ const markPaidAction: CustomRowAction = {
  * A credit note cancels an issued invoice: nothing left to pay, the number
  * stays used, and the invoice can then be archived or deleted.
  */
-const cancelAction: CustomRowAction = {
+const cancelAction: CustomRowAction<InvoiceRow> = {
   id: "cancel",
   label: "$helio.finance.invoices.cancel.action",
   icon: "i-ph-prohibit",
@@ -173,7 +174,7 @@ export function markPaidFields(today: Date) {
 }
 
 /** Sends a payment reminder for the overdue invoices selected. */
-const remindAction: CustomRowAction = {
+const remindAction: CustomRowAction<InvoiceRow> = {
   id: "remind",
   label: "$helio.finance.invoices.remind.action",
   icon: "i-ph-envelope-simple",
@@ -207,7 +208,7 @@ const remindAction: CustomRowAction = {
 };
 
 /** Downloads the invoice document served by the page's `document` route. */
-const downloadAction: CustomRowAction = {
+const downloadAction: CustomRowAction<InvoiceRow> = {
   id: "download",
   label: "$helio.finance.invoices.download",
   icon: "i-ph-file-arrow-down",
@@ -223,7 +224,7 @@ const downloadAction: CustomRowAction = {
  * dashboard's activity feed, a project's invoicing tab) open the invoice
  * read-only in a right drawer; J / K walk the invoices.
  */
-const quickViewAction: CustomRowAction = {
+const quickViewAction: CustomRowAction<InvoiceRow> = {
   id: "quick-view",
   label: "$helio.finance.invoices.quickView.action",
   icon: "i-ph-sidebar-simple",

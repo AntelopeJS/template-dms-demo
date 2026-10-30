@@ -1,5 +1,7 @@
 import type { Class } from "@antelopejs/interface-core/decorators";
 import type { InstanceId } from "@antelopejs/interface-database";
+import type { LocalizedText } from "./features";
+import type { DeepPartial } from "@antelopejs/interface-database-decorators/common";
 import {
   type DataModel,
   GetModel,
@@ -20,31 +22,38 @@ export function addMonths(from: Date, months: number): Date {
   return date;
 }
 
-/** A row in the form the database stores it. */
-type StoredRow = Record<string, unknown>;
-
 interface Runnable {
   run(): PromiseLike<string[]>;
 }
 
 /** The part of a model's table the seed uses: read a row, write a row. */
-interface SeedTableHandle {
+interface SeedTableHandle<T> {
   get(id: string): PromiseLike<object | null | undefined>;
-  insert(row: StoredRow): Runnable;
+  insert(row: DeepPartial<T>): Runnable;
 }
 
-interface ModelInstance {
-  readonly table: SeedTableHandle;
+interface ModelInstance<T> {
+  readonly table: SeedTableHandle<T>;
 }
 
 /** A table model whose statics convert rows, as every `BasicDataModel` has. */
 export type SeedTable<T> = DataModel<T> &
-  Class<ModelInstance> & {
-    toDatabase(row: T): StoredRow;
+  Class<ModelInstance<T>> & {
+    toDatabase(row: T): DeepPartial<T>;
   };
 
-/** A row to write: its id, and the fields the seed sets. */
-export type SeedRow = { _id: string } & Record<string, unknown>;
+/**
+ * A row to write: its id, and the fields the seed sets, in the plain form
+ * `fromPlainData` reads: the model's own fields, a localized one given as its
+ * text per locale.
+ */
+export type SeedRow<T> = { _id: string } & {
+  [Field in keyof DeepPartial<T>]: DeepPartial<T>[Field] | LocalizedText;
+};
+
+/** The table class a model stores. */
+export type RowOf<Model extends DataModel> =
+  Model extends DataModel<infer T> ? T : never;
 
 /** Turns a fresh instance into what gets stored, before it is converted. */
 export type PrepareInstance<T> = (instance: T) => T;
@@ -53,8 +62,8 @@ function keepInstance<T>(instance: T): T {
   return instance;
 }
 
-function readDates(row: SeedRow): [string, Date][] {
-  return Object.entries(row).filter(
+function readDates(row: { _id: string }): [string, Date][] {
+  return Object.entries<unknown>(row).filter(
     (entry): entry is [string, Date] => entry[1] instanceof Date,
   );
 }
@@ -66,9 +75,9 @@ function readDates(row: SeedRow): [string, Date][] {
  */
 function toStoredRow<T extends object>(
   model: SeedTable<T>,
-  row: SeedRow,
+  row: SeedRow<T>,
   prepare: PrepareInstance<T>,
-): StoredRow {
+): DeepPartial<T> {
   const instance = prepare(model.fromPlainData(row));
   triggerEvent(instance, "insert");
   for (const [field, date] of readDates(row)) {
@@ -92,7 +101,7 @@ function toStoredRow<T extends object>(
  */
 export async function insertMissing<T extends object>(
   model: SeedTable<T>,
-  rows: SeedRow[],
+  rows: SeedRow<T>[],
   instanceId?: InstanceId,
   prepare: PrepareInstance<T> = keepInstance,
 ): Promise<number> {

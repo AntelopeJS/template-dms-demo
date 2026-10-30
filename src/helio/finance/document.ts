@@ -48,8 +48,11 @@ const escapeHtml = (value: string | number | undefined): string =>
     (char) => HTML_ESCAPES.get(char) ?? char,
   );
 
-const fill = (template: string, values: Record<string, string>): string =>
-  template.replace(/\{(\w+)\}/g, (match, key: string) => values[key] ?? match);
+const fill = (template: string, values: ReadonlyMap<string, string>): string =>
+  template.replace(
+    /\{(\w+)\}/g,
+    (match, key: string) => values.get(key) ?? match,
+  );
 
 /**
  * The Belgian structured reference (+++123/4567/89012+++) of an invoice
@@ -159,7 +162,7 @@ function linesBlock(data: DocumentData, texts: DocumentTexts): string {
   const { invoice } = data;
   const format = formatters(texts);
   const label = data.projectCode
-    ? fill(texts.projectLine, { code: data.projectCode })
+    ? fill(texts.projectLine, new Map([["code", data.projectCode]]))
     : texts.serviceLine;
   const vatLabel = `${texts.vat} ${Math.round(invoice.vatRate * 100)} %`;
   const paid =
@@ -189,14 +192,25 @@ function paymentBlock(data: DocumentData, texts: DocumentTexts): string {
   if (invoice.status === "paid") {
     const method =
       texts.methods[invoice.paymentMethod] ?? invoice.paymentMethod;
-    return `<section class="payment"><h3>${escapeHtml(texts.paymentTitle)}</h3><p>${escapeHtml(fill(texts.paidOn, { date: format.date(invoice.paidAt), method }))}</p></section>`;
+    return `<section class="payment"><h3>${escapeHtml(texts.paymentTitle)}</h3><p>${escapeHtml(
+      fill(
+        texts.paidOn,
+        new Map([
+          ["date", format.date(invoice.paidAt)],
+          ["method", method],
+        ]),
+      ),
+    )}</p></section>`;
   }
   if (invoice.status === "cancelled") return "";
-  const line = fill(texts.paymentLine, {
-    date: format.date(invoice.dueAt),
-    iban: data.company.iban,
-    bic: data.company.bic,
-  });
+  const line = fill(
+    texts.paymentLine,
+    new Map([
+      ["date", format.date(invoice.dueAt)],
+      ["iban", data.company.iban],
+      ["bic", data.company.bic],
+    ]),
+  );
   return `<section class="payment"><h3>${escapeHtml(texts.paymentTitle)}</h3><p>${escapeHtml(line)}</p>
 <p>${escapeHtml(texts.communication)} <strong class="mono">${escapeHtml(structuredReference(invoice.number))}</strong></p></section>`;
 }

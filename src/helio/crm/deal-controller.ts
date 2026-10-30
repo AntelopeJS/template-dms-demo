@@ -129,7 +129,7 @@ export const LOST_REASONS = [
   },
 ] as const;
 
-const LOST_REASON_LABELS: Record<string, string> = Object.fromEntries(
+const LOST_REASON_LABELS: ReadonlyMap<string, string> = new Map(
   LOST_REASONS.map(({ value, label }) => [value, label]),
 );
 
@@ -461,7 +461,7 @@ class dealDataAPI extends DataController(
   get stageDetail(): string | null {
     const { stage, lostReason } = this.table;
     if (stage !== "lost" || !lostReason) return null;
-    return LOST_REASON_LABELS[lostReason] ?? null;
+    return LOST_REASON_LABELS.get(lostReason) ?? null;
   }
 }
 

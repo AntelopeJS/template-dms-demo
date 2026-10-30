@@ -55,10 +55,24 @@ export function withProjectCode(
     ) {
       const body = readBody(raw);
       if (!body || !blank(body.code)) {
-        return route.func.call(this, ctx, params, raw, ...rest);
+        const untouched: unknown = route.func.call(
+          this,
+          ctx,
+          params,
+          raw,
+          ...rest,
+        );
+        return untouched;
       }
       body.code = await nextProjectCode();
-      return route.func.call(this, ctx, params, body, ...rest);
+      const created: unknown = route.func.call(
+        this,
+        ctx,
+        params,
+        body,
+        ...rest,
+      );
+      return created;
     },
   };
 }

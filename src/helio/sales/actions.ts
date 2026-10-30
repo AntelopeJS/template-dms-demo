@@ -5,17 +5,17 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import type { CustomRowAction } from "@antelopejs/interface-dms/base/types/row-action";
 import { CUSTOMERS_URL, PIPELINE_URL } from "../crm/links";
-import { quoteController } from "./controller";
+import { quoteController, type QuoteRow } from "./controller";
 import { quoteActionUrl } from "./links";
 
-const isDraft = { field: "status", equals: "draft" };
-const isSent = { field: "status", equals: "sent" };
+const isDraft = { field: "status", equals: "draft" } as const;
+const isSent = { field: "status", equals: "sent" } as const;
 
 /**
  * Opened by a click on the row, its "Quick view" and `?record=<id>`, the link
  * other Helio pages (projects, dashboard) use to show one quote.
  */
-const quickView: CustomRowAction = {
+const quickView: CustomRowAction<QuoteRow> = {
   id: "quick-view",
   label: "$helio.sales.quotes.actions.quickView",
   icon: "i-ph-sidebar-simple",
@@ -44,7 +44,7 @@ const quickView: CustomRowAction = {
  * names the customer, the address the quote goes to and what changes once it
  * is sent.
  */
-const send: CustomRowAction = {
+const send: CustomRowAction<QuoteRow> = {
   id: "send",
   label: "$helio.sales.quotes.actions.send",
   icon: "i-ph-paper-plane-tilt",
@@ -60,7 +60,7 @@ const send: CustomRowAction = {
   },
 };
 
-const accept: CustomRowAction = {
+const accept: CustomRowAction<QuoteRow> = {
   id: "accept",
   label: "$helio.sales.quotes.actions.accept",
   icon: "i-ph-seal-check",
@@ -83,7 +83,7 @@ const accept: CustomRowAction = {
 };
 
 /** Marks a sent quote rejected. The reason, when given, is kept with the quote (its own field). */
-const reject: CustomRowAction = {
+const reject: CustomRowAction<QuoteRow> = {
   id: "reject",
   label: "$helio.sales.quotes.actions.reject",
   icon: "i-ph-x-circle",
@@ -116,7 +116,7 @@ const reject: CustomRowAction = {
 };
 
 /** Copies the portal link. A draft has none yet: the customer receives it when the quote is sent. */
-const copyPortalLink: CustomRowAction = {
+const copyPortalLink: CustomRowAction<QuoteRow> = {
   id: "portal-link",
   label: "$helio.sales.quotes.actions.portalLink",
   icon: "i-ph-link",
@@ -130,7 +130,7 @@ const copyPortalLink: CustomRowAction = {
   },
 };
 
-const downloadPdf: CustomRowAction = {
+const downloadPdf: CustomRowAction<QuoteRow> = {
   id: "download",
   label: "$helio.sales.quotes.actions.download",
   icon: "i-ph-file-pdf",
@@ -145,7 +145,7 @@ const downloadPdf: CustomRowAction = {
  * Opens the customers page on the quote's customer. A relation column lists
  * the related row (`{ _id, name }`), not its id, so the link names its `_id`.
  */
-const openCustomer: CustomRowAction = {
+const openCustomer: CustomRowAction<QuoteRow> = {
   id: "customer",
   label: "$helio.sales.quotes.actions.customer",
   icon: "i-ph-user-circle",
@@ -153,7 +153,7 @@ const openCustomer: CustomRowAction = {
 };
 
 /** Opens the pipeline narrowed to the customer's deals (its `?customer=` filter). */
-const openDeals: CustomRowAction = {
+const openDeals: CustomRowAction<QuoteRow> = {
   id: "deals",
   label: "$helio.sales.quotes.actions.deals",
   icon: "i-ph-kanban",
@@ -170,7 +170,7 @@ const openDeals: CustomRowAction = {
  * edited or deleted: a sent quote is what the customer holds. The quick view
  * shows a quote, so there is no details page besides it.
  */
-export const quoteRowActions: TableViewRowActionOptions = {
+export const quoteRowActions: TableViewRowActionOptions<QuoteRow> = {
   add: {
     placement: "header",
     label: "$helio.sales.quotes.actions.new",

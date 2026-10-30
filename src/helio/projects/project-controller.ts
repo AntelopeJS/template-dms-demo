@@ -417,4 +417,7 @@ class projectDataAPI extends DataController(
 }
 
 /** The projects controller as relations and pages reference it (see the TS2742 note on the class). */
-export const projectController: ControllerClass = projectDataAPI;
+export type ProjectRow = {
+  [Field in keyof projectDataAPI]: projectDataAPI[Field];
+};
+export const projectController: ControllerClass<ProjectRow> = projectDataAPI;
