@@ -3,7 +3,7 @@ import type { DataControllerCallback } from "@antelopejs/interface-data-api";
 import type { Parameters } from "@antelopejs/interface-data-api/components";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { readBody, textOf } from "../shared/body-defaults";
-import { isText } from "../shared/json";
+import { isObject, isText } from "../shared/json";
 import { fireTicketOpened } from "../platform/automation/events";
 import { mailTicketReceived } from "../platform/mailing/send";
 import { defaultHolderFor } from "./assignees";
@@ -63,15 +63,31 @@ export function withTicketNumber(
       ...rest: unknown[]
     ) {
       const body = readBody(raw);
-      if (!body) return route.func.call(this, ctx, params, raw, ...rest);
+      if (!body) {
+        const untouched: unknown = route.func.call(
+          this,
+          ctx,
+          params,
+          raw,
+          ...rest,
+        );
+        return untouched;
+      }
       if (!body.number) body.number = await nextTicketNumber();
       if (!body.assignee) {
         const holder = await defaultHolderFor(textOf(body.priority));
         if (holder) body.assignee = holder;
       }
-      const result = await route.func.call(this, ctx, params, body, ...rest);
-      const id: unknown = result?._id;
-      if (isText(id)) await afterCreate(id);
+      const result: unknown = await route.func.call(
+        this,
+        ctx,
+        params,
+        body,
+        ...rest,
+      );
+      if (isObject(result) && "_id" in result && isText(result._id)) {
+        await afterCreate(result._id);
+      }
       return result;
     },
   };

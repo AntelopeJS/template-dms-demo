@@ -108,12 +108,13 @@ function withRawParent(
         params: Parameters.ListParameters | undefined,
         ...rest: unknown[]
       ) {
-        return callback.func.call(
+        const result: unknown = callback.func.call(
           this,
           ctx,
           { ...params, noForeign: true },
           ...rest,
         );
+        return result;
       },
     },
   };
