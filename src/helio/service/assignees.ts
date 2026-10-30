@@ -25,6 +25,7 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { HelioSettingsModel } from "../settings/database";
 import { HELIO_SETTINGS_ID } from "../settings/types";
+import { isObject } from "../shared/json";
 import type { TeamRole } from "../shared/roster";
 import { TeamMember, TeamMemberModel } from "../team/database";
 import { TicketModel } from "./database";
@@ -102,8 +103,20 @@ export async function releaseOpenTickets(memberIds: string[]): Promise<void> {
 
 /** The part of a select route's answer that `holdersOnly` reads and rewrites. */
 interface SelectPage {
-  results?: Array<{ role?: TeamRole }>;
-  total?: number;
+  results: unknown[];
+}
+
+function isSelectPage(value: unknown): value is SelectPage {
+  return isObject(value) && "results" in value && Array.isArray(value.results);
+}
+
+/** Whether a row of the select answer names a member who may hold a ticket. */
+function isHolderRow(row: unknown): row is { role: TeamRole } {
+  return (
+    isObject(row) &&
+    "role" in row &&
+    [...TICKET_HOLDER_ROLES].some((holder) => holder === row.role)
+  );
 }
 
 /** Page size used to read the whole team (a dozen people) in one go. */
@@ -129,16 +142,14 @@ function holdersOnly(
         params: { limit?: number; offset?: number } | undefined,
         ...rest: unknown[]
       ) {
-        const page = (await callback.func.call(
+        const page: unknown = await callback.func.call(
           this,
           ctx,
           { ...params, limit: WHOLE_TEAM, offset: 0 },
           ...rest,
-        )) as SelectPage | undefined;
-        if (!page?.results) return page;
-        const results = page.results.filter(
-          (row) => row.role !== undefined && TICKET_HOLDER_ROLES.has(row.role),
         );
+        if (!isSelectPage(page)) return page;
+        const results = page.results.filter(isHolderRow);
         return { ...page, results, total: results.length };
       },
     },
