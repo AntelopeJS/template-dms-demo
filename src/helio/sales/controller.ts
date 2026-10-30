@@ -515,4 +515,6 @@ class quoteDataAPI extends DataController(
 }
 
 /** The quotes data API typed as a `ControllerClass`, for relations and pages (see the TS2742 note on the class). */
-export const quoteController: ControllerClass = quoteDataAPI;
+export type QuoteRow = { [Field in keyof quoteDataAPI]: quoteDataAPI[Field] };
+
+export const quoteController: ControllerClass<QuoteRow> = quoteDataAPI;

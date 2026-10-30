@@ -434,4 +434,8 @@ class invoiceDataAPI extends DataController(
 }
 
 /** `ControllerClass`-typed alias for relations and pages (see the TS2742 note). */
-export const invoiceController: ControllerClass = invoiceDataAPI;
+export type InvoiceRow = {
+  [Field in keyof invoiceDataAPI]: invoiceDataAPI[Field];
+};
+
+export const invoiceController: ControllerClass<InvoiceRow> = invoiceDataAPI;

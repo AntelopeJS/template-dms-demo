@@ -519,4 +519,8 @@ class ticketDataAPI extends DataController(
 }
 
 /** `ControllerClass`-typed alias of the controller above, for relations and pages (see the TS2742 note on the class). */
-export const ticketController: ControllerClass = ticketDataAPI;
+export type TicketRow = {
+  [Field in keyof ticketDataAPI]: ticketDataAPI[Field];
+};
+
+export const ticketController: ControllerClass<TicketRow> = ticketDataAPI;
