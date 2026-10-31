@@ -11,6 +11,7 @@ import {
   type NotificationSettings,
   type OperationsSettings,
 } from "./types";
+import { helioNow } from "../shared/clock";
 
 const HOUR_MS = 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
@@ -67,7 +68,7 @@ export function pickerDay(date: Date): Date {
  * in the future whatever day the demo is installed.
  */
 function nextWinterClosure(): DateRange {
-  const now = new Date();
+  const now = new Date(helioNow());
   let year = now.getFullYear();
   if (pickerDay(now).getTime() > Date.UTC(year, 11, 24)) year += 1;
   return {

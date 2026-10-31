@@ -32,6 +32,7 @@ import {
   ticketLoad,
   type WorkloadRows,
 } from "./workload";
+import { helioNow } from "../shared/clock";
 
 const PAGE_SLUG = "/helio/operations/team";
 const route = (path: string) => pageRoutePath(PAGE_SLUG, path);
@@ -43,7 +44,7 @@ async function loadRows(): Promise<WorkloadRows> {
     GetModel(TicketModel).getAll(),
     GetModel(ProjectModel).getAll(),
   ]);
-  return { members, tickets, projects, now: new Date() };
+  return { members, tickets, projects, now: new Date(helioNow()) };
 }
 
 /**

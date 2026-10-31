@@ -24,6 +24,7 @@ import { TeamMemberModel } from "../../team/database";
 import type { JsonValue } from "../../shared/json";
 import { type AlertKind, alertKindOf, priorityOf } from "./alert-kinds";
 import { fireTicketOpened } from "./events";
+import { helioNow } from "../../shared/clock";
 
 const HOUR_MS = 60 * 60 * 1000;
 const CLOSED = new Set(["resolved", "closed"]);
@@ -92,7 +93,7 @@ async function insertAlertTicket(
   priority: TicketPriority,
   message: string | undefined,
 ): Promise<TicketSeed> {
-  const createdAt = new Date();
+  const createdAt = new Date(helioNow());
   const ticket: TicketSeed = {
     _id: `ticket-alert-${createdAt.getTime().toString(36)}`,
     number: await nextTicketNumber(),

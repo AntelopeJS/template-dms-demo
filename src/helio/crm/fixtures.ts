@@ -19,6 +19,7 @@ import {
   NEXT_STEPS,
   RESIDENTIAL_NOTES,
 } from "./seed-data";
+import { helioNow } from "../shared/clock";
 
 export interface CustomerSeed {
   _id: string;
@@ -345,7 +346,7 @@ function shuffled<T>(rng: Rng, items: T[]): T[] {
 }
 
 function minutesAgo(minutes: number): Date {
-  return new Date(Date.now() - minutes * 60_000);
+  return new Date(helioNow() - minutes * 60_000);
 }
 
 interface DealDraft {
@@ -520,5 +521,5 @@ export function wonDealCustomer(index: number): string {
 
 /** Days between a won deal's signature and now, handy to age its project. */
 export function daysSinceWon(fact: WonDealFact): number {
-  return Math.round((Date.now() - fact.closedAt.getTime()) / DAY_MS);
+  return Math.round((helioNow() - fact.closedAt.getTime()) / DAY_MS);
 }

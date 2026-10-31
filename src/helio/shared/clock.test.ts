@@ -23,7 +23,8 @@ void describe("helioNow", () => {
   });
 
   void it("answers the real time when HELIO_NOW is unset or empty", () => {
-    for (const env of [{}, { HELIO_NOW: "" }]) {
+    const environments: Record<string, string>[] = [{}, { HELIO_NOW: "" }];
+    for (const env of environments) {
       const before = Date.now();
       const read = Number(readClock(env));
       assert.ok(read >= before && read <= Date.now(), JSON.stringify(env));

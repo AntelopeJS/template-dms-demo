@@ -4,6 +4,7 @@ import type { ComposedText } from "@antelopejs/interface-dms/base/types/composed
 import { DAY_MS } from "../shared/seed";
 import { type Invoice, InvoiceModel } from "./database";
 import { daysLate } from "./due";
+import { helioNow } from "../shared/clock";
 
 /**
  * Window of "Collected": the days the "Paid in the last 30 days" view it
@@ -78,7 +79,7 @@ function overdueCell(invoices: Invoice[], to: string): StatGroupItem {
 }
 
 function collectedCell(invoices: Invoice[], to: string): StatGroupItem {
-  const since = Date.now() - COLLECTED_WINDOW_DAYS * DAY_MS;
+  const since = helioNow() - COLLECTED_WINDOW_DAYS * DAY_MS;
   const paid = invoices.filter(
     (invoice) =>
       invoice.status === "paid" &&
@@ -107,7 +108,7 @@ function collectedCell(invoices: Invoice[], to: string): StatGroupItem {
  * amounts and reads the same as "Outstanding".
  */
 function dsoCell(invoices: Invoice[]): StatGroupItem {
-  const since = Date.now() - DSO_WINDOW_DAYS * DAY_MS;
+  const since = helioNow() - DSO_WINDOW_DAYS * DAY_MS;
   const billed = invoices.filter(
     (invoice) =>
       !NOT_BILLED.includes(invoice.status) &&

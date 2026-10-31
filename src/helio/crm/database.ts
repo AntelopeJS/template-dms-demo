@@ -14,6 +14,7 @@ import { DEMO_SCHEMA_NAME } from "../../schema";
 import { TeamMember } from "../team/database";
 import { buildCustomers, buildDeals } from "./fixtures";
 import { withFirstContact } from "./first-contact";
+import { helioNow } from "../shared/clock";
 
 const CUSTOMERS_TABLE = "helio_customers";
 const DEALS_TABLE = "helio_deals";
@@ -67,7 +68,7 @@ class CreationTimeIfMissing extends AutoDateModifier {
     object: Parameters<AutoDateModifier["insert"]>[0],
     field: string,
   ): void {
-    object[field] ??= new Date();
+    object[field] ??= new Date(helioNow());
   }
 }
 

@@ -23,6 +23,7 @@ import {
   noticedRecords,
   recordNotice,
 } from "../mailing";
+import { helioNow } from "../../shared/clock";
 
 const SENT = new Set(["queued", "sent", "delivered"]);
 
@@ -50,7 +51,7 @@ function dueReminder(
 ): Pick<ReminderStep, "channel"> | undefined {
   if (invoice.status !== "overdue") return undefined;
   const sinceLast = invoice.remindedAt
-    ? (Date.now() - invoice.remindedAt.getTime()) / DAY_MS
+    ? (helioNow() - invoice.remindedAt.getTime()) / DAY_MS
     : Number.POSITIVE_INFINITY;
   if (sinceLast < (input.minDaysBetween ?? 7)) return undefined;
   const late = daysLate(invoice.dueAt);
@@ -67,7 +68,7 @@ function dueReminder(
 async function stampReminder(invoice: Invoice): Promise<number> {
   const reminderCount = (invoice.reminderCount ?? 0) + 1;
   await GetModel(InvoiceModel).update(invoice._id, {
-    remindedAt: new Date(),
+    remindedAt: new Date(helioNow()),
     reminderCount,
   });
   return reminderCount;
@@ -194,7 +195,7 @@ async function kickoffTask(project: Project, quoteNumber: string) {
     title: `Appel de lancement avec le client (devis ${quoteNumber})`,
     status: "todo",
     assignee: project.leadTechnician,
-    dueDate: new Date(Date.now() + 3 * DAY_MS),
+    dueDate: new Date(helioNow() + 3 * DAY_MS),
     estimateHours: 1,
     position: Math.max(0, ...existing.map(({ position }) => position)) + 1000,
   });
@@ -256,7 +257,7 @@ const planKickoff: ActionType<{ quoteId?: string }, KickoffOutput> = {
     if (quote.deal) {
       await GetModel(DealModel).update(quote.deal, {
         kickoffQuote: quote.number,
-        lastActivityAt: new Date(),
+        lastActivityAt: new Date(helioNow()),
       });
     }
     ctx.log("info", "no project yet: the deal carries the kick-off");
@@ -274,7 +275,7 @@ async function projectsToConfirm(daysAhead: number): Promise<Project[]> {
     GetModel(ProjectModel).getBy("status", "scheduled"),
     noticedRecords("installation"),
   ]);
-  const now = Date.now();
+  const now = helioNow();
   return scheduled.filter(
     (project) =>
       !noticed.has(project._id) &&
@@ -322,7 +323,7 @@ const confirmInstallations: ActionType<
     for (const project of projects) {
       const result = await mailInstallation(project);
       if (result && SENT.has(result.status)) {
-        await recordNotice("installation", project._id, new Date());
+        await recordNotice("installation", project._id, new Date(helioNow()));
         confirmed.push(project.code);
       } else {
         ctx.log("warn", `confirmation for ${project.code} not sent`);

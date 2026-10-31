@@ -19,6 +19,7 @@ import {
 } from "./desk-rules";
 import { SLA_HOURS } from "./options";
 import { SUBJECTS } from "./subjects";
+import { helioNow } from "../shared/clock";
 
 export type TicketSeed = Pick<
   Ticket,
@@ -99,7 +100,7 @@ function subjectOf(
  * a week went by without the customer reopening it.
  */
 function historyDraft(rng: Rng, sites: SiteSeed[]): TicketDraft {
-  const now = Date.now();
+  const now = helioNow();
   const category = pickCategory(rng);
   const channel = channelFor(rng, category);
   const priority = priorityFor(rng, category);
@@ -146,7 +147,7 @@ function openStatus(rng: Rng, ageMs: number): TicketStatus {
  * up to nearly twice its length.
  */
 function openDraft(rng: Rng, sites: SiteSeed[], slipped: boolean): TicketDraft {
-  const now = Date.now();
+  const now = helioNow();
   const category = pickCategory(rng);
   const channel = channelFor(rng, category);
   const priority = slipped ? "high" : priorityFor(rng, category);
@@ -182,7 +183,7 @@ function alertDrafts(rng: Rng, sites: SiteSeed[]): TicketDraft[] {
       const offline = site.inverterStatus === "offline";
       const createdAt = offline
         ? new Date(site.lastSeenAt.getTime() + 30 * MINUTE_MS)
-        : new Date(Date.now() - rng.int(2 * 60, 20 * 60) * MINUTE_MS);
+        : new Date(helioNow() - rng.int(2 * 60, 20 * 60) * MINUTE_MS);
       const status: TicketStatus = offline
         ? "waiting"
         : rng.pick(["new", "open", "open"] as const);
@@ -211,7 +212,7 @@ function urgentDrafts(rng: Rng, sites: SiteSeed[]): TicketDraft[] {
     const category = rng.pick(["no_production", "damage"] as const);
     const status: TicketStatus = hoursAgo < 1.5 ? "new" : "open";
     return {
-      createdAt: new Date(Date.now() - hoursAgo * HOUR_MS),
+      createdAt: new Date(helioNow() - hoursAgo * HOUR_MS),
       category,
       priority: "urgent",
       status,

@@ -1,5 +1,6 @@
 import { Logging } from "@antelopejs/interface-core/logging";
 import type { TicketPriority } from "../../service/database";
+import { helioNow } from "../../shared/clock";
 
 /** What a "Ticket opened" trigger hands its procedure. */
 export interface TicketOpenedEvent {
@@ -91,7 +92,7 @@ export function fireTicketOpened(ticket: {
     category: ticket.category,
     channel: ticket.channel,
     customerId: ticket.customer,
-    at: new Date().toISOString(),
+    at: new Date(helioNow()).toISOString(),
   });
 }
 
@@ -109,6 +110,6 @@ export function fireQuoteAccepted(quote: {
     customerId: quote.customer,
     dealId: quote.deal ?? "",
     total: quote.total,
-    at: new Date().toISOString(),
+    at: new Date(helioNow()).toISOString(),
   });
 }

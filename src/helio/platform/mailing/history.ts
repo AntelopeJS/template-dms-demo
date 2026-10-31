@@ -26,6 +26,7 @@ import {
   ticketResolvedMail,
 } from "./mails";
 import { MAIL_SOURCES } from "./send";
+import { helioNow } from "../../shared/clock";
 
 const WINDOW_DAYS = 45;
 const MINUTE_MS = 60 * 1000;
@@ -287,7 +288,7 @@ export interface HistoryImport {
  * sends to them are held back.
  */
 export async function importMailHistory(): Promise<HistoryImport> {
-  const now = Date.now();
+  const now = helioNow();
   const customers = new Map(
     (await GetModel(CustomerModel).getAll()).map((row) => [row._id, row]),
   );

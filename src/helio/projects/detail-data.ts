@@ -10,6 +10,7 @@ import { TeamMemberModel } from "../team/database";
 import type { TeamMember } from "../team/database";
 import { ProjectModel, ProjectTaskModel } from "./database";
 import type { Project, ProjectTask } from "./database";
+import { helioNow } from "../shared/clock";
 
 /**
  * Everything the detail page of one project shows, read in one go: the
@@ -122,6 +123,6 @@ export function addressLine(project: Project): string {
 }
 
 /** Whether the planned end passed while the project is not finished. */
-export function isLate(project: Project, now = Date.now()): boolean {
+export function isLate(project: Project, now = helioNow()): boolean {
   return project.status !== "done" && project.plannedEnd.getTime() < now;
 }

@@ -19,6 +19,7 @@ import { TeamMemberModel } from "../team/database";
 import { minorUnits } from "./activity";
 import { HELIO_PAGES } from "./links";
 import { toTime } from "./period";
+import { helioNow } from "../shared/clock";
 
 const SOON_DAYS = 14;
 const CLOSING_DAYS = 30;
@@ -66,7 +67,7 @@ async function pipelineItem(): Promise<StatGroupItem> {
 
 async function worksiteItem(): Promise<StatGroupItem> {
   const projects = await GetModel(ProjectModel).getAll();
-  const now = Date.now();
+  const now = helioNow();
   const onSite = projects.filter((project) => project.status === "in_progress");
   const starting = projects.filter((project) => {
     const start = toTime(project.plannedStart);
@@ -118,7 +119,7 @@ async function serviceItem(): Promise<StatGroupItem> {
   );
   const urgent = open.filter((ticket) => ticket.priority === "urgent");
   const atRisk = open.filter(
-    (ticket) => toTime(ticket.slaDueAt) <= Date.now() + SLA_WARNING_MS,
+    (ticket) => toTime(ticket.slaDueAt) <= helioNow() + SLA_WARNING_MS,
   );
   return {
     id: "service",
@@ -163,7 +164,7 @@ async function salesCards(): Promise<NavCardItem[]> {
     GetModel(QuoteModel).getAll(),
     GetModel(CustomerModel).getAll(),
   ]);
-  const horizon = Date.now() + CLOSING_DAYS * DAY_MS;
+  const horizon = helioNow() + CLOSING_DAYS * DAY_MS;
   const closing = deals.filter(
     (deal) =>
       OPEN_DEAL_STAGES.includes(deal.stage) &&

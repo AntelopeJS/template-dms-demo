@@ -7,6 +7,7 @@ import { teamIdsByRole } from "../shared/roster";
 import { DAY_MS } from "../shared/seed";
 import { type Invoice, InvoiceModel, type PaymentMethod } from "./database";
 import { isPastDue } from "./due";
+import { helioNow } from "../shared/clock";
 
 const HTTP_BAD_REQUEST = 400;
 const HTTP_CONFLICT = 409;
@@ -74,9 +75,9 @@ function isPaymentMethod(value: string): value is PaymentMethod {
  * received yet is not a payment.
  */
 function paymentDate(raw: string | undefined): Date {
-  if (!raw) return new Date();
+  if (!raw) return new Date(helioNow());
   const date = new Date(raw);
-  if (Number.isNaN(date.getTime()) || date.getTime() > Date.now() + DAY_MS) {
+  if (Number.isNaN(date.getTime()) || date.getTime() > helioNow() + DAY_MS) {
     throw new HTTPResult(HTTP_BAD_REQUEST, {
       message: "$helio.finance.invoices.markPaid.futureDate",
       field: "paidAt",
@@ -151,7 +152,7 @@ export async function remindInvoices(ids: string[]): Promise<number> {
       message: "$helio.finance.invoices.remind.nothing",
     });
   }
-  const remindedAt = new Date();
+  const remindedAt = new Date(helioNow());
   await Promise.all(
     invoices.map((invoice) =>
       model.update(invoice._id, {
