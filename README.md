@@ -168,6 +168,21 @@ later sign-ins go through **`/auth`**, the login screen (there is no `/login`
 route). `/auth/forgot`, `/auth/recover`, `/auth/2fa` and the other auth screens
 live under the same prefix.
 
+## AI assistant
+
+The assistant in the dashboard runs a coding agent in this project's folder, Claude Code or Codex, on your own subscription. Open the chat with the sparkle icon in the header, or press `Ctrl` `Shift` `K`. Its settings are under **Modules** > **Assistant**. To have Claude Code or Codex work on this repository's code instead, see [AI coding agents](#ai-coding-agents).
+
+**Without Docker.** The assistant runs as you, on your machine, so it uses the logins you already have. You set no token and no API key.
+
+- **Claude Code.** If you are signed in to Claude Code on this machine, the assistant uses that login. If you are not, run `claude` once and sign in. The assistant runs the copy of Claude Code that `@antelopejs/dms-ai` installs, so it needs no `claude` on your `PATH`.
+- **Codex.** Add `@openai/codex` 0.154.0 to this project with `pnpm add -w @openai/codex@0.154.0`. The assistant does not read a `codex login` from your terminal. Open **Assistant** > **Settings** and press **Sign in with ChatGPT** once. The sign-in is stored in `~/.config/dms-ai` and serves every DMS project on your machine.
+
+**With Docker.** The assistant runs inside the container, which has none of your logins. Give the container one of these in its environment:
+
+- **Claude Code with your Claude subscription.** On your machine, run `claude setup-token` and set `CLAUDE_CODE_OAUTH_TOKEN` to the token it prints.
+- **Codex with your ChatGPT plan.** Open **Assistant** > **Settings** and press **Sign in with ChatGPT**. The page that OpenAI sends you back to does not load, because the assistant is in the container. Copy its address from the address bar and press **Paste the return address**.
+- **An Anthropic API key**, if you prefer one. Set `ANTHROPIC_API_KEY=sk-ant-...`.
+
 ## Environment
 
 For optional overrides, create a git-ignored `.env` at the repository root.
