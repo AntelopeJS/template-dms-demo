@@ -5,10 +5,7 @@ import {
 } from "../shared/roster";
 import { productVisualUrl } from "./visuals";
 
-interface Localized {
-  en: string;
-  fr: string;
-}
+type Localized = Record<"en" | "fr", string>;
 
 export interface ProductCategorySeed {
   _id: string;
