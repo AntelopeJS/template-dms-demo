@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { describe, it } from "node:test";
 import { readProjectFile } from "./helpers/project-file";
 
-/** The lowest pnpm the project pins, the version the other AntelopeJS repositories pin. Measured: pnpm up to 10.13.1 fails with ENOENT on a `file:` tarball whose index the resolution step wrote under another name, in a store that has not fetched the tarball yet (#105); 10.14.0 is the first release that passes. */
+/** The lowest pnpm the project pins: 10.33.0. Measured: a resolving install in a fresh store fails with ENOENT on a `file:` tarball up to pnpm 10.13.1 and passes from 10.14.0 (#105), so 10.33.0 is a chosen pin, not the first fixed release. Of the 58 AntelopeJS repositories that pin a pnpm on `campaign/integration`, 9 pin 10.33.0, 35 pin 10.6.5 and 12 pin 10.2.0. */
 const PINNED_FLOOR = [10, 33, 0] as const;
 
 function pinnedPnpm(): number[] {
