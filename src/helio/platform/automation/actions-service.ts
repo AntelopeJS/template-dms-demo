@@ -21,6 +21,8 @@ import {
 } from "../../service/options";
 import { currentSettings } from "../../settings/current";
 import { TeamMemberModel } from "../../team/database";
+import type { JsonValue } from "../../shared/json";
+import { type AlertKind, alertKindOf, priorityOf } from "./alert-kinds";
 import { fireTicketOpened } from "./events";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -30,44 +32,10 @@ const CLOSED = new Set(["resolved", "closed"]);
 interface AlertInput {
   payload?: AlertInput;
   siteId?: string;
-  alert?: string;
-  severity?: string;
+  alert?: JsonValue;
+  severity?: JsonValue;
   message?: string;
 }
-
-interface AlertKind {
-  category: TicketCategory;
-  subject: string;
-}
-
-const ALERT_KINDS: Record<string, AlertKind> = {
-  inverter_offline: {
-    category: "inverter_error",
-    subject: "onduleur hors ligne",
-  },
-  string_fault: {
-    category: "inverter_error",
-    subject: "défaut sur une chaîne de panneaux",
-  },
-  low_production: {
-    category: "no_production",
-    subject: "production anormalement basse",
-  },
-  communication_lost: {
-    category: "monitoring",
-    subject: "perte de communication",
-  },
-};
-const DEFAULT_ALERT: AlertKind = {
-  category: "monitoring",
-  subject: "anomalie détectée",
-};
-
-const PRIORITY_BY_SEVERITY: Record<string, TicketPriority> = {
-  critical: "urgent",
-  warning: "high",
-  info: "normal",
-};
 
 /** What opening a ticket from an alert reports, whether it opened one or found it open. */
 interface CreatedTicketOutput {
@@ -191,7 +159,7 @@ const createTicket: ActionType<AlertInput, CreatedTicketOutput> = {
   async execute(input, ctx) {
     const alert = { ...input.payload, ...input, payload: undefined };
     const site = await findSite(alert.siteId);
-    const kind = ALERT_KINDS[alert.alert ?? ""] ?? DEFAULT_ALERT;
+    const kind = alertKindOf(alert.alert);
     const existing = await openAlertTicket(site, kind.category);
     if (existing) {
       ctx.log("info", `alert already tracked by ${existing.number}`);
@@ -203,7 +171,7 @@ const createTicket: ActionType<AlertInput, CreatedTicketOutput> = {
         summary: `${existing.number} · ${site.name} (already open)`,
       };
     }
-    const priority = PRIORITY_BY_SEVERITY[alert.severity ?? ""] ?? "normal";
+    const priority = priorityOf(alert.severity);
     const ticket = await insertAlertTicket(site, kind, priority, alert.message);
     await PublishMessage(SERVICE_TOPIC, "tickets.created", {
       payload: { ids: [ticket._id] },
