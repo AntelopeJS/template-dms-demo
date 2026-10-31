@@ -206,7 +206,7 @@ Keep this table and `envOverrides` in sync.
 
 ## Capture state for documentation
 
-`pnpm run capture:start` builds the backend, then starts it and the dashboard with `HELIO_NOW=2026-06-15T09:00:00Z` (override it with the variable), `HELIO_SIMULATORS=off` and `TZ=UTC`, so the screens show the same data on every run. It prints `ready <url>` once the dashboard answers, and writes the logs of both processes to `.antelope/capture/`. Set `PORT` to serve the dashboard on another port than `3001`. The script reads `MONGODB_URL` and `MONGODB_DATABASE` like any start; point them at an empty database. `antelopejs-capture` from `@antelopejs/tooling-configs` runs it.
+`pnpm run capture:start` builds the backend, then starts it and the dashboard with `HELIO_NOW=2026-06-15T09:00:00Z` (override it with the variable), `HELIO_SIMULATORS=off` and `TZ=UTC`, so the screens show the same data on every run. The backend also runs on a clock fixed at `HELIO_NOW` (a `node --require` preload, `src/capture-clock.ts`): every `new Date()` and `Date.now()` in it and in its modules answers that instant and does not advance, so the stamps the DMS modules write are the same on every run. The dashboard keeps the real clock. If either process stops before the start finishes, the script stops both process trees (the backend, its sidecars) and exits with 1. It prints `ready <url>` once the dashboard answers, and writes the logs of both processes to `.antelope/capture/`. Set `PORT` to serve the dashboard on another port than `3001`. The script reads `MONGODB_URL` and `MONGODB_DATABASE` like any start; point them at an empty database. `antelopejs-capture` from `@antelopejs/tooling-configs` runs it.
 
 ## Configuration notes
 
