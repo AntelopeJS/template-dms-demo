@@ -6,14 +6,24 @@ import { describe, it } from "node:test";
 const CLOCK = join(__dirname, "clock.js");
 const INSTANT = "2026-06-15T09:00:00Z";
 
-function readClock(env: Record<string, string>): string {
+function evaluate(expression: string, env: Record<string, string>): string {
   const { HELIO_NOW: _unset, ...inherited } = process.env;
   return execFileSync(
     process.execPath,
-    ["-e", `console.log(require(${JSON.stringify(CLOCK)}).helioNow())`],
+    [
+      "-e",
+      `const clock = require(${JSON.stringify(CLOCK)}); console.log(${expression})`,
+    ],
     { env: { ...inherited, ...env }, encoding: "utf8", stdio: "pipe" },
   ).trim();
 }
+
+function readClock(env: Record<string, string>): string {
+  return evaluate("clock.helioNow()", env);
+}
+
+const UUID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 void describe("helioNow", () => {
   void it("answers the HELIO_NOW instant, whenever it is read", () => {
@@ -36,5 +46,50 @@ void describe("helioNow", () => {
       () => readClock({ HELIO_NOW: "next tuesday" }),
       /HELIO_NOW must be an ISO 8601 instant, got "next tuesday"/,
     );
+  });
+});
+
+void describe("helioInstalledAt", () => {
+  const STORED = "2026-10-31T19:22:24.014Z";
+
+  void it("answers the HELIO_NOW instant, whatever date the database stamped", () => {
+    const read = evaluate(
+      `clock.helioInstalledAt(new Date("${STORED}")).toISOString()`,
+      { HELIO_NOW: INSTANT },
+    );
+    assert.strictEqual(read, new Date(INSTANT).toISOString());
+  });
+
+  void it("answers the stored date when HELIO_NOW is unset", () => {
+    const read = evaluate(
+      `clock.helioInstalledAt(new Date("${STORED}")).toISOString()`,
+      {},
+    );
+    assert.strictEqual(read, STORED);
+  });
+});
+
+void describe("helioUuid", () => {
+  void it("answers the same UUID for a name on every run when HELIO_NOW fixes the instant", () => {
+    const env = { HELIO_NOW: INSTANT };
+    const first = evaluate('clock.helioUuid("ws-enerlux")', env);
+    assert.match(first, UUID);
+    assert.strictEqual(evaluate('clock.helioUuid("ws-enerlux")', env), first);
+    assert.notStrictEqual(
+      evaluate('clock.helioUuid("ws-wattelec")', env),
+      first,
+    );
+    assert.notStrictEqual(
+      evaluate('clock.helioUuid("ws-enerlux")', {
+        HELIO_NOW: "2026-06-16T09:00:00Z",
+      }),
+      first,
+    );
+  });
+
+  void it("answers a new UUID on every call otherwise", () => {
+    const first = evaluate('clock.helioUuid("ws-enerlux")', {});
+    assert.match(first, UUID);
+    assert.notStrictEqual(evaluate('clock.helioUuid("ws-enerlux")', {}), first);
   });
 });
