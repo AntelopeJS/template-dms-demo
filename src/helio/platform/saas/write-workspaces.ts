@@ -2,7 +2,12 @@ import { randomUUID } from "node:crypto";
 import { Schema } from "@antelopejs/interface-database";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { TENANT_SCHEMA_NAME } from "@antelopejs/interface-dms/constants";
-import { RoleModel, TenantModel } from "@antelopejs/interface-dms/db";
+import {
+  type Role,
+  RoleModel,
+  type Tenant,
+  TenantModel,
+} from "@antelopejs/interface-dms/db";
 import {
   type PaidUsagePeriod,
   TenantBillingInfoModel,
@@ -47,7 +52,7 @@ function memberRole(
   tenantId: string,
   permissions: string[],
   at: Date,
-): SeedRow<RowOf<typeof RoleModel>> {
+): SeedRow<Role> {
   return {
     _id: memberRoleId(tenantId),
     name: "Member",
@@ -181,7 +186,11 @@ export async function writeWorkspace(
   if (await GetModel(TenantSubscriptionModel, id).table.get(id)) return false;
   const createdAt = workspaceCreatedAt(workspace, now);
   await Schema.get(TENANT_SCHEMA_NAME)?.createInstance(id);
-  await insertMissing(RoleModel, [memberRole(id, permissions, createdAt)], id);
+  await insertMissing<Role>(
+    RoleModel,
+    [memberRole(id, permissions, createdAt)],
+    id,
+  );
   await insertMissing(
     TenantBillingInfoModel,
     [toBillingInfoRow(workspace)],
@@ -192,7 +201,7 @@ export async function writeWorkspace(
     [toSubscriptionRow(workspace, createdAt, now)],
     id,
   );
-  await insertMissing(TenantModel, [
+  await insertMissing<Tenant>(TenantModel, [
     { _id: id, name: workspace.name, createdAt, updatedAt: createdAt },
   ]);
   if (workspace.status === "cancelled") await cancelAfterPublishing(workspace);
