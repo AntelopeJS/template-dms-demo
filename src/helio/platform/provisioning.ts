@@ -2,6 +2,7 @@ import { Logging } from "@antelopejs/interface-core/logging";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
 import { provisionHelioMailing } from "./mailing";
+import { pinWebhookSecret } from "./mailing/webhook-secret";
 import { provisionHelioMarketing } from "./marketing";
 import { provisionHelioMedia } from "./media";
 import { provisionSaasShowcase } from "./saas";
@@ -14,6 +15,7 @@ interface ProvisioningStep {
 const STEPS: ProvisioningStep[] = [
   { name: "saas showcase", run: provisionSaasShowcase },
   { name: "mailing", run: provisionHelioMailing },
+  { name: "mailing webhook secret", run: pinWebhookSecret },
   { name: "media", run: provisionHelioMedia },
   { name: "marketing", run: provisionHelioMarketing },
 ];
