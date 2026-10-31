@@ -1,5 +1,5 @@
 import type { TicketCategory, TicketPriority } from "../../service/database";
-import { isText, type JsonValue } from "../../shared/json";
+import { isObject, isText, type JsonValue } from "../../shared/json";
 
 /** What a monitoring alert opens a ticket as. */
 export interface AlertKind {
@@ -39,12 +39,25 @@ const PRIORITY_BY_SEVERITY = new Map<string, TicketPriority>([
   ["info", "normal"],
 ]);
 
+/**
+ * The property key a webhook value used to be looked up by in the tables: text
+ * as is, an array as its items joined with commas, a number or a boolean as
+ * written, `null` as nothing, an object as `[object Object]`.
+ */
+function keyOf(value: JsonValue | undefined): string {
+  if (value === undefined || value === null) return "";
+  if (isText(value)) return value;
+  if (Array.isArray(value)) return value.map(keyOf).join(",");
+  if (isObject(value)) return "[object Object]";
+  return String(value);
+}
+
 /** The kind of ticket an alert named `alert` opens; a generic one when unknown. */
 export function alertKindOf(alert: JsonValue | undefined): AlertKind {
-  return ALERT_KINDS.get(isText(alert) ? alert : "") ?? DEFAULT_ALERT;
+  return ALERT_KINDS.get(keyOf(alert)) ?? DEFAULT_ALERT;
 }
 
 /** The priority of a ticket opened for an alert of `severity`; normal when unknown. */
 export function priorityOf(severity: JsonValue | undefined): TicketPriority {
-  return PRIORITY_BY_SEVERITY.get(isText(severity) ? severity : "") ?? "normal";
+  return PRIORITY_BY_SEVERITY.get(keyOf(severity)) ?? "normal";
 }
