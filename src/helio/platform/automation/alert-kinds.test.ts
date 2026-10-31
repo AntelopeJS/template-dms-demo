@@ -41,6 +41,15 @@ void describe("alertKindOf", () => {
     assert.deepStrictEqual(alertKindOf(["string_fault", "x"]), generic);
   });
 
+  void it("refuses an alert object with a toString key, as a property key lookup does", () => {
+    assert.throws(() => alertKindOf({ toString: "x" }), TypeError);
+    assert.throws(() => alertKindOf([{ toString: "x" }]), TypeError);
+    assert.deepStrictEqual(
+      alertKindOf({ valueOf: "inverter_offline" }),
+      alertKindOf(undefined),
+    );
+  });
+
   void it("opens the generic ticket for an alert named like an Object member", () => {
     const generic = alertKindOf(undefined);
     for (const name of INHERITED_NAMES) {
@@ -66,6 +75,12 @@ void describe("priorityOf", () => {
     assert.strictEqual(priorityOf(["warning"]), "high");
     assert.strictEqual(priorityOf(true), "normal");
     assert.strictEqual(priorityOf(["critical", "info"]), "normal");
+  });
+
+  void it("refuses a severity object with a toString key, as a property key lookup does", () => {
+    assert.throws(() => priorityOf({ toString: "critical" }), TypeError);
+    assert.throws(() => priorityOf([{ toString: "critical" }]), TypeError);
+    assert.strictEqual(priorityOf({ valueOf: "critical" }), "normal");
   });
 
   void it("answers normal for a severity named like an Object member", () => {
