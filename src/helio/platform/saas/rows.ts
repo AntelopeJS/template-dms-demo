@@ -1,7 +1,9 @@
 import type { Class } from "@antelopejs/interface-core/decorators";
 import type { InstanceId } from "@antelopejs/interface-database";
-import type { LocalizedText } from "./features";
-import type { DeepPartial } from "@antelopejs/interface-database-decorators/common";
+import type {
+  DeepPartial,
+  PlainData,
+} from "@antelopejs/interface-database-decorators/common";
 import {
   type DataModel,
   GetModel,
@@ -47,9 +49,7 @@ export type SeedTable<T> = DataModel<T> &
  * `fromPlainData` reads: the model's own fields, a localized one given as its
  * text per locale.
  */
-export type SeedRow<T> = { _id: string } & {
-  [Field in keyof DeepPartial<T>]: DeepPartial<T>[Field] | LocalizedText;
-};
+export type SeedRow<T> = { _id: string } & PlainData<T>;
 
 /** The table class a model stores. */
 export type RowOf<Model extends DataModel> =
