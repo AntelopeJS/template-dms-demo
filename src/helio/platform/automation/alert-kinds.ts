@@ -42,13 +42,20 @@ const PRIORITY_BY_SEVERITY = new Map<string, TicketPriority>([
 /**
  * The property key a webhook value used to be looked up by in the tables: text
  * as is, an array as its items joined with commas, a number or a boolean as
- * written, `null` as nothing, an object as `[object Object]`.
+ * written, `null` as nothing, an object as `[object Object]`. An object with a
+ * `toString` key of its own has no primitive form, so the lookup refuses it as
+ * a property key does.
  */
 function keyOf(value: JsonValue | undefined): string {
   if (value === undefined || value === null) return "";
   if (isText(value)) return value;
   if (Array.isArray(value)) return value.map(keyOf).join(",");
-  if (isObject(value)) return "[object Object]";
+  if (isObject(value)) {
+    if (Object.getOwnPropertyDescriptor(value, "toString")) {
+      throw new TypeError("Cannot convert object to primitive value");
+    }
+    return "[object Object]";
+  }
   return String(value);
 }
 
