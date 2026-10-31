@@ -17,7 +17,9 @@ const HTTP_BAD_REQUEST = 400;
  * The next free number the invoice pattern of the Settings page gives on
  * `date` (`F-{YYYY}-{SEQ:4}` by default: F-2026-0001, F-2026-0002, ...).
  */
-export async function nextInvoiceNumber(date = new Date(helioNow())): Promise<string> {
+export async function nextInvoiceNumber(
+  date = new Date(helioNow()),
+): Promise<string> {
   const [settings, invoices] = await Promise.all([
     currentSettings(),
     GetModel(InvoiceModel).getAll(),
