@@ -1,4 +1,5 @@
 import type { TicketCategory, TicketPriority } from "../../service/database";
+import { isText, type JsonValue } from "../../shared/json";
 
 /** What a monitoring alert opens a ticket as. */
 export interface AlertKind {
@@ -39,11 +40,11 @@ const PRIORITY_BY_SEVERITY = new Map<string, TicketPriority>([
 ]);
 
 /** The kind of ticket an alert named `alert` opens; a generic one when unknown. */
-export function alertKindOf(alert: string | undefined): AlertKind {
-  return ALERT_KINDS.get(alert ?? "") ?? DEFAULT_ALERT;
+export function alertKindOf(alert: JsonValue | undefined): AlertKind {
+  return ALERT_KINDS.get(isText(alert) ? alert : "") ?? DEFAULT_ALERT;
 }
 
 /** The priority of a ticket opened for an alert of `severity`; normal when unknown. */
-export function priorityOf(severity: string | undefined): TicketPriority {
-  return PRIORITY_BY_SEVERITY.get(severity ?? "") ?? "normal";
+export function priorityOf(severity: JsonValue | undefined): TicketPriority {
+  return PRIORITY_BY_SEVERITY.get(isText(severity) ? severity : "") ?? "normal";
 }
