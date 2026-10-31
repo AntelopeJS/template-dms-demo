@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 
-const PRELOAD = join(__dirname, "..", "scripts", "capture-clock.cjs");
+const PRELOAD = join(__dirname, "capture-clock.js");
 const INSTANT = "2026-06-15T09:00:00Z";
 
 function run(expression: string, env: Record<string, string>): string {
