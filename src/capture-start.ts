@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process";
-import { createWriteStream, mkdirSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { copyFileSync, createWriteStream, mkdirSync, rmSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { startGroup, stopGroup } from "./process-group";
 
@@ -24,13 +24,16 @@ const environment = {
   HELIO_SIMULATORS: "off",
 };
 
+/**
+ * The preload is copied out of `dist`, because the project's own `pnpm run build` (`rimraf dist && tsc`) runs under
+ * this `NODE_OPTIONS` too and empties `dist` while the preload is still being required.
+ */
+const CLOCK_FILE = resolve(LOG_DIRECTORY, "capture-clock.js");
+
 /** The backend runs on the clock `HELIO_NOW` fixes, so the stamps its modules write are the same on every run. */
 const backendEnvironment = {
   ...environment,
-  NODE_OPTIONS: [
-    process.env.NODE_OPTIONS,
-    `--require ${join(__dirname, "capture-clock.js")}`,
-  ]
+  NODE_OPTIONS: [process.env.NODE_OPTIONS, `--require ${CLOCK_FILE}`]
     .filter(Boolean)
     .join(" "),
 };
@@ -106,6 +109,7 @@ async function main(): Promise<void> {
         `${url} already answers: stop what runs there, or it would be captured instead`,
       );
   mkdirSync(LOG_DIRECTORY, { recursive: true });
+  copyFileSync(join(__dirname, "capture-clock.js"), CLOCK_FILE);
   rmSync(DEV_FILE, { force: true });
   start("backend", ["ajs", "project", "run"], backendEnvironment);
   await waitFor("the backend", () => answers(BACKEND_URL));
