@@ -85,6 +85,11 @@ process.on("SIGTERM", () => {
 });
 
 async function main(): Promise<void> {
+  for (const url of [BACKEND_URL, FRONTEND_URL])
+    if (await answers(url))
+      fail(
+        `${url} already answers: stop what runs there, or it would be captured instead`,
+      );
   mkdirSync(LOG_DIRECTORY, { recursive: true });
   rmSync(DEV_FILE, { force: true });
   start("backend", ["ajs", "project", "run"]);
