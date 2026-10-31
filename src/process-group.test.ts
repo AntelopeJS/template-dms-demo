@@ -69,5 +69,6 @@ void describe("stopGroup", () => {
     const { child } = await launch("");
     await stopGroup(child, QUICK);
     await stopGroup(child, QUICK);
+    assert.strictEqual(alive(child.pid), false);
   });
 });

@@ -1,6 +1,8 @@
-import { type ChildProcess, spawn } from "node:child_process";
+import type { ChildProcess } from "node:child_process";
 import { createWriteStream, mkdirSync, rmSync } from "node:fs";
+import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
+import { startGroup, stopGroup } from "./process-group";
 
 const FIXED_NOW = "2026-06-15T09:00:00Z";
 const PORT = process.env.PORT ?? "3001";
@@ -22,19 +24,34 @@ const environment = {
   HELIO_SIMULATORS: "off",
 };
 
+/** The backend runs on the clock `HELIO_NOW` fixes, so the stamps its modules write are the same on every run. */
+const backendEnvironment = {
+  ...environment,
+  NODE_OPTIONS: [
+    process.env.NODE_OPTIONS,
+    `--require ${join(__dirname, "capture-clock.js")}`,
+  ]
+    .filter(Boolean)
+    .join(" "),
+};
+
 const children: ChildProcess[] = [];
 
-function start(name: string, args: string[]): ChildProcess {
+function start(
+  name: string,
+  args: string[],
+  env: NodeJS.ProcessEnv,
+): ChildProcess {
   const log = createWriteStream(`${LOG_DIRECTORY}/${name}.log`);
-  const child = spawn("pnpm", ["exec", ...args], {
-    env: environment,
+  const child = startGroup("pnpm", ["exec", ...args], {
+    env,
     stdio: ["ignore", "pipe", "pipe"],
   });
-  child.stdout.pipe(log);
-  child.stderr.pipe(log);
+  child.stdout?.pipe(log);
+  child.stderr?.pipe(log);
   child.on("exit", (code, signal) => {
     if (!stopping)
-      fail(
+      void fail(
         `${name} stopped: ${signal ?? `exit code ${code}`}. See ${LOG_DIRECTORY}/${name}.log`,
       );
   });
@@ -44,14 +61,14 @@ function start(name: string, args: string[]): ChildProcess {
 
 let stopping = false;
 
-function stop(): void {
+async function stop(): Promise<void> {
   stopping = true;
-  for (const child of children) child.kill("SIGINT");
+  await Promise.all(children.map((child) => stopGroup(child)));
 }
 
-function fail(message: string): never {
+async function fail(message: string): Promise<never> {
   process.stderr.write(`capture-start: ${message}\n`);
-  stop();
+  await stop();
   process.exit(1);
 }
 
@@ -64,7 +81,9 @@ async function waitFor(
     if (await ready()) return;
     await sleep(POLL_MS);
   }
-  fail(`${what} did not become ready within ${READY_TIMEOUT_MS / 1000}s`);
+  return fail(
+    `${what} did not become ready within ${READY_TIMEOUT_MS / 1000}s`,
+  );
 }
 
 async function answers(url: string): Promise<boolean> {
@@ -75,26 +94,22 @@ async function answers(url: string): Promise<boolean> {
   }
 }
 
-process.on("SIGINT", () => {
-  stop();
-  process.exit(0);
-});
-process.on("SIGTERM", () => {
-  stop();
-  process.exit(0);
-});
+for (const signal of ["SIGINT", "SIGTERM"] as const)
+  process.on(signal, () => {
+    void stop().then(() => process.exit(0));
+  });
 
 async function main(): Promise<void> {
   for (const url of [BACKEND_URL, FRONTEND_URL])
     if (await answers(url))
-      fail(
+      return fail(
         `${url} already answers: stop what runs there, or it would be captured instead`,
       );
   mkdirSync(LOG_DIRECTORY, { recursive: true });
   rmSync(DEV_FILE, { force: true });
-  start("backend", ["ajs", "project", "run"]);
+  start("backend", ["ajs", "project", "run"], backendEnvironment);
   await waitFor("the backend", () => answers(BACKEND_URL));
-  start("frontend", ["ajs", "dms", "dev"]);
+  start("frontend", ["ajs", "dms", "dev"], environment);
   await waitFor("the dashboard", () => answers(FRONTEND_URL));
   process.stdout.write(`ready ${FRONTEND_URL}\n`);
 }
