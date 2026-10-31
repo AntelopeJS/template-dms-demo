@@ -153,7 +153,10 @@ class productDataAPI extends DataController(
   @Sortable()
   @Computed(
     (row, db) =>
-      db.table(CATEGORIES_TABLE).get(row.key("category")).key("parent"),
+      db
+        .table(CATEGORIES_TABLE)
+        .get(row.key("category").cast<string>())
+        .key("parent"),
     { default: null },
   )
   @Column({
