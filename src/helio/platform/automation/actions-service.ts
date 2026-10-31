@@ -21,6 +21,7 @@ import {
 } from "../../service/options";
 import { currentSettings } from "../../settings/current";
 import { TeamMemberModel } from "../../team/database";
+import type { JsonValue } from "../../shared/json";
 import { type AlertKind, alertKindOf, priorityOf } from "./alert-kinds";
 import { fireTicketOpened } from "./events";
 
@@ -31,8 +32,8 @@ const CLOSED = new Set(["resolved", "closed"]);
 interface AlertInput {
   payload?: AlertInput;
   siteId?: string;
-  alert?: string;
-  severity?: string;
+  alert?: JsonValue;
+  severity?: JsonValue;
   message?: string;
 }
 
