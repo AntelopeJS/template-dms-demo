@@ -195,12 +195,18 @@ The default development workflow does not need one. Two processes read it:
 | `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where dms refuses to start without it or with `dev`. | production only |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
+| `HELIO_NOW` | backend | An ISO 8601 instant, such as `2026-06-15T09:00:00Z`. Helio's fixtures, seeds and pages treat it as now, and the seeded API key, revision ids and workspace install dates follow it, so two runs on an empty database write the same Helio data. Timers, throttles and the simulators keep the real clock. | no (real time) |
+| `HELIO_SIMULATORS` | backend | `off` stops the service desk and fleet monitoring simulators. | no |
 | `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. **Required on AntelopeJS Cloud**: the mount path of the backend service's volume, see [Uploaded files on AntelopeJS Cloud](#uploaded-files-on-antelopejs-cloud). | on AntelopeJS Cloud |
 | `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend | Stripe webhook signing secret. | no |
 
 Keep this table and `envOverrides` in sync.
+
+## Capture state for documentation
+
+`pnpm run capture:start` builds the backend, then starts it and the dashboard with `HELIO_NOW=2026-06-15T09:00:00Z` (override it with the variable), `HELIO_SIMULATORS=off` and `TZ=UTC`, so the screens show the same data on every run. It prints `ready <url>` once the dashboard answers, and writes the logs of both processes to `.antelope/capture/`. Set `PORT` to serve the dashboard on another port than `3001`. The script reads `MONGODB_URL` and `MONGODB_DATABASE` like any start; point them at an empty database. `antelopejs-capture` from `@antelopejs/tooling-configs` runs it.
 
 ## Configuration notes
 

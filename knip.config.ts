@@ -6,5 +6,5 @@ export default antelopeKnipConfig({
    * `src/home.ts` is an entry point too: decorators register the pages at import time and nothing
    * imports the classes themselves, so without it every page reads as a dead export.
    */
-  entry: ["antelope.config.ts", "src/home.ts"],
+  entry: ["antelope.config.ts", "src/home.ts", "src/capture-start.ts"],
 });
