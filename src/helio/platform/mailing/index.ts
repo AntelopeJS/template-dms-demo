@@ -10,6 +10,7 @@ import { recordNotice } from "./notices";
 import { BILLING_TEMPLATES } from "./templates-billing";
 import { SALES_TEMPLATES } from "./templates-sales";
 import { SERVICE_TEMPLATES } from "./templates-service";
+import { pinWebhookSecret } from "./webhook-secret";
 
 export {
   mailInstallation,
@@ -67,5 +68,6 @@ async function importHistory(): Promise<void> {
  */
 export async function provisionHelioMailing(): Promise<void> {
   await declareTemplates();
+  await pinWebhookSecret();
   await importHistory();
 }

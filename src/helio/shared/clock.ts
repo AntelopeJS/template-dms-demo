@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 
 const NOW = process.env.HELIO_NOW;
 const FIXED = NOW === undefined || NOW === "" ? undefined : Date.parse(NOW);
@@ -45,4 +45,16 @@ export function helioUuid(name: string): string {
     variant.toString(16),
     hex.slice(20, 32),
   ].join("-");
+}
+
+/**
+ * A secret for a seeded row, `bytes` bytes as hex: random, or, when `HELIO_NOW` is set, derived from `name` and that
+ * instant, so two runs on an empty database write the same one.
+ */
+export function helioSecret(name: string, bytes: number): string {
+  if (FIXED === undefined) return randomBytes(bytes).toString("hex");
+  return createHash("sha256")
+    .update(`helio-secret:${NOW}:${name}`)
+    .digest("hex")
+    .slice(0, bytes * 2);
 }

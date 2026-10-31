@@ -93,3 +93,36 @@ void describe("helioUuid", () => {
     assert.notStrictEqual(evaluate('clock.helioUuid("ws-enerlux")', {}), first);
   });
 });
+
+void describe("helioSecret", () => {
+  const HEX_48 = /^[0-9a-f]{48}$/;
+
+  void it("answers the same secret for a name on every run when HELIO_NOW fixes the instant", () => {
+    const env = { HELIO_NOW: INSTANT };
+    const first = evaluate('clock.helioSecret("webhook", 24)', env);
+    assert.match(first, HEX_48);
+    assert.strictEqual(
+      evaluate('clock.helioSecret("webhook", 24)', env),
+      first,
+    );
+    assert.notStrictEqual(
+      evaluate('clock.helioSecret("other", 24)', env),
+      first,
+    );
+    assert.notStrictEqual(
+      evaluate('clock.helioSecret("webhook", 24)', {
+        HELIO_NOW: "2026-06-16T09:00:00Z",
+      }),
+      first,
+    );
+  });
+
+  void it("answers a new secret on every call otherwise", () => {
+    const first = evaluate('clock.helioSecret("webhook", 24)', {});
+    assert.match(first, HEX_48);
+    assert.notStrictEqual(
+      evaluate('clock.helioSecret("webhook", 24)', {}),
+      first,
+    );
+  });
+});
