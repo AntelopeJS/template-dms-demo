@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { Schema } from "@antelopejs/interface-database";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { TENANT_SCHEMA_NAME } from "@antelopejs/interface-dms/constants";
@@ -19,6 +18,7 @@ import {
 import { findPlan } from "./plans";
 import { dunningSince, nextRenewal } from "./schedule";
 import { type SeedWorkspace, stripeSubscriptionIdOf } from "./workspaces";
+import { helioUuid } from "../../shared/clock";
 
 const MEMBER_ROLE_SUFFIX = "member";
 const VAT_VERIFIED = "verified";
@@ -107,7 +107,7 @@ function toSubscriptionRow(
   const isPaid = isBilled && workspace.status !== "trialing";
   return {
     _id: workspace.id,
-    revision: randomUUID(),
+    revision: helioUuid(workspace.id),
     planId: workspace.planId,
     status: initialStatus(workspace),
     stripeCustomerId: null,
