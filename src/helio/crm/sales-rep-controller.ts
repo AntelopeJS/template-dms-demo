@@ -27,11 +27,7 @@ import { TeamMember, TeamMemberModel } from "../team/database";
  * passes the mode through).
  */
 const SALES_ONLY = {
-  // SAFETY: interface-data-api types the mode as a comparison ("eq", "ne", "gt",
-  // "ge", "lt", "le"), but the list route hands the route filter's mode to the
-  // column's filter unchanged, and StringType's filter resolves "is" through the
-  // registered compare modes (DefaultDataCompareTypes.Is, one of its modes).
-  role: ["sales", "is" as FilterValue[1]],
+  role: ["sales", "is"],
 } satisfies Record<string, FilterValue>;
 
 /**
