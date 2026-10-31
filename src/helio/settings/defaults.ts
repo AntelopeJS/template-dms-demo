@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { SLA_HOURS } from "../service/options";
 import { daysFromNow } from "../shared/seed";
 import {
@@ -26,6 +26,14 @@ export const DEFAULT_INVOICE_PATTERN = "F-{YYYY}-{SEQ:4}";
 /** A new live API key, as the rotate route hands it out. */
 export function generateApiKey(): string {
   return `hk_live_${randomBytes(API_KEY_BYTES).toString("hex")}`;
+}
+
+/** The key the seed writes: derived from `HELIO_NOW` when it is set, so two runs on an empty database write the same one. */
+function seededApiKey(): string {
+  const fixed = process.env.HELIO_NOW;
+  if (!fixed) return generateApiKey();
+  const digest = createHash("sha256").update(`helio-api-key:${fixed}`);
+  return `hk_live_${digest.digest("hex").slice(0, API_KEY_BYTES * 2)}`;
 }
 
 const IBAN = "BE71 0961 2345 6769";
@@ -149,7 +157,7 @@ function operationsDefaults(): OperationsSettings {
 
 function integrationDefaults(): IntegrationSettings {
   return {
-    apiKey: generateApiKey(),
+    apiKey: seededApiKey(),
     monitoringEndpoint:
       "https://api.helio.example/hooks/monitoring/7c1e4b9a2f5d4e08",
     webhooks: [
