@@ -1,4 +1,5 @@
 import { DAY_MS } from "../shared/seed";
+import { helioNow } from "../shared/clock";
 
 export interface TimeRange {
   from: number;
@@ -74,7 +75,7 @@ function clampToNow(
 }
 
 export function readPeriod(query: PeriodQuery): Period {
-  const now = Date.now();
+  const now = helioNow();
   const asked = rangeOf(query.from, query.to) ?? {
     from: now - ALL_TIME_DAYS * DAY_MS,
     to: now,

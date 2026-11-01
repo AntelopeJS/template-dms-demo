@@ -10,6 +10,7 @@
     "frontend:build": "ajs dms build",
     "frontend:start": "ajs dms start",
     "frontend:verify": "ajs dms verify-source",
+    "capture:start": "pnpm run build && node dist/capture-start.js",
     "lint": "oxlint && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
     "format": "oxfmt . && pnpm --dir frontend-vue format",

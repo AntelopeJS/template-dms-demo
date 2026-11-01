@@ -1,4 +1,5 @@
 import { DAY_MS, type Rng } from "../shared/seed";
+import { helioNow } from "../shared/clock";
 
 /**
  * Relative weight of the installations starting in each month, January first:
@@ -9,7 +10,7 @@ const MONTH_WEIGHTS = [2, 4, 7, 9, 10, 10, 8, 7, 9, 7, 4, 2] as const;
 
 /** Midnight of the day `offset` days from today (negative for the past). */
 export function dayAt(offset: number): Date {
-  const date = new Date(Date.now() + offset * DAY_MS);
+  const date = new Date(helioNow() + offset * DAY_MS);
   date.setHours(0, 0, 0, 0);
   return date;
 }

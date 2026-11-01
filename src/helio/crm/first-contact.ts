@@ -1,12 +1,13 @@
 import { buildQuotes } from "../sales/fixtures";
 import { createRng, DAY_MS } from "../shared/seed";
 import { buildDeals, type CustomerSeed } from "./fixtures";
+import { helioNow } from "../shared/clock";
 
 function earliestByCustomer(): Map<string, number> {
   const earliest = new Map<string, number>();
   const note = (customer: string, date: Date | undefined) => {
     const time = date?.getTime();
-    if (time === undefined || time > Date.now()) return;
+    if (time === undefined || time > helioNow()) return;
     earliest.set(customer, Math.min(earliest.get(customer) ?? time, time));
   };
   for (const deal of buildDeals()) {

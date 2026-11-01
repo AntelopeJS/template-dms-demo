@@ -7,6 +7,7 @@ import { teamIdsByRole } from "../shared/roster";
 import { createRng, DAY_MS, padId, type Rng } from "../shared/seed";
 import type { Activity } from "./database";
 import { ACTIVITY_TONES, activityLink } from "./activity-links";
+import { helioNow } from "../shared/clock";
 
 export type ActivitySeed = Pick<
   Activity,
@@ -31,7 +32,7 @@ const link = activityLink;
 
 function recent(date: Date | undefined): date is Date {
   if (!date) return false;
-  const age = Date.now() - date.getTime();
+  const age = helioNow() - date.getTime();
   return age >= 0 && age <= WINDOW_DAYS * DAY_MS;
 }
 

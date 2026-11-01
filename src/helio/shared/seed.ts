@@ -1,3 +1,4 @@
+import { helioNow } from "./clock";
 export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface Rng {
@@ -53,7 +54,7 @@ export function createRng(seed: number): Rng {
  * dates are built relative to now so the dashboard always looks current.
  */
 export function daysFromNow(days: number, hour = 10): Date {
-  const date = new Date(Date.now() + days * DAY_MS);
+  const date = new Date(helioNow() + days * DAY_MS);
   date.setHours(hour, 0, 0, 0);
   return date;
 }

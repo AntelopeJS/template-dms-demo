@@ -56,6 +56,7 @@ import {
   TICKET_PRIORITIES,
   TICKET_STATUSES,
 } from "./options";
+import { helioNow } from "../shared/clock";
 
 export * from "./options";
 
@@ -213,7 +214,7 @@ class ticketDataAPI extends DataController(
   }
   set priority(value: TicketPriority) {
     this.table.priority = value;
-    this.table.createdAt ??= new Date();
+    this.table.createdAt ??= new Date(helioNow());
     this.table.slaDueAt = slaDueAt(value, new Date(this.table.createdAt));
   }
 
@@ -250,7 +251,7 @@ class ticketDataAPI extends DataController(
   set status(value: TicketStatus) {
     this.table.status = value;
     if (!CLOSED.includes(value)) this.table.resolvedAt = undefined;
-    else this.table.resolvedAt ??= new Date();
+    else this.table.resolvedAt ??= new Date(helioNow());
   }
 
   @Listable()
@@ -397,7 +398,7 @@ class ticketDataAPI extends DataController(
           }
         : null;
     }
-    if (slaDueAt && new Date(slaDueAt).getTime() < Date.now()) {
+    if (slaDueAt && new Date(slaDueAt).getTime() < helioNow()) {
       return {
         text: "$helio.service.tickets.detail.slaBreached",
         tone: "error",
@@ -454,7 +455,7 @@ class ticketDataAPI extends DataController(
     const open = (await this.loadTickets(ids)).filter(
       ({ status }) => !CLOSED.includes(status),
     );
-    const resolvedAt = new Date();
+    const resolvedAt = new Date(helioNow());
     await Promise.all(
       open.map(({ _id }) =>
         this.model.update(_id, { status: "resolved", resolvedAt }),

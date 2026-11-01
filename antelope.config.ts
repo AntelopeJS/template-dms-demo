@@ -1,8 +1,19 @@
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { defineConfig } from "@antelopejs/interface-core/config";
 import { config as loadDotenv } from "dotenv";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
+
+/**
+ * The secret that hashes visitor ids, derived from `HELIO_NOW` when it is set so the imported traffic gets the same ids
+ * on every run. Empty keeps the module's own generated secret.
+ */
+const visitorHashSecret = process.env.HELIO_NOW
+  ? createHash("sha256")
+      .update(`helio-secret:${process.env.HELIO_NOW}:marketing-visitor-hash`)
+      .digest("hex")
+  : "";
 
 export default defineConfig({
   name: "template-dms-demo",
@@ -164,6 +175,7 @@ export default defineConfig({
         version: ">=0.7.1 <1.0.0",
       },
       config: {
+        visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
         dashboardTracking: {
           enabled: true,

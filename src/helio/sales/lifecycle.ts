@@ -4,6 +4,7 @@ import { PublishMessage } from "@antelopejs/interface-dms/realtime";
 import { CustomerModel, type Deal, DealModel } from "../crm/database";
 import { type ActivityEntry, logActivity } from "../dashboard/log";
 import type { Quote } from "./database";
+import { helioNow } from "../shared/clock";
 
 /** The pipeline table's route, on which it listens for rows changed outside its own routes. */
 const PIPELINE_LOCATION = "/api/helio/deals";
@@ -50,7 +51,7 @@ export async function quoteSent(quote: Quote): Promise<void> {
  * the pipeline table to refresh the row.
  */
 async function winDeal(deal: Deal, quote: Quote): Promise<void> {
-  const now = new Date();
+  const now = new Date(helioNow());
   await GetModel(DealModel).update(deal._id, {
     stage: "won",
     isOpen: false,

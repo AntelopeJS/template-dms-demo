@@ -36,6 +36,7 @@ import { type Project, ProjectModel, ProjectTaskModel } from "./database";
 import { directionsUrl, PROJECT_DETAIL_API, PROJECTS_PAGE_URL } from "./links";
 import { PageHelioProjects } from "./list-page";
 import { PROJECTS_LOCATION, TASKS_LOCATION } from "./topics";
+import { helioNow } from "../shared/clock";
 
 /** The statuses a project can be closed from: work has started, and it is not done. */
 const CLOSABLE_STATUSES = new Set(["in_progress", "inspection", "on_hold"]);
@@ -295,7 +296,7 @@ export class HelioProjectDetailApi extends Controller(PROJECT_DETAIL_API) {
     await Promise.all(
       open.map((task) => tasks.update(task._id, { status: "done" })),
     );
-    const now = new Date();
+    const now = new Date(helioNow());
     const changes: Partial<Project> = { status: "done", plannedEnd: now };
     if (new Date(project.plannedStart).getTime() > now.getTime()) {
       changes.plannedStart = now;

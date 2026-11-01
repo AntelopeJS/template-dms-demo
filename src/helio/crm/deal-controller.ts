@@ -30,6 +30,7 @@ import { customerController, LEAD_SOURCES } from "./customer-controller";
 import { Deal, type DealStage, DealModel } from "./database";
 import { isKickoffNextStep, kickoffNextStep } from "./kickoff-step";
 import { salesRepController } from "./sales-rep-controller";
+import { helioNow } from "../shared/clock";
 
 /** The pipeline stages, in order: the kanban columns, tabs and views read them. */
 export const DEAL_STAGES = [
@@ -449,7 +450,7 @@ class dealDataAPI extends DataController(
         }
       : nextStep;
     if (!text) return null;
-    const idleMs = lastActivityAt ? Date.now() - lastActivityAt.getTime() : 0;
+    const idleMs = lastActivityAt ? helioNow() - lastActivityAt.getTime() : 0;
     const stalled =
       OPEN_DEAL_STAGES.includes(stage) && idleMs > STALLED_DAYS * DAY_MS;
     return { text, tone: stalled ? "warning" : undefined };

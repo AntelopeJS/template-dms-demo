@@ -8,6 +8,7 @@ import { COUNTS, invoiceId, PRODUCT_ROSTER } from "../shared/roster";
 import { cents, createRng, DAY_MS, type Rng } from "../shared/seed";
 import type { Invoice, PaymentMethod } from "./database";
 import { isPastDue } from "./due";
+import { helioNow } from "../shared/clock";
 
 export type InvoiceSeed = Pick<
   Invoice,
@@ -47,7 +48,7 @@ interface InvoiceDraft {
 }
 
 function daysAgo(date: Date): number {
-  return (Date.now() - date.getTime()) / DAY_MS;
+  return (helioNow() - date.getTime()) / DAY_MS;
 }
 
 function plusDays(date: Date, days: number): Date {
@@ -83,7 +84,7 @@ function projectDrafts(plan: ProjectPlan): InvoiceDraft[] {
       new Date(
         Math.min(
           nextWorkday(plusDays(plan.end, 3)).getTime(),
-          Date.now() - DAY_MS,
+          helioNow() - DAY_MS,
         ),
       ),
     );
@@ -151,7 +152,7 @@ function serviceDraft(rng: Rng, site: SiteSeed): InvoiceDraft {
     amountExcl: quoteTotals(lines, vatRate).subtotal,
     vatRate,
     issuedAt: previousWorkday(
-      plusDays(new Date(), -rng.int(1, Math.max(2, since))),
+      plusDays(new Date(helioNow()), -rng.int(1, Math.max(2, since))),
     ),
   };
 }
@@ -179,7 +180,7 @@ function bookedPayment(
   wanted: number,
   issuedAt: Date,
 ): Date | undefined {
-  const latest = Date.now() - DAY_MS / 4;
+  const latest = helioNow() - DAY_MS / 4;
   const day = previousWorkday(new Date(Math.min(wanted, latest)));
   day.setHours(rng.int(9, 16), rng.int(0, 59), 0, 0);
   const booked =

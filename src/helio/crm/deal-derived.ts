@@ -10,6 +10,7 @@ import {
 } from "./database";
 import { STAGE_PROBABILITY } from "./fixtures";
 import { isKickoffNextStep } from "./kickoff-step";
+import { helioNow } from "../shared/clock";
 
 /** The probability the deal form starts from (see `deal-controller.ts`). */
 const DEFAULT_PROBABILITY = STAGE_PROBABILITY.lead;
@@ -122,7 +123,7 @@ export function afterDealNew(body: Partial<Deal>): AfterWrite {
           deal.customer === body.customer &&
           deal.stage === body.stage,
       );
-      const now = new Date();
+      const now = new Date(helioNow());
       const updates = created.map((deal) => {
         const changes: Partial<Deal> = {};
         if (newProbability !== undefined && deal.probability === sent) {

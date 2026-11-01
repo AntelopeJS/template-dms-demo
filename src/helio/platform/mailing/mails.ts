@@ -19,6 +19,7 @@ import {
   type MailLocale,
   portalUrl,
 } from "./format";
+import { helioNow } from "../../shared/clock";
 
 /**
  * One e-mail to send: the template, who receives it and what it says about a
@@ -142,7 +143,7 @@ export function invoiceReminderMail(
   invoice: Invoice,
   customer: Customer,
   reminderNumber: number,
-  at: Date = new Date(),
+  at: Date = new Date(helioNow()),
 ): HelioMail {
   const daysOverdue = Math.max(1, daysLate(invoice.dueAt, at.getTime()));
   return mailTo(HELIO_TEMPLATES.invoiceReminder, customer, (locale) => ({
@@ -180,7 +181,7 @@ export function ticketResolvedMail(
     ticket: {
       number: ticket.number,
       subject: ticket.subject,
-      resolvedAt: formatDate(ticket.resolvedAt ?? new Date(), locale),
+      resolvedAt: formatDate(ticket.resolvedAt ?? new Date(helioNow()), locale),
       url: portalUrl("tickets", ticket.number),
     },
   }));

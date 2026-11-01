@@ -19,6 +19,7 @@ import {
 import { type BillingPeriod, billingPeriods } from "./schedule";
 import { invoiceIdOf, writeInvoices } from "./write-invoices";
 import type { SeedWorkspace } from "./workspaces";
+import { helioInstalledAt } from "../../shared/clock";
 
 const BE_VAT = 21;
 const PERCENT = 100;
@@ -224,7 +225,7 @@ async function writeCreditNote(anchor: Date, now: Date): Promise<void> {
 export async function writeDefaultBilling(now: Date): Promise<void> {
   const tenant = await GetModel(TenantModel).get(DEFAULT_TENANT_ID);
   if (!tenant) return;
-  const anchor = historyStart(new Date(tenant.createdAt));
+  const anchor = historyStart(helioInstalledAt(tenant.createdAt));
   await writeBillingInfo();
   await writeInvoices(HELIO_BILLING, anchor, now);
   await writeCreditNote(anchor, now);
