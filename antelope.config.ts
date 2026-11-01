@@ -69,7 +69,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.11.0 <1.0.0",
+        version: ">=0.13.1 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -91,28 +91,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: ">=0.5.1 <1.0.0",
+        version: ">=0.6.0 <1.0.0",
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: ">=0.3.1 <1.0.0",
+        version: ">=0.4.0 <1.0.0",
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: ">=0.7.0 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: ">=0.8.1 <1.0.0",
+        version: ">=0.9.0 <1.0.0",
       },
       config: {
         stripe: {
@@ -126,7 +126,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: ">=0.6.1 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
@@ -137,7 +137,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: ">=0.4.1 <1.0.0",
+        version: ">=0.5.0 <1.0.0",
       },
       config: {
         editable: true,
@@ -147,21 +147,21 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: ">=0.6.1 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
     },
     "dms-media": {
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: ">=0.6.1 <1.0.0",
+        version: ">=0.7.0 <1.0.0",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.7.1 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
       config: {
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
@@ -178,7 +178,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: ">=0.7.1 <1.0.0",
+        version: ">=0.8.0 <1.0.0",
       },
     },
 
