@@ -74,24 +74,24 @@ async function stampReminder(invoice: Invoice): Promise<number> {
 }
 
 /** What the overdue-invoice reminder reports to the run. */
-interface ReminderOutput {
+type ReminderOutput = {
   reminded: number;
   amountDue: number;
   summary: string;
-}
+};
 
 /** What the kick-off planning reports: where the kick-off went. */
-interface KickoffOutput {
+type KickoffOutput = {
   target: "project" | "deal";
   summary: string;
   link: string;
-}
+};
 
 /** What the installation confirmations report. */
-interface ConfirmationOutput {
+type ConfirmationOutput = {
   confirmed: number;
   summary: string;
-}
+};
 
 /**
  * Sends the due reminder of each overdue invoice. A step whose channel is not
