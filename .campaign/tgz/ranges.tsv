@@ -22,4 +22,5 @@
 @antelopejs/interface-dms-saas	package.json	pnpm.overrides	
 @antelopejs/core	package.json	dependencies	1.17.1
 @antelopejs/core	package.json	pnpm.overrides	
-@antelopejs/core>@antelopejs/interface-core	package.json	pnpm.overrides	
+@antelopejs/interface-core	package.json	dependencies	>=0.2.4 <1.0.0
+@antelopejs/interface-core	package.json	pnpm.overrides	
