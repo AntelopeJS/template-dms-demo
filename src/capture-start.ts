@@ -30,8 +30,12 @@ const environment = {
  */
 const CLOCK_FILE = resolve(LOG_DIRECTORY, "capture-clock.js");
 
-/** The backend runs on the clock `HELIO_NOW` fixes, so the stamps its modules write are the same on every run. */
-const backendEnvironment = {
+/**
+ * The backend and the frontend server run on the clock `HELIO_NOW` fixes: the backend so the stamps its modules
+ * write are the same on every run, the frontend server so a server render hands the browser that instant as now
+ * (the periods' bounds and the relative dates read it).
+ */
+const clockEnvironment = {
   ...environment,
   NODE_OPTIONS: [process.env.NODE_OPTIONS, `--require ${CLOCK_FILE}`]
     .filter(Boolean)
@@ -111,9 +115,9 @@ async function main(): Promise<void> {
   mkdirSync(LOG_DIRECTORY, { recursive: true });
   copyFileSync(join(__dirname, "capture-clock.js"), CLOCK_FILE);
   rmSync(DEV_FILE, { force: true });
-  start("backend", ["ajs", "project", "run"], backendEnvironment);
+  start("backend", ["ajs", "project", "run"], clockEnvironment);
   await waitFor("the backend", () => answers(BACKEND_URL));
-  start("frontend", ["ajs", "dms", "dev"], environment);
+  start("frontend", ["ajs", "dms", "dev"], clockEnvironment);
   await waitFor("the dashboard", () => answers(FRONTEND_URL));
   process.stdout.write(`ready ${FRONTEND_URL}\n`);
 }
