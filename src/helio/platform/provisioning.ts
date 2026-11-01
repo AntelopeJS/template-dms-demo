@@ -7,12 +7,14 @@ import { provisionHelioMarketing } from "./marketing";
 import { provisionHelioMedia } from "./media";
 import { provisionSaasShowcase } from "./saas";
 
-interface ProvisioningStep {
+/** One unit of Helio's default-tenant provisioning. */
+export interface ProvisioningStep {
   name: string;
   run: () => Promise<void>;
 }
 
-const STEPS: ProvisioningStep[] = [
+/** The provisioning steps, in the order they run. */
+export const STEPS: ProvisioningStep[] = [
   { name: "saas showcase", run: provisionSaasShowcase },
   { name: "mailing", run: provisionHelioMailing },
   { name: "mailing webhook secret", run: pinWebhookSecret },

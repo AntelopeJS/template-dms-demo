@@ -45,6 +45,30 @@ export function requireWebhookSecretRow(
     );
 }
 
+/** The query on the Mailing settings row of the default workspace: the part of the database `pinSettingsRow` uses. */
+export interface SettingsRowQuery {
+  run(): Promise<unknown>;
+  update(changes: { webhookSecret: string }): { run(): Promise<unknown> };
+}
+
+/**
+ * Reads the settings row, requires a string `webhookSecret` in it, then writes
+ * the derived secret once. It does not check the count the write answers
+ * (mongodb answers 0 when a restart writes the same value).
+ *
+ * @param row The query on the Mailing settings row
+ * @throws {WebhookSecretPinError} When the row or its string `webhookSecret` is missing; nothing is written then
+ */
+export async function pinSettingsRow(row: SettingsRowQuery): Promise<void> {
+  const found: unknown = await row.run();
+  requireWebhookSecretRow(found);
+  await row
+    .update({
+      webhookSecret: helioSecret("mailing-webhook", WEBHOOK_SECRET_BYTES),
+    })
+    .run();
+}
+
 /**
  * Replaces the webhook secret the Mailing module generated for the default
  * workspace with one derived from `HELIO_NOW`, so the settings page shows the
@@ -62,15 +86,10 @@ export async function pinWebhookSecret(): Promise<void> {
     throw new WebhookSecretPinError(
       `schema "${TENANT_SCHEMA_NAME}" is not defined`,
     );
-  const row = schema
-    .instance(DEFAULT_TENANT_ID)
-    .table(MAILING_SETTINGS_TABLE)
-    .get(DEFAULT_TENANT_ID);
-  const found: unknown = await row.run();
-  requireWebhookSecretRow(found);
-  await row
-    .update({
-      webhookSecret: helioSecret("mailing-webhook", WEBHOOK_SECRET_BYTES),
-    })
-    .run();
+  await pinSettingsRow(
+    schema
+      .instance(DEFAULT_TENANT_ID)
+      .table(MAILING_SETTINGS_TABLE)
+      .get(DEFAULT_TENANT_ID),
+  );
 }
