@@ -1,4 +1,4 @@
-import type { SendTemplateParams } from "@antelopejs/interface-dms-mailing";
+import type { JsonObject } from "@antelopejs/interface-dms-mailing";
 import type { Customer } from "../../crm/database";
 import { structuredReference } from "../../finance/document";
 import type { Invoice } from "../../finance/database";
@@ -34,8 +34,8 @@ export interface HelioMail {
   variables: MailVariables;
 }
 
-/** The template variables of a mail, as dms-mailing's `SendTemplate` takes them. */
-type MailVariables = NonNullable<SendTemplateParams["variables"]>;
+/** The template variables of a mail: JSON, which `SendTemplate` and `ImportSends` both take. */
+type MailVariables = JsonObject;
 
 type Person = Pick<TeamMember, "name" | "email" | "phone">;
 
