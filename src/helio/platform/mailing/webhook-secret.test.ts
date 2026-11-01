@@ -6,12 +6,19 @@ import {
   pinWebhookSecret,
   requireWebhookSecretRow,
   type SettingsRowQuery,
+  type StoredSettings,
 } from "./webhook-secret";
 
+interface RecordingRow {
+  row: SettingsRowQuery;
+  events: string[];
+  written: string[];
+}
+
 function recordingRow(
-  found: unknown,
-  updateAnswer: unknown = 1,
-): { row: SettingsRowQuery; events: string[]; written: string[] } {
+  found: StoredSettings,
+  updateAnswer: number = 1,
+): RecordingRow {
   const events: string[] = [];
   const written: string[] = [];
   const row: SettingsRowQuery = {
@@ -47,7 +54,7 @@ void describe("requireWebhookSecretRow", () => {
   });
 
   void it("names a row without a string webhookSecret", () => {
-    for (const row of [{}, { _id: "default" }, { webhookSecret: 12 }, "text"]) {
+    for (const row of [{}, { _id: "default" }, { webhookSecret: 12 }]) {
       assert.throws(() => requireWebhookSecretRow(row), {
         name: "WebhookSecretPinError",
         message: /no string "webhookSecret"/,
@@ -97,7 +104,7 @@ void describe("pinSettingsRow", () => {
   });
 
   void it("rejects a missing row, a row without a string field and writes nothing", async () => {
-    for (const found of [undefined, null, {}, { webhookSecret: 12 }, "text"]) {
+    for (const found of [undefined, null, {}, { webhookSecret: 12 }]) {
       const { row, events } = recordingRow(found);
       await assert.rejects(pinSettingsRow(row), {
         name: "WebhookSecretPinError",

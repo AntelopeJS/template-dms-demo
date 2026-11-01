@@ -47,9 +47,12 @@ export function requireWebhookSecretRow(
 
 /** The query on the Mailing settings row of the default workspace: the part of the database `pinSettingsRow` uses. */
 export interface SettingsRowQuery {
-  run(): Promise<unknown>;
-  update(changes: { webhookSecret: string }): { run(): Promise<unknown> };
+  run(): Promise<StoredSettings>;
+  update(changes: { webhookSecret: string }): { run(): Promise<number> };
 }
+
+/** What the settings table answers for the default workspace: the stored fields, or nothing. */
+export type StoredSettings = object | null | undefined;
 
 /**
  * Reads the settings row, requires a string `webhookSecret` in it, then writes
