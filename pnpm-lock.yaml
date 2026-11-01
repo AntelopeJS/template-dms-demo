@@ -36,7 +36,7 @@ importers:
         specifier: '>=0.0.7 <1.0.0'
         version: 0.0.7(@antelopejs/interface-api@file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
       '@antelopejs/interface-core':
-        specifier: ^0.3.0
+        specifier: '>=0.2.4 <1.0.0'
         version: 0.3.0
       '@antelopejs/interface-data-api':
         specifier: file:.campaign/tgz/antelopejs-interface-data-api-26c36e9.tgz
