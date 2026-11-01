@@ -1,0 +1,17 @@
+name: Canary docs captures
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  captures:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: AntelopeJS/.github/.github/workflows/docs-captures.yml@e8a218ac9736e355c5b8c0b2a6bc1e4cbae80d14
+    with:
+      base: campaign/integration
+      demo-ref: campaign/integration
