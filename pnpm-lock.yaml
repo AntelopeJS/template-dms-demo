@@ -106,8 +106,8 @@ packages:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
   '@antelopejs/core@file:.campaign/tgz/antelopejs-core-d74e513.tgz':
-    resolution: {integrity: sha512-JYcW1Uhn0zSt8/8jDZixtcivIubpOIBipPZpLC88aACmXy8uS82KJ0TJ//+1C1uHDqrvLFDV5JZM2LT5+iyx1A==, tarball: file:.campaign/tgz/antelopejs-core-d74e513.tgz}
-    version: 1.19.0
+    resolution: {integrity: sha512-lVXUQyxwjT3fkQYR06yGBRl4smZq2FaELW1SiM3croK/Rz3PfMyLLF9BgbF65YfNtczasdLMIiJdh0eR9ovgEA==, tarball: file:.campaign/tgz/antelopejs-core-d74e513.tgz}
+    version: 1.20.0
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
