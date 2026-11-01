@@ -12,12 +12,12 @@ overrides:
   '@antelopejs/interface-api-util': file:.campaign/tgz/antelopejs-interface-api-util-cc740f8.tgz
   '@antelopejs/interface-dms': file:.campaign/tgz/antelopejs-interface-dms-e0787e6.tgz
   '@antelopejs/dms': file:.campaign/tgz/antelopejs-dms-883e20d.tgz
-  '@antelopejs/dms>@antelopejs/interface-core': 0.2.4
   '@antelopejs/interface-dms-automation': file:.campaign/tgz/antelopejs-interface-dms-automation-e1c510a.tgz
   '@antelopejs/interface-dms-mailing': file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz
-  '@antelopejs/interface-dms-mailing>@antelopejs/interface-core': 0.2.4
   '@antelopejs/interface-dms-marketing': file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz
   '@antelopejs/interface-dms-saas': file:.campaign/tgz/antelopejs-interface-dms-saas-97eba5b.tgz
+  '@antelopejs/core': file:.campaign/tgz/antelopejs-core-d74e513.tgz
+  '@antelopejs/core>@antelopejs/interface-core': 0.3.0
 
 importers:
 
