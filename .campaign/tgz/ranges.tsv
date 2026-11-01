@@ -20,3 +20,5 @@
 @antelopejs/interface-dms-mailing>@antelopejs/interface-core	package.json	pnpm.overrides	
 @antelopejs/interface-dms-marketing	package.json	dependencies	>=0.5.1 <1.0.0
 @antelopejs/interface-dms-marketing	package.json	pnpm.overrides	
+@antelopejs/interface-dms-saas	package.json	dependencies	>=0.6.1 <0.7.0
+@antelopejs/interface-dms-saas	package.json	pnpm.overrides	

@@ -43,7 +43,7 @@
     "@antelopejs/interface-dms-mailing": "file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz",
     "@antelopejs/interface-dms-marketing": "file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz",
     "@antelopejs/interface-dms-media": ">=0.3.1 <1.0.0",
-    "@antelopejs/interface-dms-saas": ">=0.6.1 <0.7.0"
+    "@antelopejs/interface-dms-saas": "file:.campaign/tgz/antelopejs-interface-dms-saas-97eba5b.tgz"
   },
   "devDependencies": {
     "@antelopejs/dms": "file:.campaign/tgz/antelopejs-dms-883e20d.tgz",
@@ -75,7 +75,8 @@
       "@antelopejs/interface-dms-automation": "file:.campaign/tgz/antelopejs-interface-dms-automation-e1c510a.tgz",
       "@antelopejs/interface-dms-mailing": "file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz",
       "@antelopejs/interface-dms-mailing>@antelopejs/interface-core": "0.2.4",
-      "@antelopejs/interface-dms-marketing": "file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz"
+      "@antelopejs/interface-dms-marketing": "file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz",
+      "@antelopejs/interface-dms-saas": "file:.campaign/tgz/antelopejs-interface-dms-saas-97eba5b.tgz"
     }
   },
   "antelopeJs": {

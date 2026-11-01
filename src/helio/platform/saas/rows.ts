@@ -1,9 +1,7 @@
 import type { Class } from "@antelopejs/interface-core/decorators";
 import type { InstanceId } from "@antelopejs/interface-database";
-import type {
-  DeepPartial,
-  PlainData,
-} from "@antelopejs/interface-database-decorators/common";
+import type { PlainData } from "@antelopejs/interface-database-decorators/common";
+import type { StoredRow } from "@antelopejs/interface-database-decorators/modifiers/common";
 import {
   type DataModel,
   GetModel,
@@ -31,7 +29,7 @@ interface Runnable {
 /** The part of a model's table the seed uses: read a row, write a row. */
 interface SeedTableHandle<T> {
   get(id: string): PromiseLike<object | null | undefined>;
-  insert(row: DeepPartial<T>): Runnable;
+  insert(row: StoredRow<T>): Runnable;
 }
 
 interface ModelInstance<T> {
@@ -41,7 +39,7 @@ interface ModelInstance<T> {
 /** A table model whose statics convert rows, as every `BasicDataModel` has. */
 export type SeedTable<T> = DataModel<T> &
   Class<ModelInstance<T>> & {
-    toDatabase(row: T): DeepPartial<T>;
+    toDatabase(row: PlainData<T> | T): StoredRow<T>;
   };
 
 /**
@@ -77,7 +75,7 @@ function toStoredRow<T extends object>(
   model: SeedTable<T>,
   row: SeedRow<T>,
   prepare: PrepareInstance<T>,
-): DeepPartial<T> {
+): StoredRow<T> {
   const instance = prepare(model.fromPlainData(row));
   triggerEvent(instance, "insert");
   for (const [field, date] of readDates(row)) {
