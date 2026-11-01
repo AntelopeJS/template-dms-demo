@@ -13,6 +13,10 @@ overrides:
   '@antelopejs/interface-dms': file:.campaign/tgz/antelopejs-interface-dms-50e3adc.tgz
   '@antelopejs/dms': file:.campaign/tgz/antelopejs-dms-50e3adc.tgz
   '@antelopejs/dms>@antelopejs/interface-core': 0.2.4
+  '@antelopejs/interface-dms-automation': file:.campaign/tgz/antelopejs-interface-dms-automation-e1c510a.tgz
+  '@antelopejs/interface-dms-mailing': file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz
+  '@antelopejs/interface-dms-mailing>@antelopejs/interface-core': 0.2.4
+  '@antelopejs/interface-dms-marketing': file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz
 
 importers:
 

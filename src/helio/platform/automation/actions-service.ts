@@ -38,22 +38,22 @@ interface AlertInput {
 }
 
 /** What opening a ticket from an alert reports, whether it opened one or found it open. */
-interface CreatedTicketOutput {
+type CreatedTicketOutput = {
   created: boolean;
   ticketId: string;
   number: string;
   priority: TicketPriority;
   summary: string;
-}
+};
 
 /** What the on-call assignment reports. */
-interface AssignmentOutput {
+type AssignmentOutput = {
   alertsOn: boolean;
   assignee: string;
   number: string;
   summary: string;
   link: string;
-}
+};
 
 const deskLink = (number: string) =>
   `${SERVICE_DESK_PATH}?ticket=${encodeURIComponent(number)}`;
