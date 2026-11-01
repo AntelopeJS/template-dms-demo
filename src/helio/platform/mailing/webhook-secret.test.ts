@@ -15,10 +15,7 @@ const INSTANT = "2026-06-15T09:00:00Z";
 const WEBHOOK_SECRET = join(__dirname, "webhook-secret.js");
 const CLOCK = join(__dirname, "../../shared/clock.js");
 
-function inFreshProcess(
-  script: string,
-  env: Record<string, string>,
-): string {
+function inFreshProcess(script: string, env: Record<string, string>): string {
   const { HELIO_NOW: _unset, ...inherited } = process.env;
   return execFileSync(process.execPath, ["-e", script], {
     env: { ...inherited, ...env },
@@ -163,12 +160,11 @@ void describe("pinSettingsRow", () => {
   });
 
   void it("surfaces a failed write instead of ignoring it", async () => {
-    const failure = new Error("write refused");
     const row: SettingsRowQuery = {
       run: () => Promise.resolve({ webhookSecret: "old" }),
-      update: () => ({ run: () => Promise.reject(failure) }),
+      update: () => ({ run: () => Promise.reject(new Error("write refused")) }),
     };
-    await assert.rejects(pinSettingsRow(row), (error: unknown) => error === failure);
+    await assert.rejects(pinSettingsRow(row), { message: "write refused" });
   });
 
   void it("does not reject when the write reports 0 changed rows", async () => {
