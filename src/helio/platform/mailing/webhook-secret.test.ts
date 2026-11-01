@@ -11,6 +11,8 @@ import {
   type StoredSettings,
 } from "./webhook-secret";
 
+/** The pin reads one settings row, so it answers in milliseconds. A step that waits on a service that never answers fails the test after this long. */
+const STEP_TIMEOUT_MS = 30_000;
 const INSTANT = "2026-06-15T09:00:00Z";
 const WEBHOOK_SECRET = join(__dirname, "webhook-secret.js");
 const CLOCK = join(__dirname, "../../shared/clock.js");
@@ -184,21 +186,27 @@ void describe("provisioning steps", () => {
     );
   });
 
-  void it("runs the pin's behaviour in that step", async () => {
-    const step = STEPS.find((entry) => entry.name === "mailing webhook secret");
-    assert.ok(step);
-    const { HELIO_NOW: previous } = process.env;
-    process.env.HELIO_NOW = INSTANT;
-    try {
-      await assert.rejects(step.run(), {
-        name: "WebhookSecretPinError",
-        message: /is not defined/,
-      });
-    } finally {
-      if (previous === undefined) delete process.env.HELIO_NOW;
-      else process.env.HELIO_NOW = previous;
-    }
-  });
+  void it(
+    "runs the pin's behaviour in that step",
+    { timeout: STEP_TIMEOUT_MS },
+    async () => {
+      const step = STEPS.find(
+        (entry) => entry.name === "mailing webhook secret",
+      );
+      assert.ok(step);
+      const { HELIO_NOW: previous } = process.env;
+      process.env.HELIO_NOW = INSTANT;
+      try {
+        await assert.rejects(step.run(), {
+          name: "WebhookSecretPinError",
+          message: /is not defined/,
+        });
+      } finally {
+        if (previous === undefined) delete process.env.HELIO_NOW;
+        else process.env.HELIO_NOW = previous;
+      }
+    },
+  );
 
   void it("runs the pin after the mailing step", () => {
     assert.ok(names.includes("mailing"));
