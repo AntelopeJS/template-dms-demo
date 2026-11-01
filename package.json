@@ -35,10 +35,10 @@
     "@antelopejs/interface-api-util": "file:.campaign/tgz/antelopejs-interface-api-util-cc740f8.tgz",
     "@antelopejs/interface-auth": ">=0.0.7 <1.0.0",
     "@antelopejs/interface-core": ">=0.2.4 <1.0.0",
-    "@antelopejs/interface-data-api": "file:.campaign/tgz/antelopejs-interface-data-api-e070b68.tgz",
+    "@antelopejs/interface-data-api": "file:.campaign/tgz/antelopejs-interface-data-api-26c36e9.tgz",
     "@antelopejs/interface-database": "file:.campaign/tgz/antelopejs-interface-database-02e0360.tgz",
     "@antelopejs/interface-database-decorators": "file:.campaign/tgz/antelopejs-interface-database-decorators-e79a62b.tgz",
-    "@antelopejs/interface-dms": "file:.campaign/tgz/antelopejs-interface-dms-50e3adc.tgz",
+    "@antelopejs/interface-dms": "file:.campaign/tgz/antelopejs-interface-dms-3eb021e.tgz",
     "@antelopejs/interface-dms-automation": "file:.campaign/tgz/antelopejs-interface-dms-automation-e1c510a.tgz",
     "@antelopejs/interface-dms-mailing": "file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz",
     "@antelopejs/interface-dms-marketing": "file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz",
@@ -46,7 +46,7 @@
     "@antelopejs/interface-dms-saas": ">=0.6.1 <0.7.0"
   },
   "devDependencies": {
-    "@antelopejs/dms": "file:.campaign/tgz/antelopejs-dms-50e3adc.tgz",
+    "@antelopejs/dms": "file:.campaign/tgz/antelopejs-dms-3eb021e.tgz",
     "@antelopejs/dms-frontend": "0.9.1",
     "@antelopejs/tooling-configs": "^0.2.17",
     "@types/node": "^26.6.5",
@@ -64,13 +64,13 @@
       "sharp"
     ],
     "overrides": {
-      "@antelopejs/interface-data-api": "file:.campaign/tgz/antelopejs-interface-data-api-e070b68.tgz",
+      "@antelopejs/interface-data-api": "file:.campaign/tgz/antelopejs-interface-data-api-26c36e9.tgz",
       "@antelopejs/interface-database-decorators": "file:.campaign/tgz/antelopejs-interface-database-decorators-e79a62b.tgz",
       "@antelopejs/interface-database": "file:.campaign/tgz/antelopejs-interface-database-02e0360.tgz",
       "@antelopejs/interface-api": "file:.campaign/tgz/antelopejs-interface-api-f206be7.tgz",
       "@antelopejs/interface-api-util": "file:.campaign/tgz/antelopejs-interface-api-util-cc740f8.tgz",
-      "@antelopejs/interface-dms": "file:.campaign/tgz/antelopejs-interface-dms-50e3adc.tgz",
-      "@antelopejs/dms": "file:.campaign/tgz/antelopejs-dms-50e3adc.tgz",
+      "@antelopejs/interface-dms": "file:.campaign/tgz/antelopejs-interface-dms-3eb021e.tgz",
+      "@antelopejs/dms": "file:.campaign/tgz/antelopejs-dms-3eb021e.tgz",
       "@antelopejs/dms>@antelopejs/interface-core": "0.2.4",
       "@antelopejs/interface-dms-automation": "file:.campaign/tgz/antelopejs-interface-dms-automation-e1c510a.tgz",
       "@antelopejs/interface-dms-mailing": "file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz",
