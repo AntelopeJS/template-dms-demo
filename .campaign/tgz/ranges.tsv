@@ -24,3 +24,5 @@
 @antelopejs/core	package.json	pnpm.overrides	
 @antelopejs/interface-core	package.json	dependencies	>=0.2.4 <1.0.0
 @antelopejs/interface-core	package.json	pnpm.overrides	
+@antelopejs/dms-frontend	package.json	devDependencies	0.9.1
+@antelopejs/dms-frontend	package.json	pnpm.overrides	
