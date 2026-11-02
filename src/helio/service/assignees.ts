@@ -199,4 +199,9 @@ class ticketAssigneeDataAPI extends DataController(
   declare role: string;
 }
 
-export const ticketAssigneeController: ControllerClass = ticketAssigneeDataAPI;
+export type TicketAssigneeRow = {
+  [Field in keyof ticketAssigneeDataAPI]: ticketAssigneeDataAPI[Field];
+};
+
+export const ticketAssigneeController: ControllerClass<TicketAssigneeRow> =
+  ticketAssigneeDataAPI;

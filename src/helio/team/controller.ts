@@ -350,4 +350,6 @@ class teamDataAPI extends DataController(
  * `teamDataAPI` typed as a `ControllerClass`, for the relation columns of other
  * domains (see the TS2742 note on the class).
  */
-export const teamController: ControllerClass = teamDataAPI;
+export type TeamRow = { [Field in keyof teamDataAPI]: teamDataAPI[Field] };
+
+export const teamController: ControllerClass<TeamRow> = teamDataAPI;

@@ -1,3 +1,4 @@
+import type { ProductCategoryRow } from "./category-controller";
 import type { TableViewOptions } from "@antelopejs/interface-dms/base/table-view";
 import { refuseUsedCategories } from "./category-usage";
 
@@ -7,7 +8,7 @@ import { refuseUsedCategories } from "./category-usage";
  * family quick filter narrows it to one family, and deleting a category goes
  * through `refuseUsedCategories`.
  */
-export const categoryTableOptions: TableViewOptions = {
+export const categoryTableOptions: TableViewOptions<ProductCategoryRow> = {
   caption: "$helio.catalog.categories.caption",
   labelKey: "name",
   layout: "compact",

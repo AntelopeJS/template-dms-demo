@@ -10,7 +10,12 @@ import {
 } from "@antelopejs/interface-dms/base/table-view";
 import { PageController, RegisterPage } from "@antelopejs/interface-dms/page";
 import { helioSalesCategory } from "../category";
-import { dealController, STAGE_PROBABILITY } from "./deal-controller";
+import type { RowActionRule } from "@antelopejs/interface-dms/base/types/row-action";
+import {
+  dealController,
+  type DealRow,
+  STAGE_PROBABILITY,
+} from "./deal-controller";
 import { afterDealEdit, afterDealNew } from "./deal-derived";
 import { CUSTOMER_QUICK_VIEW_URL } from "./links";
 import { PIPELINE_VIEWS } from "./pipeline-views";
@@ -19,7 +24,10 @@ import { PIPELINE_VIEWS } from "./pipeline-views";
  * Deals still in play, for the footer figures: a summary rule reads stored
  * fields, so it names the closed stages rather than the computed `isOpen`.
  */
-const OPEN_DEAL = { field: "stage", notIn: ["won", "lost"] };
+const OPEN_DEAL: RowActionRule<DealRow> = {
+  field: "stage",
+  notIn: ["won", "lost"],
+};
 
 /**
  * The probability each stage starts a deal with (100 % won, 0 % lost), which
