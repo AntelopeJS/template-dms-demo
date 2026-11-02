@@ -69,7 +69,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.14.0 <1.0.0",
+        version: ">=0.15.0 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -126,7 +126,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-ai",
-        version: ">=0.8.0 <1.0.0",
+        version: ">=0.9.0 <1.0.0",
       },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
@@ -147,7 +147,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-builder",
-        version: ">=0.8.0 <1.0.0",
+        version: ">=0.9.0 <1.0.0",
       },
     },
     "dms-media": {
