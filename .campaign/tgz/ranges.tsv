@@ -26,3 +26,23 @@
 @antelopejs/interface-core	package.json	pnpm.overrides	
 @antelopejs/dms-frontend	package.json	devDependencies	0.9.1
 @antelopejs/dms-frontend	package.json	pnpm.overrides	
+@antelopejs/dms-ai	package.json	devDependencies	(added)
+@antelopejs/dms-api	package.json	devDependencies	(added)
+@antelopejs/dms-api	package.json	pnpm.overrides	
+@antelopejs/dms-database	package.json	devDependencies	(added)
+@antelopejs/dms-database	package.json	pnpm.overrides	
+@antelopejs/dms-lang	package.json	devDependencies	(added)
+@antelopejs/dms-lang	package.json	pnpm.overrides	
+@antelopejs/dms-builder	package.json	devDependencies	(added)
+@antelopejs/dms-builder	package.json	pnpm.overrides	
+@antelopejs/dms-automation	package.json	devDependencies	(added)
+@antelopejs/dms-automation	package.json	pnpm.overrides	
+@antelopejs/dms-saas	package.json	devDependencies	(added)
+@antelopejs/dms-saas	package.json	pnpm.overrides	
+@antelopejs/dms-media	package.json	devDependencies	(added)
+@antelopejs/dms-media	package.json	pnpm.overrides	
+@antelopejs/dms-media>@antelopejs/interface-dms-media	package.json	pnpm.overrides	
+@antelopejs/dms-marketing	package.json	devDependencies	(added)
+@antelopejs/dms-marketing	package.json	pnpm.overrides	
+@antelopejs/dms-mailing	package.json	devDependencies	(added)
+@antelopejs/dms-mailing	package.json	pnpm.overrides	

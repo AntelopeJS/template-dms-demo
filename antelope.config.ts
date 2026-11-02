@@ -2,8 +2,24 @@ import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { defineConfig } from "@antelopejs/interface-core/config";
 import { config as loadDotenv } from "dotenv";
+import manifest from "./package.json";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
+
+const devDependencies = new Map(Object.entries(manifest.devDependencies));
+
+/**
+ * A DMS module loads from the tarball package.json pins as a devDependency (the campaign pins), and from the registry
+ * range otherwise. `swap-tgz.sh` removes the pin at release, so the registry range applies again without editing this file.
+ */
+function dmsModuleSource(name: string, version: string) {
+  if (devDependencies.get(name)?.startsWith("file:"))
+    return {
+      type: "local" as const,
+      path: resolve(__dirname, "node_modules", name),
+    };
+  return { type: "package" as const, package: name, version };
+}
 
 /**
  * The secret that hashes visitor ids, derived from `HELIO_NOW` when it is set so the imported traffic gets the same ids
@@ -99,32 +115,16 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-api",
-        version: ">=0.5.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-api", ">=0.5.1 <1.0.0"),
     },
     "dms-database": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-database",
-        version: ">=0.3.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-database", ">=0.3.1 <1.0.0"),
     },
     "dms-automation": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-automation",
-        version: ">=0.7.0 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-automation", ">=0.7.0 <1.0.0"),
     },
     "dms-saas": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-saas",
-        version: ">=0.8.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-saas", ">=0.8.1 <1.0.0"),
       config: {
         stripe: {
           secretKey: "sk_test_placeholder",
@@ -134,46 +134,26 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-ai",
-        version: ">=0.6.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-ai", ">=0.6.1 <1.0.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-lang",
-        version: ">=0.4.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-lang", ">=0.4.1 <1.0.0"),
       config: {
         editable: true,
       },
     },
     "dms-builder": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-builder",
-        version: ">=0.6.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-builder", ">=0.6.1 <1.0.0"),
     },
     "dms-media": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-media",
-        version: ">=0.6.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-media", ">=0.6.1 <1.0.0"),
     },
     "dms-marketing": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-marketing",
-        version: ">=0.7.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-marketing", ">=0.7.1 <1.0.0"),
       config: {
         visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
@@ -187,11 +167,7 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-mailing",
-        version: ">=0.7.1 <1.0.0",
-      },
+      source: dmsModuleSource("@antelopejs/dms-mailing", ">=0.7.1 <1.0.0"),
     },
 
     mongodb: {
