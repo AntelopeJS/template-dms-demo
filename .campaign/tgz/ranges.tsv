@@ -46,3 +46,4 @@
 @antelopejs/dms-marketing	package.json	pnpm.overrides	
 @antelopejs/dms-mailing	package.json	devDependencies	(added)
 @antelopejs/dms-mailing	package.json	pnpm.overrides	
+@antelopejs/interface-file-storage	package.json	pnpm.overrides	

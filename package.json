@@ -97,7 +97,8 @@
       "@antelopejs/dms-media": "file:.campaign/tgz/antelopejs-dms-media-1b675e8.tgz",
       "@antelopejs/dms-media>@antelopejs/interface-dms-media": "0.3.1",
       "@antelopejs/dms-marketing": "file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz",
-      "@antelopejs/dms-mailing": "file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz"
+      "@antelopejs/dms-mailing": "file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz",
+      "@antelopejs/interface-file-storage": "0.1.4"
     }
   },
   "antelopeJs": {
