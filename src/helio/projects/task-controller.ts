@@ -209,4 +209,9 @@ class projectTaskDataAPI extends DataController(
 }
 
 /** The tasks controller as relations and pages reference it (see the TS2742 note on the class). */
-export const projectTaskController: ControllerClass = projectTaskDataAPI;
+export type ProjectTaskRow = {
+  [Field in keyof projectTaskDataAPI]: projectTaskDataAPI[Field];
+};
+
+export const projectTaskController: ControllerClass<ProjectTaskRow> =
+  projectTaskDataAPI;

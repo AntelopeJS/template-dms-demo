@@ -429,4 +429,8 @@ class customerDataAPI extends DataController(
  * The customer controller, typed as `ControllerClass` for the relation columns
  * of other domains (see the TS2742 note on the class).
  */
-export const customerController: ControllerClass = customerDataAPI;
+export type CustomerRow = {
+  [Field in keyof customerDataAPI]: customerDataAPI[Field];
+};
+
+export const customerController: ControllerClass<CustomerRow> = customerDataAPI;

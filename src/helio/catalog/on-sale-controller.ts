@@ -88,4 +88,9 @@ class onSaleProductDataAPI extends DataController(
 }
 
 /** ControllerClass-typed alias of `onSaleProductDataAPI` for the quote lines (see the TS2742 note). */
-export const onSaleProductController: ControllerClass = onSaleProductDataAPI;
+export type OnSaleProductRow = {
+  [Field in keyof onSaleProductDataAPI]: onSaleProductDataAPI[Field];
+};
+
+export const onSaleProductController: ControllerClass<OnSaleProductRow> =
+  onSaleProductDataAPI;

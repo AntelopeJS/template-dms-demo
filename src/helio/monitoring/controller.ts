@@ -256,4 +256,6 @@ class siteDataAPI extends DataController(
 }
 
 /** `ControllerClass`-typed alias for relations and pages (see the TS2742 note). */
-export const siteController: ControllerClass = siteDataAPI;
+export type SiteRow = { [Field in keyof siteDataAPI]: siteDataAPI[Field] };
+
+export const siteController: ControllerClass<SiteRow> = siteDataAPI;
