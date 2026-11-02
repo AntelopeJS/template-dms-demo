@@ -13,8 +13,8 @@ import { HELIO_WEBSITE, helioFunnels } from "./site";
  * form) and twelve weeks of imported traffic. Called when the DMS provisions
  * the default tenant; the content is written once, and from then on it belongs
  * to the tenant. The traffic is imported after the funnels, because an
- * exposure only counts once its split left draft. An import another process is
- * still running is not done, so the step fails and runs again later.
+ * exposure only counts once its split left draft. An import that answers
+ * `in_progress` or `failed` is not done, so the step fails and runs again later.
  */
 export async function provisionHelioMarketing(): Promise<void> {
   const now = Date.now();
