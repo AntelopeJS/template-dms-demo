@@ -18,7 +18,7 @@ overrides:
   '@antelopejs/interface-dms-saas': file:.campaign/tgz/antelopejs-interface-dms-saas-97eba5b.tgz
   '@antelopejs/core': file:.campaign/tgz/antelopejs-core-d74e513.tgz
   '@antelopejs/interface-core': file:.campaign/tgz/antelopejs-interface-core-52413a9.tgz
-  '@antelopejs/dms-frontend': file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz
+  '@antelopejs/dms-frontend': file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz
 
 importers:
 
