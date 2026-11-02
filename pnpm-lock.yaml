@@ -23,12 +23,12 @@ overrides:
   '@antelopejs/dms-database': file:.campaign/tgz/antelopejs-dms-database-5723cc9.tgz
   '@antelopejs/dms-lang': file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz
   '@antelopejs/dms-builder': file:.campaign/tgz/antelopejs-dms-builder-29b7d84.tgz
-  '@antelopejs/dms-automation': file:.campaign/tgz/antelopejs-dms-automation-c65928b.tgz
-  '@antelopejs/dms-saas': file:.campaign/tgz/antelopejs-dms-saas-6634b00.tgz
+  '@antelopejs/dms-automation': file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz
+  '@antelopejs/dms-saas': file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz
   '@antelopejs/dms-media': file:.campaign/tgz/antelopejs-dms-media-1b675e8.tgz
   '@antelopejs/dms-media>@antelopejs/interface-dms-media': 0.3.1
   '@antelopejs/dms-marketing': file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz
-  '@antelopejs/dms-mailing': file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz
+  '@antelopejs/dms-mailing': file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz
   '@antelopejs/interface-file-storage': 0.1.6
 
 importers:
@@ -88,8 +88,8 @@ importers:
         specifier: file:.campaign/tgz/antelopejs-dms-api-0129d8e.tgz
         version: file:.campaign/tgz/antelopejs-dms-api-0129d8e.tgz(@antelopejs/interface-data-api@file:.campaign/tgz/antelopejs-interface-data-api-d8a868f.tgz(5e3770fbf1bd8df2e4d8af93930b7ccd))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
       '@antelopejs/dms-automation':
-        specifier: file:.campaign/tgz/antelopejs-dms-automation-c65928b.tgz
-        version: file:.campaign/tgz/antelopejs-dms-automation-c65928b.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
+        specifier: file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz
+        version: file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
       '@antelopejs/dms-builder':
         specifier: file:.campaign/tgz/antelopejs-dms-builder-29b7d84.tgz
         version: file:.campaign/tgz/antelopejs-dms-builder-29b7d84.tgz(c90f9000c6feab6252393e58cba5d4dc)
@@ -103,8 +103,8 @@ importers:
         specifier: file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz
         version: file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz(@antelopejs/interface-data-api@file:.campaign/tgz/antelopejs-interface-data-api-d8a868f.tgz(5e3770fbf1bd8df2e4d8af93930b7ccd))(@antelopejs/interface-database-decorators@file:.campaign/tgz/antelopejs-interface-database-decorators-e79a62b.tgz(@antelopejs/interface-api@file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)(@antelopejs/interface-database@file:.campaign/tgz/antelopejs-interface-database-02e0360.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)))(@antelopejs/interface-database@file:.campaign/tgz/antelopejs-interface-database-02e0360.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
       '@antelopejs/dms-mailing':
-        specifier: file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz
-        version: file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
+        specifier: file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz
+        version: file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
       '@antelopejs/dms-marketing':
         specifier: file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz
         version: file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))
@@ -112,8 +112,8 @@ importers:
         specifier: file:.campaign/tgz/antelopejs-dms-media-1b675e8.tgz
         version: file:.campaign/tgz/antelopejs-dms-media-1b675e8.tgz(@antelopejs/interface-data-api@file:.campaign/tgz/antelopejs-interface-data-api-d8a868f.tgz(5e3770fbf1bd8df2e4d8af93930b7ccd))
       '@antelopejs/dms-saas':
-        specifier: file:.campaign/tgz/antelopejs-dms-saas-6634b00.tgz
-        version: file:.campaign/tgz/antelopejs-dms-saas-6634b00.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@types/node@26.6.5)
+        specifier: file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz
+        version: file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@types/node@26.6.5)
       '@antelopejs/tooling-configs':
         specifier: ^0.2.17
         version: 0.2.17(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
@@ -166,8 +166,8 @@ packages:
     resolution: {integrity: sha512-2qLkHhrW7p5nLxRKzyH4MOagDzzGUVklpojS92up3+BIur6ZkTFUSItWML3gnt6XWZrLIM50FWEspaSV/wlq4Q==, tarball: file:.campaign/tgz/antelopejs-dms-api-0129d8e.tgz}
     version: 0.5.1
 
-  '@antelopejs/dms-automation@file:.campaign/tgz/antelopejs-dms-automation-c65928b.tgz':
-    resolution: {integrity: sha512-0teVjwn1wdUbGk0ua2ol6b6OeOAXuWy4tYVEMEUIPxcXH7Zu2BEGl0liyXXQaFqks/plO2Mc8b9K+1goeF9zQg==, tarball: file:.campaign/tgz/antelopejs-dms-automation-c65928b.tgz}
+  '@antelopejs/dms-automation@file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz':
+    resolution: {integrity: sha512-0tMFkfUKXj9P7ctTXM9xprVJAzTwDnZyD2kcVEBNQE8kiOKaDrqroQEmTAEW2ch28JlzaQRiHiwbuXCyZRmHwg==, tarball: file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz}
     version: 0.7.0
 
   '@antelopejs/dms-builder@file:.campaign/tgz/antelopejs-dms-builder-29b7d84.tgz':
@@ -190,8 +190,8 @@ packages:
     resolution: {integrity: sha512-BiqVyjXebn3pkw4qNa/VsjJOOWdm3L2ZIvopP3rQwIJ4VBj4cdBj/pty4blCKA0cO/L/4SJ1o1AgKlHF2eW0Og==, tarball: file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz}
     version: 0.4.1
 
-  '@antelopejs/dms-mailing@file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz':
-    resolution: {integrity: sha512-Pty8egPcM9sbPdPuQH20Uhzo1qsUlVGQU7j6aufN0rsaVEvTBRYzmEFCaZPRS6lzbRCRopVl/esDPOAdrQa0JA==, tarball: file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz}
+  '@antelopejs/dms-mailing@file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz':
+    resolution: {integrity: sha512-zLF7BpAiJEAaiKjlohXsYsI7KyjiuuzNcyvtaTWFRFcOWylRkJ+F10FfnK/Yvv/zcQTKHmScf79xPbig6LJ4FQ==, tarball: file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz}
     version: 0.7.1
 
   '@antelopejs/dms-marketing@file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz':
@@ -202,8 +202,8 @@ packages:
     resolution: {integrity: sha512-Wq1oRpynTffy+mjm6ONR5gZr2zYBBwqUBbG3gS9byTCYQYZt1Lm3P0zPv5/Sr0VFAk3BERuBMTGgEFtTonO5Ig==, tarball: file:.campaign/tgz/antelopejs-dms-media-1b675e8.tgz}
     version: 0.6.1
 
-  '@antelopejs/dms-saas@file:.campaign/tgz/antelopejs-dms-saas-6634b00.tgz':
-    resolution: {integrity: sha512-6NdkwCLZD0p0c1C+fTa1giVGY5u9fR+RB2iGh70mTQiYkJ8PsPsDQEwO8Yxvf6VEhqmxlzwZIxSVmSofQPX8Fw==, tarball: file:.campaign/tgz/antelopejs-dms-saas-6634b00.tgz}
+  '@antelopejs/dms-saas@file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz':
+    resolution: {integrity: sha512-t1+V7VVzHbGFpKKy6IiASDRvY4LV61Uzx2mtckX9NBwpDDep6YEcaKdwQyQzbutISnyzcbiHBvm0rrvxiabXvg==, tarball: file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz}
     version: 0.8.1
 
   '@antelopejs/dms@file:.campaign/tgz/antelopejs-dms-80e4dc1.tgz':
@@ -2861,7 +2861,7 @@ snapshots:
       - '@antelopejs/interface-data-api'
       - '@antelopejs/interface-file-storage'
 
-  '@antelopejs/dms-automation@file:.campaign/tgz/antelopejs-dms-automation-c65928b.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))':
+  '@antelopejs/dms-automation@file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))':
     dependencies:
       '@antelopejs/interface-api': file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)
       '@antelopejs/interface-api-util': file:.campaign/tgz/antelopejs-interface-api-util-639f38b.tgz(@antelopejs/interface-api@file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)
@@ -2940,7 +2940,7 @@ snapshots:
       - '@antelopejs/interface-database-decorators'
       - '@antelopejs/interface-file-storage'
 
-  '@antelopejs/dms-mailing@file:.campaign/tgz/antelopejs-dms-mailing-eb4c645.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))':
+  '@antelopejs/dms-mailing@file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))':
     dependencies:
       '@antelopejs/interface-api': file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)
       '@antelopejs/interface-api-util': file:.campaign/tgz/antelopejs-interface-api-util-639f38b.tgz(@antelopejs/interface-api@file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)
@@ -2993,7 +2993,7 @@ snapshots:
     transitivePeerDependencies:
       - '@antelopejs/interface-data-api'
 
-  '@antelopejs/dms-saas@file:.campaign/tgz/antelopejs-dms-saas-6634b00.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@types/node@26.6.5)':
+  '@antelopejs/dms-saas@file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@types/node@26.6.5)':
     dependencies:
       '@antelopejs/interface-api': file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)
       '@antelopejs/interface-api-util': file:.campaign/tgz/antelopejs-interface-api-util-639f38b.tgz(@antelopejs/interface-api@file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz))(@antelopejs/interface-core@file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz)
