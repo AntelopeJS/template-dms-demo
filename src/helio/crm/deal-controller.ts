@@ -470,4 +470,6 @@ class dealDataAPI extends DataController(
  * The deal controller, typed as `ControllerClass` for the relation columns of
  * other domains (see the TS2742 note on the class).
  */
-export const dealController: ControllerClass = dealDataAPI;
+export type DealRow = { [Field in keyof dealDataAPI]: dealDataAPI[Field] };
+
+export const dealController: ControllerClass<DealRow> = dealDataAPI;

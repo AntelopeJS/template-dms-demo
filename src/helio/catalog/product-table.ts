@@ -1,3 +1,4 @@
+import type { ProductRow } from "./product-controller";
 import type { TableViewOptions } from "@antelopejs/interface-dms/base/table-view";
 import { SERVICES_FAMILY } from "./options";
 
@@ -89,7 +90,7 @@ const FORMS: TableViewOptions["formContainer"] = {
  * How the catalog page shows the products. Kept apart from the page so the
  * page reads as its blocks.
  */
-export const productTableOptions: TableViewOptions = {
+export const productTableOptions: TableViewOptions<ProductRow> = {
   caption: "$helio.catalog.products.caption",
   labelKey: "name",
   searchPlaceholder: "$helio.catalog.products.search",

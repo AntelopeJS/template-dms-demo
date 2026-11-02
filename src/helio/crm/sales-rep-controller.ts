@@ -95,4 +95,8 @@ class salesRepDataAPI extends DataController(
  * The sales rep controller, typed as `ControllerClass` for the relation columns
  * (see the TS2742 note on the class).
  */
-export const salesRepController: ControllerClass = salesRepDataAPI;
+export type SalesRepRow = {
+  [Field in keyof salesRepDataAPI]: salesRepDataAPI[Field];
+};
+
+export const salesRepController: ControllerClass<SalesRepRow> = salesRepDataAPI;
