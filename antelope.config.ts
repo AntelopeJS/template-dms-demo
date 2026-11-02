@@ -96,7 +96,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.11.0 <1.0.0",
+        version: ">=0.15.0 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -115,16 +115,16 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: dmsModuleSource("@antelopejs/dms-api", ">=0.5.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-api", ">=0.6.0 <1.0.0"),
     },
     "dms-database": {
-      source: dmsModuleSource("@antelopejs/dms-database", ">=0.3.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-database", ">=0.4.0 <1.0.0"),
     },
     "dms-automation": {
-      source: dmsModuleSource("@antelopejs/dms-automation", ">=0.7.0 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-automation", ">=0.8.0 <1.0.0"),
     },
     "dms-saas": {
-      source: dmsModuleSource("@antelopejs/dms-saas", ">=0.8.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-saas", ">=0.9.0 <1.0.0"),
       config: {
         stripe: {
           secretKey: "sk_test_placeholder",
@@ -134,26 +134,26 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: dmsModuleSource("@antelopejs/dms-ai", ">=0.6.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-ai", ">=0.9.0 <1.0.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: dmsModuleSource("@antelopejs/dms-lang", ">=0.4.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-lang", ">=0.5.0 <1.0.0"),
       config: {
         editable: true,
       },
     },
     "dms-builder": {
-      source: dmsModuleSource("@antelopejs/dms-builder", ">=0.6.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-builder", ">=0.9.0 <1.0.0"),
     },
     "dms-media": {
-      source: dmsModuleSource("@antelopejs/dms-media", ">=0.6.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-media", ">=0.7.0 <1.0.0"),
     },
     "dms-marketing": {
-      source: dmsModuleSource("@antelopejs/dms-marketing", ">=0.7.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-marketing", ">=0.8.0 <1.0.0"),
       config: {
         visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
@@ -167,7 +167,7 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: dmsModuleSource("@antelopejs/dms-mailing", ">=0.7.1 <1.0.0"),
+      source: dmsModuleSource("@antelopejs/dms-mailing", ">=0.8.0 <1.0.0"),
     },
 
     mongodb: {
