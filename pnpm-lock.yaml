@@ -18,7 +18,7 @@ overrides:
   '@antelopejs/interface-dms-saas': file:.campaign/tgz/antelopejs-interface-dms-saas-97eba5b.tgz
   '@antelopejs/core': file:.campaign/tgz/antelopejs-core-184eb90.tgz
   '@antelopejs/interface-core': file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz
-  '@antelopejs/dms-frontend': file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz
+  '@antelopejs/dms-frontend': file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz
 
 importers:
 
@@ -71,8 +71,8 @@ importers:
         specifier: file:.campaign/tgz/antelopejs-dms-80e4dc1.tgz
         version: file:.campaign/tgz/antelopejs-dms-80e4dc1.tgz(@antelopejs/core@file:.campaign/tgz/antelopejs-core-184eb90.tgz)
       '@antelopejs/dms-frontend':
-        specifier: file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz
-        version: file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz(@antelopejs/core@file:.campaign/tgz/antelopejs-core-184eb90.tgz)
+        specifier: file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz
+        version: file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz(@antelopejs/core@file:.campaign/tgz/antelopejs-core-184eb90.tgz)
       '@antelopejs/tooling-configs':
         specifier: ^0.2.17
         version: 0.2.17(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
@@ -112,8 +112,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  '@antelopejs/dms-frontend@file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz':
-    resolution: {integrity: sha512-TvJ4NLCTodFHqXxjzTBBjro+VJ0dgjqXO2gTrkByFB01sz3sU6BzPC0Jvja4uMT9YXFpGV4ts3tElvb7zs0VGg==, tarball: file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz}
+  '@antelopejs/dms-frontend@file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz':
+    resolution: {integrity: sha512-Ft/QPtUS5CFZ3woW1MODNL1smPA98fMAAbCF7cBKmCEtkFIGmSbsCm1/ABT8wiS588NsF5wK4rnyUC2rVGwtag==, tarball: file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz}
     version: 0.10.0
     engines: {node: '>=20.19.0'}
     hasBin: true
@@ -1949,7 +1949,7 @@ snapshots:
       semver: 7.8.5
       typescript: 5.9.3
 
-  '@antelopejs/dms-frontend@file:.campaign/tgz/antelopejs-dms-frontend-ee4e931.tgz(@antelopejs/core@file:.campaign/tgz/antelopejs-core-184eb90.tgz)':
+  '@antelopejs/dms-frontend@file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz(@antelopejs/core@file:.campaign/tgz/antelopejs-core-184eb90.tgz)':
     dependencies:
       '@antelopejs/core': file:.campaign/tgz/antelopejs-core-184eb90.tgz
       '@intlify/message-compiler': 11.4.16
