@@ -50,7 +50,7 @@
     "@antelopejs/dms-ai": "file:.campaign/tgz/antelopejs-dms-ai-8ac1608.tgz",
     "@antelopejs/dms-api": "file:.campaign/tgz/antelopejs-dms-api-0129d8e.tgz",
     "@antelopejs/dms-automation": "file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz",
-    "@antelopejs/dms-builder": "file:.campaign/tgz/antelopejs-dms-builder-29b7d84.tgz",
+    "@antelopejs/dms-builder": "file:.campaign/tgz/antelopejs-dms-builder-6806195.tgz",
     "@antelopejs/dms-database": "file:.campaign/tgz/antelopejs-dms-database-5723cc9.tgz",
     "@antelopejs/dms-frontend": "file:.campaign/tgz/antelopejs-dms-frontend-95906e9.tgz",
     "@antelopejs/dms-lang": "file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz",
@@ -91,14 +91,15 @@
       "@antelopejs/dms-api": "file:.campaign/tgz/antelopejs-dms-api-0129d8e.tgz",
       "@antelopejs/dms-database": "file:.campaign/tgz/antelopejs-dms-database-5723cc9.tgz",
       "@antelopejs/dms-lang": "file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz",
-      "@antelopejs/dms-builder": "file:.campaign/tgz/antelopejs-dms-builder-29b7d84.tgz",
+      "@antelopejs/dms-builder": "file:.campaign/tgz/antelopejs-dms-builder-6806195.tgz",
       "@antelopejs/dms-automation": "file:.campaign/tgz/antelopejs-dms-automation-7c0178b.tgz",
       "@antelopejs/dms-saas": "file:.campaign/tgz/antelopejs-dms-saas-c51ff35.tgz",
       "@antelopejs/dms-media": "file:.campaign/tgz/antelopejs-dms-media-1b675e8.tgz",
       "@antelopejs/dms-media>@antelopejs/interface-dms-media": "0.3.1",
       "@antelopejs/dms-marketing": "file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz",
       "@antelopejs/dms-mailing": "file:.campaign/tgz/antelopejs-dms-mailing-8128712.tgz",
-      "@antelopejs/interface-file-storage": "0.1.6"
+      "@antelopejs/interface-file-storage": "0.1.6",
+      "@antelopejs/interface-dms-builder": "file:.campaign/tgz/antelopejs-interface-dms-builder-6806195.tgz"
     }
   },
   "antelopeJs": {
