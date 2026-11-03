@@ -31,6 +31,12 @@ const visitorHashSecret = process.env.HELIO_NOW
       .digest("hex")
   : "";
 
+/** The address the API listens on. Unset listens on every interface, as a deployment does; a capture run sets it. */
+const apiHost = process.env.HELIO_API_HOST?.trim();
+
+const apiPort = { protocol: "http" as const, port: 5010 };
+const apiServer = apiHost ? { ...apiPort, host: apiHost } : apiPort;
+
 export default defineConfig({
   name: "template-dms-demo",
   logging: {
@@ -209,12 +215,7 @@ export default defineConfig({
         version: "^1.5.0",
       },
       config: {
-        servers: [
-          {
-            protocol: "http",
-            port: 5010,
-          },
-        ],
+        servers: [apiServer],
       },
     },
     "file-storage-local": {
