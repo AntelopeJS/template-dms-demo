@@ -5,6 +5,12 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { startGroup, stopGroup } from "./process-group";
 
 const FIXED_NOW = "2026-06-15T09:00:00Z";
+
+/**
+ * The setup token of a capture run. The DMS asks for it on the owner step of the onboarding, so a scene opens
+ * `/onboarding?token=` followed by this value, or fills the `setupToken` field with it. `DMS_SETUP_TOKEN` overrides it.
+ */
+const SETUP_TOKEN = "helio-capture-setup-token";
 const PORT = process.env.PORT ?? "3001";
 const FRONTEND_URL = `http://127.0.0.1:${PORT}/`;
 const BACKEND_URL = "http://127.0.0.1:5010/";
@@ -22,6 +28,7 @@ const environment = {
   TZ: "UTC",
   HELIO_NOW: process.env.HELIO_NOW ?? FIXED_NOW,
   HELIO_SIMULATORS: "off",
+  DMS_SETUP_TOKEN: process.env.DMS_SETUP_TOKEN ?? SETUP_TOKEN,
 };
 
 /**

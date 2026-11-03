@@ -1,13 +1,13 @@
-# AntelopeJS DMS Demo Template
+# `template-dms-demo`
 
 <div align="center">
-<a href="https://discord.gg/g4pFt6eXqu"><img src="https://img.shields.io/badge/Discord-18181B?logo=discord&style=for-the-badge&color=000000" alt="Discord"></a>
-<a href="https://dms.antelopejs.com/docs/getting-started/quickstart"><img src="https://img.shields.io/badge/Docs-18181B?style=for-the-badge&color=000000" alt="Documentation"></a>
+<a href="https://discord.gg/g4pFt6eXqu"><img src="https://img.shields.io/badge/Discord-18181B?logo=discord&style=for-the-badge&color=000000" alt="Discord" data-illustration></a>
+<a href="https://dms.antelopejs.com/docs/getting-started/quickstart"><img src="https://img.shields.io/badge/Docs-18181B?style=for-the-badge&color=000000" alt="Documentation" data-illustration></a>
 </div>
 
-A ready-to-run [AntelopeJS DMS](https://dms.antelopejs.com) project: every DMS
-feature module and Helio, a complete demo business app, translated in English
-and French.
+A ready-to-run [AntelopeJS DMS](https://dms.antelopejs.com) project with every
+DMS feature module and Helio, a complete demo business app, translated in
+English and French.
 
 - **Home**: an editorial presentation of the demo (a hero and long-form
   Markdown sections, two Vue components of this template, texts per language
@@ -15,7 +15,7 @@ and French.
 - **Helio**: the back-office of a fictional solar installer (sales pipeline,
   quotes, customers, catalog, projects, live service desk, team, invoices, live
   fleet monitoring, settings and dashboard), made only of generic DMS blocks
-  declared on the backend: zero lines of Vue.
+  declared on the backend, with no line of Vue.
 - Every `dms-*` feature module installed from npm and configured in
   `antelope.config.ts`, ready to remove one by one.
 
@@ -43,43 +43,43 @@ mailer, …) are configured in the same file.
 
 The Media module adds a Finder-style asset library with folders, ACLs, direct
 uploads and image derivatives. The Form demo includes an `AssetType` gallery
-bound to an automatically provisioned **Event media** folder; its permissions
+bound to an automatically provisioned **Event media** folder, whose permissions
 are derived from the Form page.
 
 The local module lives in [`src/`](./src):
 
-- `src/index.ts` — module lifecycle entry point; also registers the local
-  frontend module via `AddFrontendModule`.
-- `src/home.ts` — the `home` page: a hero (`CustomComponent("DemoHomeHero")`),
+- `src/index.ts` is the module lifecycle entry point. It also registers the
+  local frontend module through `AddFrontendModule`.
+- `src/home.ts` is the `home` page, with a hero (`CustomComponent("DemoHomeHero")`),
   a `StatGroup` of figures about Helio counted at runtime, the story in
   long-form sections (`CustomComponent("DemoHomeProse")`, each reading the
   Markdown of `content/home/` in the reader's language from the page's
   `sections/:id` route) and a `NavCardGrid` of links.
-- `src/helio/` — **Helio**, its own sidebar section: one folder per domain
+- `src/helio/` is **Helio**, its own sidebar section, with one folder per domain
   (`crm`, `sales`, `catalog`, `projects`, `service`, `team`, `finance`,
   `monitoring`, `settings`, `dashboard`), each holding its Mongo tables and
   fixtures, its data controllers under `/api/helio/*` and its pages. Every
   page is a `PageController` of generic blocks (`TableView` with kanban,
   cards and grouped displays, `Form`, `Tab`, `KpiCard`, `ChartCard`,
-  `StatGroup`, `NavCardGrid`, `Meter`, …); the fixtures generate coherent data
+  `StatGroup`, `NavCardGrid`, `Meter`, …). The fixtures generate coherent data
   relative to the current date. The service desk and fleet monitoring are live
-  pages fed by small simulators; set `HELIO_SIMULATORS=off` in the
+  pages fed by small simulators. Set `HELIO_SIMULATORS=off` in the
   environment (or `.env`) before `pnpm dev` to stop them.
-- `src/helio/platform/` — Helio's data in the other modules: the SaaS
-  showcase, e-mails, media library and public website. It is written once,
+- `src/helio/platform/` holds Helio's data in the other modules, namely the
+  SaaS sample, e-mails, media library and public website. It is written once,
   when the DMS creates its `default` tenant on an empty database
   (`Hook.TENANT_BEING_PROVISIONED`, see `provisioning.ts`), and belongs to the
-  tenant from then on: a later start writes none of it again. To get the demo
+  tenant from then on. A later start writes none of it again. To get the demo
   data back, start against an empty database.
+
 ## Prerequisites
 
-- **Node.js 24**, the version pinned in [`.nvmrc`](./.nvmrc).
-- **corepack**, or pnpm 10.2.0 on your `PATH`. This repository pins
-  `"packageManager": "pnpm@10.2.0"`, and the AntelopeJS CLI shells out to a
-  bare `pnpm` when it installs and builds modules — so run `corepack enable`
-  once (corepack ships with Node) or install pnpm 10.2.0 globally. A different
-  major of pnpm on the `PATH` is what usually breaks `pnpm exec ajs project
-  modules install`.
+- **Node.js**, in the version pinned in [`.nvmrc`](./.nvmrc).
+- **corepack**, or the pnpm version that `packageManager` in `package.json`
+  pins, on your `PATH`. The AntelopeJS CLI shells out to a bare `pnpm` when it
+  installs and builds modules, so run `corepack enable` once (corepack ships
+  with Node) or install that pnpm version globally. A different major of pnpm
+  on the `PATH` is what usually breaks `pnpm exec ajs project modules install`.
 - A running MongoDB instance (`mongodb://localhost:27017` by default, see
   `MONGODB_URL` in [Environment](#environment)).
 
@@ -97,12 +97,12 @@ pnpm dev
 The CLI installs both workspace packages with pnpm and preserves
 `antelope.config.ts`, including its module configuration and template name.
 No setup script or `.env` is required for development. Start MongoDB before
-`pnpm dev`; set `MONGODB_URL` in an optional `.env` for a non-default instance.
+`pnpm dev`, and set `MONGODB_URL` in an optional `.env` for a non-default instance.
 The frontend discovers the backend and generates an ephemeral session secret.
 Restarting the frontend can invalidate sessions.
 
-Older CLI releases, including 1.15.2, do not preserve complete project
-templates. Clone directly instead:
+A CLI release without project-template support does not preserve the complete
+project. Clone directly instead:
 
 ```bash
 git clone https://github.com/AntelopeJS/template-dms-demo.git my-app
@@ -130,35 +130,36 @@ dashboard on `http://localhost:3001`. Both files are rewritten on every boot.
 
 `ajs dms dev` listens on `127.0.0.1` only, so the dev server (and the module
 sources it serves) is not reachable from another machine. To open the dashboard
-from elsewhere — a container, a VM, a phone on the same network — set `HOST`:
+from elsewhere, such as a container, a VM or a phone on the same network, set
+`HOST`:
 
 ```bash
 HOST=0.0.0.0 pnpm frontend:dev
 ```
 
-`ajs dms start` — the production server, as opposed to `ajs dms dev` — defaults
+`ajs dms start`, the production server, defaults
 `DMS_COOKIE_SECURE` to `true`, so the browser drops the session cookie and every
 login silently fails when you test a production build over plain `http://`. Set
 `DMS_COOKIE_SECURE=false` in `.env` for such a run, and leave it unset (or
 `true`) behind real TLS.
 
-### First run: create the administrator
+### Create the administrator on the first run
 
 Open `http://localhost:3001`. **There are no default credentials.** A fresh
 instance has no account at all, so a global frontend middleware sends every
-route — including `/` and the configured `homepage` (`/home`) — to
+route, including `/` and the configured `homepage` (`/home`), to
 `/onboarding`, the first-run wizard that creates the first administrator.
 
 The password you choose there, like every password in the DMS, must be at least
-8 characters long and match this policy (`packages/dms/src/validation/password.ts`
-in [`@antelopejs/dms`](https://github.com/AntelopeJS/dms)):
+8 characters long and match this policy (`packages/interface-dms/src/auth/password.ts`
+in [`AntelopeJS/dms`](https://github.com/AntelopeJS/dms)):
 
 ```
 /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
 ```
 
-That is: at least one uppercase letter, one digit and one special character,
-and **only** `@$!%*?&` count as special characters — a password containing, say,
+It needs at least one uppercase letter, one digit and one special character,
+and **only** `@$!%*?&` count as special characters. A password that contains
 `#` or `-` is rejected. See
 [Authentication](https://dms.antelopejs.com/docs/auth-and-tenancy/authentication)
 for the rest of the auth system.
@@ -168,14 +169,14 @@ later sign-ins go through **`/auth`**, the login screen (there is no `/login`
 route). `/auth/forgot`, `/auth/recover`, `/auth/2fa` and the other auth screens
 live under the same prefix.
 
-## AI assistant
+## The assistant
 
-The assistant in the dashboard runs a coding agent in this project's folder, Claude Code or Codex, on your own subscription. Open the chat with the sparkle icon in the header, or press `Ctrl` `Shift` `K`. Its settings are under **Modules** > **Assistant**. To have Claude Code or Codex work on this repository's code instead, see [AI coding agents](#ai-coding-agents).
+The assistant in the dashboard runs a coding agent in this project's folder, Claude Code or Codex, on your own subscription. Open the chat with the sparkle icon in the header, or press `Ctrl` `Shift` `K`. Its settings are under **Modules** > **Assistant**. To have Claude Code or Codex work on this repository's code instead, see [Coding agents](#coding-agents).
 
 **Without Docker.** The assistant runs as you, on your machine, so it uses the logins you already have. You set no token and no API key.
 
-- **Claude Code.** If you are signed in to Claude Code on this machine, the assistant uses that login. If you are not, run `claude` once and sign in. The assistant runs the copy of Claude Code that `@antelopejs/dms-ai` installs, so it needs no `claude` on your `PATH`.
-- **Codex.** Add `@openai/codex` 0.154.0 to this project with `pnpm add -w @openai/codex@0.154.0`. The assistant does not read a `codex login` from your terminal. Open **Assistant** > **Settings** and press **Sign in with ChatGPT** once. The sign-in is stored in `~/.config/dms-ai` and serves every DMS project on your machine.
+- **Claude Code.** The assistant uses your Claude Code login on this machine. Without one, run `claude` once and sign in. The assistant runs the copy of Claude Code that `@antelopejs/dms-ai` installs, so it needs no `claude` on your `PATH`.
+- **Codex.** Add `@openai/codex` to this project with `pnpm add -w @openai/codex@<version>`, using the `@openai/codex` peer version of `@antelopejs/dms-ai`. The assistant does not read a `codex login` from your terminal. Open **Assistant** > **Settings** and press **Sign in with ChatGPT** once. The sign-in is stored in `~/.config/dms-ai` and serves every DMS project on your machine.
 
 **With Docker.** The assistant runs inside the container, which has none of your logins. Give the container one of these in its environment:
 
@@ -186,33 +187,33 @@ The assistant in the dashboard runs a coding agent in this project's folder, Cla
 ## Environment
 
 For optional overrides, create a git-ignored `.env` at the repository root.
-The default development workflow does not need one. Two processes read it:
+The default development workflow does not need one. Two processes read it.
 
-- the **backend** (`pnpm dev`) only reads the variables mapped in the
-  `envOverrides` block of `antelope.config.ts`;
-- the **frontend loader** (`ajs dms`, from
+- The **backend** (`pnpm dev`) only reads the variables mapped in the
+  `envOverrides` block of `antelope.config.ts`.
+- The **frontend loader** (`ajs dms`, from
   [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend))
   reads the `DMS_*` loader variables below.
 
 | Variable | Read by | Purpose | Needed locally |
 | --- | --- | --- | --- |
-| `DMS_API_BASE_URL` | loader | Backend URL the frontend server talks to; discovered automatically in dev, required by `ajs dms start`. | no |
-| `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). Ephemeral in dev; explicit for build/start. | no |
-| `DMS_CLIENT_BASE_URL` | backend + loader | The dashboard's origin, such as `https://dashboard.example.com`: the base of e-mail links and redirects, an origin the API's CORS lets in and the host payment redirects return to; dms derives all of them from it. `http://localhost:3001` in development; **required** with `-e production`, where dms refuses to start without it or with a value that is not an http(s) origin. | production only |
+| `DMS_API_BASE_URL` | loader | Backend URL the frontend server talks to. Discovered automatically in dev, required by `ajs dms start`. | no |
+| `DMS_SESSION_SECRET` | loader | Key encrypting the session cookie, **at least 32 characters** (`openssl rand -hex 32`). Ephemeral in dev, explicit for build and start. | no |
+| `DMS_CLIENT_BASE_URL` | backend + loader | The dashboard's origin, such as `https://dashboard.example.com`. The DMS derives from it the base of e-mail links and redirects, an origin the API's CORS lets in, and the host payment redirects return to. `http://localhost:3001` in development. **Required** with `-e production`, where the DMS refuses to start without it or with a value that is not an http(s) origin. | production only |
 | `DMS_COOKIE_SECURE` | loader | `Secure` flag on the dashboard cookies. Defaults to `false` for `ajs dms dev`, `true` for `ajs dms start`. | no |
-| `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with; the loader receives it in the manifest, so set it on the frontend only to override. `dev` in development; **required** with `-e production`, where dms refuses to start without it or with `dev`. | production only |
+| `DMS_HTML_RENDER_SECRET` | backend + loader | Secret the backend signs its HTML render calls to the frontend with. The loader receives it in the manifest, so set it on the frontend only to override. `dev` in development. **Required** with `-e production`, where the DMS refuses to start without it or with `dev`. | production only |
 | `DMS_OAUTH_RELAY_SECRET` | loader | Override for the OAuth relay secret the backend ships in the manifest. | no |
-| `DMS_CLIENT_IP_HEADER` | backend + loader | Header carrying the client address, which only the platform's gateway may set (AntelopeJS Cloud sets `X-Client-IP`). Read for the sign-in throttle and the recorded IP; absent or invalid falls back to the socket address, never `X-Forwarded-For`. | no |
-| `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`, for self-hosting behind your own proxies; `0` by default. Not needed on AntelopeJS Cloud, which sets `DMS_CLIENT_IP_HEADER`. | no |
+| `DMS_CLIENT_IP_HEADER` | backend + loader | Header carrying the client address, which only the platform's gateway may set (AntelopeJS Cloud sets `X-Client-IP`). Read for the sign-in throttle and the recorded IP. An absent or invalid value falls back to the socket address, never `X-Forwarded-For`. | no |
+| `DMS_TRUSTED_PROXY_HOPS` | loader | Trusted reverse-proxy hops for `x-forwarded-*`, for self-hosting behind your own proxies. `0` by default. Not needed on AntelopeJS Cloud, which sets `DMS_CLIENT_IP_HEADER`. | no |
 | `DMS_API_PUBLIC_BASE_URL` | backend | Public origin of the API, base of asset and e-mail links. **Required** for `ajs project start`. | no |
-| `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest (dev) and the frontend's ready report, which tells the backend the module versions it serves. Generated automatically in development; `ajs dms build` needs none. | no |
+| `DMS_BOOTSTRAP_SECRET` | backend + loader | Credential gating the frontend manifest (dev) and the frontend's ready report, which tells the backend the module versions it serves. Generated automatically in development. `ajs dms build` needs none. | no |
 | `MONGODB_URL` | backend | MongoDB connection string. | no (`mongodb://localhost:27017`) |
-| `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development; **required** with `-e production`, where dms refuses to start without it or with `dev`. | production only |
-| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there; credentials and sender are optional. | production only |
+| `JWT_SECRET` | backend | Secret signing the dashboard's tokens (`openssl rand -hex 32`). `dev` in development. **Required** with `-e production`, where the DMS refuses to start without it or with `dev`. | production only |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | backend | SMTP relay (port 587) the backend sends e-mail through with `-e production`, which has no Ethereal account. `SMTP_HOST` is required there. Credentials and sender are optional. | production only |
 | `MONGODB_DATABASE` | backend | MongoDB database name. | no (`template_dms_demo`) |
 | `HELIO_NOW` | backend | An ISO 8601 instant, such as `2026-06-15T09:00:00Z`. Helio's fixtures, seeds and pages treat it as now, and the seeded API key, revision ids and workspace install dates follow it, so two runs on an empty database write the same Helio data. Timers, throttles and the simulators keep the real clock. | no (real time) |
 | `HELIO_SIMULATORS` | backend | `off` stops the service desk and fleet monitoring simulators. | no |
-| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project; point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. **Required on AntelopeJS Cloud**: the mount path of the backend service's volume, see [Uploaded files on AntelopeJS Cloud](#uploaded-files-on-antelopejs-cloud). | on AntelopeJS Cloud |
+| `FILE_STORAGE_PATH` | backend | Directory uploaded files are stored in. Defaults to `.antelope/file-storage` in the project. Point it at a writable volume where the project directory is read-only, such as a container. Files outside a persistent volume are lost when the container restarts. **Required on AntelopeJS Cloud**, set to the mount path of the backend service's volume. See [Uploaded files on AntelopeJS Cloud](#uploaded-files-on-antelopejs-cloud). | on AntelopeJS Cloud |
 | `STRIPE_SECRET_KEY` | backend | Stripe secret key. | no |
 | `STRIPE_PUBLISHABLE_KEY` | backend | Stripe publishable key. | no |
 | `STRIPE_WEBHOOK_SECRET` | backend | Stripe webhook signing secret. | no |
@@ -221,34 +222,34 @@ Keep this table and `envOverrides` in sync.
 
 ## Capture state for documentation
 
-`pnpm run capture:start` builds the backend, then starts it and the dashboard with `HELIO_NOW=2026-06-15T09:00:00Z` (override it with the variable), `HELIO_SIMULATORS=off` and `TZ=UTC`, so the screens show the same data on every run. The backend also runs on a clock fixed at `HELIO_NOW` (a `node --require` preload, `src/capture-clock.ts`): every `new Date()` and `Date.now()` in it and in its modules answers that instant and does not advance, so the stamps the DMS modules write are the same on every run. The dashboard keeps the real clock. If either process stops before the start finishes, the script stops both process trees (the backend, its sidecars) and exits with 1. It prints `ready <url>` once the dashboard answers, and writes the logs of both processes to `.antelope/capture/`. Set `PORT` to serve the dashboard on another port than `3001`. The script reads `MONGODB_URL` and `MONGODB_DATABASE` like any start; point them at an empty database. `antelopejs-capture` from `@antelopejs/tooling-configs` runs it.
+`pnpm run capture:start` builds the backend, then starts it and the dashboard with `HELIO_NOW=2026-06-15T09:00:00Z` (override it with the variable), `HELIO_SIMULATORS=off`, `TZ=UTC` and `DMS_SETUP_TOKEN=helio-capture-setup-token` (the token the onboarding asks for on its owner step; override it with the variable), so the screens show the same data on every run. The backend also runs on a clock fixed at `HELIO_NOW` (a `node --require` preload, `src/capture-clock.ts`). Every `new Date()` and `Date.now()` in it and in its modules answers that instant and does not advance, so the stamps the DMS modules write are the same on every run. The dashboard keeps the real clock. If either process stops before the start finishes, the script stops both process trees (the backend, its sidecars) and exits with 1. It prints `ready <url>` once the dashboard answers, and writes the logs of both processes to `.antelope/capture/`. Set `PORT` to serve the dashboard on another port than `3001`. The script reads `MONGODB_URL` and `MONGODB_DATABASE` like any start. Point them at an empty database. `antelopejs-capture` from `@antelopejs/tooling-configs` runs it.
 
 ## Configuration notes
 
-- **MongoDB**: set `MONGODB_URL` / `MONGODB_DATABASE` in `.env`, or adjust the
+- **MongoDB.** Set `MONGODB_URL` and `MONGODB_DATABASE` in `.env`, or adjust the
   fallbacks in `mongodb.config` in `antelope.config.ts`.
-- **Media storage**: `file-storage-local` stores development assets under
+- **Media storage.** `file-storage-local` stores development assets under
   `.antelope/file-storage` and removes abandoned staged uploads after 24 hours.
-  It is not suitable for a clustered production deployment; use
+  It does not suit a clustered production deployment. Use
   `@antelopejs/file-storage-s3` with S3 or R2 there.
-- **SaaS / Stripe**: the placeholder `STRIPE_*` fallbacks in
-  `antelope.config.ts` boot the template fine and let you browse every page;
-  real keys are only needed to exercise the billing flows of the `dms-saas`
+- **SaaS and Stripe.** The placeholder `STRIPE_*` fallbacks in
+  `antelope.config.ts` boot the template and let you browse every page. Real
+  keys are only needed to exercise the billing flows of the `dms-saas`
   module.
-  They are read from `.env` and mapped through `envOverrides`; `.env` is
+  They are read from `.env` and mapped through `envOverrides`, and `.env` is
   git-ignored.
-- **Frontend builds**: `pnpm frontend:build` (`ajs dms build`) builds the
-  production frontend from this project, without the backend: it evaluates
+- **Frontend builds.** `pnpm frontend:build` (`ajs dms build`) builds the
+  production frontend from this project, without the backend. It evaluates
   `antelope.config.ts` with `-e production` and reads the frontend of every
   installed module (run `ajs project build -e production` first). `pnpm
   frontend:start` (`ajs dms start -b <api>`) serves it, computing the modules'
-  options again from its own environment: give it the backend's values for the
+  options again from its own environment. Give it the backend's values for the
   variables `envOverrides` reads (`DMS_API_PUBLIC_BASE_URL`,
   `STRIPE_PUBLISHABLE_KEY`, …), plus `DMS_SESSION_SECRET`,
   `DMS_HTML_RENDER_SECRET` and `DMS_OAUTH_RELAY_SECRET`.
   [`frontend.Dockerfile`](./frontend.Dockerfile) builds it as an image from the
   project root, so the backend and the frontend deploy from the same commit.
-- **Module frontends**: every DMS feature module ships its own frontend module
+- **Module frontends.** Every DMS feature module ships its own frontend module
   through `AddFrontendModule`. Remove a module block in `antelope.config.ts` to
   drop the feature and its frontend with it.
 
@@ -256,14 +257,14 @@ Keep this table and `envOverrides` in sync.
 
 `file-storage-local` keeps uploaded files, their metadata and their upload
 tokens on the backend's local disk. Without a volume, the backend runs on a
-temporary directory: every file is lost each time the service sleeps,
+temporary directory. Every file is lost each time the service sleeps,
 restarts or is redeployed, and with two replicas an upload lands on one and
 its confirmation on the other, so uploads fail with `File not found`. Before
 the first upload, **required**:
 
 1. In the console, attach a volume to the backend service (Settings ›
    Volume), mounted at `/data/file-storage`. Attaching it keeps the service at
-   one replica. The Free plan allows one volume of 1 GB per workspace; a
+   one replica. The Free plan allows one volume of 1 GB per workspace, and a
    managed database's volume does not count.
 2. Set `FILE_STORAGE_PATH=/data/file-storage` on the backend service.
 3. Redeploy the backend.
@@ -274,13 +275,13 @@ request body over 100 MB, so a larger file cannot be uploaded there.
 
 ## The frontend
 
-The dashboard frontend is a Vue 3 / Vite / Inertia application generated by the
+The dashboard frontend is a Vue, Vite and Inertia application generated by the
 [`@antelopejs/dms-frontend`](https://github.com/AntelopeJS/dms-frontend)
 loader, run through `ajs dms`. It is not part of this repository. In
-development the loader reads the running backend's manifest; a production build
-reads this project instead: `antelope.config.ts` and, for each module, the
-`frontendModule(config)` function its package declares as `dmsFrontend` — the
-same one the backend passes to `AddFrontendModule`. Either way it materializes
+development the loader reads the running backend's manifest. A production build
+reads this project instead, meaning `antelope.config.ts` and, for each module,
+the `frontendModule(config)` function its package declares as `dmsFrontend`,
+the same one the backend passes to `AddFrontendModule`. Either way it materializes
 every module's `frontend-vue` directory into a generated workspace, and builds
 or serves it. This template's own module declares
 [`src/frontend-module.ts`](./src/frontend-module.ts).
@@ -288,15 +289,15 @@ or serves it. This template's own module declares
 [`frontend-vue/`](./frontend-vue) is this template's own frontend module. Its
 `dms.frontend.ts` entry registers every component under `app/components/` as
 `Demo<Name>`, which is how the backend references one through
-`CustomComponent("Demo<Name>")`. Helio ships none, every one of its screens
-being made of DMS blocks; the home page's hero and long-form sections are the
-template's own (`HomeHero.vue`, `HomeProse.vue`). `HomeProse` reads Markdown
-with `marked` and draws it as Vue nodes: raw HTML is dropped, and only
+`CustomComponent("Demo<Name>")`. Helio ships none, since its screens are all
+DMS blocks. The home page's hero and long-form sections are
+the template's own (`HomeHero.vue`, `HomeProse.vue`). `HomeProse` reads Markdown
+with `marked` and draws it as Vue nodes. Raw HTML is dropped, and only
 `http(s)`, `mailto:`, `tel:`, paths and anchors become links (`app/prose/`). The module ships the `i18n/locales/*.json` catalogs (`demo-*`
 for the home page, `helio-*` per Helio domain), merged into the dashboard's.
 
 It is a workspace package with its own ESLint, Prettier and Vitest setup.
-The root `pnpm install` installs both packages. Each package keeps its existing
+The root `pnpm install` installs both packages. Each package keeps its own
 lockfile to preserve its dependency resolution. Run frontend checks separately:
 
 ```bash
@@ -304,11 +305,13 @@ pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
 
-The backend uses TypeScript 7. The frontend installs the same compiler as
+The backend uses the native TypeScript compiler that `typescript` in
+`package.json` pins. The frontend installs the same compiler as
 `@typescript/native`, alongside `typescript` aliased to
-`@typescript/typescript6`: `typescript-eslint` still needs the TypeScript 6
-JavaScript API. This follows the [TypeScript migration guide](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0).
-Keep both packages until the parser supports the TypeScript 7 API.
+`@typescript/typescript6`, because `typescript-eslint` still needs the
+JavaScript API of the earlier compiler. This follows the
+[TypeScript migration guide](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0).
+Keep both packages until the parser supports the native compiler's API.
 
 ### Verifying the frontend source
 
@@ -323,37 +326,36 @@ It runs `ajs dms verify-source`, which verifies `./frontend-vue` on top of the
 DMS core layer, the `frontend-vue` directory of the `@antelopejs/dms` package
 installed in `node_modules`. That is why `@antelopejs/dms` is a development
 dependency here, in the same range as the backend module in
-`antelope.config.ts`: keep the two in step.
+`antelope.config.ts`. Keep the two in step.
 
 `frontend-vue/package.json` declares the `@antelopejs/dms-frontend` releases it
-supports under `engines`; the loader refuses a release outside that range.
+supports under `engines`, and the loader refuses a release outside that range.
 
 ## Translations
 
 Every backend-declared text (page names, descriptions, form labels, card
-titles, column headers, select items…) uses the `$key` convention: a string
+titles, column headers, select items…) uses the `$key` convention. A string
 starting with `$` is resolved against the i18n catalogs by the frontend
 (`processI18n`). Add or edit keys in
 `frontend-vue/i18n/locales/demo-en-GB.json` and `demo-fr-FR.json` (Home), or in the `helio-*-en-GB.json` / `helio-*-fr-FR.json` pairs (one
-per Helio domain, merged by the loader); the test suite checks that both
-catalogs cover every key the backend emits. Known
-limitation: TableView **tab labels** are not translated by the frontend, so
-they stay in plain English.
+per Helio domain, merged by the loader). The test suite checks that both
+catalogs cover every key the backend emits. The frontend does not translate
+TableView **tab labels**, so they stay in plain English.
 
-## AI coding agents
+## Coding agents
 
 The DMS and its modules ship their own agent skills (pages and blocks, auth and
 permissions, module authoring, dev servers, best practices). The
-[antelopejs plugin](https://github.com/AntelopeJS/agent-skills) syncs them into
+[AntelopeJS agent skills plugin](https://github.com/AntelopeJS/agent-skills) syncs them into
 the project. The skills appear after `pnpm install` (the `@antelopejs/dms`
 skills) and the first `pnpm dev` (one skill per `dms-*` module). Start with the
 `dms` skill. `AGENTS.md` (which `CLAUDE.md` imports) holds the agent guidance
 for this project.
 
-### Claude Code
+### The plugin in `claude`
 
-This repository's `.claude/settings.json` registers the plugin: open the
-project in Claude Code, accept the folder trust dialog, and the plugin is
+This repository's `.claude/settings.json` registers the plugin for Claude Code.
+Open the project in Claude Code, accept the folder trust dialog, and the plugin is
 enabled. It syncs the skills into `.claude/skills/`, and `/antelopejs:skills`
 lists them. To install it by hand instead:
 
@@ -362,7 +364,7 @@ claude plugin marketplace add AntelopeJS/agent-skills
 claude plugin install antelopejs@antelopejs
 ```
 
-### Codex
+### The plugin in `codex`
 
 Install the plugin from your shell (or from `/plugins` in Codex once the
 marketplace is added):
@@ -385,7 +387,7 @@ npx -y github:AntelopeJS/agent-skills sync --target codex
   run this template and change a first page.
 - [Tutorial](https://dms.antelopejs.com/docs/getting-started/tutorial): add a
   CRM to the running project.
-- [Pages & components](https://dms.antelopejs.com/docs/building/pages-and-components):
+- [Pages and components](https://dms.antelopejs.com/docs/building/pages-and-components):
   how backend declarations become screens.
 - [Frontend](https://dms.antelopejs.com/docs/frontend/introduction): the `ajs dms` loader
   and its configuration.
