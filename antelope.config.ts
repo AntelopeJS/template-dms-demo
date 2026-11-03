@@ -9,10 +9,10 @@ loadDotenv({ path: resolve(__dirname, ".env") });
 const devDependencies = new Map(Object.entries(manifest.devDependencies));
 
 /**
- * A DMS module loads from the tarball package.json pins as a devDependency (the campaign pins), and from the registry
+ * A module loads from the tarball package.json pins as a devDependency (the campaign pins), and from the registry
  * range otherwise. `swap-tgz.sh` removes the pin at release, so the registry range applies again without editing this file.
  */
-function dmsModuleSource(name: string, version: string) {
+function moduleSource(name: string, version: string) {
   if (devDependencies.get(name)?.startsWith("file:"))
     return {
       type: "local" as const,
@@ -115,16 +115,16 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: dmsModuleSource("@antelopejs/dms-api", ">=0.5.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-api", ">=0.5.1 <1.0.0"),
     },
     "dms-database": {
-      source: dmsModuleSource("@antelopejs/dms-database", ">=0.3.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-database", ">=0.3.1 <1.0.0"),
     },
     "dms-automation": {
-      source: dmsModuleSource("@antelopejs/dms-automation", ">=0.7.0 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-automation", ">=0.7.0 <1.0.0"),
     },
     "dms-saas": {
-      source: dmsModuleSource("@antelopejs/dms-saas", ">=0.8.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-saas", ">=0.8.1 <1.0.0"),
       config: {
         stripe: {
           secretKey: "sk_test_placeholder",
@@ -134,26 +134,26 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: dmsModuleSource("@antelopejs/dms-ai", ">=0.6.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-ai", ">=0.6.1 <1.0.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: dmsModuleSource("@antelopejs/dms-lang", ">=0.4.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-lang", ">=0.4.1 <1.0.0"),
       config: {
         editable: true,
       },
     },
     "dms-builder": {
-      source: dmsModuleSource("@antelopejs/dms-builder", ">=0.6.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-builder", ">=0.6.1 <1.0.0"),
     },
     "dms-media": {
-      source: dmsModuleSource("@antelopejs/dms-media", ">=0.6.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-media", ">=0.6.1 <1.0.0"),
     },
     "dms-marketing": {
-      source: dmsModuleSource("@antelopejs/dms-marketing", ">=0.7.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-marketing", ">=0.7.1 <1.0.0"),
       config: {
         visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
@@ -167,20 +167,16 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: dmsModuleSource("@antelopejs/dms-mailing", ">=0.7.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-mailing", ">=0.7.1 <1.0.0"),
     },
 
     mongodb: {
-      source: {
-        type: "package",
-        package: "@antelopejs/mongodb",
-        /**
-         * 1.4.4 (mongodb#54) resolves a single row's relations next to a
-         * computed field: the products' edit form reads its range again. 1.5.0
-         * enforces unique indexes, which dms-mailing's slug index needs.
-         */
-        version: "^1.5.0",
-      },
+      /**
+       * 1.4.4 (mongodb#54) resolves a single row's relations next to a
+       * computed field: the products' edit form reads its range again. 1.5.0
+       * enforces unique indexes, which dms-mailing's slug index needs.
+       */
+      source: moduleSource("@antelopejs/mongodb", "^1.5.0"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
