@@ -69,7 +69,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.15.0 <1.0.0",
+        version: ">=0.15.1 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -161,7 +161,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: ">=0.8.0 <1.0.0",
+        version: ">=0.8.1 <1.0.0",
       },
       config: {
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
