@@ -2,34 +2,17 @@ import type { ChildProcess } from "node:child_process";
 import { copyFileSync, createWriteStream, mkdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
+import { captureEnvironment } from "./capture-environment";
 import { startGroup, stopGroup } from "./process-group";
 
-const FIXED_NOW = "2026-06-15T09:00:00Z";
-
-/**
- * The setup token of a capture run. The DMS asks for it on the owner step of the onboarding, so a scene opens
- * `/onboarding?token=` followed by this value, or fills the `setupToken` field with it. `DMS_SETUP_TOKEN` overrides it.
- */
-const SETUP_TOKEN = "helio-capture-setup-token";
-const PORT = process.env.PORT ?? "3001";
+const environment = captureEnvironment(process.env);
+const { PORT } = environment;
 const FRONTEND_URL = `http://127.0.0.1:${PORT}/`;
 const BACKEND_URL = "http://127.0.0.1:5010/";
 const DEV_FILE = ".antelope/dev.json";
 const LOG_DIRECTORY = ".antelope/capture";
 const READY_TIMEOUT_MS = 10 * 60 * 1000;
 const POLL_MS = 2000;
-
-/** The environment of a capture run: a fixed instant, UTC, and no simulators, so two runs show the same data. */
-const environment = {
-  ...process.env,
-  PORT,
-  DMS_CLIENT_BASE_URL:
-    process.env.DMS_CLIENT_BASE_URL ?? `http://localhost:${PORT}`,
-  TZ: "UTC",
-  HELIO_NOW: process.env.HELIO_NOW ?? FIXED_NOW,
-  HELIO_SIMULATORS: "off",
-  DMS_SETUP_TOKEN: process.env.DMS_SETUP_TOKEN ?? SETUP_TOKEN,
-};
 
 /**
  * The preload is copied out of `dist`, because the project's own `pnpm run build` (`rimraf dist && tsc`) runs under
