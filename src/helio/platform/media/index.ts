@@ -162,4 +162,7 @@ async function declareMedia(): Promise<Tally> {
 export async function provisionHelioMedia(): Promise<void> {
   const tally = await declareMedia();
   Logging.Info(`[helio] media library declared: ${JSON.stringify(tally)}`);
+  if (tally.failed) {
+    throw new Error(`${tally.failed} media declaration(s) failed`);
+  }
 }
