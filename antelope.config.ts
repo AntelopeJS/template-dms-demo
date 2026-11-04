@@ -102,7 +102,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.15.0 <1.0.0",
+        version: ">=0.15.1 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -159,7 +159,7 @@ export default defineConfig({
       source: moduleSource("@antelopejs/dms-media", ">=0.7.0 <1.0.0"),
     },
     "dms-marketing": {
-      source: moduleSource("@antelopejs/dms-marketing", ">=0.8.0 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-marketing", ">=0.8.1 <1.0.0"),
       config: {
         visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
