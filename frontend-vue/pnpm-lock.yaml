@@ -6,19 +6,17 @@ settings:
 
 overrides:
   '@antelopejs/interface-data-api': file:.campaign/tgz/antelopejs-interface-data-api-d8a868f.tgz
-  '@antelopejs/interface-database-decorators': file:.campaign/tgz/antelopejs-interface-database-decorators-e79a62b.tgz
+  '@antelopejs/interface-database-decorators': 0.2.0
   '@antelopejs/interface-database': 0.3.0
-  '@antelopejs/interface-api': file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz
-  '@antelopejs/interface-api-util': file:.campaign/tgz/antelopejs-interface-api-util-639f38b.tgz
+  '@antelopejs/interface-api': 0.2.0
+  '@antelopejs/interface-api-util': 0.3.0
   '@antelopejs/interface-dms': file:.campaign/tgz/antelopejs-interface-dms-41b5a66.tgz
   '@antelopejs/dms': file:.campaign/tgz/antelopejs-dms-41b5a66.tgz
   '@antelopejs/interface-dms-automation': file:.campaign/tgz/antelopejs-interface-dms-automation-e1c510a.tgz
   '@antelopejs/interface-dms-mailing': file:.campaign/tgz/antelopejs-interface-dms-mailing-c42545d.tgz
   '@antelopejs/interface-dms-marketing': file:.campaign/tgz/antelopejs-interface-dms-marketing-3103595.tgz
   '@antelopejs/interface-dms-saas': file:.campaign/tgz/antelopejs-interface-dms-saas-97eba5b.tgz
-  '@antelopejs/core': file:.campaign/tgz/antelopejs-core-184eb90.tgz
-  '@antelopejs/interface-core': file:.campaign/tgz/antelopejs-interface-core-f7df541.tgz
-  '@antelopejs/dms-frontend': file:.campaign/tgz/antelopejs-dms-frontend-e07a04a.tgz
+  '@antelopejs/interface-core': 0.4.0
   '@antelopejs/dms-api': file:.campaign/tgz/antelopejs-dms-api-0129d8e.tgz
   '@antelopejs/dms-database': file:.campaign/tgz/antelopejs-dms-database-78f995c.tgz
   '@antelopejs/dms-lang': file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz
