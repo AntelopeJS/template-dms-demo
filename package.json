@@ -53,7 +53,7 @@
     "@antelopejs/dms-automation": "file:.campaign/tgz/antelopejs-dms-automation-d59e405.tgz",
     "@antelopejs/dms-builder": "file:.campaign/tgz/antelopejs-dms-builder-3336c5c.tgz",
     "@antelopejs/dms-database": "file:.campaign/tgz/antelopejs-dms-database-78f995c.tgz",
-    "@antelopejs/dms-frontend": "0.10.0",
+    "@antelopejs/dms-frontend": ">=0.10.0 <1.0.0",
     "@antelopejs/dms-lang": "file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz",
     "@antelopejs/dms-mailing": "file:.campaign/tgz/antelopejs-dms-mailing-5471b24.tgz",
     "@antelopejs/dms-marketing": "file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz",
