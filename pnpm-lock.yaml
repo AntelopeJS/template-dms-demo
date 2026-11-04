@@ -96,7 +96,7 @@ importers:
         specifier: file:.campaign/tgz/antelopejs-dms-database-78f995c.tgz
         version: file:.campaign/tgz/antelopejs-dms-database-78f995c.tgz(@antelopejs/interface-data-api@file:.campaign/tgz/antelopejs-interface-data-api-d8a868f.tgz(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.2.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.2.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.2.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.4.0))
       '@antelopejs/dms-frontend':
-        specifier: 0.10.0
+        specifier: '>=0.10.0 <1.0.0'
         version: 0.10.0(@antelopejs/core@1.20.0)
       '@antelopejs/dms-lang':
         specifier: file:.campaign/tgz/antelopejs-dms-lang-8ecee6c.tgz
