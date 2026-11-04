@@ -7,7 +7,7 @@ settings:
 overrides:
   '@antelopejs/interface-data-api': file:.campaign/tgz/antelopejs-interface-data-api-d8a868f.tgz
   '@antelopejs/interface-database-decorators': file:.campaign/tgz/antelopejs-interface-database-decorators-e79a62b.tgz
-  '@antelopejs/interface-database': file:.campaign/tgz/antelopejs-interface-database-02e0360.tgz
+  '@antelopejs/interface-database': 0.3.0
   '@antelopejs/interface-api': file:.campaign/tgz/antelopejs-interface-api-f2a99b5.tgz
   '@antelopejs/interface-api-util': file:.campaign/tgz/antelopejs-interface-api-util-639f38b.tgz
   '@antelopejs/interface-dms': file:.campaign/tgz/antelopejs-interface-dms-41b5a66.tgz
@@ -29,7 +29,6 @@ overrides:
   '@antelopejs/dms-media>@antelopejs/interface-dms-media': 0.3.1
   '@antelopejs/dms-marketing': file:.campaign/tgz/antelopejs-dms-marketing-e3ca330.tgz
   '@antelopejs/dms-mailing': file:.campaign/tgz/antelopejs-dms-mailing-5471b24.tgz
-  '@antelopejs/interface-file-storage': 0.1.6
   '@antelopejs/interface-dms-builder': file:.campaign/tgz/antelopejs-interface-dms-builder-3336c5c.tgz
   '@antelopejs/dms-ai': file:.campaign/tgz/antelopejs-dms-ai-9bc50f5.tgz
 
