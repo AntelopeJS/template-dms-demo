@@ -85,11 +85,11 @@ The local module lives in [`src/`](./src):
 
 ## Getting started
 
-With a CLI release that supports project templates, select **DMS Demo** in
-`ajs project init`, or create the project without prompts:
+Run `npx @antelopejs/core project init my-app` and select **DMS Demo**, or
+create the project without prompts:
 
 ```bash
-ajs project init my-app --template "DMS Demo" --yes
+npx @antelopejs/core project init my-app --template dms-demo --yes
 cd my-app
 pnpm dev
 ```
@@ -100,16 +100,6 @@ No setup script or `.env` is required for development. Start MongoDB before
 `pnpm dev`; set `MONGODB_URL` in an optional `.env` for a non-default instance.
 The frontend discovers the backend and generates an ephemeral session secret.
 Restarting the frontend can invalidate sessions.
-
-Older CLI releases, including 1.15.2, do not preserve complete project
-templates. Clone directly instead:
-
-```bash
-git clone https://github.com/AntelopeJS/template-dms-demo.git my-app
-cd my-app
-pnpm install
-pnpm dev
-```
 
 `pnpm dev` runs `ajs project run -w`, which installs every module declared in
 `antelope.config.ts`, builds the local module, and starts the DMS backend on
@@ -144,10 +134,17 @@ login silently fails when you test a production build over plain `http://`. Set
 
 ### First run: create the administrator
 
-Open `http://localhost:3001`. **There are no default credentials.** A fresh
-instance has no account at all, so a global frontend middleware sends every
-route — including `/` and the configured `homepage` (`/home`) — to
-`/onboarding`, the first-run wizard that creates the first administrator.
+**There are no default credentials.** A fresh instance has no account at all.
+At start, the backend prints the address of `/onboarding`, the first-run wizard
+that creates the first administrator, in the `pnpm dev` terminal:
+
+```
+[DMS] No owner exists yet. To create it, open http://localhost:3001/onboarding?token=...
+```
+
+Open that address. The wizard reads the setup token from it. If you set
+`DMS_SETUP_TOKEN`, the log shows `<DMS_SETUP_TOKEN>` in place of the token, and
+you use your own value.
 
 The password you choose there, like every password in the DMS, must be at least
 8 characters long and match this policy (`packages/dms/src/validation/password.ts`
