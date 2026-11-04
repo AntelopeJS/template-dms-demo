@@ -2,7 +2,6 @@
 @antelopejs/interface-data-api	package.json	pnpm.overrides	
 @antelopejs/interface-database-decorators	package.json	dependencies	>=0.1.10 <1.0.0
 @antelopejs/interface-database-decorators	package.json	pnpm.overrides	
-@antelopejs/interface-database	package.json	dependencies	>=0.1.11 <1.0.0
 @antelopejs/interface-database	package.json	pnpm.overrides	
 @antelopejs/interface-api	package.json	dependencies	>=0.0.15 <1.0.0
 @antelopejs/interface-api	package.json	pnpm.overrides	
@@ -46,7 +45,6 @@
 @antelopejs/dms-marketing	package.json	pnpm.overrides	
 @antelopejs/dms-mailing	package.json	devDependencies	(added)
 @antelopejs/dms-mailing	package.json	pnpm.overrides	
-@antelopejs/interface-file-storage	package.json	pnpm.overrides	
 @antelopejs/interface-dms-builder	package.json	pnpm.overrides	
 @antelopejs/dms-ai	package.json	pnpm.overrides	
 @antelopejs/mongodb	package.json	devDependencies	(added)
