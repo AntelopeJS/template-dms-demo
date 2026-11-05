@@ -20,6 +20,7 @@ jobs:
       # still builds, the output `ajs project run` and `ajs dms build` load.
       extra-commands: pnpm build
       renovate-sync: false
+      test-job: true
     permissions:
       contents: read
   renovate-sync:

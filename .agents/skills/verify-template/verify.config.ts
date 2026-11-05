@@ -16,7 +16,6 @@ const config: VerifyConfig = {
         "src/helio/**/fixtures.ts",
       ],
       funnels: ["src/helio/platform/provisioning.ts"],
-      containments: ["project/database-mapping"],
       why: "`antelope.config.ts` decides which MongoDB database (`MONGODB_URL`, `MONGODB_DATABASE`, the `template_dms_demo` default) and which file storage path every project writes its owner, tenants and uploads to, `src/helio/platform/` writes Helio's data into the default tenant once, when the DMS provisions it on an empty database, and each `fixtures.ts` seeds its table once on an empty one: a wrong mapping or a bad first write stays in every database a project already filled",
     },
     format: {
@@ -28,7 +27,6 @@ const config: VerifyConfig = {
         "src/helio/platform/mailing/notices.ts",
       ],
       funnels: [],
-      containments: ["backend/helio-data"],
       why: "the template's tables are stored as `template-dms-demo__<table>` collections holding the fields their classes declare: rows a running project already holds are read by the next release under the same schema name, table names and fields",
     },
     contract: null,
@@ -39,7 +37,6 @@ const config: VerifyConfig = {
         "src/helio/platform/marketing/**",
       ],
       funnels: ["src/helio/platform/mailing/send.ts"],
-      containments: [],
       why: "the project config chooses where mail goes (an Ethereal account created over the internet at every development start, the `SMTP_HOST` relay of `-e production`), the Stripe keys of dms-saas and whether dms-marketing records every dashboard visit; Helio's mailing code sends its e-mails through one funnel: a changed value sends a project's mail or its users' clicks to a third party",
     },
     exposure: {
@@ -53,13 +50,11 @@ const config: VerifyConfig = {
         "src/home.ts",
       ],
       funnels: [],
-      containments: [],
       why: "every project inherits what git leaves out (a dropped `.env` line commits its secrets) and what the dashboard image copies, and the files that declare routes (`@Get`, `@Post`, `@Put`, `@Delete`, `@Route`) or register pages are its HTTP surface under `/api/helio/*` and `/dms/pages/*`: their routes and guards decide who reads and changes which rows",
     },
     publish: {
       globs: [".cicd/**"],
       funnels: [],
-      containments: [],
       why: "`.cicd/environments.json` maps the branch `main` to the production environment and `stage` to staging, a deploy trigger every project created from the template inherits: a changed branch or environment decides which pushes are deployed",
     },
   },
