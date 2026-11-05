@@ -35,8 +35,9 @@ test`, not with the root oxlint/oxfmt.
   ratchet, suppressions and sync, and prints only what failed. `pnpm lint`
   runs oxlint on the backend, then `frontend-vue/scripts/check-locales.mjs`
   (locales share one key set and translate every key the backend writes) and
-  ESLint on `frontend-vue`; `pnpm test` runs only the `frontend-vue` Vitest
-  suite. The backend has no tests.
+  ESLint on `frontend-vue`; `pnpm test` builds the backend and runs its
+  `node --test` files (`pnpm run test:backend`), then the `frontend-vue`
+  Vitest suite.
 - `checks` does not run these; run them when your change touches what they
   cover:
   - `pnpm build`, which CI runs after `checks`.
