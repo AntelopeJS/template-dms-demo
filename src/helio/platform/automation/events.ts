@@ -1,8 +1,9 @@
 import { Logging } from "@antelopejs/interface-core/logging";
 import type { TicketPriority } from "../../service/database";
+import { helioNow } from "../../shared/clock";
 
 /** What a "Ticket opened" trigger hands its procedure. */
-export interface TicketOpenedEvent {
+export type TicketOpenedEvent = {
   ticketId: string;
   number: string;
   subject: string;
@@ -11,17 +12,17 @@ export interface TicketOpenedEvent {
   channel: string;
   customerId: string;
   at: string;
-}
+};
 
 /** What a "Quote accepted" trigger hands its procedure. */
-export interface QuoteAcceptedEvent {
+export type QuoteAcceptedEvent = {
   quoteId: string;
   number: string;
   customerId: string;
   dealId: string;
   total: number;
   at: string;
-}
+};
 
 /**
  * The Helio business events procedures can start on, with their payloads. The
@@ -91,7 +92,7 @@ export function fireTicketOpened(ticket: {
     category: ticket.category,
     channel: ticket.channel,
     customerId: ticket.customer,
-    at: new Date().toISOString(),
+    at: new Date(helioNow()).toISOString(),
   });
 }
 
@@ -109,6 +110,6 @@ export function fireQuoteAccepted(quote: {
     customerId: quote.customer,
     dealId: quote.deal ?? "",
     total: quote.total,
-    at: new Date().toISOString(),
+    at: new Date(helioNow()).toISOString(),
   });
 }

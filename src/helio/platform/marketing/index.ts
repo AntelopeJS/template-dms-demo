@@ -6,6 +6,7 @@ import {
 } from "@antelopejs/interface-dms-marketing";
 import { historyImports } from "./history";
 import { HELIO_WEBSITE, helioFunnels } from "./site";
+import { helioNow } from "../../shared/clock";
 
 /**
  * Ships Helio's public website to the marketing module as code: the site, its
@@ -17,7 +18,7 @@ import { HELIO_WEBSITE, helioFunnels } from "./site";
  * `in_progress` or `failed` is not done, so the step fails and runs again later.
  */
 export async function provisionHelioMarketing(): Promise<void> {
-  const now = Date.now();
+  const now = helioNow();
   const site = await EnsureWebsite(HELIO_WEBSITE);
   const funnels = [];
   for (const funnel of helioFunnels(now)) {

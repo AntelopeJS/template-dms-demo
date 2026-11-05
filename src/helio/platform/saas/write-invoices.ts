@@ -4,9 +4,10 @@ import {
   InvoiceModel,
 } from "@antelopejs/interface-dms-saas/db";
 import { findPlan } from "./plans";
-import { addDays, insertMissing, type SeedRow } from "./rows";
+import { addDays, insertMissing, type RowOf, type SeedRow } from "./rows";
 import { type BillingPeriod, billingPeriods } from "./schedule";
 import type { SeedWorkspace } from "./workspaces";
+import { helioNow } from "../../shared/clock";
 
 const CURRENCY = "eur";
 const MINOR_PER_MAJOR = 100;
@@ -57,7 +58,7 @@ function toInvoiceRow(
   period: BillingPeriod,
   isOpen: boolean,
   now: Date,
-): SeedRow {
+): SeedRow<RowOf<typeof InvoiceModel>> {
   const plan = findPlan(workspace.planId);
   const subtotal = Math.round(plan.price * MINOR_PER_MAJOR);
   const tax = Math.round((subtotal * workspace.taxRate) / PERCENT);
@@ -108,7 +109,7 @@ async function settleOlderOpenInvoices(
   latestId: string,
 ): Promise<void> {
   const model = GetModel(InvoiceModel, workspace.id);
-  const open = await model.findOpenIssuedBefore(new Date());
+  const open = await model.findOpenIssuedBefore(new Date(helioNow()));
   for (const invoice of open) {
     if (invoice._id === latestId || !invoice._id.startsWith(workspace.id))
       continue;

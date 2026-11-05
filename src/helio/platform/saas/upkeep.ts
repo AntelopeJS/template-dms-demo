@@ -10,6 +10,7 @@ import { addDays } from "./rows";
 import { DUNNING_MAX_AGE_DAYS, dunningSince, nextRenewal } from "./schedule";
 import { writeInvoices } from "./write-invoices";
 import type { SeedWorkspace } from "./workspaces";
+import { helioInstalledAt } from "../../shared/clock";
 
 const LOG_PREFIX = "[helio:saas]";
 /** A trial closer to its end than this is given its remaining days back. */
@@ -93,7 +94,7 @@ export async function upkeepWorkspace(
   try {
     const tenant = await GetModel(TenantModel).get(workspace.id);
     if (!tenant) return;
-    const anchor = new Date(tenant.createdAt);
+    const anchor = helioInstalledAt(tenant.createdAt);
     await writeInvoices(workspace, anchor, now);
     await refreshSubscription(workspace, anchor, now);
     await RecomputeTenantBillingState(workspace.id);

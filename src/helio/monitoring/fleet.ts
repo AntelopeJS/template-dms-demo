@@ -8,6 +8,7 @@ import {
   sitePowerKw,
   statusFactor,
 } from "./solar";
+import { helioNow } from "../shared/clock";
 
 const MINUTE_MS = 60 * 1000;
 
@@ -49,7 +50,7 @@ export async function loadFleet(): Promise<FleetSite[]> {
   return sites
     .map((site): FleetSite => {
       const index = rosterIndex(site._id);
-      const lastSeen = time(site.lastSeenAt, Date.now());
+      const lastSeen = time(site.lastSeenAt, helioNow());
       return {
         id: site._id,
         index,

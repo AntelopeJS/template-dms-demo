@@ -5,6 +5,7 @@ import { ActivityModel } from "../dashboard/database";
 import type { Activity } from "../dashboard/database";
 import type { ProjectBundle } from "./detail-data";
 import { recordLink } from "./links";
+import { helioNow } from "../shared/clock";
 
 /** The kinds of event in a project's history. */
 type MilestoneType =
@@ -213,7 +214,7 @@ export async function projectActivity(
   bundle: ProjectBundle,
 ): Promise<{ items: ActivityFeedItem[]; count: number }> {
   const logged = loggedEvents(bundle, await GetModel(ActivityModel).getAll());
-  const now = Date.now();
+  const now = helioNow();
   const items = [
     ...quoteMilestones(bundle),
     ...siteMilestones(bundle),

@@ -32,6 +32,7 @@ import { cents, DAY_MS } from "../shared/seed";
 import { Invoice, InvoiceModel, type InvoiceStatus } from "./database";
 import { daysLate } from "./due";
 import { withInvoiceDefaults } from "./numbering";
+import { helioNow } from "../shared/clock";
 
 /** An invoice's life. Exported for the status tabs, nav badge and row rules. */
 export const INVOICE_STATUSES = [
@@ -218,7 +219,7 @@ class invoiceDataAPI extends DataController(
   }
   set status(value: InvoiceStatus) {
     this.table.status = value;
-    if (value === "paid") this.table.paidAt ??= new Date();
+    if (value === "paid") this.table.paidAt ??= new Date(helioNow());
     else this.table.paidAt = undefined;
     this.applyAmounts();
   }
@@ -434,4 +435,8 @@ class invoiceDataAPI extends DataController(
 }
 
 /** `ControllerClass`-typed alias for relations and pages (see the TS2742 note). */
-export const invoiceController: ControllerClass = invoiceDataAPI;
+export type InvoiceRow = {
+  [Field in keyof invoiceDataAPI]: invoiceDataAPI[Field];
+};
+
+export const invoiceController: ControllerClass<InvoiceRow> = invoiceDataAPI;

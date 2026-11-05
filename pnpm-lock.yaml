@@ -9,54 +9,57 @@ importers:
   .:
     dependencies:
       '@antelopejs/core':
-        specifier: 1.19.0
-        version: 1.19.0
+        specifier: 1.20.0
+        version: 1.20.0
       '@antelopejs/interface-api':
-        specifier: '>=0.0.15 <1.0.0'
-        version: 0.0.15(@antelopejs/interface-core@0.3.0)
+        specifier: '>=0.3.0 <1.0.0'
+        version: 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-api-util':
+        specifier: '>=0.3.0 <1.0.0'
+        version: 0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)
       '@antelopejs/interface-auth':
-        specifier: '>=0.0.7 <1.0.0'
-        version: 0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
+        specifier: '>=0.2.0 <1.0.0'
+        version: 0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)
       '@antelopejs/interface-core':
-        specifier: '>=0.2.6 <1.0.0'
-        version: 0.3.0
+        specifier: '>=0.4.0 <1.0.0'
+        version: 0.4.0
       '@antelopejs/interface-data-api':
-        specifier: '>=0.5.0 <1.0.0'
-        version: 0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
+        specifier: '>=0.6.1 <1.0.0'
+        version: 0.6.1(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
       '@antelopejs/interface-database':
-        specifier: '>=0.1.11 <1.0.0'
-        version: 0.1.11(@antelopejs/interface-core@0.3.0)
+        specifier: '>=0.3.0 <1.0.0'
+        version: 0.3.0(@antelopejs/interface-core@0.4.0)
       '@antelopejs/interface-database-decorators':
-        specifier: '>=0.1.10 <1.0.0'
-        version: 0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
+        specifier: '>=0.2.0 <1.0.0'
+        version: 0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
       '@antelopejs/interface-dms':
-        specifier: '>=0.10.3 <1.0.0'
-        version: 0.10.3(cec3e24635972bfd587e6c2b2f4c8bc5)
+        specifier: '>=0.12.0 <1.0.0'
+        version: 0.12.0(82af59805bc17e4a4810db01862aab1b)
       '@antelopejs/interface-dms-automation':
-        specifier: '>=0.5.0 <1.0.0'
-        version: 0.5.0(@antelopejs/interface-core@0.3.0)
+        specifier: '>=0.6.0 <1.0.0'
+        version: 0.6.0(@antelopejs/interface-core@0.4.0)
       '@antelopejs/interface-dms-mailing':
-        specifier: '>=0.9.1 <1.0.0'
-        version: 0.9.1
+        specifier: '>=0.10.0 <1.0.0'
+        version: 0.10.0
       '@antelopejs/interface-dms-marketing':
-        specifier: '>=0.5.2 <1.0.0'
-        version: 0.5.2(@antelopejs/interface-core@0.3.0)
+        specifier: '>=0.6.0 <1.0.0'
+        version: 0.6.0(@antelopejs/interface-core@0.4.0)
       '@antelopejs/interface-dms-media':
-        specifier: '>=0.3.1 <1.0.0'
-        version: 0.3.1(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-dms@0.10.3(cec3e24635972bfd587e6c2b2f4c8bc5))
+        specifier: '>=0.3.2 <1.0.0'
+        version: 0.3.2(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-dms@0.12.0(82af59805bc17e4a4810db01862aab1b))
       '@antelopejs/interface-dms-saas':
-        specifier: '>=0.6.1 <0.7.0'
-        version: 0.6.1(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.3.0))
+        specifier: '>=0.7.0 <1.0.0'
+        version: 0.7.0(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.4.0))
     devDependencies:
       '@antelopejs/dms':
-        specifier: '>=0.15.1 <1.0.0'
-        version: 0.15.1(@antelopejs/core@1.19.0)
+        specifier: '>=0.16.1 <1.0.0'
+        version: 0.16.1(@antelopejs/core@1.20.0)
       '@antelopejs/dms-frontend':
-        specifier: 0.9.3
-        version: 0.9.3(@antelopejs/core@1.19.0)
+        specifier: '>=0.10.0 <1.0.0'
+        version: 0.10.0(@antelopejs/core@1.20.0)
       '@antelopejs/tooling-configs':
-        specifier: ^0.2.17
-        version: 0.2.17(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
+        specifier: ^0.2.18
+        version: 0.2.18(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -87,20 +90,20 @@ packages:
   2fa@0.1.2:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
-  '@antelopejs/core@1.19.0':
-    resolution: {integrity: sha512-o6vlUIjnseM0QQGOzE54wsjNgi3RFkGYtxESfe0NrVMwR0OYhJcP6czJd3Zrv4D2mxeIRqWFSv78phDDWMkN/Q==}
-    engines: {node: '>=20.19'}
+  '@antelopejs/core@1.20.0':
+    resolution: {integrity: sha512-7clqf/n8aUi4iCwMG0G2dWLQCwzy9ZxTLHLmOIEtfObw5wuN06s0+n57Zzjr3wbIyR2wD3Q4AeorqJ94QidIfg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  '@antelopejs/dms-frontend@0.9.3':
-    resolution: {integrity: sha512-kfZybix/ames/OS/qtNypdjYYGnX5P+tgNNA6ntYYb6ccVLZtegcg3EB4bWJx8N12XLjdEwP5ja2GD854v9MXQ==}
+  '@antelopejs/dms-frontend@0.10.0':
+    resolution: {integrity: sha512-zNsYW0NUPHoJNj3tNUDxubXQUH0171Ga/avp8ka0VK253eQD7KDgImq8Fc3tmG5GD+oBzhUlO4RMun5BapqfYQ==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
       '@antelopejs/core': '>=1.16.0 <2'
 
-  '@antelopejs/dms@0.15.1':
-    resolution: {integrity: sha512-CNNfOiqIwA0T9f/3U1vflp/LOzza9ZmP1dThO+lB2znxZZwird5FOrGnMEkLZWRoXD3+0m01gCJL2gQ+VA54Jw==}
+  '@antelopejs/dms@0.16.1':
+    resolution: {integrity: sha512-iwnM390H/boqGNckjQFZom1Apa8TZY1DERr/09mNZrJIFRO5bFoFiO9XFIOcXaHybDLQ9T+XwAHkzBAIQXtdCQ==}
     hasBin: true
     peerDependencies:
       '@antelopejs/core': '>=1.17.0 <2'
@@ -108,105 +111,87 @@ packages:
       '@antelopejs/core':
         optional: true
 
-  '@antelopejs/interface-api-util@0.2.0':
-    resolution: {integrity: sha512-dS3tepJn9558+hzFx7dUIL9AT8LKkR3T63F1DPYlosGejWAhXevPmQ5XpYgQWHfD9iio0/ybnlnrbll/yHdm0Q==}
+  '@antelopejs/interface-api-util@0.3.0':
+    resolution: {integrity: sha512-9XGBY3rJk/uwJVpEuazVCeehYHtL4llCtyIT/6YAIkUK7ib0bJFGTqj74ni0KRlbH+jtPp4FU6XyUJL5SVxf+Q==}
+    peerDependencies:
+      '@antelopejs/interface-api': '>=0.3.0 <1.0.0'
+      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
+
+  '@antelopejs/interface-api@0.3.0':
+    resolution: {integrity: sha512-yrQ7hpvVlEzMkAI0V36sfQqH7rOGkEQkAb56PpJrApO+qtU/L4uyenG2FtzrlpN2tZDZOyBAJuteyTSgHjk0IA==}
+    peerDependencies:
+      '@antelopejs/interface-core': '>=0.4.0 <1.0.0'
+
+  '@antelopejs/interface-auth@0.2.0':
+    resolution: {integrity: sha512-20CvI3B7HHFD+o9bydqGpppfPyP70dsrIcVztrM9otslW4VbsxwFFh31Ch1J9mRc/wxJdbxd/IHKaeqc52FHVQ==}
     peerDependencies:
       '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/interface-api@0.0.15':
-    resolution: {integrity: sha512-BUtZXJcLoVaTwM+q4KpefVuoR235HUpQqd5nqAfx7S6CA3SED3EPnFFvCLzaNZXq3Vq6ErzqJqvir0TaI/kpXA==}
-    peerDependencies:
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
+  '@antelopejs/interface-core@0.4.0':
+    resolution: {integrity: sha512-IPX6dtt3KHknclN4mLOYeRYL2Odz1Pts+dtaZul62NghsBUX/0OFHD4Qhoaf+Beva4hjInbaF918ajr4Z5HVWQ==}
 
-  '@antelopejs/interface-auth@0.0.7':
-    resolution: {integrity: sha512-Sfi9QsDHLqqeZZL0calois/ivbtK2i8ulhsHmDEyzffyGye5W2Yfq+Qt1jk4pIeZQjGhlNR5QNu5xLVzLdMwZw==}
+  '@antelopejs/interface-data-api@0.6.1':
+    resolution: {integrity: sha512-JtGj7FcpTtWf3wZuaLF8g1ZdPHVh/UuyaW76dY/uoR07U7S7muJ7sNmBNSMSl211ERA5r4O5awFZozAeXbR2Pw==}
     peerDependencies:
-      '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
-
-  '@antelopejs/interface-core@0.3.0':
-    resolution: {integrity: sha512-GeGclCe5JOg+9H7XvTxYmE78u9tHG7QpVddHkB11kSgjNKq1hXqbEXPv0BRKQD9jjiV594qr1HuFuuYp4aqCZQ==}
-
-  '@antelopejs/interface-data-api@0.5.0':
-    resolution: {integrity: sha512-oPEWjl+ygV+VLVVa+ctr4ntYYyV6sPEPVL9QgHkHdweTEXTMshQyHa73+Ww9MUTGgFfEjy9pSyYPt6hM2TSMnQ==}
-    peerDependencies:
-      '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
+      '@antelopejs/interface-api': '>=0.3.0 <1.0.0'
       '@antelopejs/interface-api-util': '>=0.1.3 <1.0.0'
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
       '@antelopejs/interface-database': '>=0.1.10 <1.0.0'
       '@antelopejs/interface-database-decorators': '>=0.1.10 <1.0.0'
 
-  '@antelopejs/interface-database-decorators@0.1.10':
-    resolution: {integrity: sha512-frdqN199ExzpoeMu+wi/y0Zc2ARADYXSFJ3+YJH5sUSCKa0U4GXfiXC36XdvBCqNjG+Kv7h+C/vjpi+r0/vqDg==}
+  '@antelopejs/interface-database-decorators@0.2.0':
+    resolution: {integrity: sha512-+lMsG19Kq52hDSiSe+FRMB9weAd3A2IO+9yVrxcQpX9OZRUg/14wIwPeYFIb8ylLS7W39CT0yH9kb7ADPENwBw==}
     peerDependencies:
       '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
       '@antelopejs/interface-database': '>=0.1.11 <1.0.0'
 
-  '@antelopejs/interface-database-decorators@0.1.12':
-    resolution: {integrity: sha512-f2mJCATYoz7zJhAZV6pnCN6DqvV2sH6woWb9nE6HvhLnf/ETR6/YYWJaIF8YGPItbG8cURSrjRjs9tuulX62DA==}
-    peerDependencies:
-      '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
-      '@antelopejs/interface-database': '>=0.1.11 <1.0.0'
-
-  '@antelopejs/interface-database@0.1.11':
-    resolution: {integrity: sha512-uv6mB1Lghmlc9z+oWzntmzD1ZNBAmrj+2+7MItv6zClEolbqw5hfAt8+c3IPq2yLfWDfhpqWme2m0eTwsAm0RQ==}
+  '@antelopejs/interface-database@0.3.0':
+    resolution: {integrity: sha512-sPs/EROiuRgFr8r3SGrvO+9b8ZzBNkuwanN3rZbMfLQyQQ42CnULLkLG2JjE9/tRnbvGjgebJlU/VxhGrHBaoA==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/interface-dms-automation@0.5.0':
-    resolution: {integrity: sha512-Ur3SanSsZ0uPEoy9H/zVIqK/E/QpysQvnyPOwK7hMcDKfspmHcqcq4gLBTdQDwNYqNfb9uG4dqjiayMy91mQ/Q==}
+  '@antelopejs/interface-dms-automation@0.6.0':
+    resolution: {integrity: sha512-s/PnKGVBUq7JjY9qHWoOFwk6XlXrbAc40fgmImj3VU79I+8cIryKN61/f1BnJJ4TJDxG2pU1JUN9bBol9Ge2Cw==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/interface-dms-mailing@0.9.1':
-    resolution: {integrity: sha512-CxBD0w37Yp3aPfviDNcwkYwY4ViXHxJw8Ic20uz8/NBbzrk+/IKFwFLuh95wiLqG+4tgrD1OePhE9OyzoLAqXA==}
+  '@antelopejs/interface-dms-mailing@0.10.0':
+    resolution: {integrity: sha512-9QOM3MmS1YJR6515tbYOv4+dMjwFB5uqXWYlP6cN0h6Njgql6I9m1OpDDGtg+qeD2Ez1Dp7N7tHy2VsHyNOrhg==}
 
-  '@antelopejs/interface-dms-marketing@0.5.2':
-    resolution: {integrity: sha512-YCGbziQIeaZclyODyE8qAKndl7o5hVG8ZG0AkBq4JjemWfQ9I9anheFu9xS8G1qhZmoTtZwgioXDZ3Z3m4VqUg==}
+  '@antelopejs/interface-dms-marketing@0.6.0':
+    resolution: {integrity: sha512-Q5K1r/b3Ja8V30G+TzTU+3vwOS0pdgYDKKjBTEtV2wDvKIC27vgLn6lbqllzcq0KHmxkNS3nPE7eZaZh/A0Twg==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/interface-dms-media@0.3.1':
-    resolution: {integrity: sha512-2bBYYBfc299SVVWFxFfLmSTtMLeqgLw0GmvSgY3GH1qVIPFUtiXlr13UH3KaEj2kTuLyof8lB9/r+I8IT97G2A==}
+  '@antelopejs/interface-dms-media@0.3.2':
+    resolution: {integrity: sha512-UaII4Rdu1X8F7JaLmhZsanGlV7J/gU4xxr1FG+yekys+38WsM5UKljWabCJgxE4GAmK6oksrir3+511lOnOvxg==}
     peerDependencies:
       '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
       '@antelopejs/interface-dms': '>=0.9.0 <1.0.0'
 
-  '@antelopejs/interface-dms-saas@0.6.1':
-    resolution: {integrity: sha512-WHgV6IQQcoOXJ+HTt/MM1ghSj13ebExy7moLxjR648t6/yhLKYJqVKJTBblfRsmCo75xP4a1Z8DSjh5jtX9DOQ==}
+  '@antelopejs/interface-dms-saas@0.7.0':
+    resolution: {integrity: sha512-XljnSBJZUO3zw8OfHqNXOwBlre1GY04z6KBXrkl6N8vsCWgkzsOYFbgcC7AX733Gy0lft2jLDhVq2rRP4uGs5Q==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
       '@antelopejs/interface-database': '>=0.1.11 <1.0.0'
       '@antelopejs/interface-database-decorators': '>=0.1.10 <1.0.0'
 
-  '@antelopejs/interface-dms@0.10.3':
-    resolution: {integrity: sha512-PO4wj25jOIKGLLbA+gVPRS0KBLhlONyOUu99WKOT1kgVxC6of+81QbzLWjZFjhxPQRo41hWGNKKfnb9doqa66w==}
+  '@antelopejs/interface-dms@0.12.0':
+    resolution: {integrity: sha512-oqi5jr8PCfLrsWpZ+fw+9ZeRHTJo/f0PPWw06c+k2qqiN8/rmAVgI+5qgNT0siR/tjvkCUEDOuMhLeuUk+fOYg==}
     peerDependencies:
-      '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
+      '@antelopejs/interface-api': '>=0.3.0 <1.0.0'
       '@antelopejs/interface-api-util': '>=0.1.3 <1.0.0'
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
-      '@antelopejs/interface-data-api': '>=0.5.0 <1.0.0'
-      '@antelopejs/interface-database': '>=0.1.11 <1.0.0'
-      '@antelopejs/interface-database-decorators': '>=0.1.10 <1.0.0'
-      '@antelopejs/interface-file-storage': '>=0.1.4 <1.0.0'
-
-  '@antelopejs/interface-dms@0.10.4':
-    resolution: {integrity: sha512-hROn3ybdmea21MJoXE/l/DFuVgKYVpWfOUQZRJhnZNJHL6AL16ZxoP1C6RK7RYjC89yYzI3FgrQgZ+PXIDbCXg==}
-    peerDependencies:
-      '@antelopejs/interface-api': '>=0.0.15 <1.0.0'
-      '@antelopejs/interface-api-util': '>=0.1.3 <1.0.0'
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
-      '@antelopejs/interface-data-api': '>=0.5.0 <1.0.0'
+      '@antelopejs/interface-core': '>=0.4.0 <1.0.0'
+      '@antelopejs/interface-data-api': '>=0.6.0 <1.0.0'
       '@antelopejs/interface-database': '>=0.1.11 <1.0.0'
       '@antelopejs/interface-database-decorators': '>=0.1.12 <1.0.0'
       '@antelopejs/interface-file-storage': '>=0.1.4 <1.0.0'
 
-  '@antelopejs/interface-email@0.1.0':
-    resolution: {integrity: sha512-J5iHTEJe09bn1TH24ZQ+mAhwNnERrAWWBjEs+ldL2gwvWyqrL1Sr4U/+olKbMKbCsxrNo+e5niF/8hx56x0wGA==}
+  '@antelopejs/interface-email@0.0.6':
+    resolution: {integrity: sha512-GpMv5SQoWKQlxJTsHqMzljJCFKoRnHqLR+OmxaYmsxw0ur9Lzugq+oZpXnUnzaxAG1VX3MiNFrD3CT4BorgYDQ==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
@@ -220,16 +205,20 @@ packages:
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/tooling-configs@0.2.17':
-    resolution: {integrity: sha512-8fwh7xQPzazP/l/ivEwRKpfN8qShV9+PRizpI9cBewe2TwoRPu4n95w6sYSlygiRmm0HxLJYZFhmSPRgtiNo1Q==}
+  '@antelopejs/tooling-configs@0.2.18':
+    resolution: {integrity: sha512-bLZ5u4GQUdatgN0+9tJjwv2WXUBApPslgBKb3h98GYK34U1Potxrv5VVldLwmx54+Ldu8EPOp4PShLZqw+SkJw==}
     engines: {node: '>=22.18.0'}
     hasBin: true
     peerDependencies:
       '@nuxt/eslint-config': '>=1.2.0'
       eslint-plugin-perfectionist: '>=5.0.0'
       knip: '>=6.0.0'
+      mongodb-memory-server: '>=10.0.0'
       oxfmt: ^0.66.0
       oxlint: 1.81.0
+      pixelmatch: '>=7.0.0'
+      playwright-core: '>=1.56.0'
+      sharp: '>=0.34.0'
     peerDependenciesMeta:
       '@nuxt/eslint-config':
         optional: true
@@ -237,9 +226,17 @@ packages:
         optional: true
       knip:
         optional: true
+      mongodb-memory-server:
+        optional: true
       oxfmt:
         optional: true
       oxlint:
+        optional: true
+      pixelmatch:
+        optional: true
+      playwright-core:
+        optional: true
+      sharp:
         optional: true
 
   '@clack/core@1.5.1':
@@ -340,60 +337,70 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-arm64-gnu@0.95.0':
     resolution: {integrity: sha512-0LzebARTU0ROfD6pDK4h1pFn+09meErCZ0MA2TaW08G72+GNneEsksPufOuI+9AxVSRa+jKE3fu0wavvhZgSkg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-arm64-musl@0.153.0':
     resolution: {integrity: sha512-zXYzuAqng85h6+LI3iRm0zeMLX1/K2z41ZAMWxVRgt0D10VvZUaV5q+TEB46KDhoKBpdexoTLC6QoB/EiP2oqQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-parser/binding-linux-ppc64-gnu@0.153.0':
     resolution: {integrity: sha512-J7+NLwLEzdkKM9cKyPHH/AjXXstWOs98KYgLrPPnO4N9MO8EZRBfPNnBcS3S67uMOBkRpUmCl2FhRnWdQ5CbBA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-riscv64-gnu@0.153.0':
     resolution: {integrity: sha512-sD0K11GQTLWylln54nPMMTtgmBbQrR5It/vMpZpy/fogiw8O2AvIE+9LuWUXddrWk9zvFIHGRcSgFn4IHOfoYg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-riscv64-musl@0.153.0':
     resolution: {integrity: sha512-7L66uql2BhvSz51LwfExjOdn6et/ydTiQxl23VApdKzJhTc3TczA1Qt6VR/UcvlQrL2ZbytIJb447vh7p5wmUw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-parser/binding-linux-s390x-gnu@0.153.0':
     resolution: {integrity: sha512-hXV3T7mNyrPR19rbPYkglkQJtoM/UNo/xwbZeeqdAxEg8PXgb4LXXuxPpGgI4bzRRCWwLUxdDSS58xIyC2u1TA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-x64-gnu@0.153.0':
     resolution: {integrity: sha512-Da8Vqs1xdtoDYtEjmozD7wGgJeLBQkMbR0WUBECOSxodyX5DXy8ySlvJWbukyO2Q0+TM9EK+4LT6tbq0jCg4hQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-x64-gnu@0.95.0':
     resolution: {integrity: sha512-8huzHlK/N98wrnYKxIcYsK8ZGBWomQchu/Mzi6m+CtbhjWOv9DmK0jQ2fUWImtluQVpTwS0uZT06d3g7XIkJrA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-x64-musl@0.153.0':
     resolution: {integrity: sha512-zGAPxNTIIw6X5WyTRscIFE/oDjpdNtrrl32ing6NOXdGjzRucadnxBilexLdeYQ9YxixF93GujpXyQ0jw7ddSg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-parser/binding-openharmony-arm64@0.153.0':
     resolution: {integrity: sha512-GoHzpqP5XyPIp9DHokoEdCp+K4UPl/h1neFj1uXnUB3pJYyOQ7NOhFVOttNUgCGcj2eywAvu5cRivTOSq4S10g==}
@@ -467,41 +474,49 @@ packages:
     resolution: {integrity: sha512-vDT3KHgzYp47gmtNOqL2VNhCyl5Zv643eyxm//A68J8DeUGXrvD1pZFiaT4jSfe+RInfnn1R2yVHye4enx6RnA==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-arm64-musl@11.24.2':
     resolution: {integrity: sha512-+kMlQvbzfyEYtu5FcjE4p+ttBLpKW4d/AsAsuE69BxV6V4twZJeIQZFfD8gh/wqglY0MkPSezWXQH0jBV13MUw==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-linux-ppc64-gnu@11.24.2':
     resolution: {integrity: sha512-shjfMhmZ3gq9fv/w7bi3PnZlgOPG+2QAOFf0BJF0EgBSIGZ6PMLN2zbGEblTUYB/NKVDRyYhE2ff3dJ1QqNPkA==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-riscv64-gnu@11.24.2':
     resolution: {integrity: sha512-zGelwFR5oRo+b69k8Lrzun86DyUHzfKN6cnjbR9l7Z7NIRznOE/2ZvPa1IUKqAL2PzAXOdwkfVqNvO1H2RlpAw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-riscv64-musl@11.24.2':
     resolution: {integrity: sha512-qxZ1SWCXJY0eyhAlP6Lmo9F2Nrtx7EkYj9oCgL8apDPCwXwCEDA2U697bbT81JIc2IrVjxO4KX6WU2N+oN9Z4w==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-linux-s390x-gnu@11.24.2':
     resolution: {integrity: sha512-sGCecF3cx2DFlH4t/z7ApnOnXqN48p5p5mlHDEnHTAukQa2P+qMVE4CwyWE9W+q/m3QJ7kKfGrIjax31f44oFQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-x64-gnu@11.24.2':
     resolution: {integrity: sha512-k/VlMMcSzMlahb3/fENM4rTlsJ0s3fFROA0KXPBmKggqmTSaE383sl8F3KCOXPLmVsYfW6hCitMhXCEtNeZxxg==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-x64-musl@11.24.2':
     resolution: {integrity: sha512-8hbnZyNi97b/8wapYaIF9+t9GmZKBW2vunaOc3h9HGJptH7b7XpvZqOTBSm/MpTjr7H497BlgOaSfLUdhmy2bw==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-openharmony-arm64@11.24.2':
     resolution: {integrity: sha512-MvyGik3a6pVgZ0t/kWlbmFxFLmXQJwgLsY2eYFHLpy0wGwRbfzeIGgDwQ3kXqE30z+kSXennRkCrT7TUvkptNg==}
@@ -570,48 +585,56 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxfmt/binding-linux-arm64-musl@0.73.0':
     resolution: {integrity: sha512-8YVzH59XSHcqwXNgc5qK851zCqwpmBgOifARXEPPe5/xTsIbHceYoPZAyqfpYV0CfKmzSaEDBgYHFza4rhx+Zw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxfmt/binding-linux-ppc64-gnu@0.73.0':
     resolution: {integrity: sha512-MqRJnmCys0rwOgpWyEidSA7v/bvOqfNDJhPkQoR9mPVYrvSmMaW2Xhdpl28cbTA+brOM1is62GjIvJplVlUVpw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@oxfmt/binding-linux-riscv64-gnu@0.73.0':
     resolution: {integrity: sha512-4t2F3SWJSK/O/kRRFnL0elJzn75fJGGu71gs1HtiWcS80SmJOpkHiwwLnTp9suGdns8VHEPxYS0GTcyVwHKWBA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@oxfmt/binding-linux-riscv64-musl@0.73.0':
     resolution: {integrity: sha512-D8b4I8I1kLdJQFwdFXNV+cwh3xWSiNKofjdGUk0nDpc0AHOds8T+poGbP9RWQMvgsvMb9OMgp/aV7ahBR37TbQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@oxfmt/binding-linux-s390x-gnu@0.73.0':
     resolution: {integrity: sha512-QrC1S5VL1+N5rvorB15jH7CPvjVHA7GyUI5oVEd8Bd9m5605RDBQYTxDQ920DuylRoZOh2V7/xXpfCtFUrojUQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@oxfmt/binding-linux-x64-gnu@0.73.0':
     resolution: {integrity: sha512-dFcUKQPltCEPa+YlkF3zqufn6nJPZdG73LpnjBvZFFsU3laCMssDXSYB99mVaj43FqdEgjpz5TO6gbYXcczd9g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxfmt/binding-linux-x64-musl@0.73.0':
     resolution: {integrity: sha512-LmQe+nV8e+eUwfPNCxDF+owbsg88toBiR/8rZRgVOeKQP3MaGefXZRvBoc1UG37iWEQ/9JlCXG9Mc4nf4N3agw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxfmt/binding-openharmony-arm64@0.73.0':
     resolution: {integrity: sha512-8weOr1OKknE0G2DbR6ejJUT9AOsoBU6cXlsetmbihHv1K+bK7qP61T6lJxY0k/aAO7GyOJiRGNlL+04r4eH8Xg==}
@@ -714,48 +737,56 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxlint/binding-linux-arm64-musl@1.88.0':
     resolution: {integrity: sha512-8N8iGV9hh4Lkeuq7QsEkjoXNRRflqR1G2qyoGYXcA0k5qllrdqmfylKEXyHIVERxqNDyMO4StqDQ0uLxXcBQAg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxlint/binding-linux-ppc64-gnu@1.88.0':
     resolution: {integrity: sha512-5ydcQt3znNQ/rGEWYRvpS2cK9+T18P2VYgnyJ+eloEAwi9YUmsXy5VGrRqNWIK6qzWwHGnEE3ojVqqQNo+f0hA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@oxlint/binding-linux-riscv64-gnu@1.88.0':
     resolution: {integrity: sha512-iGx0uvFT54b/5DPJdEBCxYIrVB3v0uTy+JhRh3CyEp8/22BXDkG8rffkFwREdLsdj9mOrPbJYVOZw8ipcBuzjw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@oxlint/binding-linux-riscv64-musl@1.88.0':
     resolution: {integrity: sha512-Wt47mKMWelVjRjuR7BCFxXkB0m79K1sTEbqMHRWciKUgo5iv7sWsF4RXSOyFYHD9zerNrkRZblnN273rhwOA1Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@oxlint/binding-linux-s390x-gnu@1.88.0':
     resolution: {integrity: sha512-g3L12KCS4+1gtUt3RbJ4F+Yxx4LNmmZLEPfhd8rAHEJjJk2lAgNfnjGoP/phJyhG5WS6VbNYbJtadJelNfvTMA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@oxlint/binding-linux-x64-gnu@1.88.0':
     resolution: {integrity: sha512-og/XHVDOD9ZJgRiZkT9DgzQd4sr+JZW7e4l17Q/jVMZiIbeEd4uIu9iAoUbTF1gIvVZoRc4QDOxyVUvQGp4WHg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxlint/binding-linux-x64-musl@1.88.0':
     resolution: {integrity: sha512-EmhBsp+xuKb6YbZNEMLBo80Xw71AZOIm18do8ni/GLX/Lw1XzNhVYpbxO1KasYtoAvrGtCOdCPULRlIE0bPbTQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxlint/binding-openharmony-arm64@1.88.0':
     resolution: {integrity: sha512-DBUcx/KwYdg1DAz+G01P/GFv512J04EsZadbHptx2FTpWT/MWRg21ZToNHt9pnsfQRBQ3et/g+vqzbvrdAVbuA==}
@@ -1439,8 +1470,8 @@ packages:
   mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
 
-  mmdb-lib@3.0.4:
-    resolution: {integrity: sha512-tWy4b2UQaJjRhW/VGpy7ypMMgS7JfPezMsmVW7/utlWm6vv1JgsxXkmjuv/SjN6tsG8YrKHfJ00zHhrOCQDhjg==}
+  mmdb-lib@3.0.3:
+    resolution: {integrity: sha512-xQPoBXcNjjHiOvOraFBKtA++uNWF6aCVHL9dRKFXEov8eI3QJwtgiw3qApsonFT5SpoqsEVISUTg3HIDs2DiXw==}
     engines: {node: '>=10', npm: '>=6'}
 
   mocha@11.8.0:
@@ -1880,9 +1911,9 @@ snapshots:
       qr-image: 3.2.0
       thirty-two: 0.0.2
 
-  '@antelopejs/core@1.19.0':
+  '@antelopejs/core@1.20.0':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-core': 0.4.0
       '@clack/prompts': 1.8.1
       '@types/proper-lockfile': 4.1.4
       commander: 13.1.0
@@ -1895,9 +1926,9 @@ snapshots:
       semver: 7.8.5
       typescript: 5.9.3
 
-  '@antelopejs/dms-frontend@0.9.3(@antelopejs/core@1.19.0)':
+  '@antelopejs/dms-frontend@0.10.0(@antelopejs/core@1.20.0)':
     dependencies:
-      '@antelopejs/core': 1.19.0
+      '@antelopejs/core': 1.20.0
       '@intlify/message-compiler': 11.4.16
       chokidar: 4.0.3
       commander: 13.1.0
@@ -1910,23 +1941,23 @@ snapshots:
       '@oxc-parser/binding-linux-x64-gnu': 0.95.0
       '@oxc-parser/binding-win32-x64-msvc': 0.95.0
 
-  '@antelopejs/dms@0.15.1(@antelopejs/core@1.19.0)':
+  '@antelopejs/dms@0.16.1(@antelopejs/core@1.20.0)':
     dependencies:
       2fa: 0.1.2
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-api-util': 0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-data-api': 0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.12(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-database-decorators': 0.1.12(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-dms': 0.10.4(02fa840064a666d625a753da3b90849d)
-      '@antelopejs/interface-email': 0.1.0(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-file-storage': 0.1.6(@antelopejs/interface-core@0.3.0)
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-api-util': 0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-data-api': 0.6.1(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
+      '@antelopejs/interface-database': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-database-decorators': 0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
+      '@antelopejs/interface-dms': 0.12.0(82af59805bc17e4a4810db01862aab1b)
+      '@antelopejs/interface-email': 0.0.6(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-file-storage': 0.1.6(@antelopejs/interface-core@0.4.0)
       archiver: 7.0.1
       csv-stringify: 6.9.0
       defu: 6.1.7
       jsonwebtoken: 9.0.3
-      mmdb-lib: 3.0.4
+      mmdb-lib: 3.0.3
       node-cron: 4.6.0
       randomstring: 1.3.2
       semver: 7.8.5
@@ -1934,144 +1965,115 @@ snapshots:
       ua-parser-js: 2.0.10
       zod: 3.24.4
     optionalDependencies:
-      '@antelopejs/core': 1.19.0
-      '@antelopejs/interface-dms-automation': 0.5.0(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-redis': 0.0.9(@antelopejs/interface-core@0.3.0)
+      '@antelopejs/core': 1.20.0
+      '@antelopejs/interface-dms-automation': 0.6.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-redis': 0.0.9(@antelopejs/interface-core@0.4.0)
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
       - react-native-b4a
       - supports-color
 
-  '@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-auth@0.0.7(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-auth@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-core@0.3.0':
+  '@antelopejs/interface-core@0.4.0':
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@antelopejs/interface-data-api@0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))':
+  '@antelopejs/interface-data-api@0.6.1(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-api-util': 0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-database-decorators': 0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-api-util': 0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-database': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-database-decorators': 0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
 
-  '@antelopejs/interface-data-api@0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.12(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))':
+  '@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-api-util': 0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-database-decorators': 0.1.12(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-
-  '@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))':
-    dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-database': 0.3.0(@antelopejs/interface-core@0.4.0)
       randomstring: 1.3.2
       reflect-metadata: 0.2.2
 
-  '@antelopejs/interface-database-decorators@0.1.12(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))':
+  '@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      randomstring: 1.3.2
-      reflect-metadata: 0.2.2
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-dms-automation@0.6.0(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-dms-automation@0.5.0(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-dms-mailing@0.10.0':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-email': 0.0.6(@antelopejs/interface-core@0.4.0)
 
-  '@antelopejs/interface-dms-mailing@0.9.1':
+  '@antelopejs/interface-dms-marketing@0.6.0(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-email': 0.1.0(@antelopejs/interface-core@0.3.0)
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-dms-marketing@0.5.2(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-dms-media@0.3.2(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-dms@0.12.0(82af59805bc17e4a4810db01862aab1b))':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
-
-  '@antelopejs/interface-dms-media@0.3.1(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-dms@0.10.3(cec3e24635972bfd587e6c2b2f4c8bc5))':
-    dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-dms': 0.10.3(cec3e24635972bfd587e6c2b2f4c8bc5)
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-dms': 0.12.0(82af59805bc17e4a4810db01862aab1b)
       zod: 3.24.4
 
-  '@antelopejs/interface-dms-saas@0.6.1(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.3.0))':
+  '@antelopejs/interface-dms-saas@0.7.0(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.4.0))':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-data-api': 0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-database-decorators': 0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-dms': 0.10.3(cec3e24635972bfd587e6c2b2f4c8bc5)
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-data-api': 0.6.1(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
+      '@antelopejs/interface-database': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-database-decorators': 0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
+      '@antelopejs/interface-dms': 0.12.0(82af59805bc17e4a4810db01862aab1b)
     transitivePeerDependencies:
       - '@antelopejs/interface-api'
       - '@antelopejs/interface-api-util'
       - '@antelopejs/interface-file-storage'
 
-  '@antelopejs/interface-dms@0.10.3(cec3e24635972bfd587e6c2b2f4c8bc5)':
+  '@antelopejs/interface-dms@0.12.0(82af59805bc17e4a4810db01862aab1b)':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-api-util': 0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-data-api': 0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-database-decorators': 0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-file-storage': 0.1.6(@antelopejs/interface-core@0.3.0)
+      '@antelopejs/interface-api': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-api-util': 0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-core': 0.4.0
+      '@antelopejs/interface-data-api': 0.6.1(@antelopejs/interface-api-util@0.3.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database-decorators@0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0)))(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
+      '@antelopejs/interface-database': 0.3.0(@antelopejs/interface-core@0.4.0)
+      '@antelopejs/interface-database-decorators': 0.2.0(@antelopejs/interface-api@0.3.0(@antelopejs/interface-core@0.4.0))(@antelopejs/interface-core@0.4.0)(@antelopejs/interface-database@0.3.0(@antelopejs/interface-core@0.4.0))
+      '@antelopejs/interface-file-storage': 0.1.6(@antelopejs/interface-core@0.4.0)
       randomstring: 1.3.2
       zod: 3.24.4
       zod-to-json-schema: 3.24.6(zod@3.24.4)
 
-  '@antelopejs/interface-dms@0.10.4(02fa840064a666d625a753da3b90849d)':
+  '@antelopejs/interface-email@0.0.6(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-api': 0.0.15(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-api-util': 0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-core': 0.3.0
-      '@antelopejs/interface-data-api': 0.5.0(@antelopejs/interface-api-util@0.2.0(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database-decorators@0.1.10(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0)))(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-database': 0.1.11(@antelopejs/interface-core@0.3.0)
-      '@antelopejs/interface-database-decorators': 0.1.12(@antelopejs/interface-api@0.0.15(@antelopejs/interface-core@0.3.0))(@antelopejs/interface-core@0.3.0)(@antelopejs/interface-database@0.1.11(@antelopejs/interface-core@0.3.0))
-      '@antelopejs/interface-file-storage': 0.1.6(@antelopejs/interface-core@0.3.0)
-      randomstring: 1.3.2
-      zod: 3.24.4
-      zod-to-json-schema: 3.24.6(zod@3.24.4)
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-email@0.1.0(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-core': 0.4.0
 
-  '@antelopejs/interface-file-storage@0.1.6(@antelopejs/interface-core@0.3.0)':
+  '@antelopejs/interface-redis@0.0.9(@antelopejs/interface-core@0.4.0)':
     dependencies:
-      '@antelopejs/interface-core': 0.3.0
-
-  '@antelopejs/interface-redis@0.0.9(@antelopejs/interface-core@0.3.0)':
-    dependencies:
-      '@antelopejs/interface-core': 0.3.0
+      '@antelopejs/interface-core': 0.4.0
       ioredis: 5.11.1
     transitivePeerDependencies:
       - supports-color
     optional: true
 
-  '@antelopejs/tooling-configs@0.2.17(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))':
+  '@antelopejs/tooling-configs@0.2.18(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))':
     dependencies:
       '@oxlint/plugins': 1.81.0
       dts-bundle-generator: 9.5.1
@@ -3002,7 +3004,7 @@ snapshots:
 
   mkdirp-classic@0.5.3: {}
 
-  mmdb-lib@3.0.4: {}
+  mmdb-lib@3.0.3: {}
 
   mocha@11.8.0:
     dependencies:

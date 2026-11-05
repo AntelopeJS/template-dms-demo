@@ -17,18 +17,18 @@ export type TeamRegion =
  * The region of each province of a customer's address. Walloon Brabant has no
  * technician of its own: Brussels covers it.
  */
-const PROVINCE_REGION: Record<string, TeamRegion> = {
-  Liège: "liege",
-  Namur: "namur",
-  Hainaut: "hainaut",
-  Luxembourg: "luxembourg",
-  "Bruxelles-Capitale": "brussels",
-  "Brabant wallon": "brussels",
-};
+const PROVINCE_REGION = new Map<string, TeamRegion>([
+  ["Liège", "liege"],
+  ["Namur", "namur"],
+  ["Hainaut", "hainaut"],
+  ["Luxembourg", "luxembourg"],
+  ["Bruxelles-Capitale", "brussels"],
+  ["Brabant wallon", "brussels"],
+]);
 
 /** The region covering a Belgian province; Liège, the head office, else. */
 export function regionOfProvince(province: string | undefined): TeamRegion {
-  return (province && PROVINCE_REGION[province]) || "liege";
+  return PROVINCE_REGION.get(province ?? "") ?? "liege";
 }
 
 let regions: Map<string, string> | undefined;

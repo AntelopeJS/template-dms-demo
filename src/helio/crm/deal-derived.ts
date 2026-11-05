@@ -8,8 +8,10 @@ import {
   type DealStage,
   DealModel,
 } from "./database";
+import type { DealRow } from "./deal-controller";
 import { STAGE_PROBABILITY } from "./fixtures";
 import { isKickoffNextStep } from "./kickoff-step";
+import { helioNow } from "../shared/clock";
 
 /** The probability the deal form starts from (see `deal-controller.ts`). */
 const DEFAULT_PROBABILITY = STAGE_PROBABILITY.lead;
@@ -89,13 +91,26 @@ export async function syncDerivedFields(): Promise<void> {
  * the same write set one of its own (`sent` differs from `before`), in which
  * case it returns `undefined` and the sent value stays.
  */
+const DEAL_STAGE_KEYS = new Set<string>(Object.keys(STAGE_PROBABILITY));
+
+function isDealStage(stage: string): stage is DealStage {
+  return DEAL_STAGE_KEYS.has(stage);
+}
+
+/**
+ * The deal an edit guard receives: the controller's row, loaded from the
+ * table, so it also carries the table's `kickoffQuote`, which the controller
+ * does not declare.
+ */
+type LoadedDeal = Partial<DealRow> & Pick<Partial<Deal>, "kickoffQuote">;
+
 function stageProbability(
-  stage: DealStage,
+  stage: string,
   sent: number | undefined,
   before: number | undefined,
 ): number | undefined {
   if (sent !== undefined && sent !== before) return undefined;
-  return STAGE_PROBABILITY[stage];
+  return isDealStage(stage) ? STAGE_PROBABILITY[stage] : undefined;
 }
 
 /**
@@ -106,7 +121,7 @@ function stageProbability(
  * the new row's id: the row is found by what was sent, then the derived
  * fields of every deal follow (a few hundred rows at most).
  */
-export function afterDealNew(body: Partial<Deal>): AfterWrite {
+export function afterDealNew(body: Partial<DealRow>): AfterWrite {
   const sent = body.probability ?? DEFAULT_PROBABILITY;
   const probability = body.stage
     ? stageProbability(body.stage, sent, DEFAULT_PROBABILITY)
@@ -122,7 +137,7 @@ export function afterDealNew(body: Partial<Deal>): AfterWrite {
           deal.customer === body.customer &&
           deal.stage === body.stage,
       );
-      const now = new Date();
+      const now = new Date(helioNow());
       const updates = created.map((deal) => {
         const changes: Partial<Deal> = {};
         if (newProbability !== undefined && deal.probability === sent) {
@@ -165,8 +180,8 @@ async function logDealWon(id: string): Promise<void> {
  */
 export function afterDealEdit(
   id: string,
-  body: Partial<Deal>,
-  current: Partial<Deal>,
+  body: Partial<DealRow>,
+  current: LoadedDeal,
 ): AfterWrite {
   const { stage } = body;
   const moved = stage !== undefined && stage !== current.stage;

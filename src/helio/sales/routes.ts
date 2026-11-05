@@ -26,6 +26,7 @@ import { documentLanguage } from "./document-texts";
 import { PORTAL_BASE_URL, QUOTE_ACTIONS_API } from "./links";
 import { VALIDITY_DAYS } from "./options";
 import { PageHelioQuotes } from "./page";
+import { helioNow } from "../shared/clock";
 
 interface RejectBody {
   reason?: string;
@@ -143,7 +144,7 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     @AuthUserWithPermission(canEdit) _user: User,
   ): Promise<{ ok: true }> {
     const quote = await quoteIn(id, "draft");
-    const now = new Date();
+    const now = new Date(helioNow());
     const validUntil =
       quote.validUntil && quote.validUntil > now
         ? quote.validUntil
@@ -172,7 +173,7 @@ export class HelioQuoteRoutes extends Controller(QUOTE_ACTIONS_API) {
     const quote = await quoteIn(id, "sent");
     await GetModel(QuoteModel).update(id, {
       status: "accepted",
-      signedAt: new Date(),
+      signedAt: new Date(helioNow()),
     });
     await quoteAccepted(quote);
     void mailQuoteAccepted(id);

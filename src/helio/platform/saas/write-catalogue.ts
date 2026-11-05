@@ -20,7 +20,7 @@ const ALL_LOCALES = "*";
  */
 const NO_TEXT: LocalizedText = { en: "", fr: "" };
 
-function toFeatureRow(feature: SeedFeature): SeedRow {
+function toFeatureRow(feature: SeedFeature): SeedRow<Feature> {
   const { id, ...fields } = feature;
   return {
     ...fields,
@@ -44,9 +44,9 @@ function toPlanRow(
   plan: SeedPlan,
   grantable: string[],
   createdAt: Date,
-): SeedRow {
+): SeedRow<Plan> {
   const { id, grant, features, borderLabel, ...fields } = plan;
-  const row: SeedRow = {
+  const row: SeedRow<Plan> = {
     ...fields,
     _id: id,
     features: Object.entries(features).map(([featureId, value]) => ({

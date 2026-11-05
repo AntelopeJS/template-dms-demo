@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import type { ImportedSendEvent } from "@antelopejs/interface-dms-mailing";
 import { createRng, type Rng } from "../../shared/seed";
+import { helioNow } from "../../shared/clock";
 
 const SECOND_MS = 1000;
 const MINUTE_MS = 60 * SECOND_MS;
@@ -80,7 +81,7 @@ export function historyEvents(
   engagement: Engagement,
 ): ImportedSendEvent[] {
   const rng = createRng(seedOf(importId));
-  const now = Date.now();
+  const now = helioNow();
   const events: ImportedSendEvent[] = [{ type: "sent", at: sentAt }];
   if (rng.chance(HARD_BOUNCE_RATE + SOFT_BOUNCE_RATE)) {
     return [...events, bounce(rng, sentAt, email)];

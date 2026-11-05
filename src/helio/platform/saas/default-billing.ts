@@ -9,10 +9,17 @@ import {
   TenantBillingInfoModel,
 } from "@antelopejs/interface-dms-saas/db";
 import { PLAN_IDS } from "./plans";
-import { addDays, addMonths, insertMissing, type SeedRow } from "./rows";
+import {
+  addDays,
+  addMonths,
+  insertMissing,
+  type RowOf,
+  type SeedRow,
+} from "./rows";
 import { type BillingPeriod, billingPeriods } from "./schedule";
 import { invoiceIdOf, writeInvoices } from "./write-invoices";
 import type { SeedWorkspace } from "./workspaces";
+import { helioInstalledAt } from "../../shared/clock";
 
 const BE_VAT = 21;
 const PERCENT = 100;
@@ -88,7 +95,10 @@ function creditAmounts(): CreditAmounts {
 }
 
 /** The credit note itself. Its amount includes the VAT it gives back, as Stripe's does. */
-function toCreditNoteRow(parentId: string, issuedAt: Date): SeedRow {
+function toCreditNoteRow(
+  parentId: string,
+  issuedAt: Date,
+): SeedRow<RowOf<typeof CreditNoteModel>> {
   return {
     _id: CREDIT_NOTE_ID,
     invoiceId: parentId,
@@ -116,7 +126,7 @@ function toCreditNoteDocumentRow(
   parent: Invoice,
   period: BillingPeriod,
   issuedAt: Date,
-): SeedRow {
+): SeedRow<RowOf<typeof InvoiceModel>> {
   const { subtotal, tax, total } = creditAmounts();
   return {
     _id: CREDIT_NOTE_ID,
@@ -163,7 +173,7 @@ function toCreditNoteDocumentRow(
   };
 }
 
-function toRefundRow(issuedAt: Date): SeedRow {
+function toRefundRow(issuedAt: Date): SeedRow<RowOf<typeof RefundModel>> {
   return {
     _id: REFUND_ID,
     creditNoteId: CREDIT_NOTE_ID,
@@ -215,7 +225,7 @@ async function writeCreditNote(anchor: Date, now: Date): Promise<void> {
 export async function writeDefaultBilling(now: Date): Promise<void> {
   const tenant = await GetModel(TenantModel).get(DEFAULT_TENANT_ID);
   if (!tenant) return;
-  const anchor = historyStart(new Date(tenant.createdAt));
+  const anchor = historyStart(helioInstalledAt(tenant.createdAt));
   await writeBillingInfo();
   await writeInvoices(HELIO_BILLING, anchor, now);
   await writeCreditNote(anchor, now);

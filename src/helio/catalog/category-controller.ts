@@ -108,12 +108,13 @@ function withRawParent(
         params: Parameters.ListParameters | undefined,
         ...rest: unknown[]
       ) {
-        return callback.func.call(
+        const result: unknown = callback.func.call(
           this,
           ctx,
           { ...params, noForeign: true },
           ...rest,
         );
+        return result;
       },
     },
   };
@@ -217,5 +218,9 @@ class productCategoryDataAPI extends DataController(
 }
 
 /** ControllerClass-typed alias of `productCategoryDataAPI` for the products' CascaderRelationType and the catalog pages (see the TS2742 note above). */
-export const productCategoryController: ControllerClass =
+export type ProductCategoryRow = {
+  [Field in keyof productCategoryDataAPI]: productCategoryDataAPI[Field];
+};
+
+export const productCategoryController: ControllerClass<ProductCategoryRow> =
   productCategoryDataAPI;

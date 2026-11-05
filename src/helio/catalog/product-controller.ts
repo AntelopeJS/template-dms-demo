@@ -153,7 +153,10 @@ class productDataAPI extends DataController(
   @Sortable()
   @Computed(
     (row, db) =>
-      db.table(CATEGORIES_TABLE).get(row.key("category")).key("parent"),
+      db
+        .table(CATEGORIES_TABLE)
+        .get(row.key("category").cast<string>())
+        .key("parent"),
     { default: null },
   )
   @Column({
@@ -503,4 +506,8 @@ class productDataAPI extends DataController(
 }
 
 /** ControllerClass-typed alias of `productDataAPI` for quote lines, project pages and the catalog (see the TS2742 note above). */
-export const productController: ControllerClass = productDataAPI;
+export type ProductRow = {
+  [Field in keyof productDataAPI]: productDataAPI[Field];
+};
+
+export const productController: ControllerClass<ProductRow> = productDataAPI;

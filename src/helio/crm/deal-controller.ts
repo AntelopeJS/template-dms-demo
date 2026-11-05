@@ -30,6 +30,7 @@ import { customerController, LEAD_SOURCES } from "./customer-controller";
 import { Deal, type DealStage, DealModel } from "./database";
 import { isKickoffNextStep, kickoffNextStep } from "./kickoff-step";
 import { salesRepController } from "./sales-rep-controller";
+import { helioNow } from "../shared/clock";
 
 /** The pipeline stages, in order: the kanban columns, tabs and views read them. */
 export const DEAL_STAGES = [
@@ -129,7 +130,7 @@ export const LOST_REASONS = [
   },
 ] as const;
 
-const LOST_REASON_LABELS: Record<string, string> = Object.fromEntries(
+const LOST_REASON_LABELS: ReadonlyMap<string, string> = new Map(
   LOST_REASONS.map(({ value, label }) => [value, label]),
 );
 
@@ -449,7 +450,7 @@ class dealDataAPI extends DataController(
         }
       : nextStep;
     if (!text) return null;
-    const idleMs = lastActivityAt ? Date.now() - lastActivityAt.getTime() : 0;
+    const idleMs = lastActivityAt ? helioNow() - lastActivityAt.getTime() : 0;
     const stalled =
       OPEN_DEAL_STAGES.includes(stage) && idleMs > STALLED_DAYS * DAY_MS;
     return { text, tone: stalled ? "warning" : undefined };
@@ -461,7 +462,7 @@ class dealDataAPI extends DataController(
   get stageDetail(): string | null {
     const { stage, lostReason } = this.table;
     if (stage !== "lost" || !lostReason) return null;
-    return LOST_REASON_LABELS[lostReason] ?? null;
+    return LOST_REASON_LABELS.get(lostReason) ?? null;
   }
 }
 
@@ -469,4 +470,6 @@ class dealDataAPI extends DataController(
  * The deal controller, typed as `ControllerClass` for the relation columns of
  * other domains (see the TS2742 note on the class).
  */
-export const dealController: ControllerClass = dealDataAPI;
+export type DealRow = { [Field in keyof dealDataAPI]: dealDataAPI[Field] };
+
+export const dealController: ControllerClass<DealRow> = dealDataAPI;

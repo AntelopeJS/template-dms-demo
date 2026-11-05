@@ -27,6 +27,7 @@ import {
   isBusiness,
 } from "./crm-facts";
 import type { ProjectStatus } from "./database";
+import { helioNow } from "../shared/clock";
 
 /**
  * The backbone every operations fixture hangs on: one entry per installation
@@ -181,7 +182,7 @@ const span = (start: Date, days: number): Dates => ({
  */
 function nextWorkingDay(): Date {
   const today = dayAt(0);
-  const late = new Date().getHours() >= 17;
+  const late = new Date(helioNow()).getHours() >= 17;
   return isWorkday(today) && !late ? today : addWorkdays(today, 1);
 }
 
@@ -225,7 +226,7 @@ function currentDates(
 function earliestStart(deal?: string): Date | undefined {
   if (!deal) return undefined;
   const closedDays = Math.ceil(
-    (dealFacts(deal).expectedClose.getTime() - Date.now()) / DAY_MS,
+    (dealFacts(deal).expectedClose.getTime() - helioNow()) / DAY_MS,
   );
   return nextWorkday(dayAt(closedDays + 7));
 }
@@ -274,7 +275,7 @@ function toPlan(rng: Rng, draft: Draft, crew: Crew): ProjectPlan {
         Math.min(
           atHour(draft.dates.start, rng.int(9, 17)).getTime() -
             rng.int(18, 40) * DAY_MS,
-          Date.now() - DAY_MS,
+          helioNow() - DAY_MS,
         ),
       );
   return {

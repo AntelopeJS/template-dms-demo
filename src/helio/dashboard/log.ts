@@ -8,6 +8,7 @@ import {
   activityLink,
 } from "./activity-links";
 import { ActivityModel } from "./database";
+import { helioNow } from "../shared/clock";
 
 export { ACTIVITY_TONES, activityLink, HELIO_LINKS } from "./activity-links";
 
@@ -40,7 +41,7 @@ export async function logActivity(
   if (entries.length === 0) return;
   try {
     const model = GetModel(ActivityModel);
-    const at = new Date();
+    const at = new Date(helioNow());
     for (const entry of entries) {
       sequence += 1;
       await model.insert({

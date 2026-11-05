@@ -75,9 +75,25 @@ export function withBodyDefaults(
       ...rest: unknown[]
     ) {
       const body = readBody(raw);
-      if (!body) return route.func.call(this, ctx, params, raw, ...rest);
+      if (!body) {
+        const untouched: unknown = route.func.call(
+          this,
+          ctx,
+          params,
+          raw,
+          ...rest,
+        );
+        return untouched;
+      }
       await fill(body);
-      return route.func.call(this, ctx, params, body, ...rest);
+      const created: unknown = route.func.call(
+        this,
+        ctx,
+        params,
+        body,
+        ...rest,
+      );
+      return created;
     },
   };
 }

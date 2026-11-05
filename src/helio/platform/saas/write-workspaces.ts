@@ -1,18 +1,29 @@
-import { randomUUID } from "node:crypto";
 import { Schema } from "@antelopejs/interface-database";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { TENANT_SCHEMA_NAME } from "@antelopejs/interface-dms/constants";
-import { RoleModel, TenantModel } from "@antelopejs/interface-dms/db";
+import {
+  type Role,
+  RoleModel,
+  type Tenant,
+  TenantModel,
+} from "@antelopejs/interface-dms/db";
 import {
   type PaidUsagePeriod,
   TenantBillingInfoModel,
   TenantSubscriptionModel,
 } from "@antelopejs/interface-dms-saas/db";
 import { RecomputeTenantBillingState } from "@antelopejs/interface-dms-saas/billing";
-import { addDays, addMonths, insertMissing, type SeedRow } from "./rows";
+import {
+  addDays,
+  addMonths,
+  insertMissing,
+  type RowOf,
+  type SeedRow,
+} from "./rows";
 import { findPlan } from "./plans";
 import { dunningSince, nextRenewal } from "./schedule";
 import { type SeedWorkspace, stripeSubscriptionIdOf } from "./workspaces";
+import { helioUuid } from "../../shared/clock";
 
 const MEMBER_ROLE_SUFFIX = "member";
 const VAT_VERIFIED = "verified";
@@ -41,7 +52,7 @@ function memberRole(
   tenantId: string,
   permissions: string[],
   at: Date,
-): SeedRow {
+): SeedRow<Role> {
   return {
     _id: memberRoleId(tenantId),
     name: "Member",
@@ -70,7 +81,7 @@ function paidUsagePeriods(
  * A churned workspace is written active first and cancelled right after, so
  * dms-saas records the revenue it took away (the churn figures read it).
  */
-function initialStatus(workspace: SeedWorkspace): string {
+function initialStatus(workspace: SeedWorkspace): SeedWorkspace["status"] {
   return workspace.status === "cancelled" ? "active" : workspace.status;
 }
 
@@ -94,14 +105,14 @@ function toSubscriptionRow(
   workspace: SeedWorkspace,
   createdAt: Date,
   now: Date,
-): SeedRow {
+): SeedRow<RowOf<typeof TenantSubscriptionModel>> {
   const isBilled =
     BILLED_STATUSES.has(workspace.status) &&
     findPlan(workspace.planId).price > 0;
   const isPaid = isBilled && workspace.status !== "trialing";
   return {
     _id: workspace.id,
-    revision: randomUUID(),
+    revision: helioUuid(workspace.id),
     planId: workspace.planId,
     status: initialStatus(workspace),
     stripeCustomerId: null,
@@ -134,7 +145,9 @@ function toSubscriptionRow(
   };
 }
 
-function toBillingInfoRow(workspace: SeedWorkspace): SeedRow {
+function toBillingInfoRow(
+  workspace: SeedWorkspace,
+): SeedRow<RowOf<typeof TenantBillingInfoModel>> {
   return {
     ...workspace.billing,
     _id: workspace.id,
@@ -173,7 +186,11 @@ export async function writeWorkspace(
   if (await GetModel(TenantSubscriptionModel, id).table.get(id)) return false;
   const createdAt = workspaceCreatedAt(workspace, now);
   await Schema.get(TENANT_SCHEMA_NAME)?.createInstance(id);
-  await insertMissing(RoleModel, [memberRole(id, permissions, createdAt)], id);
+  await insertMissing<Role>(
+    RoleModel,
+    [memberRole(id, permissions, createdAt)],
+    id,
+  );
   await insertMissing(
     TenantBillingInfoModel,
     [toBillingInfoRow(workspace)],
@@ -184,7 +201,7 @@ export async function writeWorkspace(
     [toSubscriptionRow(workspace, createdAt, now)],
     id,
   );
-  await insertMissing(TenantModel, [
+  await insertMissing<Tenant>(TenantModel, [
     { _id: id, name: workspace.name, createdAt, updatedAt: createdAt },
   ]);
   if (workspace.status === "cancelled") await cancelAfterPublishing(workspace);

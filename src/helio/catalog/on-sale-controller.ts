@@ -26,11 +26,7 @@ import { Product, ProductModel } from "./database";
  * route only ever lists the active products.
  */
 const ON_SALE_ONLY = {
-  // SAFETY: interface-data-api types the mode as a comparison ("eq", "ne", "gt",
-  // "ge", "lt", "le"), but the list route hands the route filter's mode to the
-  // column's filter unchanged, and BooleanType's filter resolves "is" through the
-  // registered compare modes (DefaultDataCompareTypes.Is, one of its modes).
-  isActive: ["true", "is" as FilterValue[1]],
+  isActive: ["true", "is"],
 } satisfies Record<string, FilterValue>;
 
 /**
@@ -92,4 +88,9 @@ class onSaleProductDataAPI extends DataController(
 }
 
 /** ControllerClass-typed alias of `onSaleProductDataAPI` for the quote lines (see the TS2742 note). */
-export const onSaleProductController: ControllerClass = onSaleProductDataAPI;
+export type OnSaleProductRow = {
+  [Field in keyof onSaleProductDataAPI]: onSaleProductDataAPI[Field];
+};
+
+export const onSaleProductController: ControllerClass<OnSaleProductRow> =
+  onSaleProductDataAPI;

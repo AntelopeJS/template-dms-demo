@@ -4,7 +4,11 @@ import {
   HTTPResult,
   Parameter,
 } from "@antelopejs/interface-api";
-import type { ProductFamily } from "./options";
+import {
+  PRODUCT_FAMILIES,
+  SERVICES_FAMILY,
+  type ProductFamily,
+} from "./options";
 
 /** Where the backend serves the product visuals from. */
 export const VISUALS_PATH = "/api/helio/catalog-visuals";
@@ -69,13 +73,16 @@ function escapeXml(text: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function isFamily(value: string): value is ProductFamily {
-  return value in ART;
+function familyOf(name: string): ProductFamily {
+  return (
+    PRODUCT_FAMILIES.find((family) => family.value === name)?.value ??
+    SERVICES_FAMILY
+  );
 }
 
 /** The visual of a product of `family`, captioned with `label` (its SKU). */
 export function renderProductVisual(family: string, label: string): string {
-  const art = ART[isFamily(family) ? family : "cat-services"];
+  const art = ART[familyOf(family)];
   const caption = escapeXml(label.slice(0, MAX_LABEL_LENGTH));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}">
 <rect width="${SIZE}" height="${SIZE}" fill="${art.color}"/>

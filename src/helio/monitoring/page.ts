@@ -38,11 +38,12 @@ import {
   siteRecord,
 } from "./stats";
 import { fleetTable } from "./table";
+import { helioNow } from "../shared/clock";
 
 /** The instant a held table froze its rows at, else now. */
 function heldAt(query: URLSearchParams): number {
   const held = Date.parse(query.get("liveHeldAt") ?? "");
-  return Number.isFinite(held) ? held : Date.now();
+  return Number.isFinite(held) ? held : helioNow();
 }
 
 async function findSite(id: string): Promise<FleetSite> {
@@ -231,12 +232,12 @@ export class PageHelioMonitoring extends PageController(
 
   @Get("stats")
   async stats() {
-    return fleetStats(await loadFleet(), Date.now());
+    return fleetStats(await loadFleet(), helioNow());
   }
 
   @Get("production")
   async production(@Context() ctx: RequestContext) {
-    const now = Date.now();
+    const now = helioNow();
     return productionCard(
       await loadFleet(),
       readPeriod(ctx.url.searchParams, now),
@@ -246,7 +247,7 @@ export class PageHelioMonitoring extends PageController(
 
   @Get("meters/output")
   async outputMeter() {
-    return capacityMeter(await loadFleet(), Date.now());
+    return capacityMeter(await loadFleet(), helioNow());
   }
 
   @Get("meters/lost")
@@ -256,12 +257,12 @@ export class PageHelioMonitoring extends PageController(
 
   @Get("heatmap")
   async heatmap() {
-    return heatmapSeries(await loadFleet(), Date.now());
+    return heatmapSeries(await loadFleet(), helioNow());
   }
 
   @Get("top")
   async top(@Context() ctx: RequestContext) {
-    const now = Date.now();
+    const now = helioNow();
     return topProducers(
       await loadFleet(),
       readPeriod(ctx.url.searchParams, now),
@@ -278,7 +279,7 @@ export class PageHelioMonitoring extends PageController(
 
   @Get("sites/:id")
   async site(@Parameter("id", "param") id: string) {
-    const now = Date.now();
+    const now = helioNow();
     return siteRow(
       await findSite(id),
       readPeriod(new URLSearchParams(), now),
@@ -292,6 +293,6 @@ export class PageHelioMonitoring extends PageController(
     const project = site.project
       ? await GetModel(ProjectModel).get(site.project)
       : undefined;
-    return siteRecord(site, Date.now(), project?.code ?? null);
+    return siteRecord(site, helioNow(), project?.code ?? null);
   }
 }

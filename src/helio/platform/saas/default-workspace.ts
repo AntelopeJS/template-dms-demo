@@ -1,10 +1,10 @@
-import { randomUUID } from "node:crypto";
 import { GetModel } from "@antelopejs/interface-database-decorators";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { TenantModel } from "@antelopejs/interface-dms/db";
 import { TenantSubscriptionModel } from "@antelopejs/interface-dms-saas/db";
 import { PLAN_IDS } from "./plans";
 import { insertMissing } from "./rows";
+import { helioUuid } from "../../shared/clock";
 
 const PUBLISHER_NAME = "Helio SRL";
 
@@ -22,7 +22,7 @@ export async function attachHqPlan(now: Date): Promise<void> {
     [
       {
         _id: DEFAULT_TENANT_ID,
-        revision: randomUUID(),
+        revision: helioUuid(DEFAULT_TENANT_ID),
         planId: PLAN_IDS.hq,
         status: "active",
         isComplimentary: false,

@@ -10,6 +10,7 @@ import { upkeepWorkspace } from "./upkeep";
 import { grantNewPermissions, writeCatalogue } from "./write-catalogue";
 import { writeWorkspace } from "./write-workspaces";
 import { WORKSPACES } from "./workspaces";
+import { helioNow } from "../../shared/clock";
 
 const LOG_PREFIX = "[helio:saas]";
 /** When the catalogue was first published, relative to the first boot. */
@@ -30,7 +31,7 @@ const MS_PER_DAY = 86_400_000;
  * default plan to the default workspace instead.
  */
 export async function provisionSaasShowcase(): Promise<void> {
-  const now = new Date();
+  const now = new Date(helioNow());
   const grantable = await readGrantablePermissions();
   await attachHqPlan(now);
   await writeCatalogue(
@@ -57,7 +58,7 @@ export async function provisionSaasShowcase(): Promise<void> {
 async function upkeepShowcase(): Promise<void> {
   try {
     await grantNewPermissions(await readGrantablePermissions());
-    const now = new Date();
+    const now = new Date(helioNow());
     for (const workspace of WORKSPACES) await upkeepWorkspace(workspace, now);
   } catch (error) {
     Logging.Error(`${LOG_PREFIX} upkeep failed`, error);

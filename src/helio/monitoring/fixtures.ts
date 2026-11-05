@@ -3,6 +3,7 @@ import { type ProjectPlan, projectPlans } from "../projects/plan";
 import { COUNTS, siteId } from "../shared/roster";
 import { createRng, DAY_MS, type Rng } from "../shared/seed";
 import type { InverterStatus, Site } from "./database";
+import { helioNow } from "../shared/clock";
 
 export type SiteSeed = Pick<
   Site,
@@ -66,7 +67,7 @@ function production(rng: Rng, capacity: number, status: InverterStatus) {
 }
 
 function lastSeen(rng: Rng, status: InverterStatus, silentDays: number): Date {
-  const now = Date.now();
+  const now = helioNow();
   if (status === "offline")
     return new Date(now - silentDays * DAY_MS - rng.int(60, 600) * MINUTE_MS);
   return new Date(

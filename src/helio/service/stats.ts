@@ -1,5 +1,6 @@
 import type { StatGroupItem } from "@antelopejs/interface-dms/base/stat-group";
 import type { Ticket } from "./database";
+import { helioNow } from "../shared/clock";
 
 const HOUR_MS = 60 * 60 * 1000;
 const MONTH_MS = 30 * 24 * HOUR_MS;
@@ -42,7 +43,7 @@ export function serviceStats(
   tickets: Ticket[],
   links: ServiceStatLinks,
   urgentHours: number,
-  now = Date.now(),
+  now = helioNow(),
 ): StatGroupItem[] {
   const open = tickets.filter((ticket) => !ticket.resolvedAt);
   const unassigned = open.filter((ticket) => !ticket.assignee).length;

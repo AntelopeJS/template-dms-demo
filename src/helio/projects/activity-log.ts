@@ -3,10 +3,12 @@ import { logActivity } from "../dashboard/log";
 import { ProjectModel } from "./database";
 
 /** The statuses that reach the dashboard's activity feed, with their type. */
-const LOGGED: Partial<Record<string, "project_started" | "project_done">> = {
-  in_progress: "project_started",
-  done: "project_done",
-};
+const LOGGED: ReadonlyMap<string, "project_started" | "project_done"> = new Map(
+  [
+    ["in_progress", "project_started"],
+    ["done", "project_done"],
+  ],
+);
 
 /**
  * Logs a project that just moved to `status` on the dashboard's activity feed,
@@ -17,7 +19,7 @@ export async function logProjectStatus(
   id: string,
   status: string,
 ): Promise<void> {
-  const type = LOGGED[status];
+  const type = LOGGED.get(status);
   const project = await GetModel(ProjectModel).get(id);
   if (!type || !project || project.status !== status) return;
   await logActivity({
@@ -37,6 +39,6 @@ export function afterProjectEdit(
   status: string | undefined,
   previous: string | undefined,
 ): (() => Promise<void>) | undefined {
-  if (!status || status === previous || !LOGGED[status]) return undefined;
+  if (!status || status === previous || !LOGGED.has(status)) return undefined;
   return () => logProjectStatus(id, status);
 }

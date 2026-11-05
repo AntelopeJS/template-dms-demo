@@ -50,6 +50,7 @@ import {
   invoicesTable,
   markPaidFields,
 } from "./table";
+import { helioNow } from "../shared/clock";
 
 const HTTP_NOT_FOUND = 404;
 
@@ -136,7 +137,7 @@ export class PageHelioInvoices extends PageController(
     @MultiParameter("ids") ids: string[],
     @AuthUserWithPermission(invoiceEditAction) _user: User,
   ): ConfirmDialogSerialized {
-    const today = new Date();
+    const today = new Date(helioNow());
     today.setHours(12, 0, 0, 0);
     const invoiceIds = (ids ?? []).filter((id) => id && !id.includes("{{"));
     const count = Math.max(invoiceIds.length, 1);

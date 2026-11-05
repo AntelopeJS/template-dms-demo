@@ -39,6 +39,7 @@ import { takeQuoteNumber } from "./numbering";
 import { defaultVatRate } from "./vat-rate";
 import { EXPIRING_WITHIN_MS, QUOTE_STATUSES, VALIDITY_DAYS } from "./options";
 import { lineText, otherLinesText } from "./summary";
+import { helioNow } from "../shared/clock";
 
 export { QUOTE_STATUSES } from "./options";
 
@@ -471,7 +472,7 @@ class quoteDataAPI extends DataController(
       };
     }
     if ((status === "sent" || status === "draft") && validUntil) {
-      const soon = validUntil.getTime() - Date.now() < EXPIRING_WITHIN_MS;
+      const soon = validUntil.getTime() - helioNow() < EXPIRING_WITHIN_MS;
       return {
         text: {
           key: "$helio.sales.quotes.detail.validUntil",
@@ -494,7 +495,7 @@ class quoteDataAPI extends DataController(
     return undefined;
   }
   set creation(_value: undefined) {
-    const issuedAt = new Date();
+    const issuedAt = new Date(helioNow());
     this.table.issuedAt = issuedAt;
     this.table.validUntil = new Date(
       issuedAt.getTime() + VALIDITY_DAYS * DAY_MS,
@@ -515,4 +516,6 @@ class quoteDataAPI extends DataController(
 }
 
 /** The quotes data API typed as a `ControllerClass`, for relations and pages (see the TS2742 note on the class). */
-export const quoteController: ControllerClass = quoteDataAPI;
+export type QuoteRow = { [Field in keyof quoteDataAPI]: quoteDataAPI[Field] };
+
+export const quoteController: ControllerClass<QuoteRow> = quoteDataAPI;

@@ -10,7 +10,7 @@ import type { ConfirmDialog } from "@antelopejs/interface-dms/base/types/confirm
 import type { CustomRowAction } from "@antelopejs/interface-dms/base/types/row-action";
 import { pageRoutePath } from "@antelopejs/interface-dms/page";
 import type { TeamMember } from "../team/database";
-import { ticketController } from "./controller";
+import { ticketController, type TicketRow } from "./controller";
 import { SERVICE_DESK_PATH, TICKET_STATUSES } from "./options";
 
 /** Base path of the tickets data controller, which the bulk routes hang from. */
@@ -115,7 +115,7 @@ export const ticketTabs: TableViewTab[] = TICKET_STATUSES.map((status) => ({
 }));
 
 /** The footer of the desk: the open urgent and the waiting tickets, and the status legend. */
-export const ticketFooter: TableViewFooterOptions = {
+export const ticketFooter: TableViewFooterOptions<TicketRow> = {
   countLabel: "$helio.service.table.count",
   summary: [
     {
@@ -173,7 +173,7 @@ export function assignDialog(holders: readonly TeamMember[]): ConfirmDialog {
 }
 
 /** The bulk "Assign to…" action, confirmed with the dialog the page serves. */
-const assignAction: CustomRowAction = {
+const assignAction: CustomRowAction<TicketRow> = {
   label: "$helio.service.actions.assign",
   icon: "i-ph-user-switch",
   permission: "edit",
@@ -188,7 +188,7 @@ const assignAction: CustomRowAction = {
 };
 
 /** The bulk "Resolve" action, offered on tickets that are not resolved or closed yet. */
-const resolveAction: CustomRowAction = {
+const resolveAction: CustomRowAction<TicketRow> = {
   label: "$helio.service.actions.resolve",
   icon: "i-ph-check-circle",
   color: "success",
@@ -211,7 +211,7 @@ const resolveAction: CustomRowAction = {
 };
 
 /** The bulk "Reopen" action, offered on resolved or closed tickets. */
-const reopenAction: CustomRowAction = {
+const reopenAction: CustomRowAction<TicketRow> = {
   label: "$helio.service.actions.reopen",
   icon: "i-ph-arrow-counter-clockwise",
   permission: "edit",
@@ -238,7 +238,7 @@ const reopenAction: CustomRowAction = {
  * from the row menu opens the edit form. Its form reads the ticket from the
  * URL, so the drawer keeps it there.
  */
-const quickViewAction: CustomRowAction = {
+const quickViewAction: CustomRowAction<TicketRow> = {
   id: "quick-view",
   label: "$helio.service.quickView.action",
   icon: "i-ph-sidebar-simple",
@@ -262,7 +262,7 @@ const quickViewAction: CustomRowAction = {
 };
 
 /** The row actions of the desk: the custom ones above, besides add, edit and delete. */
-export const ticketRowActions: TableViewRowActionOptions = {
+export const ticketRowActions: TableViewRowActionOptions<TicketRow> = {
   add: true,
   edit: true,
   /** The quick view shows a ticket: no bottom sheet besides it. */

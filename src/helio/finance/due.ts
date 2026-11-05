@@ -1,3 +1,4 @@
+import { helioNow } from "../shared/clock";
 function startOfDay(time: number): number {
   const date = new Date(time);
   date.setHours(0, 0, 0, 0);
@@ -10,7 +11,7 @@ function startOfDay(time: number): number {
  * dates are compared rather than 24-hour spans, so a daylight-saving night
  * still counts as one day.
  */
-export function daysLate(dueAt: Date, now = Date.now()): number {
+export function daysLate(dueAt: Date, now = helioNow()): number {
   const from = new Date(startOfDay(dueAt.getTime()));
   const to = new Date(startOfDay(now));
   const utc = (date: Date) =>
@@ -19,6 +20,6 @@ export function daysLate(dueAt: Date, now = Date.now()): number {
 }
 
 /** Whether the due date is over: from the day after it. */
-export function isPastDue(dueAt: Date, now = Date.now()): boolean {
+export function isPastDue(dueAt: Date, now = helioNow()): boolean {
   return daysLate(dueAt, now) >= 1;
 }

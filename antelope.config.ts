@@ -1,8 +1,30 @@
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { defineConfig } from "@antelopejs/interface-core/config";
 import { config as loadDotenv } from "dotenv";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
+
+/** A module loaded from the registry at `version`. */
+function moduleSource(name: string, version: string) {
+  return { type: "package" as const, package: name, version };
+}
+
+/**
+ * The secret that hashes visitor ids, derived from `HELIO_NOW` when it is set so the imported traffic gets the same ids
+ * on every run. Empty keeps the module's own generated secret.
+ */
+const visitorHashSecret = process.env.HELIO_NOW
+  ? createHash("sha256")
+      .update(`helio-secret:${process.env.HELIO_NOW}:marketing-visitor-hash`)
+      .digest("hex")
+  : "";
+
+/** The address the API listens on. Unset listens on every interface, as a deployment does; a capture run sets it. */
+const apiHost = process.env.HELIO_API_HOST?.trim();
+
+const apiPort = { protocol: "http" as const, port: 5010 };
+const apiServer = apiHost ? { ...apiPort, host: apiHost } : apiPort;
 
 export default defineConfig({
   name: "template-dms-demo",
@@ -69,7 +91,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.15.1 <1.0.0",
+        version: ">=0.16.1 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -88,32 +110,16 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-api",
-        version: ">=0.6.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-api", ">=0.6.2 <1.0.0"),
     },
     "dms-database": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-database",
-        version: ">=0.4.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-database", ">=0.4.1 <1.0.0"),
     },
     "dms-automation": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-automation",
-        version: ">=0.8.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-automation", ">=0.9.0 <1.0.0"),
     },
     "dms-saas": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-saas",
-        version: ">=0.9.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-saas", ">=0.10.0 <1.0.0"),
       config: {
         stripe: {
           secretKey: "sk_test_placeholder",
@@ -123,47 +129,28 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-ai",
-        version: ">=0.9.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-ai", ">=0.9.2 <1.0.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-lang",
-        version: ">=0.5.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-lang", ">=0.5.1 <1.0.0"),
       config: {
         editable: true,
       },
     },
     "dms-builder": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-builder",
-        version: ">=0.9.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-builder", ">=0.10.0 <1.0.0"),
     },
     "dms-media": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-media",
-        version: ">=0.7.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-media", ">=0.7.1 <1.0.0"),
     },
     "dms-marketing": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-marketing",
-        version: ">=0.8.1 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-marketing", ">=0.9.0 <1.0.0"),
       config: {
+        visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
         dashboardTracking: {
           enabled: true,
@@ -175,24 +162,16 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms-mailing",
-        version: ">=0.8.0 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms-mailing", ">=0.9.0 <1.0.0"),
     },
 
     mongodb: {
-      source: {
-        type: "package",
-        package: "@antelopejs/mongodb",
-        /**
-         * 1.4.4 (mongodb#54) resolves a single row's relations next to a
-         * computed field: the products' edit form reads its range again. 1.5.0
-         * enforces unique indexes, which dms-mailing's slug index needs.
-         */
-        version: "^1.5.0",
-      },
+      /**
+       * 1.4.4 (mongodb#54) resolves a single row's relations next to a
+       * computed field: the products' edit form reads its range again. 1.5.0
+       * enforces unique indexes, which dms-mailing's slug index needs.
+       */
+      source: moduleSource("@antelopejs/mongodb", "^1.6.2"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
@@ -202,7 +181,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "^1.0.4",
+        version: "^1.1.0",
       },
       config: {
         secret: "dev",
@@ -218,22 +197,17 @@ export default defineConfig({
          * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
          * declares configVarsFile, which dms-frontend 0.9 reads at build.
          */
-        version: "^1.5.0",
+        version: "^1.7.0",
       },
       config: {
-        servers: [
-          {
-            protocol: "http",
-            port: 5010,
-          },
-        ],
+        servers: [apiServer],
       },
     },
     "file-storage-local": {
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.1.13",
+        version: "^0.2.0",
       },
       config: {
         storagePath: ".antelope/file-storage",
