@@ -1,0 +1,11 @@
+diff --git a/.gitignore b/.gitignore
+index 9c3c16f..1bf109d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -2,6 +2,5 @@ node_modules/
+ dist/
+ .antelope
+ .dms-frontend
+-.env
+ *.log
+ .claude/scheduled_tasks.lock

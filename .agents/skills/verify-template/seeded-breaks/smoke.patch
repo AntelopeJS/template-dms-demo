@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 2121837..066b6e6 100644
+--- a/package.json
++++ b/package.json
+@@ -3,7 +3,7 @@
+   "version": "0.0.1",
+   "private": true,
+   "license": "Apache-2.0",
+-  "main": "dist/index.js",
++  "main": "dist/main.js",
+   "scripts": {
+     "build": "rimraf dist && tsc",
+     "dev": "ajs project run -w",

@@ -1,0 +1,13 @@
+diff --git a/README.md b/README.md
+index b34cf2c..564b975 100644
+--- a/README.md
++++ b/README.md
+@@ -110,7 +110,7 @@ publishes (`${@api.API_LOCAL_BASE_URL}`, `${@api.API_PUBLIC_BASE_URL}`).
+ In a second terminal, start the dashboard frontend:
+ 
+ ```bash
+-pnpm frontend:dev
++pnpm frontend:serve
+ ```
+ 
+ `ajs dms dev` discovers the running backend through `.antelope/dev.json` (which
