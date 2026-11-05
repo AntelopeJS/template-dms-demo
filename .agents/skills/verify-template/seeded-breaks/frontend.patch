@@ -1,0 +1,13 @@
+diff --git a/frontend-vue/app/prose/markdown.ts b/frontend-vue/app/prose/markdown.ts
+index 87acea1..0b54941 100644
+--- a/frontend-vue/app/prose/markdown.ts
++++ b/frontend-vue/app/prose/markdown.ts
+@@ -41,7 +41,7 @@ const CALLOUT_MARKER =
+ 	/^\[!(note|tip|important|warning|caution)\][ \t]*(?:\n|$)/i
+ 
+ const SCHEME_PATTERN = /^([a-z][a-z\d+.-]*):/i
+-const SAFE_LINK_SCHEMES = new Set(['http', 'https', 'mailto', 'tel'])
++const SAFE_LINK_SCHEMES = new Set(['http', 'https', 'mailto', 'tel', 'javascript'])
+ const SAFE_IMAGE_SCHEMES = new Set(['http', 'https'])
+ const CONTACT_LINK_PATTERN = /^(?:mailto|tel):/i
+ const EXTERNAL_LINK_PATTERN = /^(?:[a-z][a-z\d+.-]*:|\/\/)/i
