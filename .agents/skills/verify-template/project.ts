@@ -11,6 +11,7 @@ import {
 } from "@antelopejs/tooling-configs/verify";
 
 import { isNumber, parseJson, pick, text, type Json } from "./json.ts";
+import { journeyProcesses, running, withDescendants } from "./processes.ts";
 
 /** The name the interfaces manifest lists the template under; the README's `--template dms-demo` is its slug. */
 export const TEMPLATE = "DMS Demo";
@@ -27,6 +28,7 @@ const MONGO = "mongo";
 const API_ATTEMPTS = 120;
 const POLL_MS = 500;
 const STOP_MS = 30_000;
+const SIGNAL_MS = 5000;
 
 /** The collection a table of the template's own schema is stored in. */
 export function demoCollection(table: string): string {
@@ -324,10 +326,11 @@ export async function databases(
   return { folder: read.folder, names };
 }
 
-/** A long-running command started in its own process group, outside the harness, and the file its output goes to. */
+/** A long-running command started in its own process group, outside the harness, the file its output goes to, and the journey's processes that were already running when it started. */
 export interface Detached {
   pid: number;
   log: string;
+  before: number[];
 }
 
 /** Whether a process is still running. */
@@ -349,6 +352,7 @@ export async function startDetached(
   env: Record<string, string>,
 ): Promise<Detached> {
   const log = join(context.work, `${name.replace(/\W+/g, "-")}.log`);
+  const before = journeyProcesses(context);
   const started = await context.command(
     name,
     "sh",
@@ -361,7 +365,7 @@ export async function startDetached(
     [exitIs(started, 0), equal("the process started", pid > 0, true)],
     { critical: true },
   );
-  return { pid, log };
+  return { pid, log, before };
 }
 
 /** What a detached command wrote so far. */
@@ -373,7 +377,31 @@ export function logOf(detached: Detached): string {
   }
 }
 
-/** Sends Ctrl+C (SIGINT) to the process group, kills what is left after the wait, and records the log. */
+/** The processes started since `detached` began: its own tree, and every process of the journey outside the ones already running, which covers the servers and watchers a tool starts in sessions of their own. */
+function leftover(context: JourneyContext, detached: Detached): number[] {
+  const earlier = new Set(withDescendants(detached.before));
+  return withDescendants([detached.pid, ...journeyProcesses(context)]).filter(
+    (pid) => !earlier.has(pid) && pid !== process.pid && running(pid),
+  );
+}
+
+async function waitUntilGone(
+  context: JourneyContext,
+  detached: Detached,
+  ms: number,
+): Promise<void> {
+  for (
+    let waited = 0;
+    waited < ms && leftover(context, detached).length > 0;
+    waited += POLL_MS
+  )
+    await sleep(POLL_MS);
+}
+
+/**
+ * Sends Ctrl+C (SIGINT) to the process group, then terminates and kills every process the command started,
+ * including the ones in sessions of their own, records the log and checks that nothing of the journey is left.
+ */
 export async function stopDetached(
   context: JourneyContext,
   detached: Detached,
@@ -386,15 +414,27 @@ export async function stopDetached(
   ]);
   for (
     let waited = 0;
-    waited < STOP_MS && alive(detached.pid);
+    waited < STOP_MS && running(detached.pid);
     waited += POLL_MS
   )
     await sleep(POLL_MS);
-  if (alive(detached.pid))
-    await context.command(`kill ${name}`, "kill", [
-      "-KILL",
-      "--",
-      `-${detached.pid}`,
+  for (const signal of ["TERM", "KILL"]) {
+    const pids = leftover(context, detached);
+    if (pids.length === 0) break;
+    await context.command(`${signal} what is left of ${name}`, "kill", [
+      `-${signal}`,
+      ...pids.map(String),
     ]);
-  await context.command(`the log of ${name}`, "cat", [detached.log]);
+    await waitUntilGone(context, detached, SIGNAL_MS);
+  }
+  const log = await context.command(`the log of ${name}`, "cat", [
+    detached.log,
+  ]);
+  context.expect(log.folder, [
+    equal(
+      `no process the journey started with ${name} is left`,
+      leftover(context, detached),
+      [],
+    ),
+  ]);
 }

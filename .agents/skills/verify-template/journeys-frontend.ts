@@ -5,6 +5,7 @@ import {
   exitIs,
   has,
   lacks,
+  refused,
   type HttpResult,
   type Journey,
   type JourneyContext,
@@ -123,8 +124,8 @@ const dashboardDev: Journey = {
       "pnpm frontend:dev",
       { PORT: String(port) },
     );
+    const origin = `http://127.0.0.1:${port}`;
     try {
-      const origin = `http://127.0.0.1:${port}`;
       const page = await waitForPage(
         context,
         `${origin}/onboarding?token=${backend.setupToken}`,
@@ -149,6 +150,11 @@ const dashboardDev: Journey = {
       ]);
     } finally {
       await stopDetached(context, dashboard, "the dashboard");
+      const after = await context.http(
+        "the dashboard after the stop",
+        `${origin}/`,
+      );
+      context.expect(after.folder, [refused(after)]);
     }
   },
 };

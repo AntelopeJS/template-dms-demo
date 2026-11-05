@@ -22,7 +22,7 @@ The guardrail configuration the scaffolded project inherits: TypeScript, oxlint,
 ## Sub-features
 
 - `scaffold-checks`: the pack's journey, as in [smoke](smoke.md): `pnpm run checks` passes in the scaffolded project.
-- `lint-rejects`: a `debugger` statement in `src/` fails `pnpm run lint`, a string typed as a number fails `pnpm run typecheck`, and an unformatted file fails `pnpm run format:check` and is named, so the configs are live.
+- `lint-rejects`: a `debugger` statement in `src/` fails `pnpm run lint`, `export const parsed: string = JSON.parse("1")` fails it with `typescript(no-unsafe-assignment)`, which only runs with type information (`typeAware: true`), a string typed as a number fails `pnpm run typecheck`, and an unformatted file fails `pnpm run format:check` and is named, so the configs are live. The seeded break sets `typeAware: false`.
 
 ## How to get to it (user POV)
 

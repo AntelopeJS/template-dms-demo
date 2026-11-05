@@ -1,6 +1,3 @@
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import {
   equal,
   interrupted,
@@ -8,22 +5,21 @@ import {
   type JourneyContext,
 } from "@antelopejs/tooling-configs/verify";
 
+import { homeJourneys } from "./journeys-home.ts";
 import { items, keys, pick, text, type Json } from "./json.ts";
+import { provisioned } from "./provisioning.ts";
 import {
   call,
   createOwner,
   demoCollection,
   mongo,
   scaffolded,
-  sleep,
   startBackend,
   type Backend,
   type Owner,
 } from "./project.ts";
 
-const HOME = "/dms/pages/home";
 const CUSTOMERS = demoCollection("helio_customers");
-const FIGURES = ["pages", "collections", "controllers", "vue", "modules"];
 const SIMULATORS_OFF = { HELIO_SIMULATORS: "off" };
 const NEW_CUSTOMER = {
   name: "Verify Solar SRL",
@@ -43,176 +39,104 @@ const NEW_CUSTOMER = {
   isVip: false,
 };
 
-/** The section ids `content/home/` holds Markdown for, each in English and French. */
-function contentSections(project: string): string[] {
-  const files = readdirSync(join(project, "content", "home"));
-  return [...new Set(files.map((file) => file.split(".")[0] ?? ""))].sort();
-}
+/** The collections the template's tables are stored in, as a running project already holds them. */
+const STORED_COLLECTIONS = [
+  "helio_activity",
+  "helio_customers",
+  "helio_deals",
+  "helio_invoices",
+  "helio_mail_notices",
+  "helio_product_categories",
+  "helio_products",
+  "helio_project_tasks",
+  "helio_projects",
+  "helio_quotes",
+  "helio_settings",
+  "helio_sites",
+  "helio_team",
+  "helio_tickets",
+].map(demoCollection);
 
-function markdownOf(project: string, section: string, locale: string): string {
-  return readFileSync(
-    join(project, "content", "home", `${section}.${locale}.md`),
-    "utf8",
-  );
-}
+/** The fields the stored customers hold between them, as `Customer` declares them. */
+const CUSTOMER_FIELDS = [
+  "_id",
+  "_instance",
+  "_internal",
+  "address",
+  "contactName",
+  "createdAt",
+  "email",
+  "isArchived",
+  "isVip",
+  "kind",
+  "name",
+  "notes",
+  "owner",
+  "phone",
+  "segments",
+  "source",
+  "vatNumber",
+  "website",
+];
 
-async function checkSections(
-  context: JourneyContext,
-  backend: Backend,
-  owner: Owner,
-  project: string,
-): Promise<void> {
-  const sections = contentSections(project);
-  const layout = await call(
-    context,
-    backend,
-    "the home page layout",
-    `${HOME}/pagelayout`,
-    { token: owner.token },
-  );
-  const described = JSON.stringify(layout.body);
-  context.expect(layout.folder, [
-    equal("the layout answers 200", layout.status, 200),
-    equal(
-      "the layout holds the demo's hero and prose blocks",
-      ["DemoHomeHero", "DemoHomeProse"].filter(
-        (name) => !described.includes(`"${name}"`),
-      ),
-      [],
-    ),
-    equal(
-      "every section of content/home has a block that fetches it",
-      sections.filter((id) => !described.includes(`"${HOME}/sections/${id}"`)),
-      [],
-    ),
-  ]);
-  for (const section of sections) {
-    const english = await call(
-      context,
-      backend,
-      `section ${section}`,
-      `${HOME}/sections/${section}`,
-      { token: owner.token },
-    );
-    const french = await call(
-      context,
-      backend,
-      `section ${section} in French`,
-      `${HOME}/sections/${section}`,
-      { token: owner.token, language: "fr-FR" },
-    );
-    context.expect(french.folder, [
-      equal(
-        `${section} answers its English Markdown by default`,
-        [
-          english.status,
-          text(pick(english.body, "markdown")) ===
-            markdownOf(project, section, "en-GB"),
-        ],
-        [200, true],
-      ),
-      equal(
-        `${section} answers its French Markdown to fr-FR`,
-        [
-          french.status,
-          text(pick(french.body, "markdown")) ===
-            markdownOf(project, section, "fr-FR"),
-        ],
-        [200, true],
-      ),
-    ]);
-  }
-  const german = await call(
-    context,
-    backend,
-    "a section in German",
-    `${HOME}/sections/why`,
-    { token: owner.token, language: "de-DE" },
-  );
-  const unknown = await call(
-    context,
-    backend,
-    "an unknown section",
-    `${HOME}/sections/nope`,
-    { token: owner.token },
-  );
-  context.expect(unknown.folder, [
-    equal(
-      "another language falls back to English",
-      text(pick(german.body, "markdown")) ===
-        markdownOf(project, "why", "en-GB"),
-      true,
-    ),
-    equal("an unknown section is a 404", unknown.status, 404),
-  ]);
-}
-
-const homePage: Journey = {
-  title:
-    "the home page lays out the demo's hero and one block per section of `content/home/`, serves each section's Markdown in the reader's language with English as the fallback, and counts its figures from what is registered",
-  entryPoint:
-    "`/dms/pages/home/pagelayout`, `/dms/pages/home/sections/:id` with `x-content-language` and `/dms/pages/home/figures`, which the dashboard's home page calls",
-  async run(context) {
-    const project = await scaffolded(context);
-    const backend = await startBackend(context, project);
-    const anonymous = await call(
-      context,
-      backend,
-      "a section without a token",
-      `${HOME}/sections/why`,
-    );
-    context.expect(anonymous.folder, [
-      equal("a section without a token is a 401", anonymous.status, 401),
-    ]);
-    const owner = await createOwner(context, backend);
-    await checkSections(context, backend, owner, project);
-    const figures = await call(
-      context,
-      backend,
-      "the home figures",
-      `${HOME}/figures`,
-      { token: owner.token },
-    );
-    const counted = items(pick(figures.body, "items"));
-    const value = (id: string) =>
-      pick(
-        counted.find((item) => pick(item, "id") === id),
-        "value",
-      );
-    const stored = await mongo(
-      context,
-      "mongosh lists the demo collections",
-      `db.getCollectionNames().filter((name) => name.startsWith("${demoCollection("helio_")}")).length`,
-    );
-    context.expect(stored.folder, [
-      equal(
-        "the figures answer their five cells in order",
-        [figures.status, counted.map((item) => pick(item, "id") ?? null)],
-        [200, FIGURES],
-      ),
-      equal(
-        "the collections figure is the number of Helio collections in MongoDB",
-        value("collections"),
-        stored.value,
-      ),
-      equal(
-        "Helio counts no custom Vue block, as the README says",
-        value("vue"),
-        0,
-      ),
-    ]);
+/** Routes behind a permission guard: a request without a token must be refused, whatever the record. */
+const GUARDED_ROUTES: { name: string; path: string; post: boolean }[] = [
+  {
+    name: "the customer delete dialog",
+    path: "/api/helio/crm/customers/unknown/delete-confirm",
+    post: false,
   },
-};
+  {
+    name: "the project detail stats",
+    path: "/api/helio/project-detail/unknown/stats",
+    post: false,
+  },
+  {
+    name: "closing a project",
+    path: "/api/helio/project-detail/unknown/done",
+    post: true,
+  },
+  {
+    name: "the dashboard revenue figure",
+    path: "/api/helio/dashboard/kpi/revenue",
+    post: false,
+  },
+];
 
 function customerIds(value: Json | undefined): Json[] {
   return items(value).map((row) => pick(row, "_id") ?? null);
+}
+
+async function checkStoredSchema(context: JourneyContext): Promise<void> {
+  const collections = await mongo(
+    context,
+    "mongosh lists the collections of the template's schema",
+    `db.getCollectionNames().filter((name) => name.startsWith("${demoCollection("")}")).sort()`,
+  );
+  const fields = await mongo(
+    context,
+    "mongosh lists the fields of the stored customers",
+    `[...new Set(db.getCollection("${CUSTOMERS}").find().toArray().flatMap((row) => Object.keys(row)))].sort()`,
+  );
+  context.expect(fields.folder, [
+    equal(
+      "MongoDB holds the collections of the template's tables, under their names",
+      collections.value,
+      STORED_COLLECTIONS,
+    ),
+    equal(
+      "the stored customers hold the fields Customer declares",
+      fields.value,
+      CUSTOMER_FIELDS,
+    ),
+  ]);
 }
 
 async function checkStoredCustomers(
   context: JourneyContext,
   backend: Backend,
   owner: Owner,
-): Promise<void> {
+): Promise<string> {
   const anonymous = await call(
     context,
     backend,
@@ -245,6 +169,45 @@ async function checkStoredCustomers(
       items(stored.value).map((id) => text(id)),
     ),
     equal("the fixtures wrote customers", items(stored.value).length > 0, true),
+  ]);
+  return text(items(stored.value)[0]);
+}
+
+async function checkGuards(
+  context: JourneyContext,
+  backend: Backend,
+  owner: Owner,
+  customerId: string,
+): Promise<void> {
+  const refusals: [string, number][] = [];
+  for (const route of GUARDED_ROUTES) {
+    const answer = await call(
+      context,
+      backend,
+      `${route.name} without a token`,
+      route.path,
+      route.post ? { body: {} } : {},
+    );
+    refusals.push([route.name, answer.status]);
+  }
+  const allowed = await call(
+    context,
+    backend,
+    "the customer delete dialog with the owner's token",
+    `/api/helio/crm/customers/${customerId}/delete-confirm`,
+    { token: owner.token },
+  );
+  context.expect(allowed.folder, [
+    equal(
+      "every guarded Helio route refuses a request without a token with a 401 or 403",
+      refusals.filter(([, status]) => status !== 401 && status !== 403),
+      [],
+    ),
+    equal(
+      "the owner's token opens the customer delete dialog",
+      allowed.status,
+      200,
+    ),
   ]);
 }
 
@@ -343,49 +306,27 @@ async function checkCustomerWrites(
 
 const helioData: Journey = {
   title:
-    "Helio's customers live in the `template-dms-demo__helio_customers` collection: the list answers every stored row, a business needs a valid VAT number, and only an archived customer can be deleted",
+    "Helio's tables live in the `template-dms-demo__helio_*` collections the template names, and its customers hold the fields `Customer` declares: the list answers every stored row, the guarded routes refuse a request without a token, a business needs a valid VAT number, and only an archived customer can be deleted",
   entryPoint:
-    "`/api/helio/customers/list`, `new`, `archive` and `delete`, which the Customers page of the dashboard calls",
+    "`/api/helio/customers/list`, `new`, `archive` and `delete`, and the guarded `/api/helio/crm`, `/api/helio/project-detail` and `/api/helio/dashboard` routes, which the pages of the dashboard call",
   async run(context) {
     const project = await scaffolded(context);
-    const backend = await startBackend(context, project);
+    const backend = await startBackend(context, project, {
+      env: SIMULATORS_OFF,
+    });
+    await provisioned(
+      context,
+      "mongosh reads the default tenant's provisioning",
+    );
     const owner = await createOwner(context, backend);
-    await checkStoredCustomers(context, backend, owner);
+    await checkStoredSchema(context);
+    const customerId = await checkStoredCustomers(context, backend, owner);
+    await checkGuards(context, backend, owner, customerId);
     await checkCustomerWrites(context, backend, owner);
   },
 };
 
 const COUNTS = `Object.fromEntries(db.getCollectionNames().filter((name) => name.startsWith("${demoCollection("")}") || ["dms-core__tenants", "dms-tenant__mailing_templates", "dms-tenant__media_folders", "dms-core__plans"].includes(name)).sort().map((name) => [name, db.getCollection(name).countDocuments()]))`;
-
-const PROVISIONING = `(() => { const tenant = db.getCollection("dms-core__tenants").findOne({ _id: "default" }); return tenant === null ? "absent" : tenant.provisioningPending === true ? "pending" : "done"; })()`;
-const PROVISIONING_ATTEMPTS = 180;
-
-/** Waits until the DMS has finished provisioning its default tenant, Helio's steps included: `provisioningPending` clears only when every step succeeded. */
-async function provisioned(
-  context: JourneyContext,
-  name: string,
-): Promise<void> {
-  let state = await mongo(context, name, PROVISIONING);
-  for (
-    let attempt = 1;
-    attempt < PROVISIONING_ATTEMPTS && state.value !== "done";
-    attempt += 1
-  ) {
-    await sleep(1000);
-    state = await mongo(context, name, PROVISIONING);
-  }
-  context.expect(
-    state.folder,
-    [
-      equal(
-        "the default tenant's provisioning, Helio's steps included, completed",
-        state.value,
-        "done",
-      ),
-    ],
-    { critical: true },
-  );
-}
 
 const restart: Journey = {
   title:
@@ -433,7 +374,7 @@ const restart: Journey = {
 };
 
 export const backendJourneys = {
-  "home-page": homePage,
+  ...homeJourneys,
   "helio-data": helioData,
   restart,
 };

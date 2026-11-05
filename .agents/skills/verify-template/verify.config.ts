@@ -10,10 +10,14 @@ import { ONBOARDING_LINE, TEMPLATE } from "./project.ts";
 const config: VerifyConfig = {
   doors: {
     data: {
-      globs: ["antelope.config.ts", "src/helio/platform/**"],
+      globs: [
+        "antelope.config.ts",
+        "src/helio/platform/**",
+        "src/helio/**/fixtures.ts",
+      ],
       funnels: ["src/helio/platform/provisioning.ts"],
       containments: ["project/database-mapping"],
-      why: "`antelope.config.ts` decides which MongoDB database (`MONGODB_URL`, `MONGODB_DATABASE`, the `template_dms_demo` default) and which file storage path every project writes its owner, tenants and uploads to, and `src/helio/platform/` writes Helio's data into the default tenant once, when the DMS provisions it on an empty database: a wrong mapping or a bad first write stays in every database a project already filled",
+      why: "`antelope.config.ts` decides which MongoDB database (`MONGODB_URL`, `MONGODB_DATABASE`, the `template_dms_demo` default) and which file storage path every project writes its owner, tenants and uploads to, `src/helio/platform/` writes Helio's data into the default tenant once, when the DMS provisions it on an empty database, and each `fixtures.ts` seeds its table once on an empty one: a wrong mapping or a bad first write stays in every database a project already filled",
     },
     format: {
       globs: [
@@ -21,6 +25,7 @@ const config: VerifyConfig = {
         "src/helio/**/database.ts",
         "src/helio/**/table.ts",
         "src/helio/**/*-table.ts",
+        "src/helio/platform/mailing/notices.ts",
       ],
       funnels: [],
       containments: ["backend/helio-data"],
@@ -42,14 +47,21 @@ const config: VerifyConfig = {
         ".gitignore",
         "frontend.Dockerfile",
         "src/**/*controller.ts",
-        "src/**/routes.ts",
+        "src/**/*routes.ts",
+        "src/**/*page.ts",
+        "src/helio/catalog/visuals.ts",
         "src/home.ts",
       ],
       funnels: [],
       containments: [],
-      why: "every project inherits what git leaves out (a dropped `.env` line commits its secrets) and what the dashboard image copies, and the controllers are its HTTP surface under `/api/helio/*` and `/dms/pages/*`: their routes and guards decide who reads and changes which rows",
+      why: "every project inherits what git leaves out (a dropped `.env` line commits its secrets) and what the dashboard image copies, and the files that declare routes (`@Get`, `@Post`, `@Put`, `@Delete`, `@Route`) or register pages are its HTTP surface under `/api/helio/*` and `/dms/pages/*`: their routes and guards decide who reads and changes which rows",
     },
-    publish: null,
+    publish: {
+      globs: [".cicd/**"],
+      funnels: [],
+      containments: [],
+      why: "`.cicd/environments.json` maps the branch `main` to the production environment and `stage` to staging, a deploy trigger every project created from the template inherits: a changed branch or environment decides which pushes are deployed",
+    },
   },
   env: { MONGODB_URL: "mongodb://127.0.0.1:9" },
   services: {

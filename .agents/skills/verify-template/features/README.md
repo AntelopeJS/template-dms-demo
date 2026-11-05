@@ -16,12 +16,12 @@ Every journey creates the project the way the README says: `ajs project init` fr
 
 ## Doors
 
-- `data`: `antelope.config.ts` and `src/helio/platform/**`, contained by `project/database-mapping`.
-- `format`: the schema name and the Helio tables, contained by `backend/helio-data`.
+- `data`: `antelope.config.ts`, `src/helio/platform/**` and every `src/helio/**/fixtures.ts`, contained by `project/database-mapping`, which also reads the plans Helio's first write provisioned.
+- `format`: the schema name, every file that registers a table (`src/helio/**/database.ts` and `src/helio/platform/mailing/notices.ts`), contained by `backend/helio-data`, which compares the full set of `template-dms-demo__*` collection names and the fields of the stored customers.
 - `contract`: none. A project created from the template is a copy that no other repository or deployed client consumes: the `/api/helio/*` routes serve the template's own dashboard, deployed from the same commit, and the module and interface ranges are resolved again at every install, so a revert reaches the next project the same way the change did.
 - `outbound`: `antelope.config.ts` and Helio's mailing and marketing code, with `src/helio/platform/mailing/send.ts` as the mail funnel.
-- `exposure`: `.gitignore`, `frontend.Dockerfile` and the controllers.
-- `publish`: none. Nothing is released from this repository: `package.json` is private and there is no release configuration; `ajs project init` clones the default branch, so a revert reaches new projects the same way the change did.
+- `exposure`: `.gitignore`, `frontend.Dockerfile` and every file that declares routes or registers pages: `*controller.ts`, `*routes.ts`, `*page.ts`, `src/helio/catalog/visuals.ts` and `src/home.ts`. `backend/helio-data` checks that the guarded routes refuse a request without a token.
+- `publish`: `.cicd/**`. `package.json` is private and nothing is published to a registry, but `.cicd/environments.json` maps the branch `main` to the production environment and `stage` to staging, a deploy trigger every project created from the template inherits. No journey contains it: it is a one-way door a verdict lists.
 
 ## Gotchas
 

@@ -25,9 +25,9 @@ const READ_IN_SOURCE = ["HELIO_NOW", "HELIO_SIMULATORS"];
 
 const lintRejects: Journey = {
   title:
-    "the scaffolded project's lint rejects a `debugger` statement, its typecheck a wrongly typed value and its format check an unformatted file, so the configs it inherits are live",
+    "the scaffolded project's lint rejects a `debugger` statement and a type-aware violation (`typescript(no-unsafe-assignment)`), its typecheck a wrongly typed value and its format check an unformatted file, so the configs it inherits are live",
   entryPoint:
-    "`pnpm run lint`, `pnpm run typecheck` and `pnpm run format:check` after adding `src/verify-broken.ts`",
+    "`pnpm run lint` (twice), `pnpm run typecheck` and `pnpm run format:check` after adding `src/verify-broken.ts`",
   async run(context) {
     const project = await scaffolded(context);
     const file = join(project, "src", "verify-broken.ts");
@@ -38,6 +38,17 @@ const lintRejects: Journey = {
     );
     const lint = await context.command(
       "pnpm run lint",
+      "pnpm",
+      ["run", "lint"],
+      { cwd: project },
+    );
+    context.edit(
+      "replace it with a type-aware lint violation",
+      file,
+      'export const parsed: string = JSON.parse("1");\n',
+    );
+    const typeAwareLint = await context.command(
+      "pnpm run lint with a type-aware violation",
       "pnpm",
       ["run", "lint"],
       { cwd: project },
@@ -67,6 +78,16 @@ const lintRejects: Journey = {
     context.expect(format.folder, [
       equal("lint fails", lint.exitCode !== 0 && lint.exitCode !== null, true),
       has("and names the debugger rule", lint.stdout + lint.stderr, /debugger/),
+      equal(
+        "lint fails on a type-aware violation",
+        typeAwareLint.exitCode !== 0 && typeAwareLint.exitCode !== null,
+        true,
+      ),
+      has(
+        "and names the type-aware rule, so oxlint runs with type information",
+        typeAwareLint.stdout + typeAwareLint.stderr,
+        /no-unsafe-assignment/,
+      ),
       equal(
         "typecheck fails",
         typecheck.exitCode !== 0 && typecheck.exitCode !== null,

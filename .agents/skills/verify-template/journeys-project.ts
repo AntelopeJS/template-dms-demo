@@ -19,6 +19,7 @@ import {
   startBackend,
   type Backend,
 } from "./project.ts";
+import { provisioned } from "./provisioning.ts";
 
 const OWNER = "owner@example.com";
 const MAPPED = "verify_mapped";
@@ -211,6 +212,16 @@ const onboarding: Journey = {
 };
 
 const COLLECTIONS = "db.getCollectionNames().sort()";
+const PLANS =
+  'db.getCollection("dms-core__plans").find().toArray().map((plan) => [plan.slug, plan.isPublic]).sort()';
+/** The plans Helio's first write provisions: four on sale and the hidden internal one. */
+const PROVISIONED_PLANS = [
+  ["business", true],
+  ["enterprise", true],
+  ["helio-hq", false],
+  ["pro", true],
+  ["starter", true],
+];
 
 const databaseMapping: Journey = {
   title:
@@ -222,7 +233,16 @@ const databaseMapping: Journey = {
     const first = await startBackend(context, project, {
       env: { HELIO_SIMULATORS: "off" },
     });
+    await provisioned(
+      context,
+      "mongosh reads the provisioning of the default tenant",
+    );
     const created = await databases(context, "mongosh lists the databases");
+    const plans = await mongo(
+      context,
+      `mongosh lists the plans of ${DATABASE}`,
+      PLANS,
+    );
     const written = await mongo(
       context,
       `mongosh lists the collections of ${DATABASE}`,
@@ -230,6 +250,11 @@ const databaseMapping: Journey = {
     );
     const names = items(written.value).map((name) => text(name));
     context.expect(written.folder, [
+      equal(
+        "the first write provisioned the plans, the internal one hidden",
+        plans.value,
+        PROVISIONED_PLANS,
+      ),
       equal(
         "the only database the start created is the default one",
         created.names,
@@ -248,6 +273,17 @@ const databaseMapping: Journey = {
     await startBackend(context, project, {
       env: { HELIO_SIMULATORS: "off", MONGODB_DATABASE: MAPPED },
     });
+    await provisioned(
+      context,
+      "mongosh reads the provisioning of the configured database",
+      MAPPED,
+    );
+    const mappedPlans = await mongo(
+      context,
+      `mongosh lists the plans of ${MAPPED}`,
+      PLANS,
+      MAPPED,
+    );
     const both = await databases(context, "mongosh lists the databases again");
     const mapped = await mongo(
       context,
@@ -265,6 +301,11 @@ const databaseMapping: Journey = {
         DATABASE,
         MAPPED,
       ]),
+      equal(
+        "its first write provisioned the same plans",
+        mappedPlans.value,
+        PROVISIONED_PLANS,
+      ),
       equal(
         "it holds the same collections as the default one",
         mapped.value,
