@@ -91,7 +91,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.16.1 <1.0.0",
+        version: ">=0.18.0 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -113,10 +113,10 @@ export default defineConfig({
       source: moduleSource("@antelopejs/dms-api", ">=0.6.2 <1.0.0"),
     },
     "dms-database": {
-      source: moduleSource("@antelopejs/dms-database", ">=0.4.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-database", ">=0.4.2 <1.0.0"),
     },
     "dms-automation": {
-      source: moduleSource("@antelopejs/dms-automation", ">=0.9.0 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-automation", ">=0.9.1 <1.0.0"),
     },
     "dms-saas": {
       source: moduleSource("@antelopejs/dms-saas", ">=0.10.0 <1.0.0"),
@@ -129,7 +129,7 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: moduleSource("@antelopejs/dms-ai", ">=0.9.2 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-ai", ">=0.10.0 <1.0.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
@@ -171,7 +171,7 @@ export default defineConfig({
        * computed field: the products' edit form reads its range again. 1.5.0
        * enforces unique indexes, which dms-mailing's slug index needs.
        */
-      source: moduleSource("@antelopejs/mongodb", "^1.6.2"),
+      source: moduleSource("@antelopejs/mongodb", "^1.6.3"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
@@ -197,7 +197,7 @@ export default defineConfig({
          * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
          * declares configVarsFile, which dms-frontend 0.9 reads at build.
          */
-        version: "^1.7.0",
+        version: "^1.7.1",
       },
       config: {
         servers: [apiServer],
@@ -220,7 +220,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.6",
+        version: "^0.0.8",
       },
       config: {
         ethereal: true,
