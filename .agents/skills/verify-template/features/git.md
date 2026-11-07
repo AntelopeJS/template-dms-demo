@@ -1,6 +1,7 @@
 ---
 covers:
   - .gitignore
+  - frontend-vue/.gitignore
 docs:
   - README.md
 journeys:
