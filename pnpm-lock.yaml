@@ -58,8 +58,8 @@ importers:
         specifier: '>=0.10.0 <1.0.0'
         version: 0.10.0(@antelopejs/core@1.21.1)
       '@antelopejs/tooling-configs':
-        specifier: ^0.3.3
-        version: 0.3.3(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
+        specifier: ^0.3.5
+        version: 0.3.5(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -205,8 +205,8 @@ packages:
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/tooling-configs@0.3.3':
-    resolution: {integrity: sha512-jQ09zavCF5MMQtfyd8YOqpoxV6l6bp3m9tA5iN0z0XhQpVHM5VWr53yEuQ6Mc+1tseBW85N94ruP4TEfiGg8iQ==}
+  '@antelopejs/tooling-configs@0.3.5':
+    resolution: {integrity: sha512-KOgUUdearIaU0HeIMMI9NY4bPsvnR0043WAJN95+B8O5nPyMjdw9XCh/duBc6Zz6yWKTnG8YrxLKPzPCnAlJMA==}
     engines: {node: '>=22.18.0'}
     hasBin: true
     peerDependencies:
@@ -214,7 +214,7 @@ packages:
       eslint-plugin-perfectionist: '>=5.0.0'
       knip: '>=6.0.0'
       mongodb-memory-server: '>=10.0.0'
-      oxfmt: ^0.66.0
+      oxfmt: ^0.66.0 || ^0.77.0
       oxlint: 1.81.0
       pixelmatch: '>=7.0.0'
       playwright-core: '>=1.56.0'
@@ -2018,7 +2018,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@antelopejs/tooling-configs@0.3.3(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))':
+  '@antelopejs/tooling-configs@0.3.5(knip@6.41.0)(oxfmt@0.73.0)(oxlint@1.88.0(oxlint-tsgolint@7.0.2004))':
     dependencies:
       '@oxlint/plugins': 1.81.0
       dts-bundle-generator: 9.5.1
