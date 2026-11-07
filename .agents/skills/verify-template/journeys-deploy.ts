@@ -221,7 +221,15 @@ const frontendImage: Journey = {
       const build = await context.command(
         "docker build",
         "docker",
-        ["build", "-q", "-f", "frontend.Dockerfile", "-t", tag, "."],
+        [
+          "build",
+          "-q",
+          "-f",
+          "frontend.Dockerfile",
+          "--output",
+          `type=image,name=${tag},compression=uncompressed,force-compression=true`,
+          ".",
+        ],
         { cwd: clone, timeoutMs: 1_200_000 },
       );
       context.expect(build.folder, [exitIs(build, 0)], { critical: true });
