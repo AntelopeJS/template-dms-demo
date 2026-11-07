@@ -25,5 +25,7 @@ Every journey creates the project the way the README says: `ajs project init` fr
 
 ## Gotchas
 
+- Every journey but the built-in `scaffold-dev` and `scaffold-checks` starts from one project per run, scaffolded, installed and with its modules installed (`ajs project modules install`), copied for each journey by `context.prepared`. `scaffold-dev` keeps the first `pnpm dev` of a fresh project, which installs the modules itself.
+
 - `verify.config.ts` sets `MONGODB_URL` to a closed port for every driven command: a journey that forgets the run's MongoDB fails at once instead of writing into whatever answers on `localhost:27017`.
 - The run's MongoDB is reset before every journey: every database but `admin`, `config` and `local` is dropped.

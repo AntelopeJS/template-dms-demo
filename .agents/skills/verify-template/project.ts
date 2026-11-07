@@ -63,8 +63,9 @@ export function freePort(): Promise<number> {
 }
 
 /**
- * Creates the project with `ajs project init`, as a user does, and installs
- * both workspace packages, once per run: every journey gets its own copy.
+ * Creates the project with `ajs project init`, as a user does, installs both
+ * workspace packages and the project's modules, once per run: every journey
+ * gets its own copy.
  */
 export async function scaffolded(context: JourneyContext): Promise<string> {
   return context.prepared("app", async (project) => {
@@ -80,6 +81,13 @@ export async function scaffolded(context: JourneyContext): Promise<string> {
       },
     );
     context.expect(install.folder, [exitIs(install, 0)], { critical: true });
+    const modules = await context.command(
+      "ajs project modules install",
+      "pnpm",
+      ["exec", "ajs", "project", "modules", "install"],
+      { cwd: project },
+    );
+    context.expect(modules.folder, [exitIs(modules, 0)], { critical: true });
   });
 }
 
