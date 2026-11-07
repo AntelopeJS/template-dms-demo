@@ -197,7 +197,7 @@ void describe("provisioning steps", () => {
       const { HELIO_NOW: previous } = process.env;
       process.env.HELIO_NOW = INSTANT;
       try {
-        await assert.rejects(step.run(), {
+        await assert.rejects(step.run(new AbortController().signal), {
           name: "WebhookSecretPinError",
           message: /is not defined/,
         });
