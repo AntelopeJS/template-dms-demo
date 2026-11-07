@@ -42,6 +42,7 @@ const config: VerifyConfig = {
     exposure: {
       globs: [
         ".gitignore",
+        "frontend-vue/.gitignore",
         "frontend.Dockerfile",
         "src/**/*controller.ts",
         "src/**/*routes.ts",
