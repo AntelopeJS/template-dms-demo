@@ -40,7 +40,7 @@ pnpm exec antelopejs-verify journey "$RUN" project
 
 ## Gotchas
 
-- `frontend-image` needs Docker and network access inside the build (corepack fetches pnpm, pnpm fetches the packages); without a Docker daemon the journey is NOT VERIFIED. It removes the image it built.
+- `frontend-image` needs Docker and network access inside the build (corepack fetches pnpm, pnpm fetches the packages); without a Docker daemon the journey is NOT VERIFIED. It stores the image's layers uncompressed, since the image is never pushed: gzip took about half of the image export. It removes the image it built.
 - `production-env` sets `SMTP_HOST=127.0.0.1`: with `-e production`, nodemailer sends through `SMTP_HOST` instead of Ethereal.
 - The DMS refuses missing production secrets only outside development: `ajs project dev -e production` starts without them. The journey therefore builds and starts, as a deployment does.
 - `ajs project build` freezes the values `envOverrides` reads, secrets included, into `.antelope/build/build.json`, and `ajs project start` without `--refresh-config` ignores its own environment, so the journey builds once per environment it starts.
