@@ -21,7 +21,8 @@ const NO_EXIT_MS = 30_000;
 
 /**
  * Stands in for `pnpm exec ajs project run` and `pnpm exec ajs dms dev`. The backend answers at once and prints
- * `FAKE_PROVISIONING_LINE` after `FAKE_PROVISIONING_DELAY_MS`; from then on it answers `true` instead of `false`.
+ * `FAKE_PROVISIONING_LINE` after `FAKE_PROVISIONING_DELAY_MS`, on stderr for an `[ERROR]` line as the project logger
+ * does and on stdout otherwise; from then on it answers `true` instead of `false`.
  */
 const FAKE_SERVER = `
   const { createServer } = require("node:http");
@@ -31,7 +32,8 @@ const FAKE_SERVER = `
   server.listen(backend ? 5010 : Number(process.env.PORT), "127.0.0.1", () => {
     if (!backend) return;
     setTimeout(() => {
-      console.log(process.env.FAKE_PROVISIONING_LINE);
+      const line = process.env.FAKE_PROVISIONING_LINE;
+      (line.startsWith("[ERROR]") ? console.error : console.log)(line);
       reported = true;
     }, Number(process.env.FAKE_PROVISIONING_DELAY_MS));
   });

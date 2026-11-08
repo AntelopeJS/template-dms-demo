@@ -89,20 +89,21 @@ async function waitFor(
 }
 
 /**
- * Follows the outcome of Helio's default-tenant provisioning in the lines `backend` prints, and fails as soon as it
- * reports a failed step.
+ * Follows the outcome of Helio's default-tenant provisioning in the lines `backend` prints, on stdout and on stderr
+ * where the project logger writes errors, and fails as soon as it reports a failed step.
  */
 function followProvisioning(backend: ChildProcess): () => boolean {
   let outcome: ProvisioningOutcome | undefined;
-  if (backend.stdout)
-    createInterface({ input: backend.stdout }).on("line", (line) => {
-      if (outcome) return;
-      outcome = provisioningOutcome(line);
-      if (outcome === "incomplete")
-        void fail(
-          `Helio's provisioning is incomplete. See ${LOG_DIRECTORY}/backend.log`,
-        );
-    });
+  const follow = (line: string): void => {
+    if (outcome) return;
+    outcome = provisioningOutcome(line);
+    if (outcome === "incomplete")
+      void fail(
+        `Helio's provisioning is incomplete. See ${LOG_DIRECTORY}/backend.log`,
+      );
+  };
+  for (const input of [backend.stdout, backend.stderr])
+    if (input) createInterface({ input }).on("line", follow);
   return () => outcome === "done";
 }
 
