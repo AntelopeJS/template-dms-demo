@@ -1,8 +1,13 @@
 import type { ChildProcess } from "node:child_process";
 import { copyFileSync, createWriteStream, mkdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { createInterface } from "node:readline";
 import { setTimeout as sleep } from "node:timers/promises";
 import { captureEnvironment } from "./capture-environment";
+import {
+  type ProvisioningOutcome,
+  provisioningOutcome,
+} from "./helio/platform/provisioning-report";
 import { startGroup, stopGroup } from "./process-group";
 
 const environment = captureEnvironment(process.env);
@@ -12,6 +17,7 @@ const BACKEND_URL = "http://127.0.0.1:5010/";
 const DEV_FILE = ".antelope/dev.json";
 const LOG_DIRECTORY = ".antelope/capture";
 const READY_TIMEOUT_MS = 10 * 60 * 1000;
+const PROVISIONING_TIMEOUT_MS = 30 * 60 * 1000;
 const POLL_MS = 2000;
 
 /**
@@ -72,15 +78,32 @@ async function fail(message: string): Promise<never> {
 async function waitFor(
   what: string,
   ready: () => Promise<boolean>,
+  timeoutMs = READY_TIMEOUT_MS,
 ): Promise<void> {
-  const deadline = Date.now() + READY_TIMEOUT_MS;
+  const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (await ready()) return;
     await sleep(POLL_MS);
   }
-  return fail(
-    `${what} did not become ready within ${READY_TIMEOUT_MS / 1000}s`,
-  );
+  return fail(`${what} did not become ready within ${timeoutMs / 1000}s`);
+}
+
+/**
+ * Follows the outcome of Helio's default-tenant provisioning in the lines `backend` prints, and fails as soon as it
+ * reports a failed step.
+ */
+function followProvisioning(backend: ChildProcess): () => boolean {
+  let outcome: ProvisioningOutcome | undefined;
+  if (backend.stdout)
+    createInterface({ input: backend.stdout }).on("line", (line) => {
+      if (outcome) return;
+      outcome = provisioningOutcome(line);
+      if (outcome === "incomplete")
+        void fail(
+          `Helio's provisioning is incomplete. See ${LOG_DIRECTORY}/backend.log`,
+        );
+    });
+  return () => outcome === "done";
 }
 
 async function answers(url: string): Promise<boolean> {
@@ -105,10 +128,17 @@ async function main(): Promise<void> {
   mkdirSync(LOG_DIRECTORY, { recursive: true });
   copyFileSync(join(__dirname, "capture-clock.js"), CLOCK_FILE);
   rmSync(DEV_FILE, { force: true });
-  start("backend", ["ajs", "project", "run"], clockEnvironment);
+  const provisioned = followProvisioning(
+    start("backend", ["ajs", "project", "run"], clockEnvironment),
+  );
   await waitFor("the backend", () => answers(BACKEND_URL));
   start("frontend", ["ajs", "dms", "dev"], clockEnvironment);
   await waitFor("the dashboard", () => answers(FRONTEND_URL));
+  await waitFor(
+    "Helio's provisioning",
+    async () => provisioned(),
+    PROVISIONING_TIMEOUT_MS,
+  );
   process.stdout.write(`ready ${FRONTEND_URL}\n`);
 }
 

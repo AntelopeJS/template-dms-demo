@@ -6,6 +6,10 @@ import { provisionHelioMailing } from "./mailing";
 import { pinWebhookSecret } from "./mailing/webhook-secret";
 import { provisionHelioMarketing } from "./marketing";
 import { provisionHelioMedia } from "./media";
+import {
+  PROVISIONING_DONE,
+  PROVISIONING_INCOMPLETE,
+} from "./provisioning-report";
 import { provisionSaasShowcase } from "./saas";
 
 /**
@@ -34,7 +38,8 @@ function stoppedAt(step: ProvisioningStep): Error {
 
 /**
  * Runs `steps` in order. A step that fails is logged and the next one still
- * runs, then the run rejects naming every failed step. Once the modules start
+ * runs, then the run logs and rejects naming every failed step; a run where
+ * every step ran logs that it is done. Once the modules start
  * stopping (`Events.ModulesStopping`), the run aborts the signal it passes to
  * each step, starts no further step and rejects, so a stop waits at most for
  * the write the running step had already started.
@@ -63,8 +68,11 @@ export async function runProvisioningSteps(
     Events.ModulesStopping.unregister(onStopping);
   }
   if (failed.length > 0) {
-    throw new Error(`Helio provisioning is incomplete: ${failed.join(", ")}`);
+    const incomplete = `${PROVISIONING_INCOMPLETE}: ${failed.join(", ")}`;
+    Logging.Error(`[helio] ${incomplete}`);
+    throw new Error(incomplete);
   }
+  Logging.Info(`[helio] ${PROVISIONING_DONE}`);
 }
 
 /**
