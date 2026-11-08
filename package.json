@@ -49,12 +49,12 @@
   "devDependencies": {
     "@antelopejs/dms": ">=0.18.0 <1.0.0",
     "@antelopejs/dms-frontend": ">=0.10.0 <1.0.0",
-    "@antelopejs/tooling-configs": "^0.3.3",
+    "@antelopejs/tooling-configs": "^0.4.1",
     "@types/node": "^26.6.5",
     "dotenv": "^18.0.8",
     "knip": "^6.41.0",
-    "oxfmt": "^0.73.0",
-    "oxlint": "1.88.0",
+    "oxfmt": "^0.77.0",
+    "oxlint": "1.81.0",
     "oxlint-tsgolint": "^7.0.2004",
     "rimraf": "^6.1.3",
     "typescript": "^7.0.2"
