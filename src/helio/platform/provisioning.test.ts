@@ -1,7 +1,9 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 import { Events } from "@antelopejs/interface-core/modules";
+import logs, { type Log } from "@antelopejs/interface-core/logging/listener";
 import { type ProvisioningStep, runProvisioningSteps } from "./provisioning";
+import { provisioningOutcome } from "./provisioning-report";
 
 function recordingStep(
   name: string,
@@ -17,7 +19,39 @@ function recordingStep(
   };
 }
 
+async function reportedOutcomes(
+  steps: readonly ProvisioningStep[],
+): Promise<(string | undefined)[]> {
+  const lines: string[] = [];
+  const record = (log: Log): void => {
+    lines.push(log.args.map(String).join(" "));
+  };
+  logs.register(record);
+  try {
+    await runProvisioningSteps(steps).catch(() => undefined);
+  } finally {
+    logs.unregister(record);
+  }
+  return lines.map(provisioningOutcome).filter(Boolean);
+}
+
 void describe("runProvisioningSteps", () => {
+  void it("logs the outcome capture:start waits for", async () => {
+    const ran: string[] = [];
+    assert.deepStrictEqual(
+      await reportedOutcomes([recordingStep("saas", ran)]),
+      ["done"],
+    );
+    assert.deepStrictEqual(
+      await reportedOutcomes([
+        recordingStep("saas", ran, () => {
+          throw new Error("saas is down");
+        }),
+      ]),
+      ["incomplete"],
+    );
+  });
+
   void it("starts no further step once the modules are stopping, and rejects", async () => {
     const ran: string[] = [];
     const steps = [
