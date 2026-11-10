@@ -18,7 +18,7 @@ const DEV_FILE = ".antelope/dev.json";
 const LOG_DIRECTORY = ".antelope/capture";
 const READY_TIMEOUT_MS = 10 * 60 * 1000;
 const PROVISIONING_TIMEOUT_MS = 30 * 60 * 1000;
-const POLL_MS = 2000;
+const POLL_MS = 500;
 
 /**
  * The preload is copied out of `dist`, because the project's own `pnpm run build` (`rimraf dist && tsc`) runs under
