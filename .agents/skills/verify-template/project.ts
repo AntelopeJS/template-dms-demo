@@ -345,7 +345,11 @@ export function alive(pid: number): boolean {
   }
 }
 
-/** Starts `command` with `setsid` in its own process group, its output in a log file of the journey's scratch folder. */
+/**
+ * Starts `command` with `setsid` in its own process group, its output in a log file of the journey's scratch folder.
+ * `sh` starts a background job with Ctrl+C (SIGINT) ignored, so `env --default-signal=INT` restores it for
+ * `stopDetached`.
+ */
 export async function startDetached(
   context: JourneyContext,
   name: string,
@@ -358,7 +362,7 @@ export async function startDetached(
   const started = await context.command(
     name,
     "sh",
-    ["-c", `setsid ${command} > '${log}' 2>&1 < /dev/null & echo $!`],
+    ["-c", `setsid env --default-signal=INT ${command} > '${log}' 2>&1 < /dev/null & echo $!`],
     { cwd: project, env },
   );
   const pid = Number(started.stdout.trim());
