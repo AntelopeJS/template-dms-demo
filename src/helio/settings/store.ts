@@ -61,7 +61,13 @@ async function readStored(): Promise<HelioSettingsValues> {
   const stored = await model.get(HELIO_SETTINGS_ID);
   if (stored) return stored;
   const defaults = buildDefaultSettings();
-  await model.insert(defaults);
+  try {
+    await model.insert(defaults);
+  } catch (error) {
+    const written = await model.get(HELIO_SETTINGS_ID);
+    if (written) return written;
+    throw error;
+  }
   return defaults;
 }
 

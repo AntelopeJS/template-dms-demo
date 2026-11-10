@@ -46,5 +46,10 @@ export async function recordNotice(
   const model = GetModel(MailNoticeModel);
   const _id = noticeId(kind, recordId);
   if (await model.get(_id)) return;
-  await model.insert({ _id, kind, recordId, sentAt });
+  try {
+    await model.insert({ _id, kind, recordId, sentAt });
+  } catch (error) {
+    if (await model.get(_id)) return;
+    throw error;
+  }
 }

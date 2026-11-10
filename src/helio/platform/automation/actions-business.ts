@@ -189,16 +189,21 @@ async function kickoffTask(project: Project, quoteNumber: string) {
   const existing = await tasks.getBy("project", project._id);
   const _id = `kickoff-${project._id}`;
   if (existing.some((task) => task._id === _id)) return;
-  await tasks.insert({
-    _id,
-    project: project._id,
-    title: `Appel de lancement avec le client (devis ${quoteNumber})`,
-    status: "todo",
-    assignee: project.leadTechnician,
-    dueDate: new Date(helioNow() + 3 * DAY_MS),
-    estimateHours: 1,
-    position: Math.max(0, ...existing.map(({ position }) => position)) + 1000,
-  });
+  try {
+    await tasks.insert({
+      _id,
+      project: project._id,
+      title: `Appel de lancement avec le client (devis ${quoteNumber})`,
+      status: "todo",
+      assignee: project.leadTechnician,
+      dueDate: new Date(helioNow() + 3 * DAY_MS),
+      estimateHours: 1,
+      position: Math.max(0, ...existing.map(({ position }) => position)) + 1000,
+    });
+  } catch (error) {
+    if (await tasks.get(_id)) return;
+    throw error;
+  }
 }
 
 /**
