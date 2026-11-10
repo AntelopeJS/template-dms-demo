@@ -114,7 +114,7 @@ async function exitCode(capture: Capture): Promise<number | null> {
 
 void describe("capture:start", () => {
   void it("prints ready only once the backend reported Helio's provisioning done", async () => {
-    const capture = startCapture(`[INFO] [helio] ${PROVISIONING_DONE}`, 8000);
+    const capture = startCapture(`[INFO] [helio] ${PROVISIONING_DONE}`, 5000);
     try {
       await printedReady(capture);
       const reported = await (await fetch(BACKEND_URL)).text();
