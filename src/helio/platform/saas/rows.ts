@@ -107,7 +107,13 @@ export async function insertMissing<T extends object>(
   let written = 0;
   for (const row of rows) {
     if (await table.get(row._id)) continue;
-    await table.insert(toStoredRow(model, row, prepare)).run();
+    const stored = toStoredRow(model, row, prepare);
+    try {
+      await table.insert(stored).run();
+    } catch (error) {
+      if (await table.get(row._id)) continue;
+      throw error;
+    }
     written++;
   }
   return written;
