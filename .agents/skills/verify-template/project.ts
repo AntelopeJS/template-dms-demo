@@ -62,22 +62,24 @@ export function freePort(): Promise<number> {
   });
 }
 
-/** Creates the project with `ajs project init`, as a user does, and installs both workspace packages. */
+/**
+ * The journey's own copy of the project `ajs project init` creates, as a user does, with both workspace packages
+ * installed. The run builds it once under the pack's `scaffolded` key, with the same init and install as the pack's
+ * `scaffold-checks`, so every journey of the run, the pack's included, copies one build.
+ */
 export async function scaffolded(context: JourneyContext): Promise<string> {
-  const project = join(context.work, "app");
-  const init = await context.scaffold("ajs project init", project);
-  context.expect(init.folder, [exitIs(init, 0)], { critical: true });
-  context.tree("scaffolded tree", project);
-  const install = await context.command(
-    "pnpm install",
-    "pnpm",
-    ["install", "--frozen-lockfile", "--prefer-offline"],
-    {
-      cwd: project,
-    },
-  );
-  context.expect(install.folder, [exitIs(install, 0)], { critical: true });
-  return project;
+  return context.prepared("scaffolded", async (project) => {
+    const init = await context.scaffold("ajs project init", project);
+    context.expect(init.folder, [exitIs(init, 0)], { critical: true });
+    context.tree("scaffolded tree", project);
+    const install = await context.command(
+      "pnpm install",
+      "pnpm",
+      ["install", "--frozen-lockfile", "--prefer-offline"],
+      { cwd: project },
+    );
+    context.expect(install.folder, [exitIs(install, 0)], { critical: true });
+  });
 }
 
 /** The connection string of the run's MongoDB container. */
