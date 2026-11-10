@@ -11,7 +11,8 @@ COPY --chown=node:node . .
 RUN pnpm install --frozen-lockfile \
   && pnpm run build \
   && ./node_modules/.bin/ajs project build -e production \
-  && ./node_modules/.bin/ajs-dms build
+  && ./node_modules/.bin/ajs-dms build \
+  && rm -rf /home/node/.cache /home/node/.npm /home/node/.local/share/pnpm
 ENV NODE_ENV=production
 # Started from the installed binary, not through pnpm: corepack would fetch
 # pnpm from the registry at container start.
