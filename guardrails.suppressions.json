@@ -2,5 +2,10 @@
   "rules": {},
   "tsExpectError": 0,
   "tsIgnore": 0,
-  "safety": 2
+  "safety": 2,
+  "config": {
+    "vue/multi-word-component-names for frontend-vue/**/*.ts": 1,
+    "vue/multi-word-component-names for frontend-vue/**/*.vue": 1
+  },
+  "agentFiles": true
 }
