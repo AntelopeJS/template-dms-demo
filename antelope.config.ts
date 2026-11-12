@@ -142,7 +142,7 @@ export default defineConfig({
       },
     },
     "dms-builder": {
-      source: moduleSource("@antelopejs/dms-builder", ">=0.10.2 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-builder", ">=0.10.3 <1.0.0"),
     },
     "dms-media": {
       source: moduleSource("@antelopejs/dms-media", ">=0.7.3 <1.0.0"),
