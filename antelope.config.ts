@@ -91,7 +91,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.19.3 <1.0.0",
+        version: ">=0.19.4 <1.0.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -110,7 +110,7 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: moduleSource("@antelopejs/dms-api", ">=0.6.3 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-api", ">=0.6.4 <1.0.0"),
     },
     "dms-database": {
       source: moduleSource("@antelopejs/dms-database", ">=0.4.4 <1.0.0"),
@@ -129,7 +129,7 @@ export default defineConfig({
       },
     },
     "dms-ai": {
-      source: moduleSource("@antelopejs/dms-ai", ">=0.10.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-ai", ">=0.10.2 <1.0.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
@@ -142,10 +142,10 @@ export default defineConfig({
       },
     },
     "dms-builder": {
-      source: moduleSource("@antelopejs/dms-builder", ">=0.10.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-builder", ">=0.10.2 <1.0.0"),
     },
     "dms-media": {
-      source: moduleSource("@antelopejs/dms-media", ">=0.7.2 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-media", ">=0.7.3 <1.0.0"),
     },
     "dms-marketing": {
       source: moduleSource("@antelopejs/dms-marketing", ">=0.9.2 <1.0.0"),
@@ -162,7 +162,7 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: moduleSource("@antelopejs/dms-mailing", ">=0.9.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-mailing", ">=0.9.2 <1.0.0"),
     },
 
     mongodb: {

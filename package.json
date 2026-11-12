@@ -47,7 +47,7 @@
     "@antelopejs/interface-dms-saas": ">=0.8.0 <1.0.0"
   },
   "devDependencies": {
-    "@antelopejs/dms": ">=0.19.3 <1.0.0",
+    "@antelopejs/dms": ">=0.19.4 <1.0.0",
     "@antelopejs/dms-frontend": ">=0.10.3 <1.0.0",
     "@antelopejs/tooling-configs": "^0.5.4",
     "@types/node": "^26.6.5",
