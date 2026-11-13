@@ -1,6 +1,7 @@
 import {
   type ChildProcess,
   type SpawnOptions,
+  execFile,
   spawn,
 } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -19,16 +20,19 @@ export const DEFAULT_STOP_TIMINGS: StopTimings = {
 
 const POLL_MS = 50;
 
+const WINDOWS = process.platform === "win32";
+
 /**
  * Starts `command` as the leader of its own process group, so that `stopGroup` reaches everything it starts: the
- * package manager, the CLI and the sidecars a module spawns.
+ * package manager, the CLI and the sidecars a module spawns. Windows has no process groups and would open a console
+ * window for a detached child, so there the child starts attached and `stopGroup` ends its process tree.
  */
 export function startGroup(
   command: string,
   args: string[],
   options: SpawnOptions,
 ): ChildProcess {
-  return spawn(command, args, { ...options, detached: true });
+  return spawn(command, args, { ...options, detached: !WINDOWS });
 }
 
 function signalGroup(pid: number, signal: NodeJS.Signals): void {
@@ -41,7 +45,7 @@ function signalGroup(pid: number, signal: NodeJS.Signals): void {
 
 function groupExists(pid: number): boolean {
   try {
-    process.kill(-pid, 0);
+    process.kill(WINDOWS ? pid : -pid, 0);
     return true;
   } catch {
     return false;
@@ -57,9 +61,17 @@ async function goneWithin(pid: number, timeoutMs: number): Promise<boolean> {
   return true;
 }
 
+async function killTree(pid: number, timeoutMs: number): Promise<void> {
+  await new Promise<void>((resolve) => {
+    execFile("taskkill", ["/pid", String(pid), "/T", "/F"], () => resolve());
+  });
+  await goneWithin(pid, timeoutMs);
+}
+
 /**
  * Stops every process of the group `child` leads: an interrupt first, then a termination, then a kill, each after
- * the time its step allows. Resolves once no process of the group is left.
+ * the time its step allows. Resolves once no process of the group is left. Windows cannot signal a group, so there
+ * `taskkill /T /F` kills the process tree `child` leads at once.
  */
 export async function stopGroup(
   child: ChildProcess,
@@ -67,6 +79,7 @@ export async function stopGroup(
 ): Promise<void> {
   const pid = child.pid;
   if (pid === undefined) return;
+  if (WINDOWS) return killTree(pid, timings.terminateMs);
   signalGroup(pid, "SIGINT");
   if (await goneWithin(pid, timings.interruptMs)) return;
   signalGroup(pid, "SIGTERM");

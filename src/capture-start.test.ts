@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { type ChildProcess, spawn } from "node:child_process";
+import type { ChildProcess } from "node:child_process";
 import {
   chmodSync,
   mkdirSync,
@@ -8,12 +8,13 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import { after, describe, it } from "node:test";
 import {
   PROVISIONING_DONE,
   PROVISIONING_INCOMPLETE,
 } from "./helio/platform/provisioning-report";
+import { startGroup, stopGroup } from "./process-group";
 
 const BACKEND_URL = "http://127.0.0.1:5010/";
 const DASHBOARD_PORT = "3291";
@@ -48,13 +49,15 @@ function fakePnpm(): string {
   const bin = join(workspace, "bin");
   const server = join(workspace, "fake-server.js");
   const pnpm = join(bin, "pnpm");
+  const node = JSON.stringify(process.execPath);
   writeFileSync(server, FAKE_SERVER);
   mkdirSync(bin, { recursive: true });
   writeFileSync(
     pnpm,
-    `#!/bin/sh\nexec ${JSON.stringify(process.execPath)} ${JSON.stringify(server)} "$@"\n`,
+    `#!/bin/sh\nexec ${node} ${JSON.stringify(server)} "$@"\n`,
   );
   chmodSync(pnpm, 0o755);
+  writeFileSync(`${pnpm}.cmd`, `@${node} "${server}" %*\r\n`);
   return bin;
 }
 
@@ -66,17 +69,24 @@ interface Capture {
 
 function startCapture(line: string, delayMs: number): Capture {
   const bin = fakePnpm();
-  const child = spawn(process.execPath, [join(__dirname, "capture-start.js")], {
-    cwd: workspace,
-    env: {
-      ...process.env,
-      PATH: `${bin}:${process.env.PATH ?? ""}`,
-      PORT: DASHBOARD_PORT,
-      FAKE_PROVISIONING_LINE: line,
-      FAKE_PROVISIONING_DELAY_MS: String(delayMs),
+  const pathKey =
+    Object.keys(process.env).find((key) => key.toUpperCase() === "PATH") ??
+    "PATH";
+  const child = startGroup(
+    process.execPath,
+    [join(__dirname, "capture-start.js")],
+    {
+      cwd: workspace,
+      env: {
+        ...process.env,
+        [pathKey]: `${bin}${delimiter}${process.env[pathKey] ?? ""}`,
+        PORT: DASHBOARD_PORT,
+        FAKE_PROVISIONING_LINE: line,
+        FAKE_PROVISIONING_DELAY_MS: String(delayMs),
+      },
+      stdio: ["ignore", "pipe", "pipe"],
     },
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  );
   let output = "";
   child.stdout?.on("data", (chunk: Buffer) => {
     output += chunk.toString();
@@ -99,7 +109,7 @@ async function printedReady(capture: Capture): Promise<void> {
 }
 
 async function stopCapture(capture: Capture): Promise<void> {
-  capture.child.kill("SIGTERM");
+  await stopGroup(capture.child);
   await capture.exit;
 }
 
