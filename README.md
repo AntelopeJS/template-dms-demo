@@ -31,9 +31,8 @@ The DMS feature modules are all installed from npm (see
 | Database      | `@antelopejs/dms-database` |
 | Automation    | `@antelopejs/dms-automation` |
 | SaaS          | `@antelopejs/dms-saas`     |
-| AI            | `@antelopejs/dms-ai`       |
+| Assistant     | `@antelopejs/dms-assistant` |
 | Lang / i18n   | `@antelopejs/dms-lang`     |
-| Builder       | `@antelopejs/dms-builder`  |
 | Media library | `@antelopejs/dms-media`    |
 | Marketing     | `@antelopejs/dms-marketing` |
 | Mailing       | `@antelopejs/dms-mailing`  |
@@ -168,18 +167,9 @@ live under the same prefix.
 
 ## The assistant
 
-The assistant in the dashboard runs a coding agent in this project's folder, Claude Code or Codex, on your own subscription. Open the chat with the sparkle icon in the header, or press `Ctrl` `Shift` `K`. Its settings are under **Modules** > **Assistant**. To have Claude Code or Codex work on this repository's code instead, see [Coding agents](#coding-agents).
+The assistant in the dashboard runs a coding agent in this project's folder, Claude Code or Codex, on your own subscription. You set it up in the dashboard. After you create the administrator account, the assistant's onboarding opens on its own. It finds a Claude Code login you already have, or walks you through signing in to Claude or Codex, in Docker too. Reopen it from the assistant widget at the bottom left. Its settings are under **Modules** > **Assistant**. To have Claude Code or Codex work on this repository's code instead, see [Coding agents](#coding-agents).
 
-**Without Docker.** The assistant runs as you, on your machine, so it uses the logins you already have. You set no token and no API key.
-
-- **Claude Code.** The assistant uses your Claude Code login on this machine. Without one, run `claude` once and sign in. The assistant runs the copy of Claude Code that `@antelopejs/dms-ai` installs, so it needs no `claude` on your `PATH`.
-- **Codex.** Add `@openai/codex` to this project with `pnpm add -w @openai/codex@<version>`, using the `@openai/codex` peer version of `@antelopejs/dms-ai`. The assistant does not read a `codex login` from your terminal. Open **Assistant** > **Settings** and press **Sign in with ChatGPT** once. The sign-in is stored in `~/.config/dms-ai` and serves every DMS project on your machine.
-
-**With Docker.** The assistant runs inside the container, which has none of your logins. Give the container one of these in its environment:
-
-- **Claude Code with your Claude subscription.** On your machine, run `claude setup-token` and set `CLAUDE_CODE_OAUTH_TOKEN` to the token it prints.
-- **Codex with your ChatGPT plan.** Open **Assistant** > **Settings** and press **Sign in with ChatGPT**. The page that OpenAI sends you back to does not load, because the assistant is in the container. Copy its address from the address bar and press **Paste the return address**.
-- **An Anthropic API key**, if you prefer one. Set `ANTHROPIC_API_KEY=sk-ant-...`.
+To skip that step in Docker or CI, set `CLAUDE_CODE_OAUTH_TOKEN` to the output of `claude setup-token` in the backend's environment.
 
 ## Environment
 

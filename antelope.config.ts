@@ -86,15 +86,14 @@ export default defineConfig({
       },
     },
 
-    /** DMS modules stay below 1.0.0 so they all resolve on one interface-dms copy. */
+    /** Each DMS module stays on one minor, the one that reads interface-dms 0.14, so they all resolve on one copy. */
     dms: {
-      source: {
-        type: "package",
-        package: "@antelopejs/dms",
-        version: ">=0.19.4 <1.0.0",
-      },
+      source: moduleSource("@antelopejs/dms", "^0.20.0"),
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
+        /** The MCP bridge runs on this host, so it reaches the API over loopback and never sends its token to the public URL. */
+        mcp: { backendUrl: "${@api.API_LOCAL_BASE_URL}" },
+        builder: { projectRoot: __dirname },
         homepage: "/home",
         meta: {
           title: "Template DMS Demo",
@@ -110,16 +109,16 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: moduleSource("@antelopejs/dms-api", ">=0.6.4 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-api", "^0.7.1"),
     },
     "dms-database": {
-      source: moduleSource("@antelopejs/dms-database", ">=0.4.4 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-database", "^0.5.0"),
     },
     "dms-automation": {
-      source: moduleSource("@antelopejs/dms-automation", ">=0.9.3 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-automation", "^0.11.1"),
     },
     "dms-saas": {
-      source: moduleSource("@antelopejs/dms-saas", ">=0.11.1 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-saas", "^0.12.1"),
       config: {
         stripe: {
           secretKey: "sk_test_placeholder",
@@ -128,27 +127,24 @@ export default defineConfig({
         },
       },
     },
-    "dms-ai": {
-      source: moduleSource("@antelopejs/dms-ai", ">=0.10.2 <1.0.0"),
+    "dms-assistant": {
+      source: moduleSource("@antelopejs/dms-assistant", "^0.1.0"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: moduleSource("@antelopejs/dms-lang", ">=0.5.3 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-lang", "^0.7.0"),
       config: {
         editable: true,
       },
     },
-    "dms-builder": {
-      source: moduleSource("@antelopejs/dms-builder", ">=0.10.3 <1.0.0"),
-    },
     "dms-media": {
-      source: moduleSource("@antelopejs/dms-media", ">=0.7.3 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-media", "^0.8.0"),
     },
     "dms-marketing": {
-      source: moduleSource("@antelopejs/dms-marketing", ">=0.9.2 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-marketing", "^0.10.0"),
       config: {
         visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
@@ -162,16 +158,17 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: moduleSource("@antelopejs/dms-mailing", ">=0.9.2 <1.0.0"),
+      source: moduleSource("@antelopejs/dms-mailing", "^0.10.2"),
     },
 
     mongodb: {
       /**
        * 1.4.4 (mongodb#54) resolves a single row's relations next to a
        * computed field: the products' edit form reads its range again. 1.5.0
-       * enforces unique indexes, which dms-mailing's slug index needs.
+       * enforces unique indexes, which dms-mailing's slug index needs. 1.8
+       * serves interface-database 0.4, the copy every DMS module reads.
        */
-      source: moduleSource("@antelopejs/mongodb", "^1.7.0"),
+      source: moduleSource("@antelopejs/mongodb", "^1.8.1"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",

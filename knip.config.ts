@@ -12,4 +12,6 @@ export default antelopeKnipConfig({
     "src/capture-start.ts",
     "src/capture-clock.ts",
   ],
+  /** The DMS assistant runs the `codex` binary from this project's `node_modules`; no source file imports it. */
+  ignoreDependencies: ["@openai/codex"],
 });
