@@ -1,4 +1,4 @@
-import type { ChildProcess } from "node:child_process";
+import type { ChildProcess, SpawnOptions } from "node:child_process";
 import { copyFileSync, createWriteStream, mkdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
@@ -38,6 +38,12 @@ const clockEnvironment = {
     .join(" "),
 };
 
+/**
+ * Windows installs pnpm as a `pnpm.cmd` shim, which only a shell starts. The command line goes to the shell whole,
+ * since Node deprecates passing arguments alongside `shell`; every argument here is a fixed word.
+ */
+const PNPM_NEEDS_SHELL = process.platform === "win32";
+
 const children: ChildProcess[] = [];
 
 function start(
@@ -46,10 +52,13 @@ function start(
   env: NodeJS.ProcessEnv,
 ): ChildProcess {
   const log = createWriteStream(`${LOG_DIRECTORY}/${name}.log`);
-  const child = startGroup("pnpm", ["exec", ...args], {
-    env,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const options: SpawnOptions = { env, stdio: ["ignore", "pipe", "pipe"] };
+  const child = PNPM_NEEDS_SHELL
+    ? startGroup(["pnpm", "exec", ...args].join(" "), [], {
+        ...options,
+        shell: true,
+      })
+    : startGroup("pnpm", ["exec", ...args], options);
   child.stdout?.pipe(log);
   child.stderr?.pipe(log);
   child.on("exit", (code, signal) => {
