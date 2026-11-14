@@ -170,8 +170,11 @@ export default defineConfig({
        * 1.4.4 (mongodb#54) resolves a single row's relations next to a
        * computed field: the products' edit form reads its range again. 1.5.0
        * enforces unique indexes, which dms-mailing's slug index needs.
+       * Held on 1.7: 1.8.0 brings interface-database 0.4, where a query that is only awaited no
+       * longer runs, and dms 0.19.6 still awaits some; 1.8.1 also needs interface-core 0.5.1,
+       * which the pinned core does not provide. Raise it together with `@antelopejs/core`.
        */
-      source: moduleSource("@antelopejs/mongodb", "^1.7.0"),
+      source: moduleSource("@antelopejs/mongodb", "~1.7.0"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
@@ -181,7 +184,11 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "^1.1.1",
+        /**
+         * Exact: 1.1.2 needs interface-core 0.5.1, which the pinned core does not provide.
+         * Raise it together with `@antelopejs/core`.
+         */
+        version: "1.1.1",
       },
       config: {
         secret: "dev",
@@ -196,8 +203,10 @@ export default defineConfig({
          * connections on stop, so Ctrl+C does not wait for a dashboard tab;
          * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
          * declares configVarsFile, which dms-frontend 0.9 reads at build.
+         * Exact: 1.7.4 needs interface-core 0.5.1 and core 1.23, so it is raised together
+         * with `@antelopejs/core`.
          */
-        version: "^1.7.3",
+        version: "1.7.3",
       },
       config: {
         servers: [apiServer],
@@ -220,7 +229,11 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.11",
+        /**
+         * Exact: 0.0.12 needs interface-core 0.5.1, which the pinned core does not provide.
+         * Raise it together with `@antelopejs/core`.
+         */
+        version: "0.0.11",
       },
       config: {
         ethereal: true,
