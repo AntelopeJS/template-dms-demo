@@ -171,6 +171,8 @@ The assistant in the dashboard runs a coding agent in this project's folder, Cla
 
 To skip that step in Docker or CI, set `CLAUDE_CODE_OAUTH_TOKEN` to the output of `claude setup-token` in the backend's environment.
 
+The first start in development also writes `.mcp.json` and `.codex/config.toml`, so Claude Code and Codex sessions you open in the project reach the same DMS tools. Commit both files. They hold only a relative path to a launcher under `node_modules`, with no machine path and no secret. [MCP server](https://dms.antelopejs.com/docs/ai-and-claude-code/mcp-server) explains them.
+
 ## Environment
 
 For optional overrides, create a git-ignored `.env` at the repository root.
