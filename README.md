@@ -239,6 +239,16 @@ Keep this table and `envOverrides` in sync.
 - **Module frontends.** Every DMS feature module ships its own frontend module
   through `AddFrontendModule`. Remove a module block in `antelope.config.ts` to
   drop the feature and its frontend with it.
+- **Module versions.** `antelope-lock/` records what each npm module of
+  `antelope.config.ts` installs, so a build installs the same versions on any
+  day: a range such as `^0.20.0` stays on its recorded release, and a new
+  release of a module or of one of its dependencies does not reach the project
+  by itself. After you change a module's version in `antelope.config.ts`, run
+  `ajs project build` and commit what it writes in `antelope-lock/`.
+  `ajs project modules update` moves the modules to their newest releases and
+  records their locks; review that diff as a dependency update. AntelopeJS
+  Cloud builds a project that commits this folder from its locks only: a
+  module without a lock fails the build with the command that records it.
 
 ## Uploaded files on AntelopeJS Cloud
 
