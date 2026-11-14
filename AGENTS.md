@@ -97,33 +97,34 @@ Verify a boundary against the imports a developer or agent would plausibly write
 
 ### What enforces what
 
-| Rule                                                                           | Enforced by                                         |
-| ------------------------------------------------------------------------------ | --------------------------------------------------- |
-| Formatting                                                                     | oxfmt                                               |
-| Lint findings are errors; no rule warns                                        | oxlint preset                                       |
-| Comments are TSDoc, directives, or `SAFETY:` only                              | `antelopejs/no-comments`                            |
-| Every test asserts                                                             | `antelopejs/require-assertion`                      |
-| Tests read no files outside fixtures, helpers, locales                         | `antelopejs/no-fs-read-in-tests`                    |
-| Tests import the code under test from local source, not their own package name | `antelopejs/no-self-import-in-tests`                |
-| No assertion that restates a constant                                          | `antelopejs/no-constant-value-assertion`            |
-| No test whose only check is "is a function"                                    | `antelopejs/no-typeof-function-only-test`           |
-| String-keyed object tables are read through own keys only                      | `antelopejs/no-inherited-key-lookup`                |
-| A type guard checks each member it narrows to; keys with `Object.hasOwn`       | `antelopejs/no-presence-only-type-guard`            |
-| A type guard checks the nested elements and values it claims                   | review; no tool                                     |
-| A startup read does not decide an insert another replica can race              | `antelopejs/no-read-then-insert`                    |
-| `Object.assign` writes no `unknown`, `any` or mistyped value over a field      | `antelopejs/no-unsafe-object-assign`                |
-| Every file type-aware lint reads is listed by a tsconfig                       | `antelopejs/require-tsconfig-include`               |
-| Params ≤ 5, function ≤ 120 lines, file ≤ 500 lines, depth ≤ 4, complexity ≤ 20 | `eslint/max-*`, `eslint/complexity`                 |
-| Cleanup preserves declarations, runtime exports and DMS auto-imports           | `antelopejs-api-diff <base-ref>`                    |
-| Comment-only changes preserve JavaScript emit                                  | `antelopejs-comment-proof <base-ref>`               |
-| PR-body proof tables are copied unedited from the current head                 | `antelopejs-body-check <body.md>`                   |
-| PR-body findings-left lines are live diagnostics at HEAD                       | `antelopejs-body-check <body.md>`                   |
-| Receiver, positional and unpublished-module behaviour                          | `antelopejs-api-diff <base-ref> --probe <file.cjs>` |
-| Directive and `SAFETY:` reasons are true of the code                           | review; no tool                                     |
-| Evasion-only and patched-internal findings go under Attention                  | review; no tool                                     |
-| No-upward rules reject same-tier peers                                         | review and import probes                            |
-| No `@ts-ignore`                                                                | `typescript/ban-ts-comment`                         |
-| No once-used type parameter standing in for `unknown`                          | `typescript/no-unnecessary-type-parameters`         |
-| No `any` passed, assigned or returned where a type is declared                 | `typescript/no-unsafe-{argument,assignment,return}` |
+| Rule                                                                               | Enforced by                                         |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Formatting                                                                         | oxfmt                                               |
+| Lint findings are errors; no rule warns                                            | oxlint preset                                       |
+| Comments are TSDoc, directives, or `SAFETY:` only                                  | `antelopejs/no-comments`                            |
+| Every test asserts                                                                 | `antelopejs/require-assertion`                      |
+| Tests read no files outside fixtures, helpers, locales                             | `antelopejs/no-fs-read-in-tests`                    |
+| Tests import the code under test from local source, not their own package name     | `antelopejs/no-self-import-in-tests`                |
+| No assertion that restates a constant                                              | `antelopejs/no-constant-value-assertion`            |
+| No test whose only check is "is a function"                                        | `antelopejs/no-typeof-function-only-test`           |
+| String-keyed object tables are read through own keys only                          | `antelopejs/no-inherited-key-lookup`                |
+| A type guard checks each member it narrows to; keys with `Object.hasOwn`           | `antelopejs/no-presence-only-type-guard`            |
+| A type guard checks the nested elements and values it claims                       | review; no tool                                     |
+| A startup read does not decide an insert another replica can race                  | `antelopejs/no-read-then-insert`                    |
+| An awaited function or a promise resolves to no unrun database query               | `antelopejs/no-unrun-query`                         |
+| `Object.assign` writes no `unknown`, `any` or mistyped value over a field          | `antelopejs/no-unsafe-object-assign`                |
+| Every file type-aware lint reads is listed by a tsconfig that resolves its imports | `antelopejs/require-tsconfig-include`               |
+| Params ≤ 5, function ≤ 120 lines, file ≤ 500 lines, depth ≤ 4, complexity ≤ 20     | `eslint/max-*`, `eslint/complexity`                 |
+| Cleanup preserves declarations, runtime exports and DMS auto-imports               | `antelopejs-api-diff <base-ref>`                    |
+| Comment-only changes preserve JavaScript emit                                      | `antelopejs-comment-proof <base-ref>`               |
+| PR-body proof tables are copied unedited from the current head                     | `antelopejs-body-check <body.md>`                   |
+| PR-body findings-left lines are live diagnostics at HEAD                           | `antelopejs-body-check <body.md>`                   |
+| Receiver, positional and unpublished-module behaviour                              | `antelopejs-api-diff <base-ref> --probe <file.cjs>` |
+| Directive and `SAFETY:` reasons are true of the code                               | review; no tool                                     |
+| Evasion-only and patched-internal findings go under Attention                      | review; no tool                                     |
+| No-upward rules reject same-tier peers                                             | review and import probes                            |
+| No `@ts-ignore`                                                                    | `typescript/ban-ts-comment`                         |
+| No once-used type parameter standing in for `unknown`                              | `typescript/no-unnecessary-type-parameters`         |
+| No `any` passed, assigned or returned where a type is declared                     | `typescript/no-unsafe-{argument,assignment,return}` |
 
 <!-- antelopejs-guardrails:end -->

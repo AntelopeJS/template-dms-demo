@@ -22,14 +22,14 @@ export function addMonths(from: Date, months: number): Date {
   return date;
 }
 
-interface Runnable {
-  run(): PromiseLike<string[]>;
+interface Runnable<Result> {
+  run(): PromiseLike<Result>;
 }
 
 /** The part of a model's table the seed uses: read a row, write a row. */
 interface SeedTableHandle<T> {
-  get(id: string): PromiseLike<object | null | undefined>;
-  insert(row: StoredRow<T>): Runnable;
+  get(id: string): Runnable<object | null | undefined>;
+  insert(row: StoredRow<T>): Runnable<string[]>;
 }
 
 interface ModelInstance<T> {
@@ -106,12 +106,12 @@ export async function insertMissing<T extends object>(
   const { table } = GetModel(model, instanceId);
   let written = 0;
   for (const row of rows) {
-    if (await table.get(row._id)) continue;
+    if (await table.get(row._id).run()) continue;
     const stored = toStoredRow(model, row, prepare);
     try {
       await table.insert(stored).run();
     } catch (error) {
-      if (await table.get(row._id)) continue;
+      if (await table.get(row._id).run()) continue;
       throw error;
     }
     written++;
