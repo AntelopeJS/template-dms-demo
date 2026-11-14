@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@antelopejs/dms": "^0.20.0",
-    "@antelopejs/dms-frontend": "^0.11.1",
+    "@antelopejs/dms-frontend": "^0.11.2",
     "@antelopejs/tooling-configs": "^0.7.1",
     "@types/node": "^26.6.5",
     "dotenv": "^18.0.8",
