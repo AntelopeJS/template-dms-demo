@@ -2,6 +2,7 @@ import { execFile } from "node:child_process";
 import {
   appendFileSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -95,6 +96,7 @@ async function installError(
   version: string,
 ): Promise<string | undefined> {
   const directory = mkdtempSync(join(tmpdir(), "next-canary-"));
+  const logs = join(directory, "logs");
   try {
     await promisify(execFile)(
       "npm",
@@ -104,32 +106,18 @@ async function installError(
         "--ignore-scripts",
         "--no-audit",
         "--no-fund",
-        "--color=false",
+        `--logs-dir=${logs}`,
         `${name}@${version}`,
       ],
       { cwd: directory },
     );
     return undefined;
-  } catch (error) {
-    const streams =
-      error instanceof Error
-        ? [
-            "stdout" in error ? error.stdout : "",
-            "stderr" in error ? error.stderr : "",
-          ].filter(isText)
-        : [];
-    const output = streams.join("\n") || String(error);
-    const lines = output
-      .split("\n")
-      .filter((line) => line.trim() !== "" && !line.includes("complete log"));
-    const errors = lines
-      .filter((line) => /^npm (error|ERR!)/.test(line))
-      .map((line) => line.replace(/^npm (error|ERR!)\s*/, ""));
-    const reason =
-      errors.length > 0
-        ? errors.join(" ")
-        : (lines.at(-1) ?? "npm install failed");
-    return reason.replaceAll("|", "\\|");
+  } catch {
+    const errors = readdirSync(logs)
+      .flatMap((file) => readFileSync(join(logs, file), "utf8").split("\n"))
+      .flatMap((line) => /^\d+ error (.+)$/.exec(line)?.slice(1) ?? [])
+      .filter((line) => !line.includes("complete log"));
+    return (errors.join(" ") || "npm install failed").replaceAll("|", "\\|");
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
