@@ -54,16 +54,15 @@ jobs:
           git config --global user.email "next-canary@users.noreply.github.com"
           run=$(pnpm exec antelopejs-verify new --base HEAD --title "next canary" | tail -n 1)
           echo "VERIFY_RUN=${run}" >> "$GITHUB_ENV"
-          pnpm exec antelopejs-verify journey "$run" smoke
+          env -u GITHUB_BASE_REF pnpm exec antelopejs-verify journey "$run" smoke
 
       - name: Show the output of each failed smoke step
         if: failure() && env.VERIFY_RUN != ''
         run: |
-          for code in "$VERIFY_RUN"/evidence/*/*/*/exit-code.txt; do
-            [ "$(cat "$code")" = 0 ] && continue
-            step=$(dirname "$code")
+          for checks in $(grep -l '"pass": false' "$VERIFY_RUN"/evidence/*/*/*/checks.json); do
+            step=$(dirname "$checks")
             echo "::group::${step#"$VERIFY_RUN/evidence/"}"
-            cat "$step/command.txt" "$step/stdout.txt" "$step/stderr.txt" 2>/dev/null | tail -n 200
+            cat "$checks" "$step/command.txt" "$step/stdout.txt" "$step/stderr.txt" 2>/dev/null | tail -n 200
             echo "::endgroup::"
           done
 
