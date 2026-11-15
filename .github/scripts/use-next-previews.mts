@@ -111,16 +111,19 @@ async function installError(
     );
     return undefined;
   } catch (error) {
-    const output =
-      error instanceof Error && "stderr" in error && isText(error.stderr)
-        ? error.stderr
-        : String(error);
-    const lines = output.split("\n").filter((line) => line.trim() !== "");
+    const streams =
+      error instanceof Error
+        ? [
+            "stdout" in error ? error.stdout : "",
+            "stderr" in error ? error.stderr : "",
+          ].filter(isText)
+        : [];
+    const output = streams.join("\n") || String(error);
+    const lines = output
+      .split("\n")
+      .filter((line) => line.trim() !== "" && !line.includes("complete log"));
     const errors = lines
-      .filter(
-        (line) =>
-          /^npm (error|ERR!)/.test(line) && !line.includes("complete log"),
-      )
+      .filter((line) => /^npm (error|ERR!)/.test(line))
       .map((line) => line.replace(/^npm (error|ERR!)\s*/, ""));
     const reason =
       errors.length > 0
