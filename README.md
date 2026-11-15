@@ -396,9 +396,7 @@ it.
 It points each package in `package.json` and `antelope.config.ts` at its
 `next` dist-tag, without committing the change. A package keeps its stable
 range when it has no `next` tag, when its `next` is not ahead of `latest`, or
-when npm cannot install its preview. Every `interface-*` package keeps its
-stable range too: core checks the one copy modules share against their ranges
-without prereleases, so an interface preview stops the demo from booting.
+when npm cannot install its preview.
 It then builds the demo, runs `pnpm run checks`, and boots the demo through the
 `smoke` feature of `antelopejs-verify`. The run fails when a check fails or the
 demo does not boot. Its summary lists the exact preview version of each package,

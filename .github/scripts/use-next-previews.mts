@@ -16,9 +16,7 @@ import { promisify } from "node:util";
  * exact version of its npm `next` dist-tag, and appends to `$GITHUB_STEP_SUMMARY` a table of what each package runs
  * on. A package keeps its stable range when it has no `next` tag, or when its `next` is not ahead of `latest`, as when
  * the repository's `next` branch has not merged its last release yet, or when npm cannot resolve the preview's
- * dependency tree, as when it was published with a `workspace:` specifier. An `interface-*` package always keeps its
- * stable range: core shares one copy of each interface between modules and checks it against every module's range
- * without prereleases, so a preview copy stops the demo from booting. `package.json` gets the previews as
+ * dependency tree, as when it was published with a `workspace:` specifier. `package.json` gets the previews as
  * `pnpm.overrides`, so its own ranges stay and every copy in the tree, transitive ones included, loads the preview.
  */
 
@@ -41,7 +39,6 @@ interface Manifest {
 
 const PACKAGE_JSON = "package.json";
 const ANTELOPE_CONFIG = "antelope.config.ts";
-const INTERFACE_PREFIX = "@antelopejs/interface-";
 const DEPENDENCY_FIELDS = ["dependencies", "devDependencies"] as const;
 /**
  * `"@antelopejs/<name>"`, then `, "<range>"` or `, version: "<range>"`, with any block comments between: both module
@@ -163,11 +160,6 @@ async function choose(name: string): Promise<Choice> {
     return {
       kind: "stable",
       reason: `\`next\` ${next} is not ahead of \`latest\` ${latest}`,
-    };
-  if (name.startsWith(INTERFACE_PREFIX))
-    return {
-      kind: "stable",
-      reason: `interface preview ${next} cannot load: core checks the shared copy against module ranges without prereleases`,
     };
   const error = await installError(name, next);
   if (error !== undefined)
