@@ -385,6 +385,42 @@ npx -y github:AntelopeJS/agent-skills sync --target codex
 See [CONTRIBUTING.md](./CONTRIBUTING.md). Before you open a pull request, run
 `pnpm run checks`.
 
+### The `next` preview canary
+
+The `next canary` workflow runs this demo on the `next` preview of every
+`@antelopejs` package it depends on, so a break between packages shows up
+before anything is released. It runs every night and on demand, and only in
+`AntelopeJS/template-dms-demo`: a project created from the template never runs
+it.
+
+It points each package in `package.json` and `antelope.config.ts` at its
+`next` dist-tag, without committing the change. A package keeps its stable
+range when it has no `next` tag, when its `next` is not ahead of `latest`, or
+when npm cannot install its preview.
+It then builds the demo, runs `pnpm run checks`, and boots the demo through the
+`smoke` feature of `antelopejs-verify`. The run fails when a check fails or the
+demo does not boot. Its summary lists the exact preview version of each package,
+and why each other package stayed stable.
+
+The `/work` orchestrator starts it and reads the result with `gh`:
+
+```bash
+gh workflow run next-canary.yml --repo AntelopeJS/template-dms-demo --ref main
+run=$(gh run list --repo AntelopeJS/template-dms-demo --workflow next-canary.yml \
+  --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')
+gh run watch "$run" --repo AntelopeJS/template-dms-demo --exit-status
+gh run view "$run" --repo AntelopeJS/template-dms-demo --json conclusion --jq .conclusion
+```
+
+`success` means the demo builds, passes its checks and boots on the previews.
+`failure` means it does not, and `gh run view "$run" --log-failed` shows the
+step that broke. The run's summary page lists the versions it used, and so
+does the log of its first step:
+
+```bash
+gh run view "$run" --repo AntelopeJS/template-dms-demo --log | grep '| `@antelopejs/'
+```
+
 ## License
 
 [Apache-2.0](./LICENSE)
