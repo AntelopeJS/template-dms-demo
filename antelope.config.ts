@@ -88,7 +88,7 @@ export default defineConfig({
 
     /** Each DMS module stays on one minor, the one that reads interface-dms 0.14, so they all resolve on one copy. */
     dms: {
-      source: moduleSource("@antelopejs/dms", "^0.20.0"),
+      source: moduleSource("@antelopejs/dms", "^0.20.1"),
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
         /** The MCP bridge runs on this host, so it reaches the API over loopback and never sends its token to the public URL. */
@@ -112,7 +112,7 @@ export default defineConfig({
       source: moduleSource("@antelopejs/dms-api", "^0.7.1"),
     },
     "dms-database": {
-      source: moduleSource("@antelopejs/dms-database", "^0.5.0"),
+      source: moduleSource("@antelopejs/dms-database", "^0.5.1"),
     },
     "dms-automation": {
       source: moduleSource("@antelopejs/dms-automation", "^0.11.1"),
@@ -128,7 +128,7 @@ export default defineConfig({
       },
     },
     "dms-assistant": {
-      source: moduleSource("@antelopejs/dms-assistant", "^0.1.0"),
+      source: moduleSource("@antelopejs/dms-assistant", "^0.2.1"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
@@ -168,7 +168,7 @@ export default defineConfig({
        * enforces unique indexes, which dms-mailing's slug index needs. 1.8
        * serves interface-database 0.4, the copy every DMS module reads.
        */
-      source: moduleSource("@antelopejs/mongodb", "^1.8.1"),
+      source: moduleSource("@antelopejs/mongodb", "~1.8.2"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
@@ -178,7 +178,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "^1.1.1",
+        version: "~1.1.2",
       },
       config: {
         secret: "dev",
@@ -194,7 +194,7 @@ export default defineConfig({
          * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
          * declares configVarsFile, which dms-frontend 0.9 reads at build.
          */
-        version: "^1.7.3",
+        version: "~1.7.4",
       },
       config: {
         servers: [apiServer],
@@ -217,7 +217,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.11",
+        version: "^0.0.12",
       },
       config: {
         ethereal: true,

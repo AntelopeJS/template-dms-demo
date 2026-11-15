@@ -2,6 +2,7 @@ import { Logging } from "@antelopejs/interface-core/logging";
 import { Events } from "@antelopejs/interface-core/modules";
 import { DEFAULT_TENANT_ID } from "@antelopejs/interface-dms/constants";
 import { Hook, RegisterHook } from "@antelopejs/interface-dms/hooks";
+import { runHelioFirstRuns } from "./automation";
 import { provisionHelioMailing } from "./mailing";
 import { pinWebhookSecret } from "./mailing/webhook-secret";
 import { provisionHelioMarketing } from "./marketing";
@@ -28,6 +29,7 @@ export const STEPS: ProvisioningStep[] = [
   { name: "mailing webhook secret", run: pinWebhookSecret },
   { name: "media", run: provisionHelioMedia },
   { name: "marketing", run: provisionHelioMarketing },
+  { name: "automation first runs", run: runHelioFirstRuns },
 ];
 
 function stoppedAt(step: ProvisioningStep): Error {
@@ -77,8 +79,8 @@ export async function runProvisioningSteps(
 
 /**
  * Writes Helio's data in the default tenant (the SaaS showcase, the e-mails,
- * the media library and the public website) when the DMS provisions that
- * tenant. From then on the data belongs to the tenant: a later start does not
+ * the media library and the public website), then runs the new procedures'
+ * first runs, when the DMS provisions that tenant. From then on the data belongs to the tenant: a later start does not
  * write it again. When a step fails, or the modules stop before the last step
  * ran, the hook rejects so the DMS keeps provisioning pending and runs every
  * step again on its next attempt, each one skipping what it already wrote.
