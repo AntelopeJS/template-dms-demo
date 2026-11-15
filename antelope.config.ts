@@ -128,7 +128,7 @@ export default defineConfig({
       },
     },
     "dms-assistant": {
-      source: moduleSource("@antelopejs/dms-assistant", "^0.2.0"),
+      source: moduleSource("@antelopejs/dms-assistant", "^0.2.1"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
