@@ -56,6 +56,17 @@ jobs:
           echo "VERIFY_RUN=${run}" >> "$GITHUB_ENV"
           pnpm exec antelopejs-verify journey "$run" smoke
 
+      - name: Show the output of each failed smoke step
+        if: failure() && env.VERIFY_RUN != ''
+        run: |
+          for code in "$VERIFY_RUN"/evidence/*/*/*/exit-code.txt; do
+            [ "$(cat "$code")" = 0 ] && continue
+            step=$(dirname "$code")
+            echo "::group::${step#"$VERIFY_RUN/evidence/"}"
+            cat "$step/command.txt" "$step/stdout.txt" "$step/stderr.txt" 2>/dev/null | tail -n 200
+            echo "::endgroup::"
+          done
+
       - name: Stop what the smoke test started
         if: always() && env.VERIFY_RUN != ''
         run: pnpm exec antelopejs-verify clean "$VERIFY_RUN"

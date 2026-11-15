@@ -121,8 +121,9 @@ async function installError(
           line.startsWith("npm error") && !line.includes("complete log"),
       );
     return (
-      lines.map((line) => line.replace(/^npm error\s*/, "")).join(" ") ||
-      "npm install failed"
+      lines
+        .map((line) => line.replace(/^npm error\s*/, "").replaceAll("|", "\\|"))
+        .join(" ") || "npm install failed"
     );
   } finally {
     rmSync(directory, { recursive: true, force: true });
