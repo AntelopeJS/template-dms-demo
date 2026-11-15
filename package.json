@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && antelopejs-tsc",
     "dev": "ajs project run -w",
     "frontend:dev": "ajs dms dev",
     "frontend:build": "ajs dms build",
@@ -15,7 +15,7 @@
     "lint": "oxlint && pnpm --dir frontend-vue lint",
     "lint:fix": "oxlint --fix --max-warnings=1000000 && oxfmt . && pnpm --dir frontend-vue lint:fix",
     "format": "oxfmt . && pnpm --dir frontend-vue format",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "antelopejs-tsc --noEmit",
     "test": "pnpm run test:backend && pnpm --dir frontend-vue test",
     "test:backend": "pnpm run build && node --test \"dist/**/*.test.js\"",
     "knip": "knip --workspace . --dependencies",
@@ -50,7 +50,7 @@
   "devDependencies": {
     "@antelopejs/dms": "^0.20.1",
     "@antelopejs/dms-frontend": "^0.11.3",
-    "@antelopejs/tooling-configs": "^0.7.3",
+    "@antelopejs/tooling-configs": "^0.7.4",
     "@types/node": "^26.6.5",
     "dotenv": "^18.0.8",
     "knip": "^6.41.0",
@@ -58,7 +58,7 @@
     "oxlint": "1.81.0",
     "oxlint-tsgolint": "^7.0.2004",
     "rimraf": "^6.1.3",
-    "typescript": "^7.0.2"
+    "typescript": "^6.0.2"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {

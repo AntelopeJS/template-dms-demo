@@ -82,7 +82,7 @@ export default defineConfig({
         watchDir: ["src"],
         installCommand: ["pnpm install", "pnpm run build"],
         /** Not `pnpm build`: it starts with `rimraf dist`, and the running module is loaded from dist. */
-        reloadCommand: ["pnpm exec tsc"],
+        reloadCommand: ["pnpm exec antelopejs-tsc"],
       },
     },
 

@@ -294,13 +294,10 @@ pnpm --dir frontend-vue lint
 pnpm --dir frontend-vue test
 ```
 
-The backend uses the native TypeScript compiler that `typescript` in
-`package.json` pins. The frontend installs the same compiler as
-`@typescript/native`, alongside `typescript` aliased to
-`@typescript/typescript6`, because `typescript-eslint` still needs the
-JavaScript API of the earlier compiler. This follows the
-[TypeScript migration guide](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0).
-Keep both packages until the parser supports the native compiler's API.
+Both packages declare TypeScript 6 as `typescript`, the version
+`@antelopejs/dms` and `typescript-eslint` accept. The backend compiles with
+TypeScript 7 through `antelopejs-tsc` from `@antelopejs/tooling-configs`:
+`pnpm build`, `pnpm typecheck` and the reload of `pnpm dev` run it.
 
 ### Verifying the frontend source
 
