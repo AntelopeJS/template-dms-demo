@@ -104,6 +104,7 @@ async function installError(
         "--ignore-scripts",
         "--no-audit",
         "--no-fund",
+        "--color=false",
         `${name}@${version}`,
       ],
       { cwd: directory },
@@ -114,17 +115,18 @@ async function installError(
       error instanceof Error && "stderr" in error && isText(error.stderr)
         ? error.stderr
         : String(error);
-    const lines = output
-      .split("\n")
+    const lines = output.split("\n").filter((line) => line.trim() !== "");
+    const errors = lines
       .filter(
         (line) =>
-          line.startsWith("npm error") && !line.includes("complete log"),
-      );
-    return (
-      lines
-        .map((line) => line.replace(/^npm error\s*/, "").replaceAll("|", "\\|"))
-        .join(" ") || "npm install failed"
-    );
+          /^npm (error|ERR!)/.test(line) && !line.includes("complete log"),
+      )
+      .map((line) => line.replace(/^npm (error|ERR!)\s*/, ""));
+    const reason =
+      errors.length > 0
+        ? errors.join(" ")
+        : (lines.at(-1) ?? "npm install failed");
+    return reason.replaceAll("|", "\\|");
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
