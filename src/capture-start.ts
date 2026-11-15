@@ -21,7 +21,7 @@ const PROVISIONING_TIMEOUT_MS = 30 * 60 * 1000;
 const POLL_MS = 500;
 
 /**
- * The preload is copied out of `dist`, because the project's own `pnpm run build` (`rimraf dist && tsc`) runs under
+ * The preload is copied out of `dist`, because the project's own `pnpm run build` (`rimraf dist && antelopejs-tsc`) runs under
  * this `NODE_OPTIONS` too and empties `dist` while the preload is still being required.
  */
 const CLOCK_FILE = resolve(LOG_DIRECTORY, "capture-clock.js");
