@@ -416,7 +416,12 @@ gh run view "$run" --repo AntelopeJS/template-dms-demo --json conclusion --jq .c
 
 `success` means the demo builds, passes its checks and boots on the previews.
 `failure` means it does not, and `gh run view "$run" --log-failed` shows the
-step that broke. The run's summary page lists the versions it used.
+step that broke. The run's summary page lists the versions it used, and so
+does the log of its first step:
+
+```bash
+gh run view "$run" --repo AntelopeJS/template-dms-demo --log | grep '| `@antelopejs/'
+```
 
 ## License
 

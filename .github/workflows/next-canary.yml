@@ -34,7 +34,9 @@ jobs:
           cache: pnpm
 
       - name: Point every @antelopejs package at its next preview
-        run: node .github/scripts/use-next-previews.mts
+        run: |
+          node .github/scripts/use-next-previews.mts
+          cat "$GITHUB_STEP_SUMMARY"
 
       - name: Install the previews, and the newest stable release each other range allows
         run: |
