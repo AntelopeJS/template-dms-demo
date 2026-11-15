@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antelopejs/core':
-        specifier: ~1.23.3
-        version: 1.23.3
+        specifier: ~1.24.0
+        version: 1.24.0
       '@antelopejs/interface-api':
         specifier: ^0.3.3
         version: 0.3.3(@antelopejs/interface-core@0.5.1)
@@ -55,11 +55,11 @@ importers:
         version: 0.166.0
     devDependencies:
       '@antelopejs/dms':
-        specifier: ^0.20.1
-        version: 0.20.1(@antelopejs/core@1.23.3)(typescript@6.0.3)
+        specifier: '>=0.20.2 <0.21.0'
+        version: 0.20.2(@antelopejs/core@1.24.0)(typescript@6.0.3)
       '@antelopejs/dms-frontend':
-        specifier: ^0.11.3
-        version: 0.11.3(@antelopejs/core@1.23.3)
+        specifier: '>=0.11.4 <0.12.0'
+        version: 0.11.5(@antelopejs/core@1.24.0)
       '@antelopejs/tooling-configs':
         specifier: ^0.7.4
         version: 0.7.4(knip@6.41.0)(oxfmt@0.77.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2004))(playwright-core@1.65.1)
@@ -93,20 +93,20 @@ packages:
   2fa@0.1.2:
     resolution: {integrity: sha512-PbQttc6USc2TmZwOPE/zlNWTJTySLt50rWhUbZgPkZ5LAOLpgShT3yclbxwHPfHGUXEjfLrTo3Lunyx8onGnXw==}
 
-  '@antelopejs/core@1.23.3':
-    resolution: {integrity: sha512-W9ekdNXaZCuK4lsKn5bBF3F+LoQhvwlmLoprw4m0W6jdS0DA6Bb7B2+2ttgla0oggAJwyFUxHcpBVloFnlv91w==}
+  '@antelopejs/core@1.24.0':
+    resolution: {integrity: sha512-lYw0iwu8pMohkWvU+aRTHRsZvRi2YXph+ALF3lwCyjilxeXlMxoCDwHroGP3iWXrAhqK8G/8iTloOz/b0WGUKw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  '@antelopejs/dms-frontend@0.11.3':
-    resolution: {integrity: sha512-z/AXIA73vXxqaZntk2siV/kVqfLRK74n/lQeKx4jnDG04UJi+jWWVqmoxnRTfnXnb0WWG1ewTXxLWZqM3QyJYQ==}
+  '@antelopejs/dms-frontend@0.11.5':
+    resolution: {integrity: sha512-dx5vVToo6fveYC+17cvborOQ1PHz+t2Ev5Qa5S92NRRjDLFc4ADexANf/t+xf+P1SZSWKoyJefYILwcCryQlyw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
-      '@antelopejs/core': ~1.23.1
+      '@antelopejs/core': ~1.24.0
 
-  '@antelopejs/dms@0.20.1':
-    resolution: {integrity: sha512-syyuXLfNu3JRVSA4H/JQ1728yQoZRkcHl7EdLxBB0XnNH/Kl/fSyyQ59u7RzBP1b8Ntn3xD8ASkcLp8rEwO9AQ==}
+  '@antelopejs/dms@0.20.2':
+    resolution: {integrity: sha512-nqv2LvF8GyA0lvDEuu1WFZNf0PLuhfkSy5ymsldGa9YVrFRU1VZrv3f/WR2sMoFVnq7L0KurA1wTpWDBVI6yzw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -159,10 +159,10 @@ packages:
       '@antelopejs/interface-database': '>=0.4.0 <0.5.0'
       '@antelopejs/interface-database-decorators': '>=0.5.0 <0.6.0'
 
-  '@antelopejs/interface-database-catalog@0.0.4':
-    resolution: {integrity: sha512-5aiKq+vgvA6Pt9D9dqpuKnWxcGegrnAQ4mLC/Ot7hIstnxIXnp4ifITTlVPS0JgvynktA2pelH68GAavBogr0A==}
+  '@antelopejs/interface-database-catalog@0.1.0':
+    resolution: {integrity: sha512-R5SL72JKD7u63UwBumWt18YsGXVnnWfKbBVwc323CgKvDcLS7Qfz+Eo/ko2ybr8wHq7Izi7maSTPhJn3fp91ug==}
     peerDependencies:
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
+      '@antelopejs/interface-core': '>=0.5.0 <0.6.0'
 
   '@antelopejs/interface-database-decorators@0.5.2':
     resolution: {integrity: sha512-o89zRhY8MT6nXNLz+8G/Yj4f/hQsYqrVPZCMyTrttnQuMjGVEqbIANf9t/KmgNSUVagf34LZDpsfQ2LgeeQa9Q==}
@@ -2127,7 +2127,7 @@ snapshots:
       qr-image: 3.2.0
       thirty-two: 0.0.2
 
-  '@antelopejs/core@1.23.3':
+  '@antelopejs/core@1.24.0':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
       '@clack/prompts': 1.8.1
@@ -2142,9 +2142,9 @@ snapshots:
       semver: 7.8.5
       typescript: 5.9.3
 
-  '@antelopejs/dms-frontend@0.11.3(@antelopejs/core@1.23.3)':
+  '@antelopejs/dms-frontend@0.11.5(@antelopejs/core@1.24.0)':
     dependencies:
-      '@antelopejs/core': 1.23.3
+      '@antelopejs/core': 1.24.0
       '@intlify/message-compiler': 11.4.16
       chokidar: 4.0.3
       commander: 13.1.0
@@ -2158,7 +2158,7 @@ snapshots:
       '@oxc-parser/binding-linux-x64-gnu': 0.95.0
       '@oxc-parser/binding-win32-x64-msvc': 0.95.0
 
-  '@antelopejs/dms@0.20.1(@antelopejs/core@1.23.3)(typescript@6.0.3)':
+  '@antelopejs/dms@0.20.2(@antelopejs/core@1.24.0)(typescript@6.0.3)':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/interface-api': 0.3.3(@antelopejs/interface-core@0.5.1)
@@ -2192,8 +2192,8 @@ snapshots:
       zod: 3.25.76
       zod-to-json-schema: 3.24.6(zod@3.25.76)
     optionalDependencies:
-      '@antelopejs/core': 1.23.3
-      '@antelopejs/interface-database-catalog': 0.0.4(@antelopejs/interface-core@0.5.1)
+      '@antelopejs/core': 1.24.0
+      '@antelopejs/interface-database-catalog': 0.1.0(@antelopejs/interface-core@0.5.1)
       '@antelopejs/interface-dms-automation': 0.7.0(@antelopejs/interface-core@0.5.1)
       '@antelopejs/interface-redis': 0.0.9(@antelopejs/interface-core@0.5.1)
       playwright-core: 1.65.1
@@ -2232,7 +2232,7 @@ snapshots:
       '@antelopejs/interface-database': 0.4.0(@antelopejs/interface-core@0.5.1)
       '@antelopejs/interface-database-decorators': 0.5.2(@antelopejs/interface-api@0.3.3(@antelopejs/interface-core@0.5.1))(@antelopejs/interface-core@0.5.1)(@antelopejs/interface-database@0.4.0(@antelopejs/interface-core@0.5.1))
 
-  '@antelopejs/interface-database-catalog@0.0.4(@antelopejs/interface-core@0.5.1)':
+  '@antelopejs/interface-database-catalog@0.1.0(@antelopejs/interface-core@0.5.1)':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
     optional: true

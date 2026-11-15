@@ -88,7 +88,7 @@ export default defineConfig({
 
     /** Each DMS module stays on one minor, the one that reads interface-dms 0.14, so they all resolve on one copy. */
     dms: {
-      source: moduleSource("@antelopejs/dms", "^0.20.1"),
+      source: moduleSource("@antelopejs/dms", ">=0.20.2 <0.21.0"),
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
         /** The MCP bridge runs on this host, so it reaches the API over loopback and never sends its token to the public URL. */
@@ -112,7 +112,7 @@ export default defineConfig({
       source: moduleSource("@antelopejs/dms-api", "^0.7.1"),
     },
     "dms-database": {
-      source: moduleSource("@antelopejs/dms-database", "^0.5.1"),
+      source: moduleSource("@antelopejs/dms-database", ">=0.5.2 <0.6.0"),
     },
     "dms-automation": {
       source: moduleSource("@antelopejs/dms-automation", "^0.11.1"),
@@ -168,7 +168,7 @@ export default defineConfig({
        * enforces unique indexes, which dms-mailing's slug index needs. 1.8
        * serves interface-database 0.4, the copy every DMS module reads.
        */
-      source: moduleSource("@antelopejs/mongodb", "~1.8.2"),
+      source: moduleSource("@antelopejs/mongodb", "~1.8.4"),
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
