@@ -113,14 +113,37 @@ async function installError(
     );
     return undefined;
   } catch {
+    const unresolvable = await protocolDependencies(name, version);
     const errors = readdirSync(logs)
       .flatMap((file) => readFileSync(join(logs, file), "utf8").split("\n"))
       .flatMap((line) => /^\d+ error (.+)$/.exec(line)?.slice(1) ?? [])
       .filter((line) => !line.includes("complete log"));
-    return (errors.join(" ") || "npm install failed").replaceAll("|", "\\|");
+    const reasons = unresolvable.length > 0 ? unresolvable : errors;
+    return (reasons.join("; ") || "npm install failed").replaceAll("|", "\\|");
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+}
+
+/** The dependencies the published `name@version` declares with a protocol only its own workspace resolves, as `workspace:^`. */
+async function protocolDependencies(
+  name: string,
+  version: string,
+): Promise<string[]> {
+  const response = await fetch(
+    `https://registry.npmjs.org/${name.replace("/", "%2f")}/${version}`,
+  );
+  if (!response.ok) return [];
+  const published: unknown = await response.json();
+  if (
+    !isObject(published) ||
+    !("dependencies" in published) ||
+    !isVersions(published.dependencies)
+  )
+    return [];
+  return Object.entries(published.dependencies)
+    .filter(([, spec]) => /^(workspace|file|link|portal):/.test(spec))
+    .map(([dependency, spec]) => `depends on ${dependency} ${spec}`);
 }
 
 async function choose(name: string): Promise<Choice> {
