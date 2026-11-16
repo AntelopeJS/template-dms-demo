@@ -9,7 +9,7 @@ import {
   type JourneyContext,
 } from "@antelopejs/tooling-configs/verify";
 
-import { pick, text } from "./json.ts";
+import { keys, parseJson, pick, text } from "./json.ts";
 import {
   alive,
   call,
@@ -278,7 +278,125 @@ const frontendImage: Journey = {
   },
 };
 
+/** The `<package>@<version>` of every module lock a commit holds under `antelope-lock/`, sorted. */
+function lockedModules(tree: string): string[] {
+  const locked = new Set<string>();
+  for (const line of tree.split("\n")) {
+    const found = /^antelope-lock\/(@[^/@]+\/[^/@]+@[^/]+)\//.exec(line);
+    if (found?.[1] !== undefined) locked.add(found[1]);
+  }
+  return [...locked].sort();
+}
+
+/** The `<package>@<version>` of every module `ajs project build` installed, from the module cache's manifest. */
+function installedModules(clone: string): string[] {
+  const manifest = parseJson(
+    readFileSync(join(clone, ".antelope", "cache", "manifest.json"), "utf8"),
+  );
+  return keys(manifest)
+    .map(
+      (key) => `${key.replace(/(?<=.)@[^@/]+$/, "")}@${text(pick(manifest, key))}`,
+    )
+    .sort();
+}
+
+const lockedBuild: Journey = {
+  title:
+    "`ajs project build -e production` in a clean clone installs exactly the module versions of the committed `antelope-lock/`, and, with frozen modules, fails when a module has no committed lock",
+  entryPoint:
+    "`git clone` of the committed project, then `ajs project build -e production` with an empty module cache, then again with `ANTELOPEJS_FROZEN_MODULES=1`, which AntelopeJS Cloud sets for a project that commits its locks",
+  async run(context) {
+    const project = await scaffolded(context);
+    const commit = await context.command(
+      "commit the project",
+      "sh",
+      [
+        "-c",
+        "git add -A && git -c user.name=verify -c user.email=verify@example.invalid commit -q -m initial",
+      ],
+      { cwd: project },
+    );
+    context.expect(commit.folder, [exitIs(commit, 0)], { critical: true });
+    const clone = join(context.work, "clone");
+    const cloned = await context.command("git clone", "git", [
+      "clone",
+      "-q",
+      project,
+      clone,
+    ]);
+    context.expect(cloned.folder, [exitIs(cloned, 0)], { critical: true });
+    const tree = await context.command(
+      "committed files",
+      "git",
+      ["ls-tree", "-r", "--name-only", "HEAD"],
+      { cwd: clone },
+    );
+    const locked = lockedModules(tree.stdout);
+    context.expect(
+      tree.folder,
+      [
+        exitIs(tree, 0),
+        equal(
+          "the project commits the lock of at least one module",
+          locked.length > 0,
+          true,
+        ),
+      ],
+      { critical: true },
+    );
+    await productionBuild(context, clone, "from the committed locks", {
+      ...PRODUCTION,
+    });
+    context.expect(
+      join(clone, ".antelope", "cache"),
+      [
+        equal(
+          "the modules the build installed are the committed locks, no more and no fewer",
+          installedModules(clone),
+          locked,
+        ),
+      ],
+      { critical: true },
+    );
+    const [dropped] = locked;
+    const name = (dropped ?? "").replace(/@[^@/]+$/, "");
+    const remove = await context.command(
+      `commit the project without the lock of ${name}`,
+      "sh",
+      [
+        "-c",
+        `git rm -r -q "antelope-lock/${name}@"* && rm -rf .antelope && git -c user.name=verify -c user.email=verify@example.invalid commit -q -m "drop a lock"`,
+      ],
+      { cwd: clone },
+    );
+    context.expect(remove.folder, [exitIs(remove, 0)], { critical: true });
+    const refused = await context.command(
+      `ajs project build -e production without the lock of ${name}, frozen modules`,
+      "pnpm",
+      ["exec", "ajs", "project", "build", "-e", "production"],
+      {
+        cwd: clone,
+        env: { ...PRODUCTION, ANTELOPEJS_FROZEN_MODULES: "1" },
+        timeoutMs: 600_000,
+      },
+    );
+    context.expect(refused.folder, [
+      equal(
+        "the build fails",
+        refused.exitCode !== 0 && refused.exitCode !== null,
+        true,
+      ),
+      has(
+        "and names the module that has no lock",
+        refused.stdout + refused.stderr,
+        new RegExp(name.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")),
+      ),
+    ]);
+  },
+};
+
 export const deployJourneys = {
   "production-env": productionEnv,
   "frontend-image": frontendImage,
+  "locked-build": lockedBuild,
 };
