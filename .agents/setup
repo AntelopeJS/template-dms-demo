@@ -158,4 +158,4 @@ run_step "Install dependencies" install_dependencies
 run_step "Build project" build_project
 run_step "Install AntelopeJS modules" install_project_modules
 
-printf 'Orb setup completed in %ss\n' "$((SECONDS - setup_started_at))"
+printf 'Setup completed in %ss\n' "$((SECONDS - setup_started_at))"
