@@ -47,6 +47,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Write the files the previews sync
+        run: pnpm run sync
+
       - name: Run checks
         run: pnpm run checks
 
