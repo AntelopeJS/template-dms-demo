@@ -23,13 +23,6 @@ if cmp -s "$work/before" "$work/after"; then
   exit 0
 fi
 
-if git fetch -q origin "refs/heads/${branch}" 2> /dev/null &&
-  [ "$(git rev-parse FETCH_HEAD^)" = "$(git rev-parse HEAD)" ] &&
-  git ls-tree -r --name-only FETCH_HEAD -- antelope-lock | lock_folders | cmp -s - "$work/after"; then
-  echo proposed
-  exit 0
-fi
-
 {
   echo "Records the latest release of each AntelopeJS module in \`antelope-lock/\` with \`ajs project modules update --fix\`, and moves \`pnpm-lock.yaml\` to the newest \`dms\`, \`dms-frontend\` and interface releases their ranges allow."
   echo
@@ -53,6 +46,14 @@ fi
         printf "| `%s` | %s | %s |\n", name, from, to
       }
     }'
+  if ! git diff --quiet -- antelope.config.ts package.json; then
+    echo
+    echo "A release outside a range moved these ranges. Check each one before you merge:"
+    echo
+    echo '```diff'
+    git diff -- antelope.config.ts package.json
+    echo '```'
+  fi
   echo
   echo "Other files:"
   echo
@@ -60,4 +61,11 @@ fi
   git diff --stat -- . ':(exclude)antelope-lock'
   echo '```'
 } > "$body"
+
+if git fetch -q origin "refs/heads/${branch}" 2> /dev/null &&
+  git merge-base --is-ancestor HEAD FETCH_HEAD &&
+  git ls-tree -r --name-only FETCH_HEAD -- antelope-lock | lock_folders | cmp -s - "$work/after"; then
+  echo proposed
+  exit 0
+fi
 echo changed
