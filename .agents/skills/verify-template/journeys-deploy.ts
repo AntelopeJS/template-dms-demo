@@ -344,6 +344,13 @@ const lockedBuild: Journey = {
       ],
       { critical: true },
     );
+    const install = await context.command(
+      "pnpm install in the clone",
+      "pnpm",
+      ["install", "--frozen-lockfile", "--prefer-offline"],
+      { cwd: clone },
+    );
+    context.expect(install.folder, [exitIs(install, 0)], { critical: true });
     await productionBuild(context, clone, "from the committed locks", {
       ...PRODUCTION,
     });
