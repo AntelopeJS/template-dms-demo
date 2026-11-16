@@ -61,8 +61,8 @@ importers:
         specifier: '>=0.11.6 <0.12.0'
         version: 0.11.6(@antelopejs/core@1.24.0)
       '@antelopejs/tooling-configs':
-        specifier: ^0.7.4
-        version: 0.7.4(knip@6.41.0)(oxfmt@0.77.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2004))(playwright-core@1.65.1)
+        specifier: ^0.8.0
+        version: 0.8.0(knip@6.41.0)(oxfmt@0.77.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2004))(playwright-core@1.65.1)
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -234,8 +234,8 @@ packages:
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
-  '@antelopejs/tooling-configs@0.7.4':
-    resolution: {integrity: sha512-/iLJFMB/RcOyRr9Mp5cqcQve8J1LFx6BbSsZs8MndE++Ua7hOtXYbiBZKocp7XtzMDibxFpJW7zOqiNS7LhN/g==}
+  '@antelopejs/tooling-configs@0.8.0':
+    resolution: {integrity: sha512-o2sec/CFUH//QtXUjGpbeFp0D/QI0H5+59nDoihgz4biEE2D5Z+o1r69yY9c7cRyOY1nnFxiHluuhKoylasc1g==}
     engines: {node: '>=22.18.0'}
     hasBin: true
     peerDependencies:
@@ -2314,7 +2314,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@antelopejs/tooling-configs@0.7.4(knip@6.41.0)(oxfmt@0.77.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2004))(playwright-core@1.65.1)':
+  '@antelopejs/tooling-configs@0.8.0(knip@6.41.0)(oxfmt@0.77.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2004))(playwright-core@1.65.1)':
     dependencies:
       '@oxlint/plugins': 1.81.0
       dts-bundle-generator: 9.5.1

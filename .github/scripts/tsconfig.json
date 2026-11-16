@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["ES2024"],
+    "noEmit": true,
+    "rootDir": ".",
+    "erasableSyntaxOnly": true,
+    "incremental": false
+  },
+  "include": ["./*.mts"]
+}

@@ -22,9 +22,7 @@
     "knip:all": "knip --workspace .",
     "checks": "antelopejs-checks",
     "size": "antelopejs-check-size",
-    "ratchet": "antelopejs-ratchet",
     "sync": "antelopejs-sync --profile template",
-    "ratchet:update": "antelopejs-ratchet --update",
     "sync:check": "antelopejs-sync --check --profile template",
     "format:check": "oxfmt --check .",
     "suppressions": "antelopejs-suppressions",
@@ -50,7 +48,7 @@
   "devDependencies": {
     "@antelopejs/dms": ">=0.20.2 <0.21.0",
     "@antelopejs/dms-frontend": ">=0.11.6 <0.12.0",
-    "@antelopejs/tooling-configs": "^0.7.4",
+    "@antelopejs/tooling-configs": "^0.8.0",
     "@types/node": "^26.6.5",
     "dotenv": "^18.0.8",
     "knip": "^6.41.0",
