@@ -217,7 +217,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/nodemailer",
-        version: "^0.0.12",
+        version: "^0.0.13",
       },
       config: {
         ethereal: true,
