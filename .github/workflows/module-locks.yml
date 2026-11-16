@@ -1,0 +1,81 @@
+name: module locks
+
+on:
+  schedule:
+    - cron: "47 * * * *"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/module-locks.yml
+      - .github/scripts/refresh-module-locks.sh
+permissions:
+  contents: read
+
+concurrency:
+  group: module-locks
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Refresh the module locks
+    if: github.repository == 'AntelopeJS/template-dms-demo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE: ${{ github.event.repository.default_branch }}
+      BRANCH: antelopejs/module-locks
+      TITLE: "build(deps): update the AntelopeJS module locks"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --reporter=silent
+
+      - name: Record the latest release of each module
+        id: refresh
+        run: |
+          state=$(.github/scripts/refresh-module-locks.sh "$RUNNER_TEMP/body.md")
+          echo "state=${state}" >> "$GITHUB_OUTPUT"
+          case "$state" in
+            current) echo "Every module lock is on the latest release its range allows." ;;
+            proposed) echo "The open pull request from \`${BRANCH}\` already proposes these locks." ;;
+            changed) cat "$RUNNER_TEMP/body.md" ;;
+          esac >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Close the pull request the locks no longer need
+        if: github.event_name != 'pull_request' && steps.refresh.outputs.state == 'current'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+        run: |
+          number=$(gh pr list --head "$BRANCH" --base "$BASE" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh pr close "$number" --delete-branch --comment "Every module lock on \`${BASE}\` is already on the latest release its range allows."
+          fi
+
+      - name: Open or update the pull request
+        if: github.event_name != 'pull_request' && steps.refresh.outputs.state == 'changed'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          echo -e "\nOpened by the [module locks workflow](${RUN_URL})." >> "$RUNNER_TEMP/body.md"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit --no-verify -q -m "$TITLE"
+          git push --no-verify -q --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${BRANCH}"
+          number=$(gh pr list --head "$BRANCH" --base "$BASE" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --body-file "$RUNNER_TEMP/body.md"
+          else
+            gh pr create --base "$BASE" --head "$BRANCH" --title "$TITLE" --body-file "$RUNNER_TEMP/body.md"
+          fi

@@ -22,6 +22,48 @@ jobs:
       test-job: true
     permissions:
       contents: read
+  locked-build:
+    name: Locked build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install and build
+        run: |
+          pnpm install --frozen-lockfile --reporter=silent
+          pnpm build
+
+      - name: Build a clean clone from the committed module locks
+        run: |
+          git config --global user.name "locked build"
+          git config --global user.email "locked-build@users.noreply.github.com"
+          run=$(pnpm exec antelopejs-verify new --base HEAD --title "locked build" | tail -n 1)
+          echo "VERIFY_RUN=${run}" >> "$GITHUB_ENV"
+          env -u GITHUB_BASE_REF pnpm exec antelopejs-verify journey "$run" project locked-build
+
+      - name: Show the output of each failed step
+        if: failure() && env.VERIFY_RUN != ''
+        run: |
+          grep -l '"pass": false' "$VERIFY_RUN"/evidence/*/*/*/checks.json | while read -r checks; do
+            step=$(dirname "$checks")
+            echo "::group::${step#"$VERIFY_RUN/evidence/"}"
+            cat "$checks" "$step/command.txt" "$step/stdout.txt" "$step/stderr.txt" 2>/dev/null | tail -n 200
+            echo "::endgroup::"
+          done
+
+      - name: Stop what the journey started
+        if: always() && env.VERIFY_RUN != ''
+        run: pnpm exec antelopejs-verify clean "$VERIFY_RUN"
   renovate-sync:
     if: >-
       github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/') && github.event.pull_request.head.repo.full_name == github.repository
