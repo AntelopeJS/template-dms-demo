@@ -5,11 +5,6 @@ import { config as loadDotenv } from "dotenv";
 
 loadDotenv({ path: resolve(__dirname, ".env") });
 
-/** A module loaded from the registry at `version`. */
-function moduleSource(name: string, version: string) {
-  return { type: "package" as const, package: name, version };
-}
-
 /**
  * The secret that hashes visitor ids, derived from `HELIO_NOW` when it is set so the imported traffic gets the same ids
  * on every run. Empty keeps the module's own generated secret.
@@ -88,7 +83,11 @@ export default defineConfig({
 
     /** Each DMS module stays on one minor, the one that reads interface-dms 0.14, so they all resolve on one copy. */
     dms: {
-      source: moduleSource("@antelopejs/dms", ">=0.21.0 <0.22.0"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms",
+        version: ">=0.21.0 <0.22.0",
+      },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
         /** The MCP bridge runs on this host, so it reaches the API over loopback and never sends its token to the public URL. */
@@ -109,19 +108,32 @@ export default defineConfig({
       },
     },
     "dms-api": {
-      source: moduleSource("@antelopejs/dms-api", "^0.7.1"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-api",
+        version: "^0.7.1",
+      },
     },
     "dms-database": {
-      source: moduleSource(
-        "@antelopejs/dms-database",
-        "0.5.6-next.195.gc66d3c5",
-      ),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-database",
+        version: "0.5.6-next.195.gc66d3c5",
+      },
     },
     "dms-automation": {
-      source: moduleSource("@antelopejs/dms-automation", "^0.11.1"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-automation",
+        version: "^0.11.1",
+      },
     },
     "dms-saas": {
-      source: moduleSource("@antelopejs/dms-saas", "^0.12.1"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-saas",
+        version: "^0.12.1",
+      },
       config: {
         stripe: {
           secretKey: "sk_test_placeholder",
@@ -131,23 +143,39 @@ export default defineConfig({
       },
     },
     "dms-assistant": {
-      source: moduleSource("@antelopejs/dms-assistant", "^0.2.8"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-assistant",
+        version: "^0.2.8",
+      },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
       },
     },
     "dms-lang": {
-      source: moduleSource("@antelopejs/dms-lang", "^0.7.0"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-lang",
+        version: "^0.7.0",
+      },
       config: {
         editable: true,
       },
     },
     "dms-media": {
-      source: moduleSource("@antelopejs/dms-media", "^0.8.0"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-media",
+        version: "^0.8.0",
+      },
     },
     "dms-marketing": {
-      source: moduleSource("@antelopejs/dms-marketing", "^0.10.0"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-marketing",
+        version: "^0.10.0",
+      },
       config: {
         visitorHashSecret,
         /** Tracks the dashboard itself, so Marketing shows how the demo is used. */
@@ -161,7 +189,11 @@ export default defineConfig({
       },
     },
     "dms-mailing": {
-      source: moduleSource("@antelopejs/dms-mailing", "^0.10.2"),
+      source: {
+        type: "package",
+        package: "@antelopejs/dms-mailing",
+        version: "^0.10.2",
+      },
     },
 
     mongodb: {
@@ -171,7 +203,11 @@ export default defineConfig({
        * enforces unique indexes, which dms-mailing's slug index needs. 1.8
        * serves interface-database 0.4, the copy every DMS module reads.
        */
-      source: moduleSource("@antelopejs/mongodb", "~1.8.4"),
+      source: {
+        type: "package",
+        package: "@antelopejs/mongodb",
+        version: "~1.8.4",
+      },
       config: {
         url: "mongodb://localhost:27017",
         database: "template_dms_demo",
