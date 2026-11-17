@@ -88,7 +88,7 @@ export default defineConfig({
 
     /** Each DMS module stays on one minor, the one that reads interface-dms 0.14, so they all resolve on one copy. */
     dms: {
-      source: moduleSource("@antelopejs/dms", ">=0.20.2 <0.21.0"),
+      source: moduleSource("@antelopejs/dms", ">=0.21.0 <0.22.0"),
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
         /** The MCP bridge runs on this host, so it reaches the API over loopback and never sends its token to the public URL. */
@@ -112,7 +112,10 @@ export default defineConfig({
       source: moduleSource("@antelopejs/dms-api", "^0.7.1"),
     },
     "dms-database": {
-      source: moduleSource("@antelopejs/dms-database", ">=0.5.2 <0.6.0"),
+      source: moduleSource(
+        "@antelopejs/dms-database",
+        "0.5.6-next.195.gc66d3c5",
+      ),
     },
     "dms-automation": {
       source: moduleSource("@antelopejs/dms-automation", "^0.11.1"),
@@ -128,7 +131,7 @@ export default defineConfig({
       },
     },
     "dms-assistant": {
-      source: moduleSource("@antelopejs/dms-assistant", "^0.2.1"),
+      source: moduleSource("@antelopejs/dms-assistant", "^0.2.8"),
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
         backendUrl: "${@api.API_LOCAL_BASE_URL}",
