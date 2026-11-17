@@ -112,7 +112,10 @@ export default defineConfig({
       source: moduleSource("@antelopejs/dms-api", "^0.7.1"),
     },
     "dms-database": {
-      source: moduleSource("@antelopejs/dms-database", "0.5.6-next.195.gc66d3c5"),
+      source: moduleSource(
+        "@antelopejs/dms-database",
+        "0.5.6-next.195.gc66d3c5",
+      ),
     },
     "dms-automation": {
       source: moduleSource("@antelopejs/dms-automation", "^0.11.1"),
