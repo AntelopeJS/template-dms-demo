@@ -11,7 +11,7 @@ lock_folders() {
 
 git ls-tree -r --name-only HEAD -- antelope-lock | lock_folders > "$work/before"
 
-pnpm exec ajs project modules update --fix >&2 || pnpm exec ajs project modules update --fix >&2
+pnpm exec ajs project modules update --fix >&2
 pnpm install --no-frozen-lockfile --reporter=silent >&2
 pnpm update --no-save '@antelopejs/interface-*' @antelopejs/dms @antelopejs/dms-frontend >&2
 pnpm exec oxfmt package.json antelope.config.ts >&2
