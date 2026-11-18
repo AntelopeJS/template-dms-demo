@@ -118,7 +118,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: "0.5.6-next.195.gc66d3c5",
+        version: "0.6.0",
       },
     },
     "dms-automation": {
