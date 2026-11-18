@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/module-locks.yml
       - .github/scripts/refresh-module-locks.sh
+      - antelope.config.ts
 permissions:
   contents: read
 
@@ -41,6 +42,16 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --reporter=silent
+
+      - name: Start from the module locks on the default branch
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.repository.default_branch }}
+        run: |
+          git rm -rq --ignore-unmatch antelope-lock
+          git checkout "origin/${BASE}" -- antelope-lock
+          git diff --cached --quiet && exit 0
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit --no-verify -q -m "build: take the module locks of ${BASE}"
 
       - name: Record the latest release of each module
         id: refresh
