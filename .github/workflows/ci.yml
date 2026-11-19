@@ -21,8 +21,8 @@ jobs:
       # still builds, the output `ajs project run` and `ajs dms build` load.
       extra-commands: |
         pnpm build
-        pnpm exec tsc -p .github/scripts/template
-        if [[ "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none .github/scripts/template/*.test.mts; fi
+        if [[ -d .github/scripts/template ]]; then pnpm exec tsc -p .github/scripts/template; fi
+        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none .github/scripts/template/*.test.mts; fi
       extra-commands-job: true
       renovate-sync: false
       test-job: true
@@ -52,7 +52,10 @@ jobs:
         run: pnpm install --frozen-lockfile --reporter=silent
 
       - name: Build a clean clone from the committed module locks
-        run: node --test --test-isolation=none --test-name-pattern=locked-build .github/scripts/template/project.test.mts
+        run: |
+          set -o pipefail
+          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/project.test.mts | tee "$RUNNER_TEMP/locked-build.log"
+          grep -q "✔ locked-build" "$RUNNER_TEMP/locked-build.log"
   renovate-sync:
     if: >-
       github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/') && github.event.pull_request.head.repo.full_name == github.repository

@@ -1,9 +1,10 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import {
   copyFileSync,
   lstatSync,
   mkdirSync,
   mkdtempSync,
+  readFileSync,
   readlinkSync,
   rmSync,
   symlinkSync,
@@ -169,8 +170,27 @@ export const SHARED_CACHE = join(
   "template-dms-demo-tests",
 );
 
-/** The `ajs` bin of the repository's `@antelopejs/core`; it `exec`s node, so its PID is the CLI's. */
-export const AJS = join(REPO, "node_modules", ".bin", "ajs");
+function hasAjsBin(manifest: unknown): manifest is { bin: { ajs: string } } {
+  return (
+    typeof manifest === "object" &&
+    manifest !== null &&
+    "bin" in manifest &&
+    typeof manifest.bin === "object" &&
+    manifest.bin !== null &&
+    "ajs" in manifest.bin &&
+    typeof manifest.bin.ajs === "string"
+  );
+}
+
+/** The entry of the `ajs` bin of the repository's `@antelopejs/core`, run with node directly so no pnpm shim sets `NODE_PATH` for the project it drives. */
+export const AJS = (() => {
+  const core = join(REPO, "node_modules", "@antelopejs", "core");
+  const manifest: unknown = JSON.parse(
+    readFileSync(join(core, "package.json"), "utf8"),
+  );
+  if (!hasAjsBin(manifest)) throw new Error(`${core} has no ajs bin`);
+  return join(core, manifest.bin.ajs);
+})();
 
 const dir = mkdtempSync(join(tmpdir(), "template-dms-demo-tests-"));
 const mongoContainer = `template-dms-demo-tests-${process.pid}`;
@@ -178,7 +198,7 @@ let started: Promise<Run> | undefined;
 
 after(() => {
   if (started !== undefined)
-    execFileSync("docker", ["rm", "-f", mongoContainer], { stdio: "ignore" });
+    spawnSync("docker", ["rm", "-f", mongoContainer], { stdio: "ignore" });
   rmSync(dir, { recursive: true, force: true });
 });
 

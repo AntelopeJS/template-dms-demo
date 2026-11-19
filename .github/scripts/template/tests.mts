@@ -29,15 +29,16 @@ async function runJourney(feature: string, id: string, journey: Journey) {
   return context.failed();
 }
 
-/** A product defect a journey shows: the one check it fails, and the finding that explains it. */
+/** A product defect a journey shows: the one check it fails, what that check observes, and the finding that explains it. */
 export interface KnownFailure {
   check: string;
+  detail: string;
   finding: string;
 }
 
 /**
  * Registers each journey as the test `<feature> › <id>`. A journey with a known failure passes only while exactly
- * that check fails, so fixing the product fails the test until the entry goes.
+ * that check fails with exactly that detail, so fixing the product, or breaking it further, fails the test.
  */
 export function journeyTests(
   feature: string,
@@ -55,10 +56,15 @@ export function journeyTests(
           return;
         }
         t.diagnostic(`known failure: ${known.finding}`);
-        const names = failed.map((failure) => failure.name);
-        if (names.length !== 1 || names[0] !== known.check)
+        const [only, ...others] = failed;
+        if (
+          only === undefined ||
+          others.length > 0 ||
+          only.name !== known.check ||
+          only.detail !== known.detail
+        )
           throw new Error(
-            `${id} must fail only "${known.check}" (${known.finding}); it failed:\n${report || "nothing"}`,
+            `${id} must fail only "${known.check}: ${known.detail}" (${known.finding}); it failed:\n${report || "nothing"}`,
           );
       });
   });

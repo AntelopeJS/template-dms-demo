@@ -1,5 +1,6 @@
 import { execFileSync, spawn } from "node:child_process";
 import {
+  appendFileSync,
   closeSync,
   mkdirSync,
   openSync,
@@ -181,7 +182,8 @@ export class JourneyContext {
   readonly work: string;
   readonly home: string;
   private readonly run: Run;
-  private readonly failures: { name: string; line: string }[] = [];
+  private readonly failures: { name: string; detail: string; line: string }[] =
+    [];
   private readonly apps = new Set<App>();
   private steps = 0;
 
@@ -243,7 +245,7 @@ export class JourneyContext {
       child.stdout.on("data", (chunk: Buffer) => out.push(chunk));
       child.stderr.on("data", (chunk: Buffer) => err.push(chunk));
       const timer = setTimeout(() => {
-        if (child.pid !== undefined) process.kill(-child.pid, "SIGKILL");
+        if (child.pid !== undefined) killGroup(child.pid);
       }, options.timeoutMs ?? COMMAND_TIMEOUT_MS);
       const finish = (
         exitCode: number | null,
@@ -266,7 +268,7 @@ export class JourneyContext {
 
   /** Runs `ajs` of the repository's `@antelopejs/core`. */
   ajs(name: string, args: string[], options: DriveOptions = {}) {
-    return this.command(name, AJS, args, options);
+    return this.command(name, process.execPath, [AJS, ...args], options);
   }
 
   /** Writes `content` to `file` as a new inode, so the write reaches no hard-linked copy. */
@@ -323,6 +325,7 @@ export class JourneyContext {
     for (const check of failed)
       this.failures.push({
         name: check.name,
+        detail: check.detail,
         line: `[${step}] ${check.name}: ${check.detail}`,
       });
     if (failed.length > 0 && options.critical === true)
@@ -399,14 +402,21 @@ export class JourneyContext {
     const port = await freePort();
     const stdout = openSync(join(folder, "stdout.txt"), "w");
     const stderr = openSync(join(folder, "stderr.txt"), "w");
-    const child = spawn(AJS, ["project", "dev", ...(options.args ?? [])], {
-      cwd: project,
-      env: this.env({ PORT: String(port), ...options.env }),
-      detached: true,
-      stdio: ["ignore", stdout, stderr],
-    });
+    const child = spawn(
+      process.execPath,
+      [AJS, "project", "dev", ...(options.args ?? [])],
+      {
+        cwd: project,
+        env: this.env({ PORT: String(port), ...options.env }),
+        detached: true,
+        stdio: ["ignore", stdout, stderr],
+      },
+    );
     closeSync(stdout);
     closeSync(stderr);
+    child.on("error", (error) =>
+      appendFileSync(join(folder, "stderr.txt"), `${error.message}\n`),
+    );
     const exited = new Promise<{
       exitCode: number | null;
       signal: string | null;
@@ -456,7 +466,7 @@ export class JourneyContext {
     try {
       process.kill(app.pid, "SIGINT");
     } catch {
-      return { step, exitCode: null, signal: null, ...readOutput(app) };
+      return { step, ...(await app.exited), ...readOutput(app) };
     }
     const outcome = await Promise.race([
       app.exited,
