@@ -145,6 +145,8 @@ async function startMongo(container: string): Promise<string> {
     "--rm",
     "--name",
     container,
+    "--ulimit",
+    "nofile=64000:64000",
     "-p",
     "127.0.0.1::27017",
     MONGO_IMAGE,
