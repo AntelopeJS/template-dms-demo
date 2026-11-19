@@ -19,7 +19,11 @@ jobs:
     with:
       # `pnpm run checks` typechecks but never emits; this proves `dist`
       # still builds, the output `ajs project run` and `ajs dms build` load.
-      extra-commands: pnpm build
+      extra-commands: |
+        pnpm build
+        if [[ -d .github/scripts/template ]]; then pnpm exec tsc -p .github/scripts/template; fi
+        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none .github/scripts/template/*.test.mts; fi
+      extra-commands-job: true
       renovate-sync: false
       test-job: true
       affected-tests: true
@@ -44,32 +48,14 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - name: Install and build
-        run: |
-          pnpm install --frozen-lockfile --reporter=silent
-          pnpm build
+      - name: Install
+        run: pnpm install --frozen-lockfile --reporter=silent
 
       - name: Build a clean clone from the committed module locks
         run: |
-          git config --global user.name "locked build"
-          git config --global user.email "locked-build@users.noreply.github.com"
-          run=$(pnpm exec antelopejs-verify new --base HEAD --title "locked build" | tail -n 1)
-          echo "VERIFY_RUN=${run}" >> "$GITHUB_ENV"
-          env -u GITHUB_BASE_REF pnpm exec antelopejs-verify journey "$run" project locked-build
-
-      - name: Show the output of each failed step
-        if: failure() && env.VERIFY_RUN != ''
-        run: |
-          grep -l '"pass": false' "$VERIFY_RUN"/evidence/*/*/*/checks.json | while read -r checks; do
-            step=$(dirname "$checks")
-            echo "::group::${step#"$VERIFY_RUN/evidence/"}"
-            cat "$checks" "$step/command.txt" "$step/stdout.txt" "$step/stderr.txt" 2>/dev/null | tail -n 200
-            echo "::endgroup::"
-          done
-
-      - name: Stop what the journey started
-        if: always() && env.VERIFY_RUN != ''
-        run: pnpm exec antelopejs-verify clean "$VERIFY_RUN"
+          set -o pipefail
+          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/project.test.mts | tee "$RUNNER_TEMP/locked-build.log"
+          grep -q "✔ locked-build" "$RUNNER_TEMP/locked-build.log"
   renovate-sync:
     if: >-
       github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/') && github.event.pull_request.head.repo.full_name == github.repository
