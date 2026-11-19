@@ -2,12 +2,14 @@ name: ci
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+  merge_group:
   push:
-    branches: [next]
+    branches: [main]
   schedule:
     - cron: "17 2 * * *"
   workflow_dispatch:
+
 permissions:
   contents: read
 
@@ -20,8 +22,11 @@ jobs:
       extra-commands: pnpm build
       renovate-sync: false
       test-job: true
+      affected-tests: true
     permissions:
       contents: read
+    secrets:
+      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
   locked-build:
     name: Locked build
     if: github.repository == 'AntelopeJS/template-dms-demo'
