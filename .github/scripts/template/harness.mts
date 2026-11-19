@@ -13,11 +13,10 @@ import {
 } from "node:fs";
 import { createServer, type AddressInfo, type Server } from "node:net";
 import { isAbsolute, join, relative } from "node:path";
-import { describe, test } from "node:test";
 
 import { parseJson, type Json } from "./json.mts";
 import { journeyProcesses, running, withDescendants } from "./processes.mts";
-import { AJS, currentRun, SHARED_CACHE, TEMPLATE, type Run } from "./run.mts";
+import { AJS, SHARED_CACHE, TEMPLATE, type Run } from "./run.mts";
 
 const COMMAND_TIMEOUT_MS = 600_000;
 const HTTP_TIMEOUT_MS = 30_000;
@@ -25,10 +24,7 @@ const READY_TIMEOUT_MS = 120_000;
 const READY_POLL_MS = 250;
 const SETTLE_MS = 3000;
 const STOP_TIMEOUT_MS = 30_000;
-const JOURNEY_TIMEOUT_MS = 2_400_000;
 const EXCERPT = 600;
-const MONGO_RESET =
-  "db.getMongo().getDBNames().filter((name) => !['admin', 'config', 'local'].includes(name)).forEach((name) => db.getSiblingDB(name).dropDatabase())";
 
 /** The line the DMS prints at every start while no owner exists, as the README shows it. */
 export const ONBOARDING_LINE =
@@ -89,7 +85,8 @@ export interface Journey {
   run(context: JourneyContext): Promise<void>;
 }
 
-class JourneyAbort extends Error {}
+/** Ends a journey at its first failing critical step. */
+export class JourneyAbort extends Error {}
 
 function excerpt(text: string): string {
   const flat = text.replace(/\s+/g, " ").trim();
@@ -184,7 +181,7 @@ export class JourneyContext {
   readonly work: string;
   readonly home: string;
   private readonly run: Run;
-  private readonly failures: string[] = [];
+  private readonly failures: { name: string; line: string }[] = [];
   private readonly apps = new Set<App>();
   private steps = 0;
 
@@ -203,7 +200,7 @@ export class JourneyContext {
     const kept = Object.entries(process.env).filter(
       (entry): entry is [string, string] =>
         entry[1] !== undefined &&
-        !/^(antelopejs_|npm_|pnpm_|xdg_)/i.test(entry[0]),
+        !/^(antelopejs_|npm_|pnpm_|xdg_|github_base_ref$)/i.test(entry[0]),
     );
     return {
       ...Object.fromEntries(kept),
@@ -324,7 +321,10 @@ export class JourneyContext {
   expect(step: string, checks: Check[], options: { critical?: boolean } = {}) {
     const failed = checks.filter((check) => !check.pass);
     for (const check of failed)
-      this.failures.push(`[${step}] ${check.name}: ${check.detail}`);
+      this.failures.push({
+        name: check.name,
+        line: `[${step}] ${check.name}: ${check.detail}`,
+      });
     if (failed.length > 0 && options.critical === true)
       throw new JourneyAbort(`critical step ${step} failed`);
     return failed.length === 0;
@@ -479,9 +479,9 @@ export class JourneyContext {
     rmSync(this.home, { recursive: true, force: true });
   }
 
-  /** Every failed check, one per line, or an empty string. */
-  report(): string {
-    return this.failures.join("\n");
+  /** Every failed check, in the order the journey recorded them. */
+  failed() {
+    return this.failures;
   }
 }
 
@@ -537,40 +537,5 @@ export function freePort(): Promise<number> {
       }
       server.close(() => resolve(address.port));
     });
-  });
-}
-
-async function runJourney(feature: string, id: string, journey: Journey) {
-  const run = await currentRun();
-  execFileSync("docker", [
-    "exec",
-    run.mongoContainer,
-    "mongosh",
-    "--quiet",
-    "--eval",
-    MONGO_RESET,
-  ]);
-  const context = new JourneyContext(run, feature, id);
-  try {
-    await journey.run(context);
-  } catch (error) {
-    if (!(error instanceof JourneyAbort)) throw error;
-  } finally {
-    await context.cleanup();
-  }
-  const report = context.report();
-  if (report !== "") throw new Error(`${journey.title}\n${report}`);
-}
-
-/** Registers each journey as the test `<feature> › <id>`. */
-export function journeyTests(
-  feature: string,
-  journeys: Record<string, Journey>,
-): void {
-  void describe(feature, () => {
-    for (const [id, journey] of Object.entries(journeys))
-      void test(id, { timeout: JOURNEY_TIMEOUT_MS }, () =>
-        runJourney(feature, id, journey),
-      );
   });
 }
