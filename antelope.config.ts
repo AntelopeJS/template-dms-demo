@@ -86,7 +86,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: ">=0.21.0 <0.22.0",
+        version: ">=0.21.3 <0.22.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -111,28 +111,28 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: "^0.7.1",
+        version: "^0.7.2",
       },
     },
     "dms-database": {
       source: {
         type: "package",
         package: "@antelopejs/dms-database",
-        version: "0.5.6-next.195.gc66d3c5",
+        version: "^0.6.1",
       },
     },
     "dms-automation": {
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: "^0.11.1",
+        version: "^0.11.4",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: "^0.12.1",
+        version: "^0.12.4",
       },
       config: {
         stripe: {
@@ -146,7 +146,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-assistant",
-        version: "^0.2.8",
+        version: "^0.2.9",
       },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
@@ -157,7 +157,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: "^0.7.0",
+        version: "^0.7.1",
       },
       config: {
         editable: true,
@@ -167,14 +167,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: "^0.8.0",
+        version: "^0.8.2",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: "^0.10.0",
+        version: "^0.10.3",
       },
       config: {
         visitorHashSecret,
@@ -192,7 +192,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-mailing",
-        version: "^0.10.2",
+        version: "^0.10.5",
       },
     },
 
@@ -206,7 +206,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/mongodb",
-        version: "~1.8.4",
+        version: "~1.8.11",
       },
       config: {
         url: "mongodb://localhost:27017",
@@ -217,7 +217,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/auth-jwt",
-        version: "~1.1.2",
+        version: "~1.1.3",
       },
       config: {
         secret: "dev",
@@ -233,7 +233,7 @@ export default defineConfig({
          * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
          * declares configVarsFile, which dms-frontend 0.9 reads at build.
          */
-        version: "~1.7.4",
+        version: "~1.7.8",
       },
       config: {
         servers: [apiServer],
@@ -243,7 +243,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/file-storage-local",
-        version: "^0.2.1",
+        version: "^0.2.2",
       },
       config: {
         storagePath: ".antelope/file-storage",
