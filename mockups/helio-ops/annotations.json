@@ -2,14 +2,14 @@
   "version": 3,
   "annotations": [
     {
-      "id": "open-tickets-split",
+      "id": "split-installations",
       "anchor": {
         "block": "kpi-grid",
-        "steps": ["kpis", "tickets"],
+        "steps": ["kpis", "installations"],
         "page": "overview"
       },
       "offset": { "x": 0.92, "y": 0.18 },
-      "text": "Split this into urgent and normal tickets, the urgent ones are what the office acts on first.",
+      "text": "Split this into residential and commercial installations, the office plans them differently.",
       "status": "open",
       "createdAt": "2026-06-15T08:40:00.000Z",
       "version": 1
