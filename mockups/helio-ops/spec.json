@@ -1,0 +1,364 @@
+{
+  "$schema": "../../node_modules/@antelopejs/dms/data/mockup-spec.schema.json",
+  "version": 1,
+  "title": "Helio operations",
+  "source": "claude-code",
+  "categories": [
+    { "id": "field", "title": "Field work", "icon": "i-ph-solar-panel" }
+  ],
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "icon": "i-ph-squares-four",
+      "description": "Installations, production and service at a glance",
+      "headerActions": [
+        {
+          "label": "Plan an installation",
+          "icon": "i-ph-plus",
+          "color": "primary"
+        }
+      ],
+      "fixtures": {
+        "production": {
+          "value": 184320,
+          "series": [
+            {
+              "name": "Production (kWh)",
+              "data": [
+                { "x": "2026-01-01T00:00:00.000Z", "y": 6200 },
+                { "x": "2026-02-01T00:00:00.000Z", "y": 9100 },
+                { "x": "2026-03-01T00:00:00.000Z", "y": 17800 },
+                { "x": "2026-04-01T00:00:00.000Z", "y": 26400 },
+                { "x": "2026-05-01T00:00:00.000Z", "y": 33900 },
+                { "x": "2026-06-01T00:00:00.000Z", "y": 38700 },
+                { "x": "2026-07-01T00:00:00.000Z", "y": 52220 }
+              ]
+            }
+          ]
+        }
+      },
+      "tree": [
+        {
+          "id": "kpi-grid",
+          "type": "Grid",
+          "options": { "gap": "1rem", "minColumnWidth": "220px" },
+          "children": [
+            {
+              "id": "kpis",
+              "type": "GridRow",
+              "children": [
+                {
+                  "id": "installations",
+                  "type": "KpiCard",
+                  "options": {
+                    "title": "Installations this month",
+                    "icon": "i-ph-solar-panel",
+                    "staticValue": 38,
+                    "valueFormat": "number"
+                  }
+                },
+                {
+                  "id": "capacity",
+                  "type": "KpiCard",
+                  "options": {
+                    "title": "Capacity installed (kWp)",
+                    "icon": "i-ph-lightning",
+                    "staticValue": 312.4,
+                    "valueFormat": "number"
+                  }
+                },
+                {
+                  "id": "tickets",
+                  "type": "KpiCard",
+                  "options": {
+                    "title": "Open service tickets",
+                    "icon": "i-ph-wrench",
+                    "staticValue": 14,
+                    "valueFormat": "number"
+                  }
+                },
+                {
+                  "id": "uptime",
+                  "type": "KpiCard",
+                  "options": {
+                    "title": "Fleet uptime",
+                    "icon": "i-ph-pulse",
+                    "staticValue": 99.2,
+                    "valueFormat": "percent"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "production",
+          "type": "ChartCard",
+          "options": {
+            "title": "Energy produced by the fleet",
+            "icon": "i-ph-chart-line-up",
+            "fetchUrl": "fixture:production",
+            "valueFormat": "number"
+          },
+          "children": [
+            {
+              "id": "chart",
+              "type": "ChartArea",
+              "options": { "xaxisType": "datetime", "smooth": true }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "installations",
+      "title": "Installations",
+      "category": "field",
+      "icon": "i-ph-house-line",
+      "description": "Every rooftop project, from survey to commissioning",
+      "fixtures": {
+        "installations": {
+          "$generate": {
+            "rows": 24,
+            "fields": {
+              "_id": "id",
+              "customer": "name",
+              "city": "city",
+              "capacity": { "number": [3, 18] },
+              "stage": ["survey", "scheduled", "installing", "commissioned"],
+              "value": { "money": [6500, 32000] },
+              "startsAt": "date"
+            }
+          }
+        }
+      },
+      "tree": [
+        {
+          "id": "installations-table",
+          "type": "TableView",
+          "options": {
+            "caption": "Installations",
+            "fetchUrl": "fixture:installations",
+            "rowIdKey": "_id",
+            "labelKey": "customer",
+            "pageSize": 20,
+            "columns": {
+              "customer": {
+                "name": "Customer",
+                "type": "string",
+                "order": 1,
+                "sortable": true
+              },
+              "city": { "name": "City", "type": "string", "order": 2 },
+              "capacity": {
+                "name": "kWp",
+                "type": "number",
+                "order": 3,
+                "sortable": true
+              },
+              "stage": {
+                "name": "Stage",
+                "type": "string",
+                "order": 4,
+                "filterable": true,
+                "display": {
+                  "kind": "badge",
+                  "items": [
+                    { "value": "survey", "label": "Survey", "tone": "neutral" },
+                    {
+                      "value": "scheduled",
+                      "label": "Scheduled",
+                      "tone": "info"
+                    },
+                    {
+                      "value": "installing",
+                      "label": "Installing",
+                      "tone": "warning"
+                    },
+                    {
+                      "value": "commissioned",
+                      "label": "Commissioned",
+                      "tone": "success"
+                    }
+                  ]
+                }
+              },
+              "value": {
+                "name": "Contract value",
+                "type": "number",
+                "order": 5,
+                "sortable": true,
+                "display": { "kind": "price", "currency": "EUR" }
+              },
+              "startsAt": {
+                "name": "Start",
+                "type": "date",
+                "order": 6,
+                "sortable": true
+              }
+            },
+            "tabsFrom": { "column": "stage" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tickets",
+      "title": "Service tickets",
+      "category": "field",
+      "icon": "i-ph-wrench",
+      "description": "Inverter faults, yield drops and maintenance visits",
+      "fixtures": {
+        "tickets": {
+          "$generate": {
+            "rows": 18,
+            "fields": {
+              "_id": "id",
+              "customer": "name",
+              "issue": [
+                "Inverter offline",
+                "Low yield",
+                "Panel cleaning",
+                "Battery warning",
+                "Meter reading"
+              ],
+              "priority": ["low", "normal", "urgent"],
+              "status": ["open", "assigned", "resolved"],
+              "openedAt": "date"
+            }
+          }
+        }
+      },
+      "tree": [
+        {
+          "id": "tickets-table",
+          "type": "TableView",
+          "options": {
+            "caption": "Service tickets",
+            "fetchUrl": "fixture:tickets",
+            "rowIdKey": "_id",
+            "labelKey": "customer",
+            "pageSize": 20,
+            "columns": {
+              "customer": {
+                "name": "Customer",
+                "type": "string",
+                "order": 1,
+                "sortable": true
+              },
+              "issue": { "name": "Issue", "type": "string", "order": 2 },
+              "priority": {
+                "name": "Priority",
+                "type": "string",
+                "order": 3,
+                "display": {
+                  "kind": "badge",
+                  "items": [
+                    { "value": "low", "label": "Low", "tone": "neutral" },
+                    { "value": "normal", "label": "Normal", "tone": "info" },
+                    { "value": "urgent", "label": "Urgent", "tone": "error" }
+                  ]
+                }
+              },
+              "status": {
+                "name": "Status",
+                "type": "string",
+                "order": 4,
+                "filterable": true,
+                "display": {
+                  "kind": "badge",
+                  "items": [
+                    { "value": "open", "label": "Open", "tone": "warning" },
+                    {
+                      "value": "assigned",
+                      "label": "Assigned",
+                      "tone": "primary"
+                    },
+                    {
+                      "value": "resolved",
+                      "label": "Resolved",
+                      "tone": "success"
+                    }
+                  ]
+                }
+              },
+              "openedAt": {
+                "name": "Opened",
+                "type": "date",
+                "order": 5,
+                "sortable": true
+              }
+            },
+            "tabsFrom": { "column": "status" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "crews",
+      "title": "Crews",
+      "category": "field",
+      "icon": "i-ph-users-three",
+      "description": "Installer crews and their week",
+      "fixtures": {
+        "crews": {
+          "$generate": {
+            "rows": 8,
+            "fields": {
+              "_id": "id",
+              "lead": "name",
+              "base": "city",
+              "jobs": { "number": [2, 9] },
+              "availability": ["available", "booked", "off"]
+            }
+          }
+        }
+      },
+      "tree": [
+        {
+          "id": "crews-table",
+          "type": "TableView",
+          "options": {
+            "caption": "Crews",
+            "fetchUrl": "fixture:crews",
+            "rowIdKey": "_id",
+            "labelKey": "lead",
+            "columns": {
+              "lead": {
+                "name": "Crew lead",
+                "type": "string",
+                "order": 1,
+                "sortable": true
+              },
+              "base": { "name": "Base", "type": "string", "order": 2 },
+              "jobs": {
+                "name": "Jobs this week",
+                "type": "number",
+                "order": 3,
+                "sortable": true
+              },
+              "availability": {
+                "name": "Availability",
+                "type": "string",
+                "order": 4,
+                "display": {
+                  "kind": "badge",
+                  "items": [
+                    {
+                      "value": "available",
+                      "label": "Available",
+                      "tone": "success"
+                    },
+                    { "value": "booked", "label": "Booked", "tone": "warning" },
+                    { "value": "off", "label": "Off", "tone": "neutral" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

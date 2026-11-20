@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "annotations": [
+    {
+      "id": "split-installations",
+      "anchor": {
+        "block": "kpi-grid",
+        "steps": ["kpis", "installations"],
+        "page": "overview"
+      },
+      "offset": { "x": 0.92, "y": 0.18 },
+      "text": "Split this into residential and commercial installations, the office plans them differently.",
+      "status": "open",
+      "createdAt": "2026-06-15T08:40:00.000Z",
+      "version": 1
+    },
+    {
+      "id": "production-unit",
+      "anchor": { "block": "production", "steps": [], "page": "overview" },
+      "offset": { "x": 0.5, "y": 0.1 },
+      "text": "Draw the production as an area over the year, the bars hid the seasonal trend.",
+      "status": "resolved",
+      "createdAt": "2026-06-14T15:20:00.000Z",
+      "resolvedAt": "2026-06-14T15:45:00.000Z",
+      "version": 1,
+      "resolvedVersion": 1
+    }
+  ]
+}
