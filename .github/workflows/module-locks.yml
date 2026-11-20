@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - .github/scripts/refresh-module-locks.sh
+      - .github/workflows/module-locks.yml
 permissions:
   contents: read
 
