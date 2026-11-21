@@ -146,6 +146,10 @@ Open that address. The wizard reads the setup token from it. If you set
 `DMS_SETUP_TOKEN`, the log shows `<DMS_SETUP_TOKEN>` in place of the token, and
 you use your own value.
 
+With `-e production` the log never prints the token, so set `DMS_SETUP_TOKEN`
+(at least 16 characters, such as `openssl rand -hex 16`) before the first start
+and open the address with that value.
+
 The password you choose there, like every password in the DMS, must be at least
 8 characters long and match this policy (`packages/interface-dms/src/auth/password.ts`
 in [`AntelopeJS/dms`](https://github.com/AntelopeJS/dms)):

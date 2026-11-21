@@ -31,6 +31,7 @@ const PRODUCTION = {
   DMS_CLIENT_BASE_URL: "https://dashboard.example.com",
   DMS_API_PUBLIC_BASE_URL: "https://api.example.com",
   SMTP_HOST: "127.0.0.1",
+  DMS_SETUP_TOKEN: "verify-setup-token-0123456789",
 };
 const START_ATTEMPTS = 180;
 type Secret = keyof typeof PRODUCTION;
@@ -113,7 +114,7 @@ async function waitForOnboarding(
 
 const productionEnv: Journey = {
   title:
-    "`ajs project build -e production` then `ajs project start -e production` refuse to start while `JWT_SECRET`, `DMS_HTML_RENDER_SECRET` or `DMS_CLIENT_BASE_URL` is unset and name the one missing; with all three the backend starts, prints the onboarding address on the `DMS_CLIENT_BASE_URL` origin, and a token signed with `JWT_SECRET` opens the API",
+    "`ajs project build -e production` then `ajs project start -e production` refuse to start while `JWT_SECRET`, `DMS_HTML_RENDER_SECRET` or `DMS_CLIENT_BASE_URL` is unset and name the one missing; with all three the backend starts, prints the onboarding address on the `DMS_CLIENT_BASE_URL` origin without the setup token, the wizard creates the owner with the `DMS_SETUP_TOKEN` it sets, and a token signed with `JWT_SECRET` opens the API",
   entryPoint:
     "`ajs project build -e production` and `ajs project start -e production`, with the variables the README's Environment table marks required with `-e production`",
   async run(context) {
@@ -142,7 +143,7 @@ const productionEnv: Journey = {
       const backend = {
         api: `http://127.0.0.1:${port}`,
         onboarding: line?.[1] ?? "",
-        setupToken: line?.[2] ?? "",
+        setupToken: PRODUCTION.DMS_SETUP_TOKEN,
       };
       await waitForApi(context, backend.api);
       const owner = await createOwner(context, backend, OWNER);
