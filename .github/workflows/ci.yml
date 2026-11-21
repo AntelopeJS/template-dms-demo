@@ -35,6 +35,7 @@ jobs:
           if [[ "$refresh" == true ]]; then .github/scripts/refresh-module-locks.sh "$RUNNER_TEMP/module-locks-body.md" > /dev/null; fi
         fi
       extra-commands-job: true
+      extra-commands-shards: 3
       renovate-sync: false
       test-job: true
       affected-tests: true
