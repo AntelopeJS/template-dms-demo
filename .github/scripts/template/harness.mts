@@ -27,12 +27,16 @@ const SETTLE_MS = 3000;
 const STOP_TIMEOUT_MS = 30_000;
 const EXCERPT = 600;
 /**
- * The age in minutes a version needs before pnpm resolves it, for the installs the DMS runs without a lockfile
- * (`ajs dms verify-source`, `dev`, `build`): the registry lists a new version minutes before its tarball serves.
- * Those installs keep the pnpm on `PATH`, since the `packageManager` the DMS workspace pins predates this setting,
- * and `pnpm run` clears that switch from the environment of its scripts, so it lives in the journey's pnpm rc.
+ * The journey's global pnpm rc. The installs the DMS runs without a lockfile (`ajs dms verify-source`, `dev`,
+ * `build`) resolve only versions a day old, since the registry lists a new version minutes before its tarball
+ * serves, and keep the pnpm on `PATH`, since the `packageManager` the DMS workspace pins predates that gate.
  */
-const MINIMUM_RELEASE_AGE_MINUTES = "1440";
+const PNPM_RC = [
+  "manage-package-manager-versions=false",
+  "minimum-release-age=1440",
+  "minimum-release-age-exclude[]=@antelopejs/*",
+  "",
+].join("\n");
 
 /** The line the DMS prints at every start while no owner exists, as the README shows it. */
 export const ONBOARDING_LINE =
@@ -203,10 +207,7 @@ export class JourneyContext {
       mkdirSync(folder, { recursive: true });
     }
     mkdirSync(join(this.home, ".config", "pnpm"), { recursive: true });
-    writeFileSync(
-      join(this.home, ".config", "pnpm", "rc"),
-      "manage-package-manager-versions=false\n",
-    );
+    writeFileSync(join(this.home, ".config", "pnpm", "rc"), PNPM_RC);
   }
 
   /** The environment every command gets: the journey's own HOME, CI=1, no update check, no colors, and the shared package caches. */
@@ -226,8 +227,6 @@ export class JourneyContext {
       XDG_CACHE_HOME: join(this.home, ".cache"),
       XDG_CONFIG_HOME: join(this.home, ".config"),
       npm_config_cache: join(SHARED_CACHE, "npm"),
-      npm_config_minimum_release_age: MINIMUM_RELEASE_AGE_MINUTES,
-      npm_config_minimum_release_age_exclude: "@antelopejs/*",
       GIT_CONFIG_NOSYSTEM: "1",
       MONGODB_URL: "mongodb://127.0.0.1:9",
       ...extra,
