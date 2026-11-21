@@ -22,7 +22,7 @@ jobs:
       extra-commands: |
         pnpm build
         if [[ -d .github/scripts/template ]]; then pnpm exec tsc -p .github/scripts/template; fi
-        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none .github/scripts/template/*.test.mts; fi
+        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-concurrency=4 .github/scripts/template/*.test.mts; fi
         if [[ "$RUNNER_OS" == Linux ]]; then
           refresh=false
           [[ "$ANTELOPEJS_CI_TIER" != fast ]] && refresh=true
@@ -63,7 +63,7 @@ jobs:
       - name: Build a clean clone from the committed module locks
         run: |
           set -o pipefail
-          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/project.test.mts | tee "$RUNNER_TEMP/locked-build.log"
+          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/deploy.test.mts | tee "$RUNNER_TEMP/locked-build.log"
           grep -q "✔ locked-build" "$RUNNER_TEMP/locked-build.log"
   renovate-sync:
     if: >-
