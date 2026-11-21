@@ -33,7 +33,7 @@
     "@antelopejs/interface-api": "^0.3.4",
     "@antelopejs/interface-api-util": "^0.3.3",
     "@antelopejs/interface-auth": "^0.2.2",
-    "@antelopejs/interface-core": "^0.5.1",
+    "@antelopejs/interface-core": "^0.5.2",
     "@antelopejs/interface-data-api": "^0.8.2",
     "@antelopejs/interface-database": "^0.4.3",
     "@antelopejs/interface-database-decorators": "^0.5.3",
