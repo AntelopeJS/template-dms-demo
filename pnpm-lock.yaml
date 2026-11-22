@@ -61,7 +61,7 @@ importers:
         specifier: '>=0.11.9 <0.12.0'
         version: 0.11.9(@antelopejs/core@1.24.6)
       '@antelopejs/tooling-configs':
-        specifier: ^0.9.3
+        specifier: '>=0.9.3 <0.10.0'
         version: 0.9.3(knip@6.46.1)(oxfmt@0.79.0)(oxlint@1.94.0(oxlint-tsgolint@7.0.2007))(playwright-core@1.65.1)
       '@types/node':
         specifier: ^26.6.6
