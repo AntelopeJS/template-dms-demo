@@ -23,22 +23,12 @@ jobs:
         pnpm build
         if [[ -d .github/scripts/template ]]; then pnpm exec tsc -p .github/scripts/template; fi
         if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none ${ANTELOPEJS_CI_SHARD:+--test-shard="$ANTELOPEJS_CI_SHARD"} .github/scripts/template/*.test.mts; fi
-        if [[ "$RUNNER_OS" == Linux && "${ANTELOPEJS_CI_SHARD:-1/1}" == 1/* ]]; then
-          refresh=false
-          [[ "$ANTELOPEJS_CI_TIER" != fast ]] && refresh=true
-          base="${{ github.event.pull_request.base.sha }}"
-          if [[ -n "$base" ]]; then
-            git cat-file -e "${base}^{commit}" 2> /dev/null || git fetch --quiet --no-tags --depth=1 origin "$base"
-            git diff --quiet "$base" HEAD -- .github/scripts/refresh-module-locks.sh || refresh=true
-            git diff --quiet "$base" HEAD -- .github/workflows/module-locks.yml || refresh=false
-          fi
-          if [[ "$refresh" == true ]]; then .github/scripts/refresh-module-locks.sh "$RUNNER_TEMP/module-locks-body.md" > /dev/null; fi
-        fi
       extra-commands-job: true
       extra-commands-shards: 3
       renovate-sync: false
       test-job: true
       affected-tests: true
+      module-locks: true
     permissions:
       contents: read
   locked-build:
@@ -74,3 +64,13 @@ jobs:
       actions: write
       statuses: write
     uses: AntelopeJS/.github/.github/workflows/ci-renovate-sync.yml@v2
+  module-locks:
+    needs: ci
+    if: ${{ !cancelled() }}
+    permissions:
+      contents: read
+      actions: read
+    uses: AntelopeJS/.github/.github/workflows/module-locks-renovate.yml@v2
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
