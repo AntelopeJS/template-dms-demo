@@ -22,8 +22,8 @@ jobs:
       extra-commands: |
         pnpm build
         if [[ -d .github/scripts/template ]]; then pnpm exec tsc -p .github/scripts/template; fi
-        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none .github/scripts/template/*.test.mts; fi
-        if [[ "$RUNNER_OS" == Linux ]]; then
+        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none ${ANTELOPEJS_CI_SHARD:+--test-shard="$ANTELOPEJS_CI_SHARD"} .github/scripts/template/*.test.mts; fi
+        if [[ "$RUNNER_OS" == Linux && "${ANTELOPEJS_CI_SHARD:-1/1}" == 1/* ]]; then
           refresh=false
           [[ "$ANTELOPEJS_CI_TIER" != fast ]] && refresh=true
           base="${{ github.event.pull_request.base.sha }}"
@@ -35,6 +35,7 @@ jobs:
           if [[ "$refresh" == true ]]; then .github/scripts/refresh-module-locks.sh "$RUNNER_TEMP/module-locks-body.md" > /dev/null; fi
         fi
       extra-commands-job: true
+      extra-commands-shards: 3
       renovate-sync: false
       test-job: true
       affected-tests: true
@@ -63,7 +64,7 @@ jobs:
       - name: Build a clean clone from the committed module locks
         run: |
           set -o pipefail
-          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/project.test.mts | tee "$RUNNER_TEMP/locked-build.log"
+          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/deploy.test.mts | tee "$RUNNER_TEMP/locked-build.log"
           grep -q "✔ locked-build" "$RUNNER_TEMP/locked-build.log"
   renovate-sync:
     if: >-
