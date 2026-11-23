@@ -5,65 +5,69 @@
 // synchronous and runs the same on the server and in the browser, so the
 // hydrated page draws what the server sent.
 
-import { decodeHTML } from 'entities'
-import { Lexer, type Token, type Tokens } from 'marked'
+import { decodeHTML } from "entities";
+import { Lexer, type Token, type Tokens } from "marked";
 
-export type ProseHeadingLevel = 2 | 3 | 4
+export type ProseHeadingLevel = 2 | 3 | 4;
 
 /**
  * How a link of the text is followed: a DMS route in place, an `#anchor` on
  * the page, another site in a new tab, a `mailto:` / `tel:` address by the
  * system.
  */
-export type ProseLinkKind = 'internal' | 'anchor' | 'external' | 'contact'
+export type ProseLinkKind = "internal" | "anchor" | "external" | "contact";
 
 /** The GitHub alert kinds a quote turns into a callout with. */
 export type ProseCalloutKind =
-	'note' | 'tip' | 'important' | 'warning' | 'caution'
+  | "note"
+  | "tip"
+  | "important"
+  | "warning"
+  | "caution";
 
 /** A heading token, with the anchor the parse gave it. */
 export interface ProseHeadingToken extends Tokens.Heading {
-	id: string
-	level: ProseHeadingLevel
+  id: string;
+  level: ProseHeadingLevel;
 }
 
 /** A quote opening with `[!KIND]`, its marker taken out. */
 export interface ProseCalloutToken extends Tokens.Blockquote {
-	callout: ProseCalloutKind
+  callout: ProseCalloutKind;
 }
 
-const LEXER_OPTIONS = { gfm: true, breaks: false } as const
+const LEXER_OPTIONS = { gfm: true, breaks: false } as const;
 
-const MIN_HEADING_LEVEL = 2
-const MAX_HEADING_LEVEL = 4
+const MIN_HEADING_LEVEL = 2;
+const MAX_HEADING_LEVEL = 4;
 
 const CALLOUT_MARKER =
-	/^\[!(note|tip|important|warning|caution)\][ \t]*(?:\n|$)/i
+  /^\[!(note|tip|important|warning|caution)\][ \t]*(?:\n|$)/i;
 
-const SCHEME_PATTERN = /^([a-z][a-z\d+.-]*):/i
-const SAFE_LINK_SCHEMES = new Set(['http', 'https', 'mailto', 'tel'])
-const SAFE_IMAGE_SCHEMES = new Set(['http', 'https'])
-const CONTACT_LINK_PATTERN = /^(?:mailto|tel):/i
-const EXTERNAL_LINK_PATTERN = /^(?:[a-z][a-z\d+.-]*:|\/\/)/i
+const SCHEME_PATTERN = /^([a-z][a-z\d+.-]*):/i;
+const SAFE_LINK_SCHEMES = new Set(["http", "https", "mailto", "tel"]);
+const SAFE_IMAGE_SCHEMES = new Set(["http", "https"]);
+const CONTACT_LINK_PATTERN = /^(?:mailto|tel):/i;
+const EXTERNAL_LINK_PATTERN = /^(?:[a-z][a-z\d+.-]*:|\/\/)/i;
 // Characters a browser ignores inside a URL scheme (`java\tscript:`).
-const SPACE_CODE = 0x20
-const DELETE_CODE = 0x7f
-const LAST_C1_CODE = 0x9f
+const SPACE_CODE = 0x20;
+const DELETE_CODE = 0x7f;
+const LAST_C1_CODE = 0x9f;
 
 /** Attributes that open an external link safely in a new tab. */
 export const EXTERNAL_LINK_ATTRIBUTES = {
-	target: '_blank',
-	rel: 'noopener noreferrer',
-} as const
+  target: "_blank",
+  rel: "noopener noreferrer",
+} as const;
 
 /** Drops the control characters and spaces a browser ignores in a URL. */
 function stripIgnoredCharacters(url: string): string {
-	return [...url]
-		.filter((character) => {
-			const code = character.codePointAt(0)!
-			return code > SPACE_CODE && (code < DELETE_CODE || code > LAST_C1_CODE)
-		})
-		.join('')
+  return [...url]
+    .filter((character) => {
+      const code = character.codePointAt(0)!;
+      return code > SPACE_CODE && (code < DELETE_CODE || code > LAST_C1_CODE);
+    })
+    .join("");
 }
 
 /**
@@ -72,19 +76,19 @@ function stripIgnoredCharacters(url: string): string {
  * refused, entities and ignored characters decoded first.
  */
 export function isSafeLinkUrl(href: string): boolean {
-	return hasSafeScheme(href, SAFE_LINK_SCHEMES)
+  return hasSafeScheme(href, SAFE_LINK_SCHEMES);
 }
 
 /** Whether an address may be an image's source: `http(s)` or a path. */
 export function isSafeImageUrl(src: string): boolean {
-	return hasSafeScheme(src, SAFE_IMAGE_SCHEMES)
+  return hasSafeScheme(src, SAFE_IMAGE_SCHEMES);
 }
 
 function hasSafeScheme(url: string, schemes: Set<string>): boolean {
-	const normalized = stripIgnoredCharacters(decodeHTML(url))
-	if (!normalized) return false
-	const scheme = SCHEME_PATTERN.exec(normalized)?.[1]
-	return !scheme || schemes.has(scheme.toLowerCase())
+  const normalized = stripIgnoredCharacters(decodeHTML(url));
+  if (!normalized) return false;
+  const scheme = SCHEME_PATTERN.exec(normalized)?.[1];
+  return !scheme || schemes.has(scheme.toLowerCase());
 }
 
 /**
@@ -92,21 +96,21 @@ function hasSafeScheme(url: string, schemes: Set<string>): boolean {
  * {@link isSafeLinkUrl} refuses: the text stays, without a link.
  */
 export function proseLinkKind(href: string): ProseLinkKind | undefined {
-	if (!isSafeLinkUrl(href)) return undefined
-	if (CONTACT_LINK_PATTERN.test(href.trim())) return 'contact'
-	if (href.startsWith('#')) return 'anchor'
-	return EXTERNAL_LINK_PATTERN.test(href) ? 'external' : 'internal'
+  if (!isSafeLinkUrl(href)) return undefined;
+  if (CONTACT_LINK_PATTERN.test(href.trim())) return "contact";
+  if (href.startsWith("#")) return "anchor";
+  return EXTERNAL_LINK_PATTERN.test(href) ? "external" : "internal";
 }
 
 /** A token's text without its Markdown: what a heading reads as. */
 function plainText(tokens: Token[] | undefined): string {
-	return (tokens ?? [])
-		.map((token) => {
-			if ('tokens' in token && token.tokens) return plainText(token.tokens)
-			if (token.type === 'html' || token.type === 'checkbox') return ''
-			return 'text' in token ? decodeHTML(String(token.text)) : ''
-		})
-		.join('')
+  return (tokens ?? [])
+    .map((token) => {
+      if ("tokens" in token && token.tokens) return plainText(token.tokens);
+      if (token.type === "html" || token.type === "checkbox") return "";
+      return "text" in token ? decodeHTML(String(token.text)) : "";
+    })
+    .join("");
 }
 
 /**
@@ -114,31 +118,31 @@ function plainText(tokens: Token[] | undefined): string {
  * dashes ("Les accès" → `les-acces`).
  */
 export function slugify(text: string): string {
-	return text
-		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '')
-		.toLowerCase()
-		.replace(/[^a-z\d]+/g, '-')
-		.replace(/^-+|-+$/g, '')
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z\d]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-const SECTION_FALLBACK_SLUG = 'section'
+const SECTION_FALLBACK_SLUG = "section";
 
 function clampLevel(depth: number): ProseHeadingLevel {
-	return Math.min(
-		MAX_HEADING_LEVEL,
-		Math.max(MIN_HEADING_LEVEL, depth),
-	) as ProseHeadingLevel
+  return Math.min(
+    MAX_HEADING_LEVEL,
+    Math.max(MIN_HEADING_LEVEL, depth),
+  ) as ProseHeadingLevel;
 }
 
 function calloutOf(token: Tokens.Blockquote): ProseCalloutToken | undefined {
-	const marker = CALLOUT_MARKER.exec(token.text)
-	if (!marker?.[1]) return undefined
-	return {
-		...token,
-		callout: marker[1].toLowerCase() as ProseCalloutKind,
-		tokens: new Lexer(LEXER_OPTIONS).lex(token.text.slice(marker[0].length)),
-	}
+  const marker = CALLOUT_MARKER.exec(token.text);
+  if (!marker?.[1]) return undefined;
+  return {
+    ...token,
+    callout: marker[1].toLowerCase() as ProseCalloutKind,
+    tokens: new Lexer(LEXER_OPTIONS).lex(token.text.slice(marker[0].length)),
+  };
 }
 
 /**
@@ -147,30 +151,30 @@ function calloutOf(token: Tokens.Blockquote): ProseCalloutToken | undefined {
  * its title), and `> [!KIND]` quotes become callouts.
  */
 export function parseProse(markdown: string): Token[] {
-	const usedIds = new Map<string, number>()
+  const usedIds = new Map<string, number>();
 
-	function uniqueId(text: string): string {
-		const base = slugify(text) || SECTION_FALLBACK_SLUG
-		const count = usedIds.get(base) ?? 0
-		usedIds.set(base, count + 1)
-		return count ? `${base}-${count + 1}` : base
-	}
+  function uniqueId(text: string): string {
+    const base = slugify(text) || SECTION_FALLBACK_SLUG;
+    const count = usedIds.get(base) ?? 0;
+    usedIds.set(base, count + 1);
+    return count ? `${base}-${count + 1}` : base;
+  }
 
-	function visit(tokens: Token[]): Token[] {
-		return tokens.map((token) => {
-			if (token.type === 'heading') {
-				const heading = token as Tokens.Heading
-				const id = uniqueId(plainText(heading.tokens))
-				const level = clampLevel(heading.depth)
-				return { ...heading, id, level } satisfies ProseHeadingToken
-			}
-			if (token.type === 'blockquote') {
-				const quote = calloutOf(token as Tokens.Blockquote) ?? token
-				return { ...quote, tokens: visit(quote.tokens ?? []) } as Token
-			}
-			return token
-		})
-	}
+  function visit(tokens: Token[]): Token[] {
+    return tokens.map((token) => {
+      if (token.type === "heading") {
+        const heading = token as Tokens.Heading;
+        const id = uniqueId(plainText(heading.tokens));
+        const level = clampLevel(heading.depth);
+        return { ...heading, id, level } satisfies ProseHeadingToken;
+      }
+      if (token.type === "blockquote") {
+        const quote = calloutOf(token as Tokens.Blockquote) ?? token;
+        return { ...quote, tokens: visit(quote.tokens ?? []) } as Token;
+      }
+      return token;
+    });
+  }
 
-	return visit(new Lexer(LEXER_OPTIONS).lex(markdown))
+  return visit(new Lexer(LEXER_OPTIONS).lex(markdown));
 }

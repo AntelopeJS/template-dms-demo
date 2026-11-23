@@ -1,9 +1,9 @@
 {
-	"extends": "./.dms-types/tsconfig.json",
-	"compilerOptions": {
-		"allowJs": true,
-		"types": ["node"]
-	},
-	"include": ["**/*.ts", "**/*.vue", "**/*.mjs"],
-	"exclude": ["node_modules", ".dms-types"]
+  "extends": "./.dms-types/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "types": ["node"]
+  },
+  "include": ["**/*.ts", "**/*.vue", "**/*.mjs"],
+  "exclude": ["node_modules", ".dms-types"]
 }
