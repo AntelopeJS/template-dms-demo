@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  assert,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { type App, createApp, h } from "vue";
 import HomeHero from "../app/components/HomeHero.vue";
 import { splitHeadline } from "../app/utils/heroHeadline";
@@ -6,8 +14,20 @@ import { splitHeadline } from "../app/utils/heroHeadline";
 let app: App | undefined;
 let host: HTMLDivElement;
 
-async function mount(props: Record<string, unknown>) {
-  app = createApp({ setup: () => () => h(HomeHero, props) });
+const HERO = {
+  eyebrow: "$home.eyebrow",
+  title: "A platform built in a day.",
+  highlight: "in a day",
+  lead: "$home.lead",
+  icons: ["i-ph-sun", "i-ph-squares-four", "i-ph-lightning", "i-ph-extra"],
+  actions: [
+    { label: "$home.open", to: "/helio/dashboard" },
+    { label: "Docs", to: "https://dms.antelopejs.com/docs" },
+  ],
+};
+
+async function mount() {
+  app = createApp({ setup: () => () => h(HomeHero, HERO) });
   app.component("UIcon", (_, { attrs }) =>
     h("i", { ...attrs, "data-stub": "UIcon" }),
   );
@@ -52,23 +72,15 @@ describe("splitHeadline", () => {
 
 describe("HomeHero", () => {
   it("draws its translated texts, highlight, actions and icons", async () => {
-    await mount({
-      eyebrow: "$home.eyebrow",
-      title: "A platform built in a day.",
-      highlight: "in a day",
-      lead: "$home.lead",
-      icons: ["i-ph-sun", "i-ph-squares-four", "i-ph-lightning", "i-ph-extra"],
-      actions: [
-        { label: "$home.open", to: "/helio/dashboard" },
-        { label: "Docs", to: "https://dms.antelopejs.com/docs" },
-      ],
-    });
+    await mount();
 
-    const section = host.querySelector("section")!;
+    const section = host.querySelector("section");
+    assert(section);
     expect(section.querySelector("p")?.textContent?.trim()).toBe(
       "t:home.eyebrow",
     );
-    const title = section.querySelector("h2")!;
+    const title = section.querySelector("h2");
+    assert(title);
     expect(section.getAttribute("aria-labelledby")).toBe(title.id);
     expect(title.querySelector(".text-primary")?.textContent?.trim()).toBe(
       "in a day",

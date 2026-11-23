@@ -2,7 +2,7 @@ import { expect, it, vi } from "vitest";
 import frontendModule from "../dms.frontend";
 
 it("registers only the home page components: Helio is made of DMS blocks", async () => {
-  const registerComponent = vi.fn();
+  const registerComponent = vi.fn<(name: string) => void>();
   await frontendModule.setup({
     options: { public: {} },
     registerComponent,

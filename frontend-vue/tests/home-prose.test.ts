@@ -1,11 +1,20 @@
-/**
- * A home section draws the Markdown its route answers as elements of its own,
- * never an HTML string, so raw HTML and script addresses never reach the
- * page; asks again in the reader's language; and draws the same on the server
- * as in the browser, so hydration changes nothing.
- */
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { type App, computed, createApp, createSSRApp, h, ref } from "vue";
+import {
+  afterEach,
+  assert,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
+import {
+  type App,
+  type ComputedRef,
+  createApp,
+  createSSRApp,
+  h,
+  ref,
+} from "vue";
 import { renderToString } from "vue/server-renderer";
 import HomeProse from "../app/components/HomeProse.vue";
 
@@ -13,7 +22,10 @@ const data = ref<{ markdown?: string } | null>(null);
 const error = ref<unknown>(null);
 const pending = ref(false);
 const locale = ref("en-GB");
-const apiData = vi.fn();
+interface ProseQuery {
+  query: ComputedRef<{ locale: string }>;
+}
+const apiData = vi.fn<(url: () => string, options: ProseQuery) => void>();
 
 const STUBS = ["UIcon", "USkeleton", "DmsEmptyState"];
 
@@ -22,17 +34,12 @@ function install(app: App): App {
     app.component(name, (_, { attrs }) =>
       h("i", { ...attrs, "data-stub": name }),
     );
-  app.component("DmsLink", {
-    props: ["to"],
-    setup:
-      (props: { to: string }, { slots }) =>
-      () =>
-        h("a", { href: props.to, "data-dms-link": "" }, slots.default?.()),
-  });
-  app.component("DmsCodeSnippet", {
-    props: ["code", "language"],
-    setup: (props: { code: string }) => () => h("pre", props.code),
-  });
+  app.component("DmsLink", (props: { to: string }, { slots }) =>
+    h("a", { href: props.to, "data-dms-link": "" }, slots.default?.()),
+  );
+  app.component("DmsCodeSnippet", (props: { code: string }) =>
+    h("pre", props.code),
+  );
   return app;
 }
 
@@ -60,7 +67,7 @@ beforeEach(() => {
   locale.value = "en-GB";
   apiData.mockClear();
   vi.stubGlobal("useI18n", () => ({ locale, t: (key: string) => key }));
-  vi.stubGlobal("useApiData", (url: () => string, options: unknown) => {
+  vi.stubGlobal("useApiData", (url: () => string, options: ProseQuery) => {
     apiData(url, options);
     return { data, pending, error, refresh: async () => {} };
   });
@@ -111,7 +118,8 @@ describe("HomeProse", () => {
   it("draws every Markdown element with its own element", async () => {
     await mount(GUIDE);
 
-    const article = host.querySelector("article")!;
+    const article = host.querySelector("article");
+    assert(article);
     expect(article.querySelector("h2#welcome")?.textContent).toContain(
       "Welcome",
     );
@@ -154,14 +162,14 @@ describe("HomeProse", () => {
     await mount(GUIDE);
 
     const link = (text: string) =>
-      [...host.querySelectorAll("a")].find((a) => a.textContent === text)!;
-    expect(link("Orders").hasAttribute("data-dms-link")).toBe(true);
-    expect(link("site").getAttribute("target")).toBe("_blank");
-    expect(link("site").getAttribute("rel")).toBe("noopener noreferrer");
-    expect(link("mail").getAttribute("href")).toBe("mailto:ada@example.com");
-    expect(link("mail").getAttribute("target")).toBe(null);
-    expect(link("phone").getAttribute("href")).toBe("tel:+3212345678");
-    expect(link("top").getAttribute("href")).toBe("#welcome");
+      [...host.querySelectorAll("a")].find((a) => a.textContent === text);
+    expect(link("Orders")?.hasAttribute("data-dms-link")).toBe(true);
+    expect(link("site")?.getAttribute("target")).toBe("_blank");
+    expect(link("site")?.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(link("mail")?.getAttribute("href")).toBe("mailto:ada@example.com");
+    expect(link("mail")?.getAttribute("target")).toBe(null);
+    expect(link("phone")?.getAttribute("href")).toBe("tel:+3212345678");
+    expect(link("top")?.getAttribute("href")).toBe("#welcome");
   });
 
   it("never draws raw HTML nor a script address", async () => {
@@ -177,7 +185,8 @@ describe("HomeProse", () => {
       ].join("\n"),
     );
 
-    const article = host.querySelector("article")!;
+    const article = host.querySelector("article");
+    assert(article);
     expect(article.querySelector("script, b, img")).toBe(null);
     expect(article.querySelectorAll("a")).toHaveLength(0);
     expect(article.innerHTML).not.toContain("javascript:");
@@ -190,10 +199,9 @@ describe("HomeProse", () => {
   it("reads its route again in the reader's language", async () => {
     await mount("Text");
 
-    const [url, options] = apiData.mock.calls[0]! as [
-      () => string,
-      { query: ReturnType<typeof computed> },
-    ];
+    const [call] = apiData.mock.calls;
+    assert(call);
+    const [url, options] = call;
     expect(url()).toBe("/dms/pages/home/sections/why");
     expect(options.query.value).toEqual({ locale: "en-GB" });
     locale.value = "fr-FR";

@@ -33,7 +33,7 @@ test`, not with the root oxlint/oxfmt.
 
 - `pnpm run checks` runs typecheck, lint, format, knip, `pnpm test`, size,
   ratchet, suppressions and sync, and prints only what failed. `pnpm lint`
-  runs oxlint on the backend, then `frontend-vue/scripts/check-locales.mjs`
+  runs oxlint on the backend, then `frontend-vue/scripts/check-locales.ts`
   (locales share one key set and translate every key the backend writes) and
   ESLint on `frontend-vue`; `pnpm test` builds the backend and runs its
   `node --test` files (`pnpm run test:backend`), then the `frontend-vue`
