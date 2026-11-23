@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "pnpm --dir .. frontend:dev",
     "build": "pnpm --dir .. exec ajs dms build",
-    "lint": "node scripts/check-locales.ts && eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "vitest run"
+    "lint": "pnpm -s run types && node scripts/check-locales.ts && eslint .",
+    "lint:fix": "pnpm -s run types && eslint . --fix",
+    "test": "vitest run",
+    "types": "pnpm --dir .. exec ajs dms prepare-types -q --out frontend-vue/.dms-types"
   },
   "dependencies": {
     "entities": "^8.0.0",

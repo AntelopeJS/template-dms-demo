@@ -299,9 +299,11 @@ with `marked` and draws it as Vue nodes. Raw HTML is dropped, and only
 `http(s)`, `mailto:`, `tel:`, paths and anchors become links (`app/prose/`). The module ships the `i18n/locales/*.json` catalogs (`demo-*`
 for the home page, `helio-*` per Helio domain), merged into the dashboard's.
 
-It is a workspace package with its own ESLint, Prettier and Vitest setup.
-The root `pnpm install` installs both packages. Each package keeps its own
-lockfile to preserve its dependency resolution. Run frontend checks separately:
+It is a workspace package with its own ESLint and Vitest setup; the root
+oxfmt formats it and the root oxlint lints its TypeScript. The root
+`pnpm install` installs both packages. Each package keeps its own lockfile to
+preserve its dependency resolution. Run frontend checks separately (`lint`
+first writes the types its type-aware rules read, with `ajs dms prepare-types`):
 
 ```bash
 pnpm --dir frontend-vue lint

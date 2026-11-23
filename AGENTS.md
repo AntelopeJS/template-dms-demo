@@ -32,10 +32,11 @@ the root cover both packages.
 
 - `pnpm run checks` runs typecheck, lint, format, knip, `pnpm test`, size,
   ratchet, suppressions and sync, and prints only what failed. `pnpm lint`
-  writes the frontend's types with `ajs dms prepare-types`, runs oxlint on
-  every TypeScript file, then `frontend-vue/scripts/check-locales.ts` (locales
-  share one key set and translate every key the backend writes) and the
-  type-aware ESLint of `antelopeNuxtConfig` on `frontend-vue`; `pnpm test` builds the backend and runs its
+  runs `pnpm --dir frontend-vue lint`, which writes the frontend's types with
+  `ajs dms prepare-types`, then `frontend-vue/scripts/check-locales.ts`
+  (locales share one key set and translate every key the backend writes) and
+  the type-aware ESLint of `antelopeNuxtConfig`; then oxlint on every
+  TypeScript file; `pnpm test` builds the backend and runs its
   `node --test` files (`pnpm run test:backend`), then the `frontend-vue`
   Vitest suite.
 - `checks` does not run these; run them when your change touches what they

@@ -114,7 +114,7 @@ Read the **guide**, then *start*.
 [Orders](/orders/orders-list), [site](https://example.com), [mail](mailto:ada@example.com), [phone](tel:+3212345678), [top](#welcome) and \`inline\`.
 `;
 
-describe("HomeProse", () => {
+describe("HomeProse drawing", () => {
   it("draws every Markdown element with its own element", async () => {
     await mount(GUIDE);
 
@@ -196,6 +196,16 @@ describe("HomeProse", () => {
     expect(article.textContent).toContain("pixel");
   });
 
+  it("draws a heading nested in a list item as its text, without an anchor", async () => {
+    await mount("- ## Nested");
+
+    const item = host.querySelector("article li");
+    expect(item?.textContent).toContain("Nested");
+    expect(host.querySelector("article a")).toBe(null);
+  });
+});
+
+describe("HomeProse loading", () => {
   it("reads its route again in the reader's language", async () => {
     await mount("Text");
 
