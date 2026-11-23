@@ -81,12 +81,12 @@ export default defineConfig({
       },
     },
 
-    /** Each DMS module stays on one minor, the one that reads interface-dms 0.15, so they all resolve on one copy. */
+    /** Each DMS module stays on one minor, the one that reads interface-dms 0.16, so they all resolve on one copy. */
     dms: {
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: "0.22.0",
+        version: "0.23.0",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -132,7 +132,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: "0.13.0",
+        version: "0.13.1-next.302.ga636877",
       },
       config: {
         stripe: {
