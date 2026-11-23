@@ -1,27 +1,15 @@
-import {
-  defineComponent,
-  h,
-  resolveComponent,
-  type PropType,
-  type VNodeChild,
-} from "vue";
+import { defineComponent, h, resolveComponent, type VNodeChild } from "vue";
 import { decodeHTML } from "entities";
 import type { Token, Tokens } from "marked";
 import ProseCallout from "./ProseCallout.vue";
 import {
   EXTERNAL_LINK_ATTRIBUTES,
+  isProseToken,
   isSafeImageUrl,
   type ProseCalloutToken,
   type ProseHeadingToken,
   proseLinkKind,
 } from "./markdown";
-
-// Draws the tokens `parseProse` read, element by element, with the theme's
-// tokens: no HTML string is built, so nothing the Markdown says can inject
-// markup. Raw HTML tokens are dropped (the text between inline tags stays),
-// and a link or image whose address is refused is drawn as its text. A DMS
-// route goes through `DmsLink`, fenced code through `DmsCodeSnippet`: both are
-// public components of the DMS.
 
 const HEADING_CLASSES: Record<ProseHeadingToken["level"], string> = {
   2: "mt-10 mb-3 text-xl font-semibold tracking-tight sm:text-[1.375rem]",
@@ -62,8 +50,6 @@ const CLASSES = {
 
 type Translate = (key: string) => string;
 
-type Renderer = (token: Token, t: Translate) => VNodeChild;
-
 /** The tokens a token nests, for the kinds that nest any. */
 function childTokens(token: Token): Token[] | undefined {
   return "tokens" in token ? token.tokens : undefined;
@@ -73,28 +59,31 @@ function renderInline(tokens: Token[] | undefined, t: Translate): VNodeChild[] {
   return (tokens ?? []).map((token) => renderInlineToken(token, t));
 }
 
-const INLINE_RENDERERS: Partial<Record<string, Renderer>> = {
-  strong: (token, t) =>
-    h("strong", { class: CLASSES.strong }, renderInline(childTokens(token), t)),
-  em: (token, t) => h("em", renderInline(childTokens(token), t)),
-  del: (token, t) =>
-    h("del", { class: "text-muted" }, renderInline(childTokens(token), t)),
-  codespan: (token) =>
-    h(
-      "code",
-      { class: CLASSES.inlineCode },
-      decodeHTML((token as Tokens.Codespan).text),
-    ),
-  br: () => h("br"),
-  link: (token, t) => renderLink(token as Tokens.Link, t),
-  image: (token) => renderImage(token as Tokens.Image, CLASSES.inlineImage),
-  html: () => null,
-  checkbox: () => null,
-};
-
 function renderInlineToken(token: Token, t: Translate): VNodeChild {
-  const render = INLINE_RENDERERS[token.type];
-  if (render) return render(token, t);
+  if (isProseToken(token))
+    switch (token.type) {
+      case "strong":
+        return h(
+          "strong",
+          { class: CLASSES.strong },
+          renderInline(token.tokens, t),
+        );
+      case "em":
+        return h("em", renderInline(token.tokens, t));
+      case "del":
+        return h("del", { class: "text-muted" }, renderInline(token.tokens, t));
+      case "codespan":
+        return h("code", { class: CLASSES.inlineCode }, decodeHTML(token.text));
+      case "br":
+        return h("br");
+      case "link":
+        return renderLink(token, t);
+      case "image":
+        return renderImage(token, CLASSES.inlineImage);
+      case "html":
+      case "checkbox":
+        return null;
+    }
   const children = childTokens(token);
   if (children?.length) return renderInline(children, t);
   return "text" in token ? decodeHTML(String(token.text)) : null;
@@ -137,8 +126,12 @@ function soleImage(token: Tokens.Paragraph): Tokens.Image | undefined {
   const parts = token.tokens.filter(
     (part) => !(part.type === "text" && !part.raw.trim()),
   );
-  return parts.length === 1 && parts[0]!.type === "image"
-    ? (parts[0] as Tokens.Image)
+  const [part] = parts;
+  return parts.length === 1 &&
+    part &&
+    isProseToken(part) &&
+    part.type === "image"
+    ? part
     : undefined;
 }
 
@@ -203,15 +196,25 @@ function renderListItem(item: Tokens.ListItem, t: Translate): VNodeChild {
   ]);
 }
 
-function renderQuote(token: Tokens.Blockquote, t: Translate): VNodeChild {
-  const kind = (token as Partial<ProseCalloutToken>).callout;
-  if (!kind)
-    return h(
-      "blockquote",
-      { class: CLASSES.quote },
-      renderBlocks(token.tokens, t),
-    );
-  return h(ProseCallout, { kind }, () => renderBlocks(token.tokens, t));
+function renderCallout(token: ProseCalloutToken, t: Translate): VNodeChild {
+  return h(ProseCallout, { kind: token.callout }, () =>
+    renderBlocks(token.tokens, t),
+  );
+}
+
+function renderParagraph(token: Tokens.Paragraph, t: Translate): VNodeChild {
+  const image = soleImage(token);
+  if (image && isSafeImageUrl(image.href)) return renderFigure(image);
+  return h("p", { class: CLASSES.paragraph }, renderInline(token.tokens, t));
+}
+
+function renderCode(token: Tokens.Code): VNodeChild {
+  return h("div", { class: CLASSES.code }, [
+    h(resolveComponent("DmsCodeSnippet"), {
+      code: token.text,
+      language: token.lang?.split(/\s/)[0] || undefined,
+    }),
+  ]);
 }
 
 function renderTable(token: Tokens.Table, t: Translate): VNodeChild {
@@ -246,56 +249,56 @@ function renderTable(token: Tokens.Table, t: Translate): VNodeChild {
   ]);
 }
 
-const BLOCK_RENDERERS: Partial<Record<string, Renderer>> = {
-  heading: (token, t) => renderHeading(token as ProseHeadingToken, t),
-  paragraph: (token, t) => {
-    const image = soleImage(token as Tokens.Paragraph);
-    if (image && isSafeImageUrl(image.href)) return renderFigure(image);
-    return h(
-      "p",
-      { class: CLASSES.paragraph },
-      renderInline(childTokens(token), t),
-    );
-  },
-  list: (token, t) => renderList(token as Tokens.List, t),
-  blockquote: (token, t) => renderQuote(token as Tokens.Blockquote, t),
-  code: (token) => {
-    const code = token as Tokens.Code;
-    return h("div", { class: CLASSES.code }, [
-      h(resolveComponent("DmsCodeSnippet"), {
-        code: code.text,
-        language: code.lang?.split(/\s/)[0] || undefined,
-      }),
-    ]);
-  },
-  table: (token, t) => renderTable(token as Tokens.Table, t),
-  hr: () => h("hr", { class: CLASSES.rule }),
-  // A tight list item holds its text as a block-level `text` token.
-  text: (token, t) =>
-    childTokens(token)?.length
-      ? renderInline(childTokens(token), t)
-      : decodeHTML((token as Tokens.Text).text),
-  html: () => null,
-  space: () => null,
-  def: () => null,
-  checkbox: () => null,
-};
-
-function renderBlocks(tokens: Token[] | undefined, t: Translate): VNodeChild[] {
-  return (tokens ?? []).map((token) => {
-    const render = BLOCK_RENDERERS[token.type];
-    return render ? render(token, t) : renderInlineToken(token, t);
-  });
+function renderBlock(token: Token, t: Translate): VNodeChild {
+  if (isProseToken(token))
+    switch (token.type) {
+      case "proseHeading":
+        return renderHeading(token, t);
+      case "paragraph":
+        return renderParagraph(token, t);
+      case "list":
+        return renderList(token, t);
+      case "blockquote":
+        return h(
+          "blockquote",
+          { class: CLASSES.quote },
+          renderBlocks(token.tokens, t),
+        );
+      case "proseCallout":
+        return renderCallout(token, t);
+      case "code":
+        return renderCode(token);
+      case "table":
+        return renderTable(token, t);
+      case "hr":
+        return h("hr", { class: CLASSES.rule });
+      case "space":
+      case "def":
+        return null;
+    }
+  return renderInlineToken(token, t);
 }
 
-/** Draws the tokens of a parsed Markdown text (`parseProse`). */
-export default defineComponent({
-  name: "DemoProseTokens",
-  props: {
-    tokens: { type: Array as PropType<Token[]>, required: true },
-  },
-  setup(props) {
+function renderBlocks(tokens: Token[] | undefined, t: Translate): VNodeChild[] {
+  return (tokens ?? []).map((token) => renderBlock(token, t));
+}
+
+/**
+ * Draws the tokens of a parsed Markdown text (`parseProse`), element by
+ * element, with the theme's tokens: no HTML string is built, so nothing the
+ * Markdown says can inject markup. Raw HTML tokens are dropped (the text
+ * between inline tags stays), and a link or image whose address is refused
+ * is drawn as its text. A DMS route goes through `DmsLink`, fenced code
+ * through `DmsCodeSnippet`: both are public components of the DMS.
+ */
+export default defineComponent(
+  (props: { tokens: Token[] }) => {
     const { t } = useI18n();
-    return () => renderBlocks(props.tokens, t as Translate);
+    const translate: Translate = (key) => t(key);
+    return () => renderBlocks(props.tokens, translate);
   },
-});
+  {
+    name: "DemoProseTokens",
+    props: { tokens: { type: Array, required: true } },
+  },
+);

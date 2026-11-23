@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Token } from "marked";
 import {
+  isProseToken,
   isSafeImageUrl,
   isSafeLinkUrl,
   parseProse,
@@ -9,12 +10,11 @@ import {
 } from "../app/prose/markdown";
 
 const headings = (tokens: Token[]) =>
-  tokens
-    .filter((token) => token.type === "heading")
-    .map((token) => {
-      const { id, level } = token as Token & { id: string; level: number };
-      return { id, level };
-    });
+  tokens.flatMap((token) =>
+    isProseToken(token) && token.type === "proseHeading"
+      ? [{ id: token.id, level: token.level }]
+      : [],
+  );
 
 describe("parseProse", () => {
   it("anchors each heading once, clamped to levels 2 to 4", () => {
@@ -39,14 +39,17 @@ describe("parseProse", () => {
   it("turns a [!KIND] quote into a callout, its marker taken out", () => {
     const tokens = parseProse("> [!WARNING]\n> Back up **first**.");
 
-    expect(tokens[0]).toMatchObject({ type: "blockquote", callout: "warning" });
-    const quote = tokens[0] as { tokens: unknown[] };
-    expect(JSON.stringify(quote.tokens)).not.toContain("[!WARNING]");
+    expect(tokens[0]).toMatchObject({
+      type: "proseCallout",
+      callout: "warning",
+    });
+    expect(JSON.stringify(tokens[0]?.tokens)).not.toContain("[!WARNING]");
   });
 
   it("leaves a plain quote a quote", () => {
     const tokens = parseProse("> Just a quote");
 
+    expect(tokens[0]).toMatchObject({ type: "blockquote" });
     expect(tokens[0]).not.toHaveProperty("callout");
   });
 });
