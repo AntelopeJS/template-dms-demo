@@ -7,7 +7,7 @@ function assistantPeer(): string {
   const locks = listProjectDirectory("antelope-lock/@antelopejs").filter(
     (entry) => entry.startsWith("dms-assistant@"),
   );
-  assert.deepStrictEqual(
+  assert.strictEqual(
     locks.length,
     1,
     `expected one dms-assistant lock, found ${locks.join(", ")}`,
