@@ -25,17 +25,18 @@ Start with the `dms` skill for the mental model and its routing, and follow
 dev servers, and `dms-frontend` covers the `ajs dms` CLI.
 
 The backend lives in `src/` and the Vue frontend module in `frontend-vue/`,
-which is a separate package with its own ESLint, Prettier and Vitest setup —
-run its checks with `pnpm --dir frontend-vue lint` and `pnpm --dir frontend-vue
-test`, not with the root oxlint/oxfmt.
+a separate package with its own ESLint and Vitest setup. oxlint and oxfmt at
+the root cover both packages.
 
 ## Checks
 
 - `pnpm run checks` runs typecheck, lint, format, knip, `pnpm test`, size,
   ratchet, suppressions and sync, and prints only what failed. `pnpm lint`
-  runs oxlint on the backend, then `frontend-vue/scripts/check-locales.mjs`
+  runs `pnpm --dir frontend-vue lint`, which writes the frontend's types with
+  `ajs dms prepare-types`, then `frontend-vue/scripts/check-locales.ts`
   (locales share one key set and translate every key the backend writes) and
-  ESLint on `frontend-vue`; `pnpm test` builds the backend and runs its
+  the type-aware ESLint of `antelopeNuxtConfig`; then oxlint on every
+  TypeScript file; `pnpm test` builds the backend and runs its
   `node --test` files (`pnpm run test:backend`), then the `frontend-vue`
   Vitest suite.
 - `checks` does not run these; run them when your change touches what they
@@ -45,8 +46,6 @@ test`, not with the root oxlint/oxfmt.
     against the installed `@antelopejs/dms` and `@antelopejs/dms-frontend`.
   - `pnpm knip:all`, which also reports dead files and exports. Confirm each
     finding before you remove code.
-  - `pnpm --dir frontend-vue exec prettier --check . '!pnpm-lock.yaml'`, since
-    oxfmt ignores `frontend-vue`.
 - `guardrails.suppressions.json` caps the lint directives, `@ts-expect-error`
   and `SAFETY:` comments; its numbers only go down. Fix the code rather than
   add a suppression.
