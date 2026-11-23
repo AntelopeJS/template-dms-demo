@@ -146,7 +146,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-assistant",
-        version: "0.3.0",
+        version: "0.3.2-next.471.g0acac4e",
       },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
@@ -157,7 +157,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: "0.7.2",
+        version: "0.7.3-next.135.g5e93dc1",
       },
       config: {
         editable: true,
@@ -167,14 +167,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: "0.8.3",
+        version: "0.8.4-next.183.g4efa7c7",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: "0.10.4",
+        version: "0.10.5-next.182.g358dcfa",
       },
       config: {
         visitorHashSecret,

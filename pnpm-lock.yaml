@@ -42,8 +42,8 @@ importers:
         specifier: '>=0.11.3 <0.12.0'
         version: 0.11.3
       '@antelopejs/interface-dms-marketing':
-        specifier: '>=0.7.1 <0.8.0'
-        version: 0.7.1(@antelopejs/interface-core@0.5.2)
+        specifier: 0.7.2-next.182.g358dcfa
+        version: 0.7.2-next.182.g358dcfa(@antelopejs/interface-core@0.5.2)
       '@antelopejs/interface-dms-media':
         specifier: 0.4.3-next.183.g4efa7c7
         version: 0.4.3-next.183.g4efa7c7(@antelopejs/interface-api@0.3.4(@antelopejs/interface-core@0.5.2))(@antelopejs/interface-core@0.5.2)(@antelopejs/interface-dms@0.16.0(f1e530776c304d6edaf84243dfcffd42))
@@ -179,8 +179,8 @@ packages:
   '@antelopejs/interface-dms-mailing@0.11.3':
     resolution: {integrity: sha512-7LEivOoiSd6FVsqaJuJDf3lXPI8isdmKJT7eP+zJ0Q3YM1jQucuYAKveG1cm2Q2w4kZ+2rGxyDNPwT1c+mBJsw==}
 
-  '@antelopejs/interface-dms-marketing@0.7.1':
-    resolution: {integrity: sha512-6gA6f9Adb1o3t3oj+TKh0S44FSjuPKhsu5FWIUvWGGlUHpa8iJHjA3A+RrP86gkzivN4SULs5qH3+9GTbNwjWg==}
+  '@antelopejs/interface-dms-marketing@0.7.2-next.182.g358dcfa':
+    resolution: {integrity: sha512-+dPufZ5/m3Lr7y8z0Sg8w4kDhNJnD5NpIR82ns9lqO9q/VqenflNiDus4eBkJa+xvqZXPbpBMg007h3bOY/B9Q==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.5.0 <0.6.0'
 
@@ -2262,7 +2262,7 @@ snapshots:
       '@antelopejs/interface-core': 0.5.2
       '@antelopejs/interface-email': 0.2.1(@antelopejs/interface-core@0.5.2)
 
-  '@antelopejs/interface-dms-marketing@0.7.1(@antelopejs/interface-core@0.5.2)':
+  '@antelopejs/interface-dms-marketing@0.7.2-next.182.g358dcfa(@antelopejs/interface-core@0.5.2)':
     dependencies:
       '@antelopejs/interface-core': 0.5.2
 
