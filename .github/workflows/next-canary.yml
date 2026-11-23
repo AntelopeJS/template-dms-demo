@@ -55,3 +55,11 @@ jobs:
 
       - name: Boot the demo and run the smoke test
         run: node --test --test-isolation=none .github/scripts/template/smoke.test.mts
+
+      - name: Upload the npm debug logs of the journeys
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: npm-logs
+          path: ~/.cache/template-dms-demo-tests/npm/_logs
+          if-no-files-found: ignore
