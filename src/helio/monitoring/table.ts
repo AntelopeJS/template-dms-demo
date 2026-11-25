@@ -276,6 +276,7 @@ export const fleetTable = TableView.fromSource({
   ],
   realtimeTopic: TELEMETRY_TOPIC,
   liveHold: {
+    whileOnScreen: true,
     whileRowOpen: true,
     whileSearching: true,
     missedLabel: "$helio.monitoring.live.missed",

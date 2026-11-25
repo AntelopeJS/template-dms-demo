@@ -117,6 +117,7 @@ export class PageHelioService extends PageController(
     pinnedRows: { field: "pinned", equals: true },
     realtimeTopic: SERVICE_TOPIC,
     liveHold: {
+      whileOnScreen: true,
       whileSearching: true,
       missedLabel: "$helio.service.live.newTickets",
     },
