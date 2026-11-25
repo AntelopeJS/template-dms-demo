@@ -47,11 +47,18 @@ export function button(id: string, text: string, href: string): ButtonBlock {
   return { id, type: "button", text, href, align: "left", visibleIf: null };
 }
 
+/** The English footer sentence, which a locale without its own sentence takes. */
+const FOOTER_TEXT_EN =
+  "Helio SRL · Rue de l'Énergie 12, 4040 Herstal · VAT BE0742.318.065 · You receive this e-mail about your Helio installation.";
+
 /** The footer sentence of each locale. */
-const FOOTER_TEXT: Record<MailLocale, string> = {
-  fr: "Helio SRL · Rue de l'Énergie 12, 4040 Herstal · TVA BE0742.318.065 · Vous recevez cet e-mail dans le cadre de votre installation Helio.",
-  en: "Helio SRL · Rue de l'Énergie 12, 4040 Herstal · VAT BE0742.318.065 · You receive this e-mail about your Helio installation.",
-};
+const FOOTER_TEXT = new Map<MailLocale, string>([
+  [
+    "fr",
+    "Helio SRL · Rue de l'Énergie 12, 4040 Herstal · TVA BE0742.318.065 · Vous recevez cet e-mail dans le cadre de votre installation Helio.",
+  ],
+  ["en", FOOTER_TEXT_EN],
+]);
 
 /**
  * The footer of a transactional e-mail: it says why the e-mail was sent and
@@ -62,7 +69,7 @@ function footer(locale: MailLocale): FooterBlock {
   return {
     id: "footer",
     type: "footer",
-    text: FOOTER_TEXT[locale],
+    text: FOOTER_TEXT.get(locale) ?? FOOTER_TEXT_EN,
     unsubscribeLabel: "",
     preferencesLabel: "",
     visibleIf: null,

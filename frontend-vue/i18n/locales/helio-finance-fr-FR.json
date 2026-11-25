@@ -117,6 +117,7 @@
           "vatRate": "Laissé vide, le taux par défaut des paramètres s'applique (21 % pour une entreprise)."
         },
         "errors": {
+          "notFound": "Cette facture n'existe plus. Rechargez la liste pour voir les factures actuelles.",
           "numberTaken": "Une autre facture porte déjà ce numéro."
         }
       },

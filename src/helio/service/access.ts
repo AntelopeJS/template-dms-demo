@@ -54,6 +54,6 @@ export async function assertCanRun(
     GetModel(RoleModel, tenantId),
   );
   if (!(await HasPermission(permissions, permissionId))) {
-    throw new HTTPResult(403, `Forbidden: missing permission ${permissionId}`);
+    throw new HTTPResult(403, { message: "$helio.service.errors.forbidden" });
   }
 }
