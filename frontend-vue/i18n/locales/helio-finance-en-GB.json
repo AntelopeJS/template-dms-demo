@@ -117,6 +117,7 @@
           "vatRate": "Left empty, the default rate of the settings applies (21% for a business)."
         },
         "errors": {
+          "notFound": "This invoice no longer exists. Reload the list to see the current invoices.",
           "numberTaken": "Another invoice already has this number."
         }
       },

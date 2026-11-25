@@ -170,6 +170,9 @@
         "description": "Seul un ticket résolu ou clôturé peut être supprimé. Cette action est définitive. | Seuls les tickets résolus ou clôturés peuvent être supprimés. Cette action est définitive.",
         "confirm": "Supprimer"
       },
+      "errors": {
+        "forbidden": "Votre rôle ne permet pas cette action dans le service après-vente. Demandez l'accès à un administrateur."
+      },
       "rules": {
         "siteOfOtherCustomer": "Cette installation appartient à un autre client. Choisissez une installation de ce client ou laissez le champ vide."
       }

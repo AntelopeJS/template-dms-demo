@@ -170,6 +170,9 @@
         "description": "Only a resolved or closed ticket can be deleted. This cannot be undone. | Only resolved or closed tickets can be deleted. This cannot be undone.",
         "confirm": "Delete"
       },
+      "errors": {
+        "forbidden": "Your role does not allow this action on the service desk. Ask an administrator for access."
+      },
       "rules": {
         "siteOfOtherCustomer": "This installation belongs to another customer. Pick one of this customer's installations or leave the field empty."
       }
