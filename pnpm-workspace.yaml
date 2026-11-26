@@ -1,4 +1,5 @@
 packages:
   - frontend-vue
+minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
-  - "@antelopejs/interface-*"
+  - "@antelopejs/*"

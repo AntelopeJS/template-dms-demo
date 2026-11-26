@@ -19,8 +19,8 @@ importers:
         version: 3.5.45(typescript@6.0.3)
     devDependencies:
       '@antelopejs/tooling-configs':
-        specifier: ^0.10.4
-        version: 0.10.4(@nuxt/eslint-config@1.17.0(@typescript-eslint/utils@8.73.0(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))(@vue/compiler-sfc@3.5.45)(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))
+        specifier: ^0.10.5
+        version: 0.10.5(@nuxt/eslint-config@1.17.0(@typescript-eslint/utils@8.73.0(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))(@vue/compiler-sfc@3.5.45)(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))
       '@nuxt/eslint-config':
         specifier: ^1.17.0
         version: 1.17.0(@typescript-eslint/utils@8.73.0(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))(@vue/compiler-sfc@3.5.45)(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3)
@@ -49,8 +49,8 @@ packages:
     resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
     engines: {node: '>=10'}
 
-  '@antelopejs/tooling-configs@0.10.4':
-    resolution: {integrity: sha512-AXcdYORsQk67E87lmP9z4VESWnwtE/ZkJ5On+9epFyh01WiLjuAn590YltUmTtGkQV2sCKab/KIk09T8CNC3SA==}
+  '@antelopejs/tooling-configs@0.10.5':
+    resolution: {integrity: sha512-sgobvOW1bHEEwdU/9sR0fAkRZNw9ViVPB/DSdnjnhcY4kEIw/nZ+NAh+9OWjMq+BF0ieUS+3bTe9xkdLMAmjWw==}
     engines: {node: '>=22.18.0'}
     hasBin: true
     peerDependencies:
@@ -3301,7 +3301,7 @@ snapshots:
 
   '@alloc/quick-lru@5.3.0': {}
 
-  '@antelopejs/tooling-configs@0.10.4(@nuxt/eslint-config@1.17.0(@typescript-eslint/utils@8.73.0(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))(@vue/compiler-sfc@3.5.45)(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))':
+  '@antelopejs/tooling-configs@0.10.5(@nuxt/eslint-config@1.17.0(@typescript-eslint/utils@8.73.0(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))(@vue/compiler-sfc@3.5.45)(eslint@10.15.0(jiti@2.7.0))(typescript@6.0.3))':
     dependencies:
       '@oxlint/plugins': 1.94.0
       dts-bundle-generator: 9.5.1
