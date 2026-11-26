@@ -86,7 +86,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: "0.24.1",
+        version: "0.24.2",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
