@@ -11,15 +11,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-/**
- * Points every `@antelopejs` dependency of `package.json` and every module source of `antelope.config.ts` at the
- * exact version of its npm `next` dist-tag, and appends to `$GITHUB_STEP_SUMMARY` a table of what each package runs
- * on. A package keeps its stable range when it has no `next` tag, or when its `next` is not ahead of `latest`, as when
- * the repository's `next` branch has not merged its last release yet, or when npm cannot resolve the preview's
- * dependency tree, as when it was published with a `workspace:` specifier. `package.json` gets the previews as
- * `pnpm.overrides`, so its own ranges stay and every copy in the tree, transitive ones included, loads the preview.
- */
-
 type Choice =
   | { readonly kind: "preview"; readonly version: string }
   | { readonly kind: "stable"; readonly reason: string };
@@ -143,6 +134,14 @@ async function protocolDependencies(
     .map(([dependency, spec]) => `depends on ${dependency} ${spec}`);
 }
 
+/**
+ * Points every `@antelopejs` dependency of `package.json` and every module source of `antelope.config.ts` at the
+ * exact version of its npm `next` dist-tag, and appends to `$GITHUB_STEP_SUMMARY` a table of what each package runs
+ * on. A package keeps its stable range when it has no `next` tag, or when its `next` is not ahead of `latest`, as when
+ * the repository's `next` branch has not merged its last release yet, or when npm cannot resolve the preview's
+ * dependency tree, as when it was published with a `workspace:` specifier. `package.json` gets the previews as
+ * `pnpm.overrides`, so its own ranges stay and every copy in the tree, transitive ones included, loads the preview.
+ */
 async function choose(name: string): Promise<Choice> {
   const response = await fetch(
     `https://registry.npmjs.org/-/package/${name.replace("/", "%2f")}/dist-tags`,

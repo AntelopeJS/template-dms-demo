@@ -86,7 +86,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: "0.23.0",
+        version: "0.24.1",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -111,7 +111,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-api",
-        version: "0.7.4",
+        version: "0.7.6",
       },
     },
     "dms-database": {
@@ -125,14 +125,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-automation",
-        version: "0.11.6",
+        version: "0.11.7",
       },
     },
     "dms-saas": {
       source: {
         type: "package",
         package: "@antelopejs/dms-saas",
-        version: "0.14.0",
+        version: "0.15.1",
       },
       config: {
         stripe: {
@@ -146,7 +146,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-assistant",
-        version: "0.3.2",
+        version: "0.3.4",
       },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
@@ -157,7 +157,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-lang",
-        version: "0.8.0",
+        version: "0.9.0",
       },
       config: {
         editable: true,
@@ -167,14 +167,14 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-media",
-        version: "0.9.0",
+        version: "0.9.1",
       },
     },
     "dms-marketing": {
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: "0.11.0",
+        version: "0.12.0",
       },
       config: {
         visitorHashSecret,
