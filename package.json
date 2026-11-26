@@ -48,7 +48,7 @@
   "devDependencies": {
     "@antelopejs/dms": "^0.24.1",
     "@antelopejs/dms-frontend": "^0.11.11",
-    "@antelopejs/tooling-configs": "^0.10.5",
+    "@antelopejs/tooling-configs": "^0.10.7",
     "@types/node": "^26.6.6",
     "dotenv": "^18.0.10",
     "knip": "^6.46.1",

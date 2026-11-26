@@ -303,7 +303,8 @@ It is a workspace package with its own ESLint and Vitest setup; the root
 oxfmt formats it and the root oxlint lints its TypeScript. The root
 `pnpm install` installs both packages. Each package keeps its own lockfile to
 preserve its dependency resolution. Run frontend checks separately (`lint`
-first writes the types its type-aware rules read, with `ajs dms prepare-types`):
+first writes the types its type-aware rules read, with `ajs dms prepare-types`,
+and typechecks the package and its tests with `tsc`):
 
 ```bash
 pnpm --dir frontend-vue lint
