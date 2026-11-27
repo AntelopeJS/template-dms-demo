@@ -3,8 +3,10 @@ import { describe, test } from "node:test";
 
 import { JourneyAbort, JourneyContext, type Journey } from "./harness.mts";
 import { currentRun } from "./run.mts";
+import { inShard, parseShard } from "./shards.mts";
 
 const JOURNEY_TIMEOUT_MS = 2_400_000;
+const shard = parseShard(process.env.ANTELOPEJS_CI_SHARD);
 const MONGO_RESET =
   "db.getMongo().getDBNames().filter((name) => !['admin', 'config', 'local'].includes(name)).forEach((name) => db.getSiblingDB(name).dropDatabase())";
 
@@ -46,7 +48,8 @@ export function journeyTests(
   knownFailures = new Map<string, KnownFailure>(),
 ): void {
   void describe(feature, () => {
-    for (const [id, journey] of Object.entries(journeys))
+    for (const [id, journey] of Object.entries(journeys)) {
+      if (!inShard(`${feature} › ${id}`, shard)) continue;
       void test(id, { timeout: JOURNEY_TIMEOUT_MS }, async (t) => {
         const failed = await runJourney(feature, id, journey);
         const known = knownFailures.get(id);
@@ -67,5 +70,6 @@ export function journeyTests(
             `${id} must fail only "${known.check}: ${known.detail}" (${known.finding}); it failed:\n${report || "nothing"}`,
           );
       });
+    }
   });
 }

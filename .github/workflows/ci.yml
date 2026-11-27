@@ -27,9 +27,9 @@ jobs:
       extra-commands: |
         pnpm build
         if [[ -d .github/scripts/template ]]; then pnpm exec tsc -p .github/scripts/template; fi
-        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none ${ANTELOPEJS_CI_SHARD:+--test-shard="$ANTELOPEJS_CI_SHARD"} .github/scripts/template/*.test.mts; fi
+        if [[ -d .github/scripts/template && "$ANTELOPEJS_CI_TIER" != fast && "$RUNNER_OS" == Linux ]]; then node --test --test-isolation=none .github/scripts/template/*.test.mts; fi
       extra-commands-job: true
-      extra-commands-shards: 3
+      extra-commands-shards: 4
       renovate-sync: false
       test-job: true
       affected-tests: true
