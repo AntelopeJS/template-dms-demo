@@ -86,7 +86,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms",
-        version: "0.24.2",
+        version: "0.24.3",
       },
       config: {
         apiBaseUrl: "${@api.API_PUBLIC_BASE_URL}",
@@ -146,7 +146,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-assistant",
-        version: "0.3.4",
+        version: "0.3.5",
       },
       config: {
         /** The sidecar runs on this host, so it reaches the API over loopback. */
@@ -174,7 +174,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/dms-marketing",
-        version: "0.12.0",
+        version: "0.12.1",
       },
       config: {
         visitorHashSecret,
@@ -233,7 +233,7 @@ export default defineConfig({
          * 1.4.0 answers 503 until every module has started (core 1.17.0); 1.5.0
          * declares configVarsFile, which dms-frontend 0.9 reads at build.
          */
-        version: "1.7.9",
+        version: "1.7.10",
       },
       config: {
         servers: [apiServer],
