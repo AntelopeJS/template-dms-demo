@@ -4,7 +4,6 @@ set -euo pipefail
 readonly NODE_VERSION="24.21.0"
 readonly NODE_ARCHIVE_SHA256="fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6"
 readonly NODE_MAJOR="24"
-readonly ANTELOPE_VERSION="1.16.0"
 readonly MONGODB_MAJOR="8.0"
 
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -67,20 +66,6 @@ configure_pnpm() {
   fi
 }
 
-install_antelope_cli() {
-  local current_version=""
-
-  if command -v ajs >/dev/null 2>&1; then
-    current_version="$(ajs --version 2>/dev/null || true)"
-  fi
-  if [[ "$current_version" != "$ANTELOPE_VERSION" ]]; then
-    pnpm config set global-bin-dir "$HOME/.local/bin" --global
-    pnpm add --global "@antelopejs/core@$ANTELOPE_VERSION"
-  fi
-
-  ajs --version
-}
-
 install_mongodb() {
   if command -v mongod >/dev/null 2>&1; then
     mongod --version | sed -n '1p'
@@ -138,6 +123,18 @@ install_dependencies() (
   pnpm install --frozen-lockfile
 )
 
+verify_antelope_cli() (
+  cd "$repo_root"
+  local locked_version installed_version
+  locked_version="$(sed -n "s/^  '@antelopejs\/core@\([^']*\)':\$/\1/p" pnpm-lock.yaml | head -n 1)"
+  installed_version="$(pnpm exec ajs --version)"
+  if [[ -z "$locked_version" || "$installed_version" != "$locked_version" ]]; then
+    printf 'Expected ajs %s from pnpm-lock.yaml but found %s\n' "$locked_version" "$installed_version" >&2
+    return 1
+  fi
+  printf 'ajs %s\n' "$installed_version"
+)
+
 build_project() (
   cd "$repo_root"
   pnpm run build
@@ -156,10 +153,10 @@ if ! node_is_compatible; then
 fi
 
 run_step "Configure pnpm $PNPM_VERSION" configure_pnpm
-run_step "Install AntelopeJS CLI $ANTELOPE_VERSION" install_antelope_cli
 run_step "Install MongoDB $MONGODB_MAJOR" install_mongodb
 run_step "Start MongoDB" start_mongodb
 run_step "Install dependencies" install_dependencies
+run_step "Verify AntelopeJS CLI matches pnpm-lock.yaml" verify_antelope_cli
 run_step "Build project" build_project
 run_step "Install AntelopeJS modules" install_project_modules
 
