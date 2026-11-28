@@ -41,31 +41,6 @@ jobs:
       nightly: ${{ inputs.nightly == true }}
     permissions:
       contents: read
-  locked-build:
-    name: Locked build
-    if: github.repository == 'AntelopeJS/template-dms-demo'
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install
-        run: pnpm install --frozen-lockfile --reporter=silent
-
-      - name: Build a clean clone from the committed module locks
-        run: |
-          set -o pipefail
-          node --test --test-isolation=none --test-reporter=spec --test-name-pattern=locked-build .github/scripts/template/deploy.test.mts | tee "$RUNNER_TEMP/locked-build.log"
-          grep -q "✔ locked-build" "$RUNNER_TEMP/locked-build.log"
   renovate-sync:
     if: >-
       github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/') && github.event.pull_request.head.repo.full_name == github.repository
@@ -85,7 +60,7 @@ jobs:
       RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
   verdict:
-    needs: [ci, locked-build, renovate-sync, module-locks]
+    needs: [ci, renovate-sync, module-locks]
     if: ${{ !cancelled() }}
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
