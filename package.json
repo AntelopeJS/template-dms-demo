@@ -37,7 +37,7 @@
     "@antelopejs/interface-data-api": "^0.8.3",
     "@antelopejs/interface-database": "^0.4.5",
     "@antelopejs/interface-database-decorators": "^0.5.4",
-    "@antelopejs/interface-dms": "^0.17.2",
+    "@antelopejs/interface-dms": "^0.17.3",
     "@antelopejs/interface-dms-automation": "^0.7.3",
     "@antelopejs/interface-dms-mailing": "^0.11.5",
     "@antelopejs/interface-dms-marketing": "^0.9.1",
@@ -46,9 +46,9 @@
     "@openai/codex": "0.172.0"
   },
   "devDependencies": {
-    "@antelopejs/dms": "^0.24.3",
+    "@antelopejs/dms": "^0.25.0",
     "@antelopejs/dms-frontend": "^0.11.12",
-    "@antelopejs/tooling-configs": "^0.10.11",
+    "@antelopejs/tooling-configs": "^0.10.14",
     "@types/node": "^26.6.7",
     "dotenv": "^18.0.10",
     "knip": "^6.46.1",
