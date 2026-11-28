@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   ci:
     uses: AntelopeJS/.github/.github/workflows/ci-node.yml@v2
@@ -40,7 +44,7 @@ jobs:
   locked-build:
     name: Locked build
     if: github.repository == 'AntelopeJS/template-dms-demo'
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -83,7 +87,7 @@ jobs:
   verdict:
     needs: [ci, locked-build, renovate-sync, module-locks]
     if: ${{ !cancelled() }}
-    runs-on: ${{ vars.RUNNER_CI || 'ubuntu-latest' }}
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
     permissions: {}
     steps:
