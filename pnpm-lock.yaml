@@ -55,8 +55,8 @@ importers:
         version: 0.172.0
     devDependencies:
       '@antelopejs/dms':
-        specifier: ^0.25.0
-        version: 0.25.0(@antelopejs/core@1.24.9)(bare-buffer@3.7.3)(typescript@6.0.3)
+        specifier: ^0.25.1
+        version: 0.25.1(@antelopejs/core@1.24.9)(bare-buffer@3.7.3)(typescript@6.0.3)
       '@antelopejs/dms-frontend':
         specifier: ^0.11.12
         version: 0.11.12(@antelopejs/core@1.24.9)
@@ -105,8 +105,8 @@ packages:
     peerDependencies:
       '@antelopejs/core': ~1.24.0
 
-  '@antelopejs/dms@0.25.0':
-    resolution: {integrity: sha512-LcN+YBAD72aO46K022hU/dwFmFyHHpPGewIXzbB+3wq3mNb7PfltkKtW74KIHN0BDCXgdm9ht7lodyh/GCCdVA==}
+  '@antelopejs/dms@0.25.1':
+    resolution: {integrity: sha512-fKiBcgHria9NRgNsbbNNr4+uz4SzLeUnK3BPVtIPmvpJK45F8rEyK6VOTAJHQsAix+UKlKZCixgqKoOGVbVz4g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@antelopejs/core': ~1.24.5
@@ -2169,7 +2169,7 @@ snapshots:
       '@oxc-parser/binding-linux-x64-gnu': 0.95.0
       '@oxc-parser/binding-win32-x64-msvc': 0.95.0
 
-  '@antelopejs/dms@0.25.0(@antelopejs/core@1.24.9)(bare-buffer@3.7.3)(typescript@6.0.3)':
+  '@antelopejs/dms@0.25.1(@antelopejs/core@1.24.9)(bare-buffer@3.7.3)(typescript@6.0.3)':
     dependencies:
       2fa: 0.1.2
       '@antelopejs/interface-api': 0.3.5(@antelopejs/interface-core@0.5.4)
